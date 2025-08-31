@@ -1,5 +1,10 @@
 {
-  "name": "rsbuild-react-ts",
+  "name": "ocampo-apt-system",
+  "author": {
+    "name": "Vivien Leigh Alvarez",
+    "email": "vienne22.va@gmail.com",
+    "url": "https://github.com/VivienSSS"
+  },
   "version": "0.1.0",
   "private": true,
   "type": "module",

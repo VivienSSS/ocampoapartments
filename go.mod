@@ -1,4 +1,4 @@
-module github.com/karlrobeck/pocketbase-template
+module github.com/VivienSSS/ocampoapartments
 
 go 1.24.2
 

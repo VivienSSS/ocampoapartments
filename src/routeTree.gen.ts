@@ -9,38 +9,144 @@
 // Additionally, you should also exclude this file from your linter and/or formatter to prevent it from being checked or modified.
 
 import { Route as rootRouteImport } from './routes/__root'
+import { Route as LoginRouteImport } from './routes/login'
 import { Route as IndexRouteImport } from './routes/index'
+import { Route as DashboardTenantsIndexRouteImport } from './routes/dashboard/tenants/index'
+import { Route as DashboardPropertiesIndexRouteImport } from './routes/dashboard/properties/index'
+import { Route as DashboardMaintenancesIndexRouteImport } from './routes/dashboard/maintenances/index'
+import { Route as DashboardBillingIndexRouteImport } from './routes/dashboard/billing/index'
+import { Route as DashboardApartmentsIndexRouteImport } from './routes/dashboard/apartments/index'
+import { Route as DashboardAnnouncementsIndexRouteImport } from './routes/dashboard/announcements/index'
 
+const LoginRoute = LoginRouteImport.update({
+  id: '/login',
+  path: '/login',
+  getParentRoute: () => rootRouteImport,
+} as any)
 const IndexRoute = IndexRouteImport.update({
   id: '/',
   path: '/',
   getParentRoute: () => rootRouteImport,
 } as any)
+const DashboardTenantsIndexRoute = DashboardTenantsIndexRouteImport.update({
+  id: '/dashboard/tenants/',
+  path: '/dashboard/tenants/',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const DashboardPropertiesIndexRoute =
+  DashboardPropertiesIndexRouteImport.update({
+    id: '/dashboard/properties/',
+    path: '/dashboard/properties/',
+    getParentRoute: () => rootRouteImport,
+  } as any)
+const DashboardMaintenancesIndexRoute =
+  DashboardMaintenancesIndexRouteImport.update({
+    id: '/dashboard/maintenances/',
+    path: '/dashboard/maintenances/',
+    getParentRoute: () => rootRouteImport,
+  } as any)
+const DashboardBillingIndexRoute = DashboardBillingIndexRouteImport.update({
+  id: '/dashboard/billing/',
+  path: '/dashboard/billing/',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const DashboardApartmentsIndexRoute =
+  DashboardApartmentsIndexRouteImport.update({
+    id: '/dashboard/apartments/',
+    path: '/dashboard/apartments/',
+    getParentRoute: () => rootRouteImport,
+  } as any)
+const DashboardAnnouncementsIndexRoute =
+  DashboardAnnouncementsIndexRouteImport.update({
+    id: '/dashboard/announcements/',
+    path: '/dashboard/announcements/',
+    getParentRoute: () => rootRouteImport,
+  } as any)
 
 export interface FileRoutesByFullPath {
   '/': typeof IndexRoute
+  '/login': typeof LoginRoute
+  '/dashboard/announcements': typeof DashboardAnnouncementsIndexRoute
+  '/dashboard/apartments': typeof DashboardApartmentsIndexRoute
+  '/dashboard/billing': typeof DashboardBillingIndexRoute
+  '/dashboard/maintenances': typeof DashboardMaintenancesIndexRoute
+  '/dashboard/properties': typeof DashboardPropertiesIndexRoute
+  '/dashboard/tenants': typeof DashboardTenantsIndexRoute
 }
 export interface FileRoutesByTo {
   '/': typeof IndexRoute
+  '/login': typeof LoginRoute
+  '/dashboard/announcements': typeof DashboardAnnouncementsIndexRoute
+  '/dashboard/apartments': typeof DashboardApartmentsIndexRoute
+  '/dashboard/billing': typeof DashboardBillingIndexRoute
+  '/dashboard/maintenances': typeof DashboardMaintenancesIndexRoute
+  '/dashboard/properties': typeof DashboardPropertiesIndexRoute
+  '/dashboard/tenants': typeof DashboardTenantsIndexRoute
 }
 export interface FileRoutesById {
   __root__: typeof rootRouteImport
   '/': typeof IndexRoute
+  '/login': typeof LoginRoute
+  '/dashboard/announcements/': typeof DashboardAnnouncementsIndexRoute
+  '/dashboard/apartments/': typeof DashboardApartmentsIndexRoute
+  '/dashboard/billing/': typeof DashboardBillingIndexRoute
+  '/dashboard/maintenances/': typeof DashboardMaintenancesIndexRoute
+  '/dashboard/properties/': typeof DashboardPropertiesIndexRoute
+  '/dashboard/tenants/': typeof DashboardTenantsIndexRoute
 }
 export interface FileRouteTypes {
   fileRoutesByFullPath: FileRoutesByFullPath
-  fullPaths: '/'
+  fullPaths:
+    | '/'
+    | '/login'
+    | '/dashboard/announcements'
+    | '/dashboard/apartments'
+    | '/dashboard/billing'
+    | '/dashboard/maintenances'
+    | '/dashboard/properties'
+    | '/dashboard/tenants'
   fileRoutesByTo: FileRoutesByTo
-  to: '/'
-  id: '__root__' | '/'
+  to:
+    | '/'
+    | '/login'
+    | '/dashboard/announcements'
+    | '/dashboard/apartments'
+    | '/dashboard/billing'
+    | '/dashboard/maintenances'
+    | '/dashboard/properties'
+    | '/dashboard/tenants'
+  id:
+    | '__root__'
+    | '/'
+    | '/login'
+    | '/dashboard/announcements/'
+    | '/dashboard/apartments/'
+    | '/dashboard/billing/'
+    | '/dashboard/maintenances/'
+    | '/dashboard/properties/'
+    | '/dashboard/tenants/'
   fileRoutesById: FileRoutesById
 }
 export interface RootRouteChildren {
   IndexRoute: typeof IndexRoute
+  LoginRoute: typeof LoginRoute
+  DashboardAnnouncementsIndexRoute: typeof DashboardAnnouncementsIndexRoute
+  DashboardApartmentsIndexRoute: typeof DashboardApartmentsIndexRoute
+  DashboardBillingIndexRoute: typeof DashboardBillingIndexRoute
+  DashboardMaintenancesIndexRoute: typeof DashboardMaintenancesIndexRoute
+  DashboardPropertiesIndexRoute: typeof DashboardPropertiesIndexRoute
+  DashboardTenantsIndexRoute: typeof DashboardTenantsIndexRoute
 }
 
 declare module '@tanstack/react-router' {
   interface FileRoutesByPath {
+    '/login': {
+      id: '/login'
+      path: '/login'
+      fullPath: '/login'
+      preLoaderRoute: typeof LoginRouteImport
+      parentRoute: typeof rootRouteImport
+    }
     '/': {
       id: '/'
       path: '/'
@@ -48,11 +154,60 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof IndexRouteImport
       parentRoute: typeof rootRouteImport
     }
+    '/dashboard/tenants/': {
+      id: '/dashboard/tenants/'
+      path: '/dashboard/tenants'
+      fullPath: '/dashboard/tenants'
+      preLoaderRoute: typeof DashboardTenantsIndexRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/dashboard/properties/': {
+      id: '/dashboard/properties/'
+      path: '/dashboard/properties'
+      fullPath: '/dashboard/properties'
+      preLoaderRoute: typeof DashboardPropertiesIndexRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/dashboard/maintenances/': {
+      id: '/dashboard/maintenances/'
+      path: '/dashboard/maintenances'
+      fullPath: '/dashboard/maintenances'
+      preLoaderRoute: typeof DashboardMaintenancesIndexRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/dashboard/billing/': {
+      id: '/dashboard/billing/'
+      path: '/dashboard/billing'
+      fullPath: '/dashboard/billing'
+      preLoaderRoute: typeof DashboardBillingIndexRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/dashboard/apartments/': {
+      id: '/dashboard/apartments/'
+      path: '/dashboard/apartments'
+      fullPath: '/dashboard/apartments'
+      preLoaderRoute: typeof DashboardApartmentsIndexRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/dashboard/announcements/': {
+      id: '/dashboard/announcements/'
+      path: '/dashboard/announcements'
+      fullPath: '/dashboard/announcements'
+      preLoaderRoute: typeof DashboardAnnouncementsIndexRouteImport
+      parentRoute: typeof rootRouteImport
+    }
   }
 }
 
 const rootRouteChildren: RootRouteChildren = {
   IndexRoute: IndexRoute,
+  LoginRoute: LoginRoute,
+  DashboardAnnouncementsIndexRoute: DashboardAnnouncementsIndexRoute,
+  DashboardApartmentsIndexRoute: DashboardApartmentsIndexRoute,
+  DashboardBillingIndexRoute: DashboardBillingIndexRoute,
+  DashboardMaintenancesIndexRoute: DashboardMaintenancesIndexRoute,
+  DashboardPropertiesIndexRoute: DashboardPropertiesIndexRoute,
+  DashboardTenantsIndexRoute: DashboardTenantsIndexRoute,
 }
 export const routeTree = rootRouteImport
   ._addFileChildren(rootRouteChildren)

@@ -8,6 +8,8 @@ import (
 	"github.com/pocketbase/pocketbase/apis"
 	"github.com/pocketbase/pocketbase/core"
 	"github.com/pocketbase/pocketbase/plugins/migratecmd"
+
+	_ "github.com/VivienSSS/ocampoapartments/migrations"
 )
 
 func main() {
