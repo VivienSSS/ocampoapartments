@@ -1,0 +1,35 @@
+
+## General checklist
+- [x] - database seeding
+- [ ] - crud operations
+    - [ ] property management
+        - [ ] view
+        - [ ] create
+        - [ ] edit
+        - [ ] delete
+    - [ ] apartments management
+        - [ ] view
+        - [ ] create
+        - [ ] edit
+        - [ ] delete
+    - [ ] tenants management
+        - [ ] view
+        - [ ] create
+        - [ ] edit
+        - [ ] delete
+    - [ ] billing management
+        - [ ] view
+        - [ ] create
+        - [ ] edit
+        - [ ] delete
+    - [ ] maintenance management
+        - [ ] view
+        - [ ] create
+        - [ ] edit
+        - [ ] delete
+    - [ ] annoucement management
+        - [ ] view
+        - [ ] create
+        - [ ] edit
+        - [ ] delete
+[ ] - database policies / rules
