@@ -13,6 +13,7 @@ import { Route as LoginRouteImport } from './routes/login'
 import { Route as IndexRouteImport } from './routes/index'
 import { Route as DashboardTenantsIndexRouteImport } from './routes/dashboard/tenants/index'
 import { Route as DashboardPropertiesIndexRouteImport } from './routes/dashboard/properties/index'
+import { Route as DashboardPaymentsIndexRouteImport } from './routes/dashboard/payments/index'
 import { Route as DashboardMaintenancesIndexRouteImport } from './routes/dashboard/maintenances/index'
 import { Route as DashboardBillingIndexRouteImport } from './routes/dashboard/billing/index'
 import { Route as DashboardApartmentsIndexRouteImport } from './routes/dashboard/apartments/index'
@@ -39,6 +40,11 @@ const DashboardPropertiesIndexRoute =
     path: '/dashboard/properties/',
     getParentRoute: () => rootRouteImport,
   } as any)
+const DashboardPaymentsIndexRoute = DashboardPaymentsIndexRouteImport.update({
+  id: '/dashboard/payments/',
+  path: '/dashboard/payments/',
+  getParentRoute: () => rootRouteImport,
+} as any)
 const DashboardMaintenancesIndexRoute =
   DashboardMaintenancesIndexRouteImport.update({
     id: '/dashboard/maintenances/',
@@ -70,6 +76,7 @@ export interface FileRoutesByFullPath {
   '/dashboard/apartments': typeof DashboardApartmentsIndexRoute
   '/dashboard/billing': typeof DashboardBillingIndexRoute
   '/dashboard/maintenances': typeof DashboardMaintenancesIndexRoute
+  '/dashboard/payments': typeof DashboardPaymentsIndexRoute
   '/dashboard/properties': typeof DashboardPropertiesIndexRoute
   '/dashboard/tenants': typeof DashboardTenantsIndexRoute
 }
@@ -80,6 +87,7 @@ export interface FileRoutesByTo {
   '/dashboard/apartments': typeof DashboardApartmentsIndexRoute
   '/dashboard/billing': typeof DashboardBillingIndexRoute
   '/dashboard/maintenances': typeof DashboardMaintenancesIndexRoute
+  '/dashboard/payments': typeof DashboardPaymentsIndexRoute
   '/dashboard/properties': typeof DashboardPropertiesIndexRoute
   '/dashboard/tenants': typeof DashboardTenantsIndexRoute
 }
@@ -91,6 +99,7 @@ export interface FileRoutesById {
   '/dashboard/apartments/': typeof DashboardApartmentsIndexRoute
   '/dashboard/billing/': typeof DashboardBillingIndexRoute
   '/dashboard/maintenances/': typeof DashboardMaintenancesIndexRoute
+  '/dashboard/payments/': typeof DashboardPaymentsIndexRoute
   '/dashboard/properties/': typeof DashboardPropertiesIndexRoute
   '/dashboard/tenants/': typeof DashboardTenantsIndexRoute
 }
@@ -103,6 +112,7 @@ export interface FileRouteTypes {
     | '/dashboard/apartments'
     | '/dashboard/billing'
     | '/dashboard/maintenances'
+    | '/dashboard/payments'
     | '/dashboard/properties'
     | '/dashboard/tenants'
   fileRoutesByTo: FileRoutesByTo
@@ -113,6 +123,7 @@ export interface FileRouteTypes {
     | '/dashboard/apartments'
     | '/dashboard/billing'
     | '/dashboard/maintenances'
+    | '/dashboard/payments'
     | '/dashboard/properties'
     | '/dashboard/tenants'
   id:
@@ -123,6 +134,7 @@ export interface FileRouteTypes {
     | '/dashboard/apartments/'
     | '/dashboard/billing/'
     | '/dashboard/maintenances/'
+    | '/dashboard/payments/'
     | '/dashboard/properties/'
     | '/dashboard/tenants/'
   fileRoutesById: FileRoutesById
@@ -134,6 +146,7 @@ export interface RootRouteChildren {
   DashboardApartmentsIndexRoute: typeof DashboardApartmentsIndexRoute
   DashboardBillingIndexRoute: typeof DashboardBillingIndexRoute
   DashboardMaintenancesIndexRoute: typeof DashboardMaintenancesIndexRoute
+  DashboardPaymentsIndexRoute: typeof DashboardPaymentsIndexRoute
   DashboardPropertiesIndexRoute: typeof DashboardPropertiesIndexRoute
   DashboardTenantsIndexRoute: typeof DashboardTenantsIndexRoute
 }
@@ -166,6 +179,13 @@ declare module '@tanstack/react-router' {
       path: '/dashboard/properties'
       fullPath: '/dashboard/properties'
       preLoaderRoute: typeof DashboardPropertiesIndexRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/dashboard/payments/': {
+      id: '/dashboard/payments/'
+      path: '/dashboard/payments'
+      fullPath: '/dashboard/payments'
+      preLoaderRoute: typeof DashboardPaymentsIndexRouteImport
       parentRoute: typeof rootRouteImport
     }
     '/dashboard/maintenances/': {
@@ -206,6 +226,7 @@ const rootRouteChildren: RootRouteChildren = {
   DashboardApartmentsIndexRoute: DashboardApartmentsIndexRoute,
   DashboardBillingIndexRoute: DashboardBillingIndexRoute,
   DashboardMaintenancesIndexRoute: DashboardMaintenancesIndexRoute,
+  DashboardPaymentsIndexRoute: DashboardPaymentsIndexRoute,
   DashboardPropertiesIndexRoute: DashboardPropertiesIndexRoute,
   DashboardTenantsIndexRoute: DashboardTenantsIndexRoute,
 }

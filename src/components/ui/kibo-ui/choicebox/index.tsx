@@ -31,14 +31,14 @@ export const ChoiceboxItem = ({
     className={cn(
       'text-left',
       '[&[data-state="checked"]]:border-primary',
-      '[&[data-state="checked"]]:bg-primary-foreground'
+      '[&[data-state="checked"]]:bg-primary-foreground',
     )}
     {...props}
   >
     <Card
       className={cn(
         'flex cursor-pointer flex-row items-start justify-between rounded-md p-4 shadow-none transition-all',
-        className
+        className,
       )}
     >
       {children}
@@ -99,7 +99,7 @@ export const ChoiceboxItemContent = ({
   <CardContent
     className={cn(
       'flex aspect-square size-4 shrink-0 items-center justify-center rounded-full border border-input p-0 text-primary shadow-xs outline-none transition-[color,box-shadow] focus-visible:border-ring focus-visible:ring-[3px] focus-visible:ring-ring/50 disabled:cursor-not-allowed disabled:opacity-50 aria-invalid:border-destructive aria-invalid:ring-destructive/20 dark:bg-input/30 dark:aria-invalid:ring-destructive/40',
-      className
+      className,
     )}
     {...props}
   />

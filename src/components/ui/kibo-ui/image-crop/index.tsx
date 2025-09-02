@@ -31,7 +31,7 @@ import 'react-image-crop/dist/ReactCrop.css';
 const centerAspectCrop = (
   mediaWidth: number,
   mediaHeight: number,
-  aspect: number | undefined
+  aspect: number | undefined,
 ): PercentCrop =>
   centerCrop(
     aspect
@@ -42,18 +42,18 @@ const centerAspectCrop = (
           },
           aspect,
           mediaWidth,
-          mediaHeight
+          mediaHeight,
         )
       : { x: 0, y: 0, width: 90, height: 90, unit: '%' },
     mediaWidth,
-    mediaHeight
+    mediaHeight,
   );
 
 const getCroppedPngImage = async (
   imageSrc: HTMLImageElement,
   scaleFactor: number,
   pixelCrop: PixelCrop,
-  maxImageSize: number
+  maxImageSize: number,
 ): Promise<string> => {
   const canvas = document.createElement('canvas');
   const ctx = canvas.getContext('2d');
@@ -78,7 +78,7 @@ const getCroppedPngImage = async (
     0,
     0,
     canvas.width,
-    canvas.height
+    canvas.height,
   );
 
   const croppedImageUrl = canvas.toDataURL('image/png');
@@ -90,7 +90,7 @@ const getCroppedPngImage = async (
       imageSrc,
       scaleFactor * 0.9,
       pixelCrop,
-      maxImageSize
+      maxImageSize,
     );
   }
 
@@ -109,7 +109,7 @@ type ImageCropContextType = {
   handleChange: (pixelCrop: PixelCrop, percentCrop: PercentCrop) => void;
   handleComplete: (
     pixelCrop: PixelCrop,
-    percentCrop: PercentCrop
+    percentCrop: PercentCrop,
   ) => Promise<void>;
   onImageLoad: (e: SyntheticEvent<HTMLImageElement>) => void;
   applyCrop: () => Promise<void>;
@@ -153,7 +153,7 @@ export const ImageCrop = ({
   useEffect(() => {
     const reader = new FileReader();
     reader.addEventListener('load', () =>
-      setImgSrc(reader.result?.toString() || '')
+      setImgSrc(reader.result?.toString() || ''),
     );
     reader.readAsDataURL(file);
   }, [file]);
@@ -165,7 +165,7 @@ export const ImageCrop = ({
       setCrop(newCrop);
       setInitialCrop(newCrop);
     },
-    [reactCropProps.aspect]
+    [reactCropProps.aspect],
   );
 
   const handleChange = (pixelCrop: PixelCrop, percentCrop: PercentCrop) => {
@@ -176,7 +176,7 @@ export const ImageCrop = ({
   // biome-ignore lint/suspicious/useAwait: "onComplete is async"
   const handleComplete = async (
     pixelCrop: PixelCrop,
-    percentCrop: PercentCrop
+    percentCrop: PercentCrop,
   ) => {
     setCompletedCrop(pixelCrop);
     onComplete?.(pixelCrop, percentCrop);
@@ -191,7 +191,7 @@ export const ImageCrop = ({
       imgRef.current,
       1,
       completedCrop,
-      maxImageSize
+      maxImageSize,
     );
 
     onCrop?.(croppedImage);

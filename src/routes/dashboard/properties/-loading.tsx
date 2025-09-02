@@ -1,9 +1,7 @@
-import React from 'react'
+import React from 'react';
 
 const LoadingComponent = () => {
-    return (
-        <div>LoadingComponent</div>
-    )
-}
+  return <div>LoadingComponent</div>;
+};
 
-export default LoadingComponent
+export default LoadingComponent;
