@@ -6,15 +6,14 @@ import { pb } from '@/pocketbase';
 import { Collections } from '@/pocketbase/types';
 import LoadingComponent from './-loading';
 import { columns } from './-table';
+import { searchParams } from '@/lib/utils';
+import { propertySchema } from '@/pocketbase/schemas/properties';
 
 export const Route = createFileRoute('/dashboard/properties/')({
   component: RouteComponent,
   pendingComponent: LoadingComponent,
   validateSearch: zodValidator(
-    z.object({
-      page: z.number().nonnegative().default(1).catch(1),
-      perPage: z.number().nonnegative().default(10).catch(10),
-    }),
+    searchParams(propertySchema.keyof())
   ),
   beforeLoad: ({ search }) => ({ search }),
   loader: ({ context }) =>

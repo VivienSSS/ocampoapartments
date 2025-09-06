@@ -6,22 +6,22 @@ import type PocketBase from 'pocketbase';
 import type { RecordService } from 'pocketbase';
 
 export enum Collections {
-  Authorigins = '_authOrigins',
-  Externalauths = '_externalAuths',
-  Mfas = '_mfas',
-  Otps = '_otps',
-  Superusers = '_superusers',
-  Announcements = 'announcements',
-  ApartmentUnits = 'apartment_units',
-  BillItems = 'bill_items',
-  Bills = 'bills',
-  MaintenanceRequests = 'maintenance_requests',
-  MaintenanceWorkers = 'maintenance_workers',
-  Payments = 'payments',
-  Properties = 'properties',
-  Tenancies = 'tenancies',
+  Authorigins = '_authOrigins', // c
+  Externalauths = '_externalAuths', // c
+  Mfas = '_mfas', //x
+  Otps = '_otps', //x
+  Superusers = '_superusers', //x wala
+  Announcements = 'announcements', //c
+  ApartmentUnits = 'apartment_units', //c
+  BillItems = 'bill_items', //c
+  Bills = 'bills', //c
+  MaintenanceRequests = 'maintenance_requests', //c
+  MaintenanceWorkers = 'maintenance_workers', //c
+  Payments = 'payments', //c
+  Properties = 'properties', //c
+  Tenancies = 'tenancies', //c
   Tenants = 'tenants',
-  Users = 'users',
+  Users = 'users', // c
 }
 
 // Alias types for improved usability
