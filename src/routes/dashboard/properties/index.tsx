@@ -8,6 +8,7 @@ import LoadingComponent from './-loading';
 import { columns } from './-table';
 import { searchParams } from '@/lib/utils';
 import { propertySchema } from '@/pocketbase/schemas/properties';
+import CreatePropertyDialogForm from './-actions/create';
 
 export const Route = createFileRoute('/dashboard/properties/')({
   component: RouteComponent,
@@ -31,6 +32,9 @@ function RouteComponent() {
       <section>Controls</section>
       <section>
         <DataTable columns={columns} data={properties} />
+      </section>
+      <section>
+        <CreatePropertyDialogForm />
       </section>
     </article>
   );

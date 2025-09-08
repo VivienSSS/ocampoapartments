@@ -3,7 +3,7 @@ import { BillsStatusOptions } from "../types";
 
 export const billSchema = z.object({
     created: z.date().optional(),
-    dueDate: z.string(),
+    dueDate: z.date(),
     id: z.string(),
     status: z.enum(BillsStatusOptions),
     tenancy: z.string(),

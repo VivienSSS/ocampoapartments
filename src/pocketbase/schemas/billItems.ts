@@ -2,7 +2,7 @@ import z from "zod";
 import { BillItemsChargeTypeOptions } from "../types";
 
 export const billItemsSchema = z.object({
-    amount: z.number().optional(),
+    amount: z.number().nonnegative().optional(),
     bill: z.string(),
     chargeType: z.enum(BillItemsChargeTypeOptions),
     created: z.date().optional(),

@@ -4,8 +4,8 @@ export const maintenanceWorkerSchema = z.object({
     contactDetails: z.string(),
     created: z.date().optional(),
     id: z.string(),
-    isAvailable: z.boolean(),
-    name: z.string(),
+    isAvailable: z.boolean().default(true),
+    name: z.string().min(3).max(255),
     updated: z.date().optional(),
 })
 

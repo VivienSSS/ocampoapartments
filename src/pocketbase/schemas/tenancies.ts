@@ -3,8 +3,8 @@ import z from "zod";
 export const tenanciesSchema = z.object({
     created: z.date().optional(),
     id: z.string(),
-    leaseEndDate: z.string(),
-    leaseStartDate: z.string(),
+    leaseEndDate: z.date(),
+    leaseStartDate: z.date(),
     tenant: z.string(),
     unit: z.string(),
     updated: z.date().optional(),

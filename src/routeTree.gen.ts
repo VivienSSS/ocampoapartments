@@ -9,8 +9,9 @@
 // Additionally, you should also exclude this file from your linter and/or formatter to prevent it from being checked or modified.
 
 import { Route as rootRouteImport } from './routes/__root'
-import { Route as LoginRouteImport } from './routes/login'
+import { Route as DashboardRouteRouteImport } from './routes/dashboard/route'
 import { Route as IndexRouteImport } from './routes/index'
+import { Route as LoginIndexRouteImport } from './routes/login/index'
 import { Route as DashboardTenantsIndexRouteImport } from './routes/dashboard/tenants/index'
 import { Route as DashboardPropertiesIndexRouteImport } from './routes/dashboard/properties/index'
 import { Route as DashboardPaymentsIndexRouteImport } from './routes/dashboard/payments/index'
@@ -19,9 +20,9 @@ import { Route as DashboardBillingIndexRouteImport } from './routes/dashboard/bi
 import { Route as DashboardApartmentsIndexRouteImport } from './routes/dashboard/apartments/index'
 import { Route as DashboardAnnouncementsIndexRouteImport } from './routes/dashboard/announcements/index'
 
-const LoginRoute = LoginRouteImport.update({
-  id: '/login',
-  path: '/login',
+const DashboardRouteRoute = DashboardRouteRouteImport.update({
+  id: '/dashboard',
+  path: '/dashboard',
   getParentRoute: () => rootRouteImport,
 } as any)
 const IndexRoute = IndexRouteImport.update({
@@ -29,49 +30,55 @@ const IndexRoute = IndexRouteImport.update({
   path: '/',
   getParentRoute: () => rootRouteImport,
 } as any)
-const DashboardTenantsIndexRoute = DashboardTenantsIndexRouteImport.update({
-  id: '/dashboard/tenants/',
-  path: '/dashboard/tenants/',
+const LoginIndexRoute = LoginIndexRouteImport.update({
+  id: '/login/',
+  path: '/login/',
   getParentRoute: () => rootRouteImport,
+} as any)
+const DashboardTenantsIndexRoute = DashboardTenantsIndexRouteImport.update({
+  id: '/tenants/',
+  path: '/tenants/',
+  getParentRoute: () => DashboardRouteRoute,
 } as any)
 const DashboardPropertiesIndexRoute =
   DashboardPropertiesIndexRouteImport.update({
-    id: '/dashboard/properties/',
-    path: '/dashboard/properties/',
-    getParentRoute: () => rootRouteImport,
+    id: '/properties/',
+    path: '/properties/',
+    getParentRoute: () => DashboardRouteRoute,
   } as any)
 const DashboardPaymentsIndexRoute = DashboardPaymentsIndexRouteImport.update({
-  id: '/dashboard/payments/',
-  path: '/dashboard/payments/',
-  getParentRoute: () => rootRouteImport,
+  id: '/payments/',
+  path: '/payments/',
+  getParentRoute: () => DashboardRouteRoute,
 } as any)
 const DashboardMaintenancesIndexRoute =
   DashboardMaintenancesIndexRouteImport.update({
-    id: '/dashboard/maintenances/',
-    path: '/dashboard/maintenances/',
-    getParentRoute: () => rootRouteImport,
+    id: '/maintenances/',
+    path: '/maintenances/',
+    getParentRoute: () => DashboardRouteRoute,
   } as any)
 const DashboardBillingIndexRoute = DashboardBillingIndexRouteImport.update({
-  id: '/dashboard/billing/',
-  path: '/dashboard/billing/',
-  getParentRoute: () => rootRouteImport,
+  id: '/billing/',
+  path: '/billing/',
+  getParentRoute: () => DashboardRouteRoute,
 } as any)
 const DashboardApartmentsIndexRoute =
   DashboardApartmentsIndexRouteImport.update({
-    id: '/dashboard/apartments/',
-    path: '/dashboard/apartments/',
-    getParentRoute: () => rootRouteImport,
+    id: '/apartments/',
+    path: '/apartments/',
+    getParentRoute: () => DashboardRouteRoute,
   } as any)
 const DashboardAnnouncementsIndexRoute =
   DashboardAnnouncementsIndexRouteImport.update({
-    id: '/dashboard/announcements/',
-    path: '/dashboard/announcements/',
-    getParentRoute: () => rootRouteImport,
+    id: '/announcements/',
+    path: '/announcements/',
+    getParentRoute: () => DashboardRouteRoute,
   } as any)
 
 export interface FileRoutesByFullPath {
   '/': typeof IndexRoute
-  '/login': typeof LoginRoute
+  '/dashboard': typeof DashboardRouteRouteWithChildren
+  '/login': typeof LoginIndexRoute
   '/dashboard/announcements': typeof DashboardAnnouncementsIndexRoute
   '/dashboard/apartments': typeof DashboardApartmentsIndexRoute
   '/dashboard/billing': typeof DashboardBillingIndexRoute
@@ -82,7 +89,8 @@ export interface FileRoutesByFullPath {
 }
 export interface FileRoutesByTo {
   '/': typeof IndexRoute
-  '/login': typeof LoginRoute
+  '/dashboard': typeof DashboardRouteRouteWithChildren
+  '/login': typeof LoginIndexRoute
   '/dashboard/announcements': typeof DashboardAnnouncementsIndexRoute
   '/dashboard/apartments': typeof DashboardApartmentsIndexRoute
   '/dashboard/billing': typeof DashboardBillingIndexRoute
@@ -94,7 +102,8 @@ export interface FileRoutesByTo {
 export interface FileRoutesById {
   __root__: typeof rootRouteImport
   '/': typeof IndexRoute
-  '/login': typeof LoginRoute
+  '/dashboard': typeof DashboardRouteRouteWithChildren
+  '/login/': typeof LoginIndexRoute
   '/dashboard/announcements/': typeof DashboardAnnouncementsIndexRoute
   '/dashboard/apartments/': typeof DashboardApartmentsIndexRoute
   '/dashboard/billing/': typeof DashboardBillingIndexRoute
@@ -107,6 +116,7 @@ export interface FileRouteTypes {
   fileRoutesByFullPath: FileRoutesByFullPath
   fullPaths:
     | '/'
+    | '/dashboard'
     | '/login'
     | '/dashboard/announcements'
     | '/dashboard/apartments'
@@ -118,6 +128,7 @@ export interface FileRouteTypes {
   fileRoutesByTo: FileRoutesByTo
   to:
     | '/'
+    | '/dashboard'
     | '/login'
     | '/dashboard/announcements'
     | '/dashboard/apartments'
@@ -129,7 +140,8 @@ export interface FileRouteTypes {
   id:
     | '__root__'
     | '/'
-    | '/login'
+    | '/dashboard'
+    | '/login/'
     | '/dashboard/announcements/'
     | '/dashboard/apartments/'
     | '/dashboard/billing/'
@@ -141,23 +153,17 @@ export interface FileRouteTypes {
 }
 export interface RootRouteChildren {
   IndexRoute: typeof IndexRoute
-  LoginRoute: typeof LoginRoute
-  DashboardAnnouncementsIndexRoute: typeof DashboardAnnouncementsIndexRoute
-  DashboardApartmentsIndexRoute: typeof DashboardApartmentsIndexRoute
-  DashboardBillingIndexRoute: typeof DashboardBillingIndexRoute
-  DashboardMaintenancesIndexRoute: typeof DashboardMaintenancesIndexRoute
-  DashboardPaymentsIndexRoute: typeof DashboardPaymentsIndexRoute
-  DashboardPropertiesIndexRoute: typeof DashboardPropertiesIndexRoute
-  DashboardTenantsIndexRoute: typeof DashboardTenantsIndexRoute
+  DashboardRouteRoute: typeof DashboardRouteRouteWithChildren
+  LoginIndexRoute: typeof LoginIndexRoute
 }
 
 declare module '@tanstack/react-router' {
   interface FileRoutesByPath {
-    '/login': {
-      id: '/login'
-      path: '/login'
-      fullPath: '/login'
-      preLoaderRoute: typeof LoginRouteImport
+    '/dashboard': {
+      id: '/dashboard'
+      path: '/dashboard'
+      fullPath: '/dashboard'
+      preLoaderRoute: typeof DashboardRouteRouteImport
       parentRoute: typeof rootRouteImport
     }
     '/': {
@@ -167,61 +173,76 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof IndexRouteImport
       parentRoute: typeof rootRouteImport
     }
+    '/login/': {
+      id: '/login/'
+      path: '/login'
+      fullPath: '/login'
+      preLoaderRoute: typeof LoginIndexRouteImport
+      parentRoute: typeof rootRouteImport
+    }
     '/dashboard/tenants/': {
       id: '/dashboard/tenants/'
-      path: '/dashboard/tenants'
+      path: '/tenants'
       fullPath: '/dashboard/tenants'
       preLoaderRoute: typeof DashboardTenantsIndexRouteImport
-      parentRoute: typeof rootRouteImport
+      parentRoute: typeof DashboardRouteRoute
     }
     '/dashboard/properties/': {
       id: '/dashboard/properties/'
-      path: '/dashboard/properties'
+      path: '/properties'
       fullPath: '/dashboard/properties'
       preLoaderRoute: typeof DashboardPropertiesIndexRouteImport
-      parentRoute: typeof rootRouteImport
+      parentRoute: typeof DashboardRouteRoute
     }
     '/dashboard/payments/': {
       id: '/dashboard/payments/'
-      path: '/dashboard/payments'
+      path: '/payments'
       fullPath: '/dashboard/payments'
       preLoaderRoute: typeof DashboardPaymentsIndexRouteImport
-      parentRoute: typeof rootRouteImport
+      parentRoute: typeof DashboardRouteRoute
     }
     '/dashboard/maintenances/': {
       id: '/dashboard/maintenances/'
-      path: '/dashboard/maintenances'
+      path: '/maintenances'
       fullPath: '/dashboard/maintenances'
       preLoaderRoute: typeof DashboardMaintenancesIndexRouteImport
-      parentRoute: typeof rootRouteImport
+      parentRoute: typeof DashboardRouteRoute
     }
     '/dashboard/billing/': {
       id: '/dashboard/billing/'
-      path: '/dashboard/billing'
+      path: '/billing'
       fullPath: '/dashboard/billing'
       preLoaderRoute: typeof DashboardBillingIndexRouteImport
-      parentRoute: typeof rootRouteImport
+      parentRoute: typeof DashboardRouteRoute
     }
     '/dashboard/apartments/': {
       id: '/dashboard/apartments/'
-      path: '/dashboard/apartments'
+      path: '/apartments'
       fullPath: '/dashboard/apartments'
       preLoaderRoute: typeof DashboardApartmentsIndexRouteImport
-      parentRoute: typeof rootRouteImport
+      parentRoute: typeof DashboardRouteRoute
     }
     '/dashboard/announcements/': {
       id: '/dashboard/announcements/'
-      path: '/dashboard/announcements'
+      path: '/announcements'
       fullPath: '/dashboard/announcements'
       preLoaderRoute: typeof DashboardAnnouncementsIndexRouteImport
-      parentRoute: typeof rootRouteImport
+      parentRoute: typeof DashboardRouteRoute
     }
   }
 }
 
-const rootRouteChildren: RootRouteChildren = {
-  IndexRoute: IndexRoute,
-  LoginRoute: LoginRoute,
+interface DashboardRouteRouteChildren {
+  DashboardAnnouncementsIndexRoute: typeof DashboardAnnouncementsIndexRoute
+  DashboardApartmentsIndexRoute: typeof DashboardApartmentsIndexRoute
+  DashboardBillingIndexRoute: typeof DashboardBillingIndexRoute
+  DashboardMaintenancesIndexRoute: typeof DashboardMaintenancesIndexRoute
+  DashboardPaymentsIndexRoute: typeof DashboardPaymentsIndexRoute
+  DashboardPropertiesIndexRoute: typeof DashboardPropertiesIndexRoute
+  DashboardTenantsIndexRoute: typeof DashboardTenantsIndexRoute
+}
+
+const DashboardRouteRouteChildren: DashboardRouteRouteChildren = {
   DashboardAnnouncementsIndexRoute: DashboardAnnouncementsIndexRoute,
   DashboardApartmentsIndexRoute: DashboardApartmentsIndexRoute,
   DashboardBillingIndexRoute: DashboardBillingIndexRoute,
@@ -229,6 +250,16 @@ const rootRouteChildren: RootRouteChildren = {
   DashboardPaymentsIndexRoute: DashboardPaymentsIndexRoute,
   DashboardPropertiesIndexRoute: DashboardPropertiesIndexRoute,
   DashboardTenantsIndexRoute: DashboardTenantsIndexRoute,
+}
+
+const DashboardRouteRouteWithChildren = DashboardRouteRoute._addFileChildren(
+  DashboardRouteRouteChildren,
+)
+
+const rootRouteChildren: RootRouteChildren = {
+  IndexRoute: IndexRoute,
+  DashboardRouteRoute: DashboardRouteRouteWithChildren,
+  LoginIndexRoute: LoginIndexRoute,
 }
 export const routeTree = rootRouteImport
   ._addFileChildren(rootRouteChildren)

@@ -2,13 +2,13 @@ import z from "zod";
 import { PaymentsPaymentMethodOptions } from "../types";
 
 export const paymentSchema = z.object({
-    amountPaid: z.number().optional(),
+    amountPaid: z.number(),
     bill: z.string(),
     created: z.date().optional(),
     id: z.string(),
     paymentDate: z.string(),
     paymentMethod: z.enum(PaymentsPaymentMethodOptions),
-    screenshot: z.file(),
+    screenshot: z.url(),
     tenant: z.string(),
     transactionId: z.string(),
     updated: z.date().optional(),
@@ -17,7 +17,11 @@ export const paymentSchema = z.object({
 export const insertPaymentSchema = paymentSchema.omit({
     id: true,
     created: true,
-    updated: true
+    updated: true,
+    screenshot: true
+}).extend({
+    screenshot: z.file()
 })
+
 
 export const updatePaymentSchema = insertPaymentSchema.partial()

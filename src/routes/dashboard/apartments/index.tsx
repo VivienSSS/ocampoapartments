@@ -6,6 +6,7 @@ import { pb } from '@/pocketbase';
 import { Collections } from '@/pocketbase/types';
 import LoadingComponent from './-loading';
 import { columns } from './-table';
+import CreateApartmentDialogForm from './-actions/create';
 
 export const Route = createFileRoute('/dashboard/apartments/')({
   component: RouteComponent,
@@ -32,6 +33,9 @@ function RouteComponent() {
       <section></section>
       <section>
         <DataTable columns={columns} data={apartmentUnits} />
+      </section>
+      <section>
+        <CreateApartmentDialogForm />
       </section>
     </article>
   );

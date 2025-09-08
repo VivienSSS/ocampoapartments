@@ -2,13 +2,13 @@ import z from "zod";
 import { MaintenanceRequestsStatusOptions, MaintenanceRequestsUrgencyOptions } from "../types";
 
 export const maintenanceRequestSchema = z.object({
-    completedDate: z.string(),
+    completedDate: z.date(),
     created: z.date().optional(),
     description: z.string(),
     id: z.string(),
-    progressImage: z.file().optional(),
-    status: z.enum(MaintenanceRequestsStatusOptions),
-    submittedDate: z.string(),
+    progressImage: z.array(z.url()),
+    status: z.enum(MaintenanceRequestsStatusOptions).default(MaintenanceRequestsStatusOptions.Pending),
+    submittedDate: z.date(),
     tenant: z.string(),
     unit: z.string(),
     updated: z.date().optional(),
@@ -19,7 +19,10 @@ export const maintenanceRequestSchema = z.object({
 export const insertMaintenanceRequestSchema = maintenanceRequestSchema.omit({
     id: true,
     created: true,
-    updated: true
+    updated: true,
+    progressImage: true
+}).extend({
+    progressImage: z.array(z.file())
 })
 
 export const updateMaintenanceRequestSchema = insertMaintenanceRequestSchema.partial()
