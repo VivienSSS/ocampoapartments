@@ -32,14 +32,16 @@ const CreateApartmentDialogForm = () => {
                     <DialogTitle>Create a new property</DialogTitle>
                     <DialogDescription>Enter the right information</DialogDescription>
                 </DialogHeader>
-                <form onSubmit={e => {
-                    e.preventDefault();
-                    e.stopPropagation();
-                    form.handleSubmit()
-                }}>
+                <form
+                    className='grid grid-cols-4 gap-2.5'
+                    onSubmit={e => {
+                        e.preventDefault();
+                        e.stopPropagation();
+                        form.handleSubmit()
+                    }}>
                     <form.AppForm>
                         <CreateApartmentForm form={form} />
-                        <form.SubmitButton>Create apartment</form.SubmitButton>
+                        <form.SubmitButton className='col-span-full'>Create apartment</form.SubmitButton>
                     </form.AppForm>
                 </form>
             </DialogContent>

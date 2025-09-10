@@ -5,6 +5,13 @@ import { ThemeProvider } from '@/components/theme-provider';
 import { Toaster } from '@/components/ui/sonner';
 import { routeTree } from './routeTree.gen';
 import './styles/globals.css';
+import {
+  QueryClient,
+  QueryClientProvider,
+  useQuery,
+} from '@tanstack/react-query'
+
+const queryClient = new QueryClient()
 
 const router = createRouter({ routeTree });
 
@@ -21,8 +28,10 @@ if (rootEl) {
   root.render(
     <React.StrictMode>
       <ThemeProvider defaultTheme="dark" storageKey="pocketbase-template-theme">
-        <RouterProvider router={router} />
-        <Toaster />
+        <QueryClientProvider client={queryClient}>
+          <RouterProvider router={router} />
+          <Toaster />
+        </QueryClientProvider>
       </ThemeProvider>
     </React.StrictMode>,
   );

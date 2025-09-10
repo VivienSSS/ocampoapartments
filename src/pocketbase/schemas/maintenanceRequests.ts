@@ -7,7 +7,7 @@ export const maintenanceRequestSchema = z.object({
     description: z.string(),
     id: z.string(),
     progressImage: z.array(z.url()),
-    status: z.enum(MaintenanceRequestsStatusOptions).default(MaintenanceRequestsStatusOptions.Pending),
+    status: z.enum(MaintenanceRequestsStatusOptions),
     submittedDate: z.date(),
     tenant: z.string(),
     unit: z.string(),

@@ -1,5 +1,6 @@
 import { withForm } from "@/components/ui/form";
 import { insertPropertySchema, updatePropertySchema } from "@/pocketbase/schemas/properties";
+import { PropertiesBranchOptions } from "@/pocketbase/types";
 import type z from "zod";
 
 export const CreatePropertyForm = withForm({
@@ -10,10 +11,10 @@ export const CreatePropertyForm = withForm({
     render: function ({ form }) {
         return <>
             <form.AppField name="address">
-                {field => <field.TextField placeholder="Your address" />}
+                {field => <field.TextAreaField className="col-span-full" placeholder="Your address" />}
             </form.AppField>
             <form.AppField name="branch">
-                {field => <field.TextField placeholder="Branch Type" />}
+                {field => <field.SelectField options={Object.keys(PropertiesBranchOptions).map(key => ({ label: key, value: key }))} className="col-span-full" placeholder="Branch Type" />}
             </form.AppField>
         </>
     }
@@ -27,7 +28,7 @@ export const EditPropertyForm = withForm({
     render: function ({ form }) {
         return <>
             <form.AppField name="address">
-                {field => <field.TextField />}
+                {field => <field.TextAreaField />}
             </form.AppField>
             <form.AppField name="branch">
                 {field => <field.TextField />}
