@@ -21,7 +21,7 @@ export const Route = createFileRoute('/dashboard/apartments/')({
   loader: ({ context }) =>
     pb
       .collection(Collections.ApartmentUnits)
-      .getList(context.search.page, context.search.perPage),
+      .getList(context.search.page, context.search.perPage, { sort: "-created" }),
 });
 
 function RouteComponent() {

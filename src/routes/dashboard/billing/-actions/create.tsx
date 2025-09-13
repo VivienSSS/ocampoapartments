@@ -40,7 +40,7 @@ const CreateBillingDialogForm = () => {
                 }}>
                     <form.AppForm>
                         <CreateBillingForm form={form} />
-                        <form.SubmitButton>Create property</form.SubmitButton>
+                        <form.SubmitButton>Create Billing</form.SubmitButton>
                     </form.AppForm>
                 </form>
             </DialogContent>

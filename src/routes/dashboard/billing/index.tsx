@@ -21,7 +21,9 @@ export const Route = createFileRoute('/dashboard/billing/')({
   loader: ({ context }) =>
     pb
       .collection(Collections.Bills)
-      .getList(context.search.page, context.search.perPage),
+      .getList(context.search.page, context.search.perPage, {
+        sort: "-created"
+      }),
 });
 
 function RouteComponent() {

@@ -27,7 +27,7 @@ if (rootEl) {
   const root = ReactDOM.createRoot(rootEl);
   root.render(
     <React.StrictMode>
-      <ThemeProvider defaultTheme="dark" storageKey="pocketbase-template-theme">
+      <ThemeProvider defaultTheme="light" storageKey="pocketbase-template-theme">
         <QueryClientProvider client={queryClient}>
           <RouterProvider router={router} />
           <Toaster />
