@@ -3,7 +3,6 @@ import z from "zod";
 export const announcementSchema = z.object({
     author: z.string(),
     created: z.date().optional(),
-    createdAt: z.string(),
     id: z.string(),
     message: z.string(),
     title: z.string(),

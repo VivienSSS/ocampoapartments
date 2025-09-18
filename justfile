@@ -4,6 +4,8 @@ APP_NAME := `cat package.json | jq -r '.name'`
 APP_VERSION := `cat package.json | jq -r '.version'`
 
 setup:
+  @sudo snap install go --classic
+  @sudo apt install bun
   @go mod tidy
   @bun install --frozen-lockfile
 

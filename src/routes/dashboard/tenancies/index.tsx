@@ -6,9 +6,9 @@ import { pb } from '@/pocketbase';
 import { Collections } from '@/pocketbase/types';
 import LoadingComponent from './-loading';
 import { columns } from './-table';
-import CreateAnnouncementDialogForm from './-actions/create';
+import CreateTenantDialogForm from './-actions/create';
 
-export const Route = createFileRoute('/dashboard/announcements/')({
+export const Route = createFileRoute('/dashboard/tenancies/')({
   component: RouteComponent,
   pendingComponent: LoadingComponent,
   validateSearch: zodValidator(
@@ -20,21 +20,22 @@ export const Route = createFileRoute('/dashboard/announcements/')({
   beforeLoad: ({ search }) => ({ search }),
   loader: ({ context }) =>
     pb
-      .collection(Collections.Announcements)
-      .getList(context.search.page, context.search.perPage),
+      .collection(Collections.Tenants)
+      .getList(context.search.page, context.search.perPage, { sort: "-created" }),
 });
 
 function RouteComponent() {
-  const announcements = Route.useLoaderData();
+  const tenants = Route.useLoaderData();
+
   return (
     <article>
       <section></section>
       <section></section>
       <section>
-        <DataTable columns={columns} data={announcements} />
+        <DataTable columns={columns} data={tenants} />
       </section>
       <section>
-        <CreateAnnouncementDialogForm />
+        <CreateTenantDialogForm />
       </section>
     </article>
   );

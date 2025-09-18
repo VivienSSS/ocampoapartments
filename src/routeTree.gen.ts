@@ -13,6 +13,7 @@ import { Route as DashboardRouteRouteImport } from './routes/dashboard/route'
 import { Route as IndexRouteImport } from './routes/index'
 import { Route as LoginIndexRouteImport } from './routes/login/index'
 import { Route as DashboardTenantsIndexRouteImport } from './routes/dashboard/tenants/index'
+import { Route as DashboardTenanciesIndexRouteImport } from './routes/dashboard/tenancies/index'
 import { Route as DashboardPropertiesIndexRouteImport } from './routes/dashboard/properties/index'
 import { Route as DashboardPaymentsIndexRouteImport } from './routes/dashboard/payments/index'
 import { Route as DashboardMaintenancesIndexRouteImport } from './routes/dashboard/maintenances/index'
@@ -38,6 +39,11 @@ const LoginIndexRoute = LoginIndexRouteImport.update({
 const DashboardTenantsIndexRoute = DashboardTenantsIndexRouteImport.update({
   id: '/tenants/',
   path: '/tenants/',
+  getParentRoute: () => DashboardRouteRoute,
+} as any)
+const DashboardTenanciesIndexRoute = DashboardTenanciesIndexRouteImport.update({
+  id: '/tenancies/',
+  path: '/tenancies/',
   getParentRoute: () => DashboardRouteRoute,
 } as any)
 const DashboardPropertiesIndexRoute =
@@ -85,6 +91,7 @@ export interface FileRoutesByFullPath {
   '/dashboard/maintenances': typeof DashboardMaintenancesIndexRoute
   '/dashboard/payments': typeof DashboardPaymentsIndexRoute
   '/dashboard/properties': typeof DashboardPropertiesIndexRoute
+  '/dashboard/tenancies': typeof DashboardTenanciesIndexRoute
   '/dashboard/tenants': typeof DashboardTenantsIndexRoute
 }
 export interface FileRoutesByTo {
@@ -97,6 +104,7 @@ export interface FileRoutesByTo {
   '/dashboard/maintenances': typeof DashboardMaintenancesIndexRoute
   '/dashboard/payments': typeof DashboardPaymentsIndexRoute
   '/dashboard/properties': typeof DashboardPropertiesIndexRoute
+  '/dashboard/tenancies': typeof DashboardTenanciesIndexRoute
   '/dashboard/tenants': typeof DashboardTenantsIndexRoute
 }
 export interface FileRoutesById {
@@ -110,6 +118,7 @@ export interface FileRoutesById {
   '/dashboard/maintenances/': typeof DashboardMaintenancesIndexRoute
   '/dashboard/payments/': typeof DashboardPaymentsIndexRoute
   '/dashboard/properties/': typeof DashboardPropertiesIndexRoute
+  '/dashboard/tenancies/': typeof DashboardTenanciesIndexRoute
   '/dashboard/tenants/': typeof DashboardTenantsIndexRoute
 }
 export interface FileRouteTypes {
@@ -124,6 +133,7 @@ export interface FileRouteTypes {
     | '/dashboard/maintenances'
     | '/dashboard/payments'
     | '/dashboard/properties'
+    | '/dashboard/tenancies'
     | '/dashboard/tenants'
   fileRoutesByTo: FileRoutesByTo
   to:
@@ -136,6 +146,7 @@ export interface FileRouteTypes {
     | '/dashboard/maintenances'
     | '/dashboard/payments'
     | '/dashboard/properties'
+    | '/dashboard/tenancies'
     | '/dashboard/tenants'
   id:
     | '__root__'
@@ -148,6 +159,7 @@ export interface FileRouteTypes {
     | '/dashboard/maintenances/'
     | '/dashboard/payments/'
     | '/dashboard/properties/'
+    | '/dashboard/tenancies/'
     | '/dashboard/tenants/'
   fileRoutesById: FileRoutesById
 }
@@ -185,6 +197,13 @@ declare module '@tanstack/react-router' {
       path: '/tenants'
       fullPath: '/dashboard/tenants'
       preLoaderRoute: typeof DashboardTenantsIndexRouteImport
+      parentRoute: typeof DashboardRouteRoute
+    }
+    '/dashboard/tenancies/': {
+      id: '/dashboard/tenancies/'
+      path: '/tenancies'
+      fullPath: '/dashboard/tenancies'
+      preLoaderRoute: typeof DashboardTenanciesIndexRouteImport
       parentRoute: typeof DashboardRouteRoute
     }
     '/dashboard/properties/': {
@@ -239,6 +258,7 @@ interface DashboardRouteRouteChildren {
   DashboardMaintenancesIndexRoute: typeof DashboardMaintenancesIndexRoute
   DashboardPaymentsIndexRoute: typeof DashboardPaymentsIndexRoute
   DashboardPropertiesIndexRoute: typeof DashboardPropertiesIndexRoute
+  DashboardTenanciesIndexRoute: typeof DashboardTenanciesIndexRoute
   DashboardTenantsIndexRoute: typeof DashboardTenantsIndexRoute
 }
 
@@ -249,6 +269,7 @@ const DashboardRouteRouteChildren: DashboardRouteRouteChildren = {
   DashboardMaintenancesIndexRoute: DashboardMaintenancesIndexRoute,
   DashboardPaymentsIndexRoute: DashboardPaymentsIndexRoute,
   DashboardPropertiesIndexRoute: DashboardPropertiesIndexRoute,
+  DashboardTenanciesIndexRoute: DashboardTenanciesIndexRoute,
   DashboardTenantsIndexRoute: DashboardTenantsIndexRoute,
 }
 

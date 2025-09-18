@@ -6,6 +6,7 @@ import { pb } from '@/pocketbase';
 import { Collections } from '@/pocketbase/types';
 import LoadingComponent from './-loading';
 import { columns } from './-table';
+import CreateTenantDialogForm from './-actions/create';
 
 export const Route = createFileRoute('/dashboard/tenants/')({
   component: RouteComponent,
@@ -20,7 +21,7 @@ export const Route = createFileRoute('/dashboard/tenants/')({
   loader: ({ context }) =>
     pb
       .collection(Collections.Tenants)
-      .getList(context.search.page, context.search.perPage),
+      .getList(context.search.page, context.search.perPage, { sort: "-created" }),
 });
 
 function RouteComponent() {
@@ -32,6 +33,9 @@ function RouteComponent() {
       <section></section>
       <section>
         <DataTable columns={columns} data={tenants} />
+      </section>
+      <section>
+        <CreateTenantDialogForm />
       </section>
     </article>
   );

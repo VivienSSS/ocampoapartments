@@ -1,38 +1,39 @@
 import { Dialog, DialogContent, DialogDescription, DialogHeader, DialogTitle, DialogTrigger } from '@/components/ui/dialog'
 import { useAppForm } from '@/components/ui/form'
 import { pb } from '@/pocketbase'
-import { insertAnnouncementSchema } from '@/pocketbase/schemas/announcements'
+import { insertTenanciesSchema } from '@/pocketbase/schemas/tenancies'
 import { Collections } from '@/pocketbase/types'
 import { useNavigate } from '@tanstack/react-router'
 import React from 'react'
 import type z from 'zod'
-import { CreateAnnouncementForm } from './form'
+import { CreateTenancyForm } from './form'
+// import { CreateTenantForm } from './form'
 
-const CreateAnnouncementDialogForm = () => {
+const CreateTenancyDialogForm = () => {
 
-    const navigate = useNavigate({ from: "/dashboard/announcements" })
+    const navigate = useNavigate({ from: "/dashboard/tenancies" })
 
     const form = useAppForm({
-        defaultValues: {
-            author: pb.authStore.record?.id,
-        } as z.infer<typeof insertAnnouncementSchema>,
+        defaultValues: {} as z.infer<typeof insertTenanciesSchema>,
         validators: {
-            onChange: insertAnnouncementSchema
+            onChange: insertTenanciesSchema
         },
+
         onSubmit: async ({ value }) => {
 
-            await pb.collection(Collections.Announcements).create(value)
+            await pb.collection(Collections.Tenancies).create(value)
 
-            navigate({ to: "/dashboard/announcements" })
+            navigate({ to: "/dashboard/tenancies" })
+
         }
     })
 
     return (
         <Dialog>
-            <DialogTrigger>Create Announcement</DialogTrigger>
+            <DialogTrigger>Create Tenancy</DialogTrigger>
             <DialogContent>
                 <DialogHeader>
-                    <DialogTitle>Create a new announcement</DialogTitle>
+                    <DialogTitle>Create tenancy</DialogTitle>
                     <DialogDescription>Enter the right information</DialogDescription>
                 </DialogHeader>
                 <form
@@ -43,8 +44,8 @@ const CreateAnnouncementDialogForm = () => {
                         form.handleSubmit()
                     }}>
                     <form.AppForm>
-                        <CreateAnnouncementForm form={form} />
-                        <form.SubmitButton className='col-span-full'>Create announcement</form.SubmitButton>
+                        <CreateTenancyForm form={form} />
+                        <form.SubmitButton className='col-span-full'>Create Tenancy</form.SubmitButton>
                     </form.AppForm>
                 </form>
             </DialogContent>
@@ -52,5 +53,4 @@ const CreateAnnouncementDialogForm = () => {
     )
 }
 
-export default CreateAnnouncementDialogForm
-
+export default CreateTenancyDialogForm
