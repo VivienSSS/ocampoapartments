@@ -7,22 +7,22 @@ import {
   AlertDialogFooter,
   AlertDialogHeader,
   AlertDialogTitle,
-} from "@/components/ui/alert-dialog";
+} from '@/components/ui/alert-dialog';
 import {
   deletePropertyMutation,
   viewPropertiesQuery,
-} from "@/pocketbase/queries/properties";
-import { useMutation, useQuery } from "@tanstack/react-query";
+} from '@/pocketbase/queries/properties';
+import { useMutation, useQuery } from '@tanstack/react-query';
 import {
   useNavigate,
   useRouteContext,
   useSearch,
-} from "@tanstack/react-router";
+} from '@tanstack/react-router';
 
 const DeletePropertyDialogForm = () => {
-  const searchQuery = useSearch({ from: "/dashboard/properties/" });
-  const navigate = useNavigate({ from: "/dashboard/properties" });
-  const { queryClient } = useRouteContext({ from: "/dashboard/properties/" });
+  const searchQuery = useSearch({ from: '/dashboard/properties/' });
+  const navigate = useNavigate({ from: '/dashboard/properties' });
+  const { queryClient } = useRouteContext({ from: '/dashboard/properties/' });
 
   const { data: property } = useQuery(
     {
@@ -43,7 +43,8 @@ const DeletePropertyDialogForm = () => {
       onOpenChange={() =>
         navigate({
           search: (prev) => ({ ...prev, delete: undefined, id: undefined }),
-        })}
+        })
+      }
     >
       <AlertDialogContent>
         <AlertDialogHeader>
@@ -72,7 +73,8 @@ const DeletePropertyDialogForm = () => {
                     }),
                   });
                 },
-              })}
+              })
+            }
           >
             Continue
           </AlertDialogAction>

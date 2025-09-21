@@ -1,6 +1,6 @@
-import z from "zod";
-import { BillsStatusOptions } from "../types";
-import { insertBillItemsSchema } from "./billItems";
+import z from 'zod';
+import { BillsStatusOptions } from '../types';
+import { insertBillItemsSchema } from './billItems';
 
 export const billSchema = z.object({
   created: z.date().optional(),
@@ -11,10 +11,12 @@ export const billSchema = z.object({
   updated: z.date().optional(),
 });
 
-export const insertBillSchema = billSchema.omit({
-  id: true,
-  created: true,
-  updated: true,
-}).extend({ items: z.array(insertBillItemsSchema) });
+export const insertBillSchema = billSchema
+  .omit({
+    id: true,
+    created: true,
+    updated: true,
+  })
+  .extend({ items: z.array(insertBillItemsSchema) });
 
 export const updateBillSchema = insertBillSchema.partial();

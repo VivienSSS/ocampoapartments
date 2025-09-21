@@ -1,5 +1,9 @@
-import { useNavigate } from '@tanstack/react-router';
-import React from 'react';
+import { useMutation } from '@tanstack/react-query';
+import {
+  useNavigate,
+  useRouteContext,
+  useSearch,
+} from '@tanstack/react-router';
 import type z from 'zod';
 import {
   Dialog,
@@ -7,32 +11,42 @@ import {
   DialogDescription,
   DialogHeader,
   DialogTitle,
-  DialogTrigger,
 } from '@/components/ui/dialog';
 import { useAppForm } from '@/components/ui/form';
-import { pb } from '@/pocketbase';
 import { insertBillSchema } from '@/pocketbase/schemas/bills';
-import { Collections } from '@/pocketbase/types';
 import { CreateBillingForm } from './form';
+import { createBillMutation, listBillsQuery } from '@/pocketbase/queries/bills';
 
 const CreateBillingDialogForm = () => {
   const navigate = useNavigate({ from: '/dashboard/billing' });
+  const searchParams = useSearch({ from: '/dashboard/billing/' });
+  const { queryClient } = useRouteContext({ from: '/dashboard/billing/' });
+
+  const billMutation = useMutation(createBillMutation);
 
   const form = useAppForm({
     defaultValues: {} as z.infer<typeof insertBillSchema>,
     validators: {
       onChange: insertBillSchema,
     },
-    onSubmit: async ({ value }) => {
-      await pb.collection(Collections.Bills).create(value); // if error, will not continue below
-
-      navigate({ to: '/dashboard/billing' });
-    },
+    onSubmit: async ({ value }) =>
+      billMutation.mutateAsync(value, {
+        onSuccess: () => {
+          queryClient.invalidateQueries(
+            listBillsQuery(searchParams.page, searchParams.perPage),
+          );
+          navigate({ to: '/dashboard/billing', search: { new: undefined } });
+        },
+      }),
   });
 
   return (
-    <Dialog>
-      <DialogTrigger>Create Billing</DialogTrigger>
+    <Dialog
+      open={searchParams.new}
+      onOpenChange={() =>
+        navigate({ to: '/dashboard/billing', search: { new: undefined } })
+      }
+    >
       <DialogContent>
         <DialogHeader>
           <DialogTitle>Create billing</DialogTitle>

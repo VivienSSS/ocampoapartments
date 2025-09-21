@@ -1,12 +1,12 @@
-import { useSuspenseQueries } from '@tanstack/react-query';
-import type z from 'zod';
-import { withForm } from '@/components/ui/form';
-import { pb } from '@/pocketbase';
+import { useSuspenseQueries } from "@tanstack/react-query";
+import type z from "zod";
+import { withForm } from "@/components/ui/form";
+import { pb } from "@/pocketbase";
 import {
   insertPaymentSchema,
   updatePaymentSchema,
-} from '@/pocketbase/schemas/payments';
-import { Collections, PaymentsPaymentMethodOptions } from '@/pocketbase/types';
+} from "@/pocketbase/schemas/payments";
+import { Collections, PaymentsPaymentMethodOptions } from "@/pocketbase/types";
 
 export const CreatePaymentForm = withForm({
   defaultValues: {} as z.infer<typeof insertPaymentSchema>,
@@ -17,11 +17,11 @@ export const CreatePaymentForm = withForm({
     const [tenants, bills] = useSuspenseQueries({
       queries: [
         {
-          queryKey: ['tenants'],
+          queryKey: ["tenants"],
           queryFn: () => pb.collection(Collections.Tenants).getFullList(),
         },
         {
-          queryKey: ['bills'],
+          queryKey: ["bills"],
           queryFn: () => pb.collection(Collections.Bills).getFullList(),
         },
       ],
@@ -34,7 +34,7 @@ export const CreatePaymentForm = withForm({
             <field.SelectField
               className="col-span-full"
               options={tenants.data.map((value) => ({
-                label: value.email,
+                label: value.facebookName || value.id,
                 value: value.id,
               }))}
               placeholder="Tenant"
@@ -103,11 +103,11 @@ export const EditPaymentForm = withForm({
     const [tenants, bills] = useSuspenseQueries({
       queries: [
         {
-          queryKey: ['tenants'],
+          queryKey: ["tenants"],
           queryFn: () => pb.collection(Collections.Tenants).getFullList(),
         },
         {
-          queryKey: ['bills'],
+          queryKey: ["bills"],
           queryFn: () => pb.collection(Collections.Bills).getFullList(),
         },
       ],
@@ -120,7 +120,7 @@ export const EditPaymentForm = withForm({
             <field.SelectField
               className="col-span-full"
               options={tenants.data.map((value) => ({
-                label: value.email,
+                label: value.facebookName || value.id,
                 value: value.id,
               }))}
               placeholder="Tenant"

@@ -2,22 +2,21 @@ import { createFileRoute } from "@tanstack/react-router";
 import { zodValidator } from "@tanstack/zod-adapter";
 import z from "zod";
 import DataTable from "@/components/ui/kibo-ui/table/data-table";
-import { pb } from "@/pocketbase";
-import { Collections } from "@/pocketbase/types";
+import { searchParams } from "@/lib/utils";
+// ...existing code
 import CreateApartmentDialogForm from "./-actions/create";
 import LoadingComponent from "./-loading";
 import { columns } from "./-table";
 import { listApartmentUnitsQuery } from "@/pocketbase/queries/apartmentUnits";
+import DeleteApartmentDialogForm from "./-actions/delete";
+import EditApartmentDialogForm from "./-actions/update";
+import { apartmentUnitSchema } from "@/pocketbase/schemas/apartmentUnits";
+import { Button } from "@/components/ui/button";
 
 export const Route = createFileRoute("/dashboard/apartments/")({
   component: RouteComponent,
   pendingComponent: LoadingComponent,
-  validateSearch: zodValidator(
-    z.object({
-      page: z.number().nonnegative().default(1).catch(1),
-      perPage: z.number().nonnegative().default(10).catch(10),
-    }),
-  ),
+  validateSearch: zodValidator(searchParams(apartmentUnitSchema.keyof())),
   beforeLoad: ({ search }) => ({ search }),
   loader: ({ context }) =>
     context.queryClient.fetchQuery(
@@ -26,17 +25,27 @@ export const Route = createFileRoute("/dashboard/apartments/")({
 });
 
 function RouteComponent() {
+  const navigate = Route.useNavigate();
   const apartmentUnits = Route.useLoaderData();
 
   return (
     <article>
-      <section></section>
-      <section></section>
+      <section>Title</section>
+      <section>
+        <Button
+          onClick={() =>
+            navigate({ search: (prev) => ({ ...prev, new: true }) })}
+        >
+          Create Apartment
+        </Button>
+      </section>
       <section>
         <DataTable columns={columns} data={apartmentUnits} />
       </section>
       <section>
         <CreateApartmentDialogForm />
+        <DeleteApartmentDialogForm />
+        <EditApartmentDialogForm />
       </section>
     </article>
   );

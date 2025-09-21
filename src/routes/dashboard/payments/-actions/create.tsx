@@ -1,5 +1,8 @@
-import { useNavigate } from '@tanstack/react-router';
-import React from 'react';
+import {
+  useNavigate,
+  useRouteContext,
+  useSearch,
+} from '@tanstack/react-router';
 import type z from 'zod';
 import {
   Dialog,
@@ -7,16 +10,22 @@ import {
   DialogDescription,
   DialogHeader,
   DialogTitle,
-  DialogTrigger,
 } from '@/components/ui/dialog';
 import { useAppForm } from '@/components/ui/form';
-import { pb } from '@/pocketbase';
-import { insertPaymentSchema } from '@/pocketbase/schemas/payments';
-import { Collections } from '@/pocketbase/types';
 import { CreatePaymentForm } from './form';
+import { insertPaymentSchema } from '@/pocketbase/schemas/payments';
+import { useMutation } from '@tanstack/react-query';
+import {
+  createPaymentMutation,
+  listPaymentsQuery,
+} from '@/pocketbase/queries/payments';
 
 const CreatePaymentDialogForm = () => {
   const navigate = useNavigate({ from: '/dashboard/payments' });
+  const search = useSearch({ from: '/dashboard/payments/' });
+  const { queryClient } = useRouteContext({ from: '/dashboard/payments/' });
+
+  const mutation = useMutation(createPaymentMutation);
 
   const form = useAppForm({
     defaultValues: {} as z.infer<typeof insertPaymentSchema>,
@@ -24,18 +33,27 @@ const CreatePaymentDialogForm = () => {
       onChange: insertPaymentSchema,
     },
     onSubmit: async ({ value }) => {
-      await pb.collection(Collections.Payments).create(value);
-
-      navigate({ to: '/dashboard/payments' });
+      mutation.mutate(value, {
+        onSuccess: () => {
+          queryClient.invalidateQueries(
+            listPaymentsQuery(search.page, search.perPage),
+          );
+          navigate({ to: '/dashboard/payments', search: { new: undefined } });
+        },
+      });
     },
   });
 
   return (
-    <Dialog>
-      <DialogTrigger>Create Payment</DialogTrigger>
+    <Dialog
+      open={!!search.new}
+      onOpenChange={() =>
+        navigate({ to: '/dashboard/payments', search: { new: undefined } })
+      }
+    >
       <DialogContent>
         <DialogHeader>
-          <DialogTitle>Create a new property</DialogTitle>
+          <DialogTitle>Create a new payment</DialogTitle>
           <DialogDescription>Enter the right information</DialogDescription>
         </DialogHeader>
         <form

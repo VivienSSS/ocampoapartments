@@ -7,34 +7,34 @@ import {
   AlertDialogFooter,
   AlertDialogHeader,
   AlertDialogTitle,
-} from "@/components/ui/alert-dialog";
+} from '@/components/ui/alert-dialog';
 import {
   deleteTenantMutation,
   listTenantsQuery,
   viewTenantQuery,
-} from "@/pocketbase/queries/tenants";
-import { useMutation, useQuery } from "@tanstack/react-query";
+} from '@/pocketbase/queries/tenants';
+import { useMutation, useQuery } from '@tanstack/react-query';
 import {
   useNavigate,
   useRouteContext,
   useSearch,
-} from "@tanstack/react-router";
+} from '@tanstack/react-router';
 
 const DeleteTenantDialogForm = () => {
-  const searchQuery = useSearch({ from: "/dashboard/tenants/" });
-  const navigate = useNavigate({ from: "/dashboard/tenants" });
-  const { queryClient } = useRouteContext({ from: "/dashboard/tenants/" });
+  const searchQuery = useSearch({ from: '/dashboard/tenants/' });
+  const navigate = useNavigate({ from: '/dashboard/tenants' });
+  const { queryClient } = useRouteContext({ from: '/dashboard/tenants/' });
 
   const { data: tenant } = useQuery(
     {
-      ...viewTenantQuery(searchQuery.id ?? ""),
+      ...viewTenantQuery(searchQuery.id ?? ''),
       enabled: !!searchQuery.id && searchQuery.delete,
     },
     queryClient,
   );
 
   const deleteMutation = useMutation(
-    deleteTenantMutation(searchQuery.id ?? ""),
+    deleteTenantMutation(searchQuery.id ?? ''),
     queryClient,
   );
 
@@ -44,13 +44,13 @@ const DeleteTenantDialogForm = () => {
       onOpenChange={() =>
         navigate({
           search: (prev) => ({ ...prev, delete: undefined, id: undefined }),
-        })}
+        })
+      }
     >
       <AlertDialogContent>
         <AlertDialogHeader>
           <AlertDialogTitle>
-            Are you absolutely sure to delete `{tenant?.expand.user.firstName}
-            {" "}
+            Are you absolutely sure to delete `{tenant?.expand.user.firstName}{' '}
             {tenant?.expand.user.lastName}`
           </AlertDialogTitle>
           <AlertDialogDescription>
@@ -68,7 +68,7 @@ const DeleteTenantDialogForm = () => {
                     listTenantsQuery(searchQuery.page, searchQuery.perPage),
                   );
                   queryClient.invalidateQueries(
-                    viewTenantQuery(searchQuery.id ?? ""),
+                    viewTenantQuery(searchQuery.id ?? ''),
                   );
                   navigate({
                     search: (prev) => ({
@@ -79,7 +79,8 @@ const DeleteTenantDialogForm = () => {
                     reloadDocument: true,
                   });
                 },
-              })}
+              })
+            }
           >
             Continue
           </AlertDialogAction>

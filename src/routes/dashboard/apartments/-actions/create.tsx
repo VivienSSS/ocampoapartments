@@ -1,5 +1,9 @@
-import { useNavigate } from '@tanstack/react-router';
-import React from 'react';
+import { useMutation } from '@tanstack/react-query';
+import {
+  useNavigate,
+  useRouteContext,
+  useSearch,
+} from '@tanstack/react-router';
 import type z from 'zod';
 import {
   Dialog,
@@ -7,31 +11,41 @@ import {
   DialogDescription,
   DialogHeader,
   DialogTitle,
-  DialogTrigger,
 } from '@/components/ui/dialog';
 import { useAppForm } from '@/components/ui/form';
-import { pb } from '@/pocketbase';
 import type { insertApartmentUnitSchema } from '@/pocketbase/schemas/apartmentUnits';
-import { Collections } from '@/pocketbase/types';
 import { CreateApartmentForm } from './form';
+import {
+  createApartmentUnitMutation,
+  listApartmentUnitsQuery,
+} from '@/pocketbase/queries/apartmentUnits';
 
 const CreateApartmentDialogForm = () => {
   const navigate = useNavigate({ from: '/dashboard/apartments' });
+  const searchParams = useSearch({ from: '/dashboard/apartments/' });
+  const { queryClient } = useRouteContext({ from: '/dashboard/apartments/' });
+
+  const apartmentMutation = useMutation(createApartmentUnitMutation);
 
   const form = useAppForm({
     defaultValues: {} as z.infer<typeof insertApartmentUnitSchema>,
-    // validators: {
-    //     onChange: insertApartmentUnitSchema
-    // },
-    onSubmit: async ({ value }) => {
-      await pb.collection(Collections.ApartmentUnits).create(value);
-
-      navigate({ to: '/dashboard/apartments' });
-    },
+    onSubmit: async ({ value }) =>
+      apartmentMutation.mutateAsync(value, {
+        onSuccess: () => {
+          queryClient.invalidateQueries(
+            listApartmentUnitsQuery(searchParams.page, searchParams.perPage),
+          );
+          navigate({ to: '/dashboard/apartments', search: { new: undefined } });
+        },
+      }),
   });
   return (
-    <Dialog>
-      <DialogTrigger>Create Property</DialogTrigger>
+    <Dialog
+      open={searchParams.new}
+      onOpenChange={() =>
+        navigate({ to: '/dashboard/apartments', search: { new: undefined } })
+      }
+    >
       <DialogContent>
         <DialogHeader>
           <DialogTitle>Create a new property</DialogTitle>

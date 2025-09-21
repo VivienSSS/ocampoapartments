@@ -1,33 +1,31 @@
-import { useAppForm } from "@/components/ui/form";
+import { useAppForm } from '@/components/ui/form';
 import {
   listPropertiesQuery,
   updatePropertyMutation,
   viewPropertiesQuery,
-} from "@/pocketbase/queries/properties";
-import { updatePropertySchema } from "@/pocketbase/schemas/properties";
-import { useMutation, useQuery } from "@tanstack/react-query";
+} from '@/pocketbase/queries/properties';
+import { updatePropertySchema } from '@/pocketbase/schemas/properties';
+import { useMutation, useQuery } from '@tanstack/react-query';
 import {
   useNavigate,
   useRouteContext,
   useSearch,
-} from "@tanstack/react-router";
+} from '@tanstack/react-router';
 import {
   Dialog,
   DialogContent,
   DialogDescription,
   DialogHeader,
   DialogTitle,
-} from "@/components/ui/dialog";
-import type z from "zod";
-import { EditPropertyForm } from "./form";
+} from '@/components/ui/dialog';
+import type z from 'zod';
+import { EditPropertyForm } from './form';
 
 const EditPropertyDialogForm = () => {
-  const navigate = useNavigate({ from: "/dashboard/properties" });
-  const searchQuery = useSearch({ from: "/dashboard/properties/" });
-  const propertyMutation = useMutation(
-    updatePropertyMutation(searchQuery.id!),
-  );
-  const { queryClient } = useRouteContext({ from: "/dashboard/properties/" });
+  const navigate = useNavigate({ from: '/dashboard/properties' });
+  const searchQuery = useSearch({ from: '/dashboard/properties/' });
+  const propertyMutation = useMutation(updatePropertyMutation(searchQuery.id!));
+  const { queryClient } = useRouteContext({ from: '/dashboard/properties/' });
 
   const { data: property } = useQuery(
     {
@@ -39,8 +37,8 @@ const EditPropertyDialogForm = () => {
 
   const form = useAppForm({
     defaultValues: {
-      address: property?.address ?? "",
-      branch: property?.branch ?? "",
+      address: property?.address ?? '',
+      branch: property?.branch ?? '',
     } as z.infer<typeof updatePropertySchema>,
     validators: {
       onChange: updatePropertySchema,
@@ -52,7 +50,7 @@ const EditPropertyDialogForm = () => {
             listPropertiesQuery(searchQuery.page, searchQuery.perPage),
           );
           navigate({
-            to: "/dashboard/properties",
+            to: '/dashboard/properties',
             search: { edit: undefined, id: undefined },
           });
         },
@@ -64,9 +62,10 @@ const EditPropertyDialogForm = () => {
       open={searchQuery.edit && !!searchQuery.id}
       onOpenChange={() =>
         navigate({
-          to: "/dashboard/properties",
+          to: '/dashboard/properties',
           search: { edit: undefined, id: undefined },
-        })}
+        })
+      }
     >
       <DialogContent>
         <DialogHeader>

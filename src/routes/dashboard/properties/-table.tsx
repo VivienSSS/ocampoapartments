@@ -1,26 +1,26 @@
-import type { ColumnDef } from "@tanstack/react-table";
-import { TableColumnHeader } from "@/components/ui/kibo-ui/table";
-import type { PropertiesResponse } from "@/pocketbase/types";
+import type { ColumnDef } from '@tanstack/react-table';
+import { TableColumnHeader } from '@/components/ui/kibo-ui/table';
+import type { PropertiesResponse } from '@/pocketbase/types';
 import {
   DropdownMenu,
   DropdownMenuContent,
   DropdownMenuItem,
   DropdownMenuTrigger,
-} from "@/components/ui/dropdown-menu";
-import { MoreHorizontal } from "lucide-react";
-import { Button } from "@/components/ui/button";
-import { useNavigate } from "@tanstack/react-router";
+} from '@/components/ui/dropdown-menu';
+import { MoreHorizontal } from 'lucide-react';
+import { Button } from '@/components/ui/button';
+import { useNavigate } from '@tanstack/react-router';
 
 export const columns: ColumnDef<PropertiesResponse>[] = [
   {
-    header: "Actions",
+    header: 'Actions',
     cell: ({ row }) => {
-      const navigate = useNavigate({ from: "/dashboard/properties" });
+      const navigate = useNavigate({ from: '/dashboard/properties' });
 
       return (
         <DropdownMenu>
           <DropdownMenuTrigger asChild>
-            <Button variant={"ghost"} size={"icon"}>
+            <Button variant={'ghost'} size={'icon'}>
               <MoreHorizontal />
             </Button>
           </DropdownMenuTrigger>
@@ -33,7 +33,8 @@ export const columns: ColumnDef<PropertiesResponse>[] = [
                     id: row.original.id,
                     edit: true,
                   }),
-                })}
+                })
+              }
             >
               Edit
             </DropdownMenuItem>
@@ -45,7 +46,8 @@ export const columns: ColumnDef<PropertiesResponse>[] = [
                     id: row.original.id,
                     delete: true,
                   }),
-                })}
+                })
+              }
             >
               Delete
             </DropdownMenuItem>
@@ -55,18 +57,15 @@ export const columns: ColumnDef<PropertiesResponse>[] = [
     },
   },
   {
-    accessorKey: "address",
+    accessorKey: 'address',
     header: ({ column }) => (
       <TableColumnHeader column={column} title="Address" />
     ),
   },
   {
-    accessorKey: "branch",
+    accessorKey: 'branch',
     header: ({ column }) => (
-      <TableColumnHeader
-        column={column}
-        title="Branch"
-      />
+      <TableColumnHeader column={column} title="Branch" />
     ),
   },
 ];

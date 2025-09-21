@@ -46,7 +46,7 @@ const SelectField = ({
           <MultiSelectContent>
             <MultiSelectGroup>
               {options.map((option) => (
-                <MultiSelectItem value={option.value}>
+                <MultiSelectItem key={option.value} value={option.value}>
                   {option.icon && <option.icon />} {option.label}
                 </MultiSelectItem>
               ))}
@@ -63,7 +63,7 @@ const SelectField = ({
           </SelectTrigger>
           <SelectContent>
             {options.map((option) => (
-              <SelectItem value={option.value}>
+              <SelectItem key={option.value} value={option.value}>
                 {option.icon && <option.icon />} {option.label}
               </SelectItem>
             ))}

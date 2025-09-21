@@ -1,13 +1,13 @@
-import { mutationOptions, queryOptions } from "@tanstack/react-query";
-import type { ClientResponseError } from "pocketbase";
-import { toast } from "sonner";
-import type z from "zod";
-import { pb } from "..";
+import { mutationOptions, queryOptions } from '@tanstack/react-query';
+import type { ClientResponseError } from 'pocketbase';
+import { toast } from 'sonner';
+import type z from 'zod';
+import { pb } from '..';
 import type {
   insertMaintenanceWorkerSchema,
   updateMaintenanceWorkerSchema,
-} from "../schemas/maintenanceWorkers";
-import { Collections, type MaintenanceWorkersResponse } from "../types";
+} from '../schemas/maintenanceWorkers';
+import { Collections, type MaintenanceWorkersResponse } from '../types';
 
 export const listMaintenanceWorkersQuery = (page: number, perPage: number) =>
   queryOptions({

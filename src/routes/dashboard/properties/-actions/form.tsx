@@ -1,10 +1,10 @@
-import type z from "zod";
-import { withForm } from "@/components/ui/form";
+import type z from 'zod';
+import { withForm } from '@/components/ui/form';
 import {
   insertPropertySchema,
   updatePropertySchema,
-} from "@/pocketbase/schemas/properties";
-import { PropertiesBranchOptions } from "@/pocketbase/types";
+} from '@/pocketbase/schemas/properties';
+import { PropertiesBranchOptions } from '@/pocketbase/types';
 
 export const CreatePropertyForm = withForm({
   defaultValues: {} as z.infer<typeof insertPropertySchema>,

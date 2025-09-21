@@ -1,4 +1,4 @@
-import { Bell, Plus } from 'lucide-react';
+import { Bell } from 'lucide-react';
 import type * as React from 'react';
 
 import { Calendars } from '@/components/calendars';
@@ -12,7 +12,6 @@ import {
   SidebarMenu,
   SidebarMenuButton,
   SidebarMenuItem,
-  SidebarRail,
   SidebarSeparator,
 } from '@/components/ui/sidebar';
 import { pb } from '@/pocketbase';

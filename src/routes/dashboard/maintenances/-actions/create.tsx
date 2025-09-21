@@ -1,5 +1,9 @@
-import { useNavigate } from '@tanstack/react-router';
-import React from 'react';
+import { useMutation } from '@tanstack/react-query';
+import {
+  useNavigate,
+  useRouteContext,
+  useSearch,
+} from '@tanstack/react-router';
 import type z from 'zod';
 import {
   Dialog,
@@ -7,38 +11,53 @@ import {
   DialogDescription,
   DialogHeader,
   DialogTitle,
-  DialogTrigger,
 } from '@/components/ui/dialog';
 import { useAppForm } from '@/components/ui/form';
-import { pb } from '@/pocketbase';
 import { insertMaintenanceRequestSchema } from '@/pocketbase/schemas/maintenanceRequests';
-import {
-  Collections,
-  MaintenanceRequestsStatusOptions,
-} from '@/pocketbase/types';
-import { CreatePropertyForm } from '../../properties/-actions/form';
 import { CreateMaintenanceForm } from './form';
+import {
+  createMaintenanceRequestMutation,
+  listMaintenanceRequestsQuery,
+} from '@/pocketbase/queries/maintenanceRequests';
 
 const CreateMaintenanceDialogForm = () => {
   const navigate = useNavigate({ from: '/dashboard/maintenances' });
+  const searchParams = useSearch({ from: '/dashboard/maintenances/' });
+  const { queryClient } = useRouteContext({ from: '/dashboard/maintenances/' });
+
+  const maintenanceMutation = useMutation(createMaintenanceRequestMutation);
 
   const form = useAppForm({
     defaultValues: {
-      status: MaintenanceRequestsStatusOptions.Pending,
-    } as z.infer<typeof insertMaintenanceRequestSchema>,
+      status: 'pending',
+    } as unknown as z.infer<typeof insertMaintenanceRequestSchema>,
     validators: {
       onChange: insertMaintenanceRequestSchema,
     },
-    onSubmit: async ({ value }) => {
-      await pb.collection(Collections.MaintenanceRequests).create(value); // if error, will not continue below
-
-      navigate({ to: '/dashboard/maintenances' });
-    },
+    onSubmit: async ({ value }) =>
+      maintenanceMutation.mutateAsync(value, {
+        onSuccess: () => {
+          queryClient.invalidateQueries(
+            listMaintenanceRequestsQuery(
+              searchParams.page,
+              searchParams.perPage,
+            ),
+          );
+          navigate({
+            to: '/dashboard/maintenances',
+            search: { new: undefined },
+          });
+        },
+      }),
   });
 
   return (
-    <Dialog>
-      <DialogTrigger>Create Maintenance Request</DialogTrigger>
+    <Dialog
+      open={searchParams.new}
+      onOpenChange={() =>
+        navigate({ to: '/dashboard/maintenances', search: { new: undefined } })
+      }
+    >
       <DialogContent>
         <DialogHeader>
           <DialogTitle>Create a new request</DialogTitle>

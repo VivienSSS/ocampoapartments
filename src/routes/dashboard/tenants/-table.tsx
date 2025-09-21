@@ -1,26 +1,26 @@
-import type { ColumnDef } from "@tanstack/react-table";
-import { TableColumnHeader } from "@/components/ui/kibo-ui/table";
-import type { TenantsResponse } from "@/pocketbase/queries/tenants";
+import type { ColumnDef } from '@tanstack/react-table';
+import { TableColumnHeader } from '@/components/ui/kibo-ui/table';
+import type { TenantsResponse } from '@/pocketbase/queries/tenants';
 import {
   DropdownMenu,
   DropdownMenuContent,
   DropdownMenuItem,
   DropdownMenuTrigger,
-} from "@/components/ui/dropdown-menu";
-import { MoreHorizontal } from "lucide-react";
-import { Button } from "@/components/ui/button";
-import { useNavigate } from "@tanstack/react-router";
+} from '@/components/ui/dropdown-menu';
+import { MoreHorizontal } from 'lucide-react';
+import { Button } from '@/components/ui/button';
+import { useNavigate } from '@tanstack/react-router';
 
 export const columns: ColumnDef<TenantsResponse>[] = [
   {
-    header: "Actions",
+    header: 'Actions',
     cell: ({ row }) => {
-      const navigate = useNavigate({ from: "/dashboard/tenants" });
+      const navigate = useNavigate({ from: '/dashboard/tenants' });
 
       return (
         <DropdownMenu>
           <DropdownMenuTrigger asChild>
-            <Button variant={"ghost"} size={"icon"}>
+            <Button variant={'ghost'} size={'icon'}>
               <MoreHorizontal />
             </Button>
           </DropdownMenuTrigger>
@@ -33,7 +33,8 @@ export const columns: ColumnDef<TenantsResponse>[] = [
                     id: row.original.id,
                     edit: true,
                   }),
-                })}
+                })
+              }
             >
               Edit
             </DropdownMenuItem>
@@ -45,7 +46,8 @@ export const columns: ColumnDef<TenantsResponse>[] = [
                     id: row.original.id,
                     delete: true,
                   }),
-                })}
+                })
+              }
             >
               Delete
             </DropdownMenuItem>
@@ -55,32 +57,32 @@ export const columns: ColumnDef<TenantsResponse>[] = [
     },
   },
   {
-    accessorKey: "email",
+    accessorKey: 'email',
     header: ({ column }) => <TableColumnHeader column={column} title="Email" />,
     cell: ({ row }) => row.original.expand.user.contactEmail,
   },
   {
-    accessorKey: "facebookName",
+    accessorKey: 'facebookName',
     header: ({ column }) => (
       <TableColumnHeader column={column} title="Facebook Name" />
     ),
   },
   {
-    accessorKey: "firstName",
+    accessorKey: 'firstName',
     header: ({ column }) => (
       <TableColumnHeader column={column} title="First Name" />
     ),
     cell: ({ row }) => row.original.expand.user.firstName,
   },
   {
-    accessorKey: "lastName",
+    accessorKey: 'lastName',
     header: ({ column }) => (
       <TableColumnHeader column={column} title="Last Name" />
     ),
     cell: ({ row }) => row.original.expand.user.lastName,
   },
   {
-    accessorKey: "phoneNumber",
+    accessorKey: 'phoneNumber',
     header: ({ column }) => (
       <TableColumnHeader column={column} title="Phone Number" />
     ),

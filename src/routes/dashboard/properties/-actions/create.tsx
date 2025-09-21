@@ -1,11 +1,11 @@
-import { useMutation } from "@tanstack/react-query";
+import { useMutation } from '@tanstack/react-query';
 import {
   useNavigate,
   useRouteContext,
   useSearch,
-} from "@tanstack/react-router";
-import React from "react";
-import type z from "zod";
+} from '@tanstack/react-router';
+import React from 'react';
+import type z from 'zod';
 import {
   Dialog,
   DialogContent,
@@ -13,20 +13,20 @@ import {
   DialogHeader,
   DialogTitle,
   DialogTrigger,
-} from "@/components/ui/dialog";
-import { useAppForm } from "@/components/ui/form";
+} from '@/components/ui/dialog';
+import { useAppForm } from '@/components/ui/form';
 import {
   createPropertyMutation,
   listPropertiesQuery,
-} from "@/pocketbase/queries/properties";
-import { insertPropertySchema } from "@/pocketbase/schemas/properties";
-import { CreatePropertyForm } from "./form";
+} from '@/pocketbase/queries/properties';
+import { insertPropertySchema } from '@/pocketbase/schemas/properties';
+import { CreatePropertyForm } from './form';
 
 const CreatePropertyDialogForm = () => {
-  const navigate = useNavigate({ from: "/dashboard/properties" });
-  const searchParams = useSearch({ from: "/dashboard/properties/" });
+  const navigate = useNavigate({ from: '/dashboard/properties' });
+  const searchParams = useSearch({ from: '/dashboard/properties/' });
   const propertyMutation = useMutation(createPropertyMutation);
-  const { queryClient } = useRouteContext({ from: "/dashboard/properties/" });
+  const { queryClient } = useRouteContext({ from: '/dashboard/properties/' });
 
   const form = useAppForm({
     defaultValues: {} as z.infer<typeof insertPropertySchema>,
@@ -39,7 +39,7 @@ const CreatePropertyDialogForm = () => {
           queryClient.invalidateQueries(
             listPropertiesQuery(searchParams.page, searchParams.perPage),
           );
-          navigate({ to: "/dashboard/properties", search: { new: undefined } });
+          navigate({ to: '/dashboard/properties', search: { new: undefined } });
         },
       }),
   });
@@ -48,7 +48,8 @@ const CreatePropertyDialogForm = () => {
     <Dialog
       open={searchParams.new}
       onOpenChange={() =>
-        navigate({ to: "/dashboard/properties", search: { new: undefined } })}
+        navigate({ to: '/dashboard/properties', search: { new: undefined } })
+      }
     >
       <DialogContent>
         <DialogHeader>

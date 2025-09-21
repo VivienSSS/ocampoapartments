@@ -1,10 +1,10 @@
-import { mutationOptions, queryOptions } from "@tanstack/react-query";
-import type { ClientResponseError } from "pocketbase";
-import { toast } from "sonner";
-import type z from "zod";
-import { pb } from "..";
-import type { insertBillSchema, updateBillSchema } from "../schemas/bills";
-import { type BillsResponse, Collections } from "../types";
+import { mutationOptions, queryOptions } from '@tanstack/react-query';
+import type { ClientResponseError } from 'pocketbase';
+import { toast } from 'sonner';
+import type z from 'zod';
+import { pb } from '..';
+import type { insertBillSchema, updateBillSchema } from '../schemas/bills';
+import { type BillsResponse, Collections } from '../types';
 
 export const listBillsQuery = (page: number, perPage: number) =>
   queryOptions({

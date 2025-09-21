@@ -1,5 +1,8 @@
-import { useNavigate } from '@tanstack/react-router';
-import React from 'react';
+import {
+  useNavigate,
+  useRouteContext,
+  useSearch,
+} from '@tanstack/react-router';
 import type z from 'zod';
 import {
   Dialog,
@@ -7,18 +10,22 @@ import {
   DialogDescription,
   DialogHeader,
   DialogTitle,
-  DialogTrigger,
 } from '@/components/ui/dialog';
 import { useAppForm } from '@/components/ui/form';
-import { pb } from '@/pocketbase';
 import { insertTenanciesSchema } from '@/pocketbase/schemas/tenancies';
-import { Collections } from '@/pocketbase/types';
 import { CreateTenancyForm } from './form';
-
-// import { CreateTenantForm } from './form'
+import { useMutation } from '@tanstack/react-query';
+import {
+  createTenancyMutation,
+  listTenanciesQuery,
+} from '@/pocketbase/queries/tenancies';
 
 const CreateTenancyDialogForm = () => {
   const navigate = useNavigate({ from: '/dashboard/tenancies' });
+  const search = useSearch({ from: '/dashboard/tenancies/' });
+  const { queryClient } = useRouteContext({ from: '/dashboard/tenancies/' });
+
+  const mutation = useMutation(createTenancyMutation);
 
   const form = useAppForm({
     defaultValues: {} as z.infer<typeof insertTenanciesSchema>,
@@ -27,15 +34,24 @@ const CreateTenancyDialogForm = () => {
     },
 
     onSubmit: async ({ value }) => {
-      await pb.collection(Collections.Tenancies).create(value);
-
-      navigate({ to: '/dashboard/tenancies' });
+      mutation.mutate(value, {
+        onSuccess: () => {
+          queryClient.invalidateQueries(
+            listTenanciesQuery(search.page, search.perPage),
+          );
+          navigate({ to: '/dashboard/tenancies', search: { new: undefined } });
+        },
+      });
     },
   });
 
   return (
-    <Dialog>
-      <DialogTrigger>Create Tenancy</DialogTrigger>
+    <Dialog
+      open={!!search.new}
+      onOpenChange={() =>
+        navigate({ to: '/dashboard/tenancies', search: { new: undefined } })
+      }
+    >
       <DialogContent>
         <DialogHeader>
           <DialogTitle>Create tenancy</DialogTitle>

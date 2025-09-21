@@ -1,69 +1,60 @@
-import type { ColumnDef } from "@tanstack/react-table";
-import { TableColumnHeader } from "@/components/ui/kibo-ui/table";
-import type { MaintenanceRequestsResponse } from "@/pocketbase/queries/maintenanceRequests";
-import { format } from "date-fns";
+import type { ColumnDef } from '@tanstack/react-table';
+import { TableColumnHeader } from '@/components/ui/kibo-ui/table';
+import type { MaintenanceRequestsResponse } from '@/pocketbase/queries/maintenanceRequests';
+import { format } from 'date-fns';
 
 export const columns: ColumnDef<MaintenanceRequestsResponse>[] = [
   {
-    accessorKey: "tenant",
+    accessorKey: 'tenant',
     header: ({ column }) => (
-      <TableColumnHeader
-        column={column}
-        title="Tenant"
-      />
+      <TableColumnHeader column={column} title="Tenant" />
     ),
     cell: ({ row }) =>
       `${row.original.expand.tenant.expand.user.firstName} ${row.original.expand.tenant.expand.user.firstName}`,
   },
   {
-    accessorKey: "unit",
+    accessorKey: 'unit',
     header: ({ column }) => <TableColumnHeader column={column} title="Unit" />,
     cell: ({ row }) =>
       `${row.original.expand.unit.unitLetter} - ${row.original.expand.unit.floorNumber}`,
   },
   {
-    accessorKey: "urgency",
+    accessorKey: 'urgency',
     header: ({ column }) => (
       <TableColumnHeader column={column} title="Urgency" />
     ),
   },
   {
-    accessorKey: "status",
+    accessorKey: 'status',
     header: ({ column }) => (
-      <TableColumnHeader
-        column={column}
-        title="Status"
-      />
+      <TableColumnHeader column={column} title="Status" />
     ),
   },
   {
-    accessorKey: "worker",
+    accessorKey: 'worker',
     header: ({ column }) => (
-      <TableColumnHeader
-        column={column}
-        title="Worker"
-      />
+      <TableColumnHeader column={column} title="Worker" />
     ),
     cell: ({ row }) => `${row.original.expand.worker.name}`,
   },
   {
-    accessorKey: "description",
+    accessorKey: 'description',
     header: ({ column }) => (
       <TableColumnHeader column={column} title="Description" />
     ),
   },
   {
-    accessorKey: "submittedDate",
+    accessorKey: 'submittedDate',
     header: ({ column }) => (
       <TableColumnHeader column={column} title="Submitted Date" />
     ),
-    cell: ({ row }) => format(row.original.submittedDate, "PPP"),
+    cell: ({ row }) => format(row.original.submittedDate, 'PPP'),
   },
   {
-    accessorKey: "completedDate",
+    accessorKey: 'completedDate',
     header: ({ column }) => (
       <TableColumnHeader column={column} title="Completed Date" />
     ),
-    cell: ({ row }) => format(row.original.completedDate, "PPP"),
+    cell: ({ row }) => format(row.original.completedDate, 'PPP'),
   },
 ];

@@ -1,22 +1,19 @@
-import type { ColumnDef } from "@tanstack/react-table";
-import { TableColumnHeader } from "@/components/ui/kibo-ui/table";
-import type { TenanciesResponse } from "@/pocketbase/queries/tenancies";
-import { format } from "date-fns";
+import type { ColumnDef } from '@tanstack/react-table';
+import { TableColumnHeader } from '@/components/ui/kibo-ui/table';
+import type { TenanciesResponse } from '@/pocketbase/queries/tenancies';
+import { format } from 'date-fns';
 
 export const columns: ColumnDef<TenanciesResponse>[] = [
   {
-    accessorKey: "expand.tenant",
+    accessorKey: 'expand.tenant',
     header: ({ column }) => (
-      <TableColumnHeader
-        column={column}
-        title="Tenant"
-      />
+      <TableColumnHeader column={column} title="Tenant" />
     ),
     cell: ({ row }) =>
       `${row.original.expand.tenant.expand.user.firstName} ${row.original.expand.tenant.expand.user.lastName}`,
   },
   {
-    accessorKey: "unit",
+    accessorKey: 'unit',
     header: ({ column }) => (
       <TableColumnHeader column={column} title="Apartment Unit" />
     ),
@@ -24,17 +21,17 @@ export const columns: ColumnDef<TenanciesResponse>[] = [
       `${row.original.expand.unit.unitLetter} - ${row.original.expand.unit.floorNumber}`,
   },
   {
-    accessorKey: "leaseStartDate",
+    accessorKey: 'leaseStartDate',
     header: ({ column }) => (
       <TableColumnHeader column={column} title="Lease Start Date" />
     ),
-    cell: ({ row }) => format(row.original.leaseStartDate, "PPP"),
+    cell: ({ row }) => format(row.original.leaseStartDate, 'PPP'),
   },
   {
-    accessorKey: "leaseEndDate",
+    accessorKey: 'leaseEndDate',
     header: ({ column }) => (
       <TableColumnHeader column={column} title="Lease End Date" />
     ),
-    cell: ({ row }) => format(row.original.leaseEndDate, "PPP"),
+    cell: ({ row }) => format(row.original.leaseEndDate, 'PPP'),
   },
 ];

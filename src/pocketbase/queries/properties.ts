@@ -1,13 +1,13 @@
-import { mutationOptions, queryOptions } from "@tanstack/react-query";
-import type { ClientResponseError } from "pocketbase";
-import { toast } from "sonner";
-import type z from "zod";
-import { pb } from "..";
+import { mutationOptions, queryOptions } from '@tanstack/react-query';
+import type { ClientResponseError } from 'pocketbase';
+import { toast } from 'sonner';
+import type z from 'zod';
+import { pb } from '..';
 import type {
   insertPropertySchema,
   updatePropertySchema,
-} from "../schemas/properties";
-import { Collections, type PropertiesResponse } from "../types";
+} from '../schemas/properties';
+import { Collections, type PropertiesResponse } from '../types';
 
 export const listPropertiesQuery = (page: number, perPage: number) =>
   queryOptions({

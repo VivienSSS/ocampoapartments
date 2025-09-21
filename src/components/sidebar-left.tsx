@@ -1,23 +1,15 @@
 import {
   AudioWaveform,
-  Blocks,
   BookUser,
-  Calendar,
   Command,
   Hammer,
   HandCoins,
-  Home,
   Hotel,
   House,
-  Inbox,
   MapPinHouse,
   Megaphone,
-  MessageCircleQuestion,
   ReceiptText,
   Search,
-  Settings2,
-  Sparkles,
-  Trash2,
 } from 'lucide-react';
 import type * as React from 'react';
 
@@ -25,7 +17,6 @@ import { NavFavorites } from '@/components/nav-favorites';
 import { NavMain } from '@/components/nav-main';
 import { NavSecondary } from '@/components/nav-secondary';
 import { NavWorkspaces } from '@/components/nav-workspaces';
-import { TeamSwitcher } from '@/components/team-switcher';
 import {
   Sidebar,
   SidebarContent,

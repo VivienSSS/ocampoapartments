@@ -1,23 +1,21 @@
-import { createFileRoute } from "@tanstack/react-router";
-import { zodValidator } from "@tanstack/zod-adapter";
-import z from "zod";
-import DataTable from "@/components/ui/kibo-ui/table/data-table";
-import { pb } from "@/pocketbase";
-import { Collections } from "@/pocketbase/types";
-import CreateMaintenanceDialogForm from "./-actions/create";
-import LoadingComponent from "./-loading";
-import { columns } from "./-table";
-import { listMaintenanceRequestsQuery } from "@/pocketbase/queries/maintenanceRequests";
+import { createFileRoute } from '@tanstack/react-router';
+import { zodValidator } from '@tanstack/zod-adapter';
+import z from 'zod';
+import DataTable from '@/components/ui/kibo-ui/table/data-table';
+import { searchParams } from '@/lib/utils';
+import CreateMaintenanceDialogForm from './-actions/create';
+import LoadingComponent from './-loading';
+import { columns } from './-table';
+import { listMaintenanceRequestsQuery } from '@/pocketbase/queries/maintenanceRequests';
+import DeleteMaintenanceDialogForm from './-actions/delete';
+import EditMaintenanceDialogForm from './-actions/update';
+import { maintenanceRequestSchema } from '@/pocketbase/schemas/maintenanceRequests';
+import { Button } from '@/components/ui/button';
 
-export const Route = createFileRoute("/dashboard/maintenances/")({
+export const Route = createFileRoute('/dashboard/maintenances/')({
   component: RouteComponent,
   pendingComponent: LoadingComponent,
-  validateSearch: zodValidator(
-    z.object({
-      page: z.number().nonnegative().default(1).catch(1),
-      perPage: z.number().nonnegative().default(10).catch(10),
-    }),
-  ),
+  validateSearch: zodValidator(searchParams(maintenanceRequestSchema.keyof())),
   beforeLoad: ({ search }) => ({ search }),
   loader: ({ context }) =>
     context.queryClient.fetchQuery(
@@ -26,16 +24,27 @@ export const Route = createFileRoute("/dashboard/maintenances/")({
 });
 
 function RouteComponent() {
+  const navigate = Route.useNavigate();
   const maintenances = Route.useLoaderData();
   return (
     <article>
-      <section></section>
-      <section></section>
+      <section>Title</section>
+      <section>
+        <Button
+          onClick={() =>
+            navigate({ search: (prev) => ({ ...prev, new: true }) })
+          }
+        >
+          Create Maintenance Request
+        </Button>
+      </section>
       <section>
         <DataTable columns={columns} data={maintenances} />
       </section>
       <section>
         <CreateMaintenanceDialogForm />
+        <DeleteMaintenanceDialogForm />
+        <EditMaintenanceDialogForm />
       </section>
     </article>
   );

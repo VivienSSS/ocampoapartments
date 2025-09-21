@@ -1,5 +1,5 @@
-import { faker } from "@faker-js/faker";
-import PocketBase from "pocketbase";
+import { faker } from '@faker-js/faker';
+import PocketBase from 'pocketbase';
 import {
   type AnnouncementsResponse,
   type ApartmentUnitsResponse,
@@ -19,22 +19,22 @@ import {
   type TenantsResponse,
   type UsersResponse,
   UsersRoleOptions,
-} from "../src/pocketbase/types";
+} from '../src/pocketbase/types';
 
-const ADMIN_EMAIL = process.env.POCKETBASE_ADMIN_EMAIL || "";
-const ADMIN_PASSWORD = process.env.POCKETBASE_ADMIN_PASSWORD || "";
+const ADMIN_EMAIL = process.env.POCKETBASE_ADMIN_EMAIL || '';
+const ADMIN_PASSWORD = process.env.POCKETBASE_ADMIN_PASSWORD || '';
 
 if (!ADMIN_EMAIL || !ADMIN_PASSWORD) {
   console.error(
-    "Please set POCKETBASE_ADMIN_EMAIL and POCKETBASE_ADMIN_PASSWORD environment variables",
+    'Please set POCKETBASE_ADMIN_EMAIL and POCKETBASE_ADMIN_PASSWORD environment variables',
   );
   process.exit(1);
 }
 
-const pb = new PocketBase("http://127.0.0.1:8090");
+const pb = new PocketBase('http://127.0.0.1:8090');
 
 async function seedProperties(count: number = 2) {
-  console.log("Seeding properties...");
+  console.log('Seeding properties...');
   const properties: PropertiesResponse[] = [];
 
   for (let i = 0; i < count; i++) {
@@ -54,7 +54,7 @@ async function seedApartments(
   properties: PropertiesResponse[],
   unitsPerProperty: number = 5,
 ) {
-  console.log("Seeding apartments...");
+  console.log('Seeding apartments...');
   const apartments: ApartmentUnitsResponse[] = [];
 
   for (const property of properties) {
@@ -74,14 +74,14 @@ async function seedApartments(
 }
 
 async function seedUsers(count: number = 10) {
-  console.log("Seeding users...");
+  console.log('Seeding users...');
   const users: UsersResponse[] = [];
 
   for (let i = 0; i < count; i++) {
     const firstName = faker.person.firstName();
     const lastName = faker.person.lastName();
     const email = faker.internet.email({ firstName, lastName });
-    const password = "password123";
+    const password = 'password123';
 
     const user = await pb.collection(Collections.Users).create({
       email,
@@ -101,13 +101,13 @@ async function seedUsers(count: number = 10) {
 }
 
 async function seedTenants(users: UsersResponse[]) {
-  console.log("Seeding tenants...");
+  console.log('Seeding tenants...');
   const tenants: TenantsResponse[] = [];
 
   for (const user of users) {
     const tenant = await pb.collection(Collections.Tenants).create({
       user: user.id,
-      phoneNumber: faker.phone.number({ style: "international" }),
+      phoneNumber: faker.phone.number({ style: 'international' }),
       facebookName: faker.internet.username(),
     });
     tenants.push(tenant as TenantsResponse);
@@ -120,15 +120,15 @@ async function seedTenancies(
   tenants: TenantsResponse[],
   apartments: ApartmentUnitsResponse[],
 ) {
-  console.log("Seeding tenancies...");
+  console.log('Seeding tenancies...');
   const tenancies: TenanciesResponse[] = [];
 
   // Assign random apartments to tenants
   for (const tenant of tenants) {
     const apartment = faker.helpers.arrayElement(apartments);
     const startDate = faker.date.between({
-      from: "2024-01-01T00:00:00.000Z",
-      to: "2025-12-31T00:00:00.000Z",
+      from: '2024-01-01T00:00:00.000Z',
+      to: '2025-12-31T00:00:00.000Z',
     });
 
     const tenancy = await pb.collection(Collections.Tenancies).create({
@@ -146,7 +146,7 @@ async function seedTenancies(
 }
 
 async function seedMaintenanceWorkers(count: number = 5) {
-  console.log("Seeding maintenance workers...");
+  console.log('Seeding maintenance workers...');
   const workers: MaintenanceWorkersResponse[] = [];
 
   for (let i = 0; i < count; i++) {
@@ -166,7 +166,7 @@ async function seedMaintenanceRequests(
   workers: MaintenanceWorkersResponse[],
   count: number = 15,
 ) {
-  console.log("Seeding maintenance requests...");
+  console.log('Seeding maintenance requests...');
   const requests: MaintenanceRequestsResponse[] = [];
 
   for (let i = 0; i < count; i++) {
@@ -198,7 +198,7 @@ async function seedMaintenanceRequests(
 }
 
 async function seedBills(tenancies: TenanciesResponse[], count: number = 30) {
-  console.log("Seeding bills...");
+  console.log('Seeding bills...');
   const bills: BillsResponse[] = [];
 
   for (let i = 0; i < count; i++) {
@@ -245,7 +245,7 @@ async function seedPayments(
   bills: BillsResponse[],
   tenants: TenantsResponse[],
 ) {
-  console.log("Seeding payments...");
+  console.log('Seeding payments...');
   const payments: PaymentsResponse[] = [];
 
   for (const bill of bills) {
@@ -256,11 +256,12 @@ async function seedPayments(
         const billDetails = await pb
           .collection(Collections.Bills)
           .getOne(bill.id, {
-            expand: "tenancy.tenant",
+            expand: 'tenancy.tenant',
           });
 
         // Get the tenant from the expanded data or pick a random one
-        const tenantId = billDetails.expand?.tenancy?.tenant?.id ||
+        const tenantId =
+          billDetails.expand?.tenancy?.tenant?.id ||
           faker.helpers.arrayElement(tenants).id;
 
         const payment = await pb.collection(Collections.Payments).create({
@@ -290,7 +291,7 @@ async function seedPayments(
 }
 
 async function seedAnnouncements(count: number = 10) {
-  console.log("Seeding announcements...");
+  console.log('Seeding announcements...');
   const announcements: AnnouncementsResponse[] = [];
 
   for (let i = 0; i < count; i++) {
@@ -298,7 +299,7 @@ async function seedAnnouncements(count: number = 10) {
       title: faker.lorem.sentence(),
       message: faker.lorem.paragraphs(2),
       createdAt: faker.date.recent({ days: 30 }).toISOString(),
-      author: pb.authStore.model?.id || "", // Use the authenticated admin's ID
+      author: pb.authStore.model?.id || '', // Use the authenticated admin's ID
     });
     announcements.push(announcement as AnnouncementsResponse);
   }
@@ -323,9 +324,9 @@ async function main() {
     await seedPayments(bills, tenants);
     await seedAnnouncements();
 
-    console.log("Database seeding completed successfully!");
+    console.log('Database seeding completed successfully!');
   } catch (error) {
-    console.error("Error seeding database:", error);
+    console.error('Error seeding database:', error);
     process.exit(1);
   }
 }

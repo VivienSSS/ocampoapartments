@@ -1,13 +1,13 @@
-import { mutationOptions, queryOptions } from "@tanstack/react-query";
-import type { ClientResponseError } from "pocketbase";
-import { toast } from "sonner";
-import type z from "zod";
-import { pb } from "..";
+import { mutationOptions, queryOptions } from '@tanstack/react-query';
+import type { ClientResponseError } from 'pocketbase';
+import { toast } from 'sonner';
+import type z from 'zod';
+import { pb } from '..';
 import type {
   insertAnnouncementSchema,
   updateAnnouncementSchema,
-} from "../schemas/announcements";
-import { type AnnouncementsResponse, Collections } from "../types";
+} from '../schemas/announcements';
+import { type AnnouncementsResponse, Collections } from '../types';
 
 export const listAnnouncementsQuery = (page: number, perPage: number) =>
   queryOptions({

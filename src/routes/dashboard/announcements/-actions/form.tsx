@@ -1,12 +1,12 @@
-import { useSuspenseQueries } from '@tanstack/react-query';
-import type z from 'zod';
-import { withForm } from '@/components/ui/form';
-import { pb } from '@/pocketbase';
+import { useSuspenseQueries } from "@tanstack/react-query";
+import type z from "zod";
+import { withForm } from "@/components/ui/form";
+import { pb } from "@/pocketbase";
 import {
   insertAnnouncementSchema,
   updateAnnouncementSchema,
-} from '@/pocketbase/schemas/announcements';
-import { Collections } from '@/pocketbase/types';
+} from "@/pocketbase/schemas/announcements";
+import { Collections } from "@/pocketbase/types";
 
 export const CreateAnnouncementForm = withForm({
   defaultValues: {} as z.infer<typeof insertAnnouncementSchema>,
@@ -17,7 +17,7 @@ export const CreateAnnouncementForm = withForm({
     const [users] = useSuspenseQueries({
       queries: [
         {
-          queryKey: ['announcements'],
+          queryKey: ["announcements"],
           queryFn: () => pb.collection(Collections.Users).getFullList(),
         },
       ],
@@ -49,7 +49,7 @@ export const CreateAnnouncementForm = withForm({
   },
 });
 
-export const EditMaintenanceForm = withForm({
+export const EditAnnouncementForm = withForm({
   defaultValues: {} as z.infer<typeof updateAnnouncementSchema>,
   validators: {
     onChange: updateAnnouncementSchema,

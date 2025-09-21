@@ -1,13 +1,13 @@
-import { mutationOptions, queryOptions } from "@tanstack/react-query";
-import type { ClientResponseError } from "pocketbase";
-import { toast } from "sonner";
-import type z from "zod";
-import { pb } from "..";
+import { mutationOptions, queryOptions } from '@tanstack/react-query';
+import type { ClientResponseError } from 'pocketbase';
+import { toast } from 'sonner';
+import type z from 'zod';
+import { pb } from '..';
 import type {
   insertPaymentSchema,
   updatePaymentSchema,
-} from "../schemas/payments";
-import { Collections, type PaymentsResponse } from "../types";
+} from '../schemas/payments';
+import { Collections, type PaymentsResponse } from '../types';
 
 export const listPaymentsQuery = (page: number, perPage: number) =>
   queryOptions({

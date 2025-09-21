@@ -1,52 +1,55 @@
-import { useAppForm } from "@/components/ui/form";
-import { EditApartmentForm } from "./form";
+import { useAppForm } from '@/components/ui/form';
+import { EditApartmentForm } from './form';
 import {
   listTenantsQuery,
   updateTenantMutation,
   viewTenantQuery,
-} from "@/pocketbase/queries/tenants";
-import { updateTenantSchema } from "@/pocketbase/schemas/tenants";
-import { useMutation, useQueries, useQuery } from "@tanstack/react-query";
+} from '@/pocketbase/queries/tenants';
+import { updateTenantSchema } from '@/pocketbase/schemas/tenants';
+import { useMutation, useQueries, useQuery } from '@tanstack/react-query';
 import {
   useNavigate,
   useRouteContext,
   useSearch,
-} from "@tanstack/react-router";
+} from '@tanstack/react-router';
 import {
   Dialog,
   DialogContent,
   DialogDescription,
   DialogHeader,
   DialogTitle,
-} from "@/components/ui/dialog";
-import type z from "zod";
-import { listUserQuery } from "@/pocketbase/queries/users";
+} from '@/components/ui/dialog';
+import type z from 'zod';
+import { listUserQuery } from '@/pocketbase/queries/users';
 
 const EditTenantDialogForm = () => {
-  const navigate = useNavigate({ from: "/dashboard/tenants" });
-  const searchQuery = useSearch({ from: "/dashboard/tenants/" });
+  const navigate = useNavigate({ from: '/dashboard/tenants' });
+  const searchQuery = useSearch({ from: '/dashboard/tenants/' });
   const tenantMutation = useMutation(
-    updateTenantMutation(searchQuery.id ?? ""),
+    updateTenantMutation(searchQuery.id ?? ''),
   );
-  const { queryClient } = useRouteContext({ from: "/dashboard/tenants/" });
+  const { queryClient } = useRouteContext({ from: '/dashboard/tenants/' });
 
-  const [{ data: users }, { data: tenant }] = useQueries({
-    queries: [
-      {
-        ...listUserQuery(1, 500),
-        enabled: searchQuery.edit && !!searchQuery.id,
-      },
-      {
-        ...viewTenantQuery(searchQuery.id ?? ""),
-        enabled: searchQuery.edit && !!searchQuery.id,
-      },
-    ],
-  }, queryClient);
+  const [{ data: users }, { data: tenant }] = useQueries(
+    {
+      queries: [
+        {
+          ...listUserQuery(1, 500),
+          enabled: searchQuery.edit && !!searchQuery.id,
+        },
+        {
+          ...viewTenantQuery(searchQuery.id ?? ''),
+          enabled: searchQuery.edit && !!searchQuery.id,
+        },
+      ],
+    },
+    queryClient,
+  );
 
   const form = useAppForm({
     defaultValues: {
-      phoneNumber: tenant?.phoneNumber ?? "",
-      facebookName: tenant?.facebookName ?? "",
+      phoneNumber: tenant?.phoneNumber ?? '',
+      facebookName: tenant?.facebookName ?? '',
       user: tenant?.user ?? undefined,
     } as z.infer<typeof updateTenantSchema>,
     // validators: {
@@ -58,9 +61,7 @@ const EditTenantDialogForm = () => {
           queryClient.invalidateQueries(
             listTenantsQuery(searchQuery.page, searchQuery.perPage),
           );
-          queryClient.invalidateQueries(
-            viewTenantQuery(searchQuery.id ?? ""),
-          );
+          queryClient.invalidateQueries(viewTenantQuery(searchQuery.id ?? ''));
           navigate({
             search: { edit: undefined, id: undefined },
           });
@@ -74,7 +75,8 @@ const EditTenantDialogForm = () => {
       onOpenChange={() =>
         navigate({
           search: { edit: undefined, id: undefined },
-        })}
+        })
+      }
     >
       <DialogContent>
         <DialogHeader>

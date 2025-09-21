@@ -1,17 +1,17 @@
-import { mutationOptions, queryOptions } from "@tanstack/react-query";
-import type { ClientResponseError } from "pocketbase";
-import { toast } from "sonner";
-import type z from "zod";
-import { pb } from "..";
+import { mutationOptions, queryOptions } from '@tanstack/react-query';
+import type { ClientResponseError } from 'pocketbase';
+import { toast } from 'sonner';
+import type z from 'zod';
+import { pb } from '..';
 import type {
   insertTenantSchema,
   updateTenantSchema,
-} from "../schemas/tenants";
+} from '../schemas/tenants';
 import {
   Collections,
   type TenantsResponse as TenantsClientResponse,
   type UsersRecord,
-} from "../types";
+} from '../types';
 
 export type TenantsResponse = TenantsClientResponse<{ user: UsersRecord }>;
 
@@ -19,11 +19,9 @@ export const listTenantsQuery = (page: number, perPage: number) =>
   queryOptions({
     queryKey: [Collections.Tenants, page, perPage],
     queryFn: () =>
-      pb.collection(Collections.Tenants).getList<TenantsResponse>(
-        page,
-        perPage,
-        { expand: "user" },
-      ),
+      pb
+        .collection(Collections.Tenants)
+        .getList<TenantsResponse>(page, perPage, { expand: 'user' }),
   });
 
 export const viewTenantQuery = (id: string) =>
@@ -31,7 +29,7 @@ export const viewTenantQuery = (id: string) =>
     queryKey: [Collections.Tenants, id],
     queryFn: () =>
       pb.collection(Collections.Tenants).getOne<TenantsResponse>(id, {
-        expand: "user",
+        expand: 'user',
       }),
   });
 
@@ -42,12 +40,11 @@ export const createTenantMutation = mutationOptions<
 >({
   mutationFn: async (value) =>
     pb.collection(Collections.Tenants).create<TenantsResponse>(value, {
-      expand: "user",
+      expand: 'user',
     }),
   onSuccess: (value) =>
     toast.success(`Successfully create`, {
-      description:
-        `Tenant created: ${value.expand.user.firstName} ${value.expand.user.lastName}`,
+      description: `Tenant created: ${value.expand.user.firstName} ${value.expand.user.lastName}`,
     }),
   onError: (err) =>
     toast.error(`An Error occured when creating a tenant`, {
@@ -63,12 +60,11 @@ export const updateTenantMutation = (id: string) =>
   >({
     mutationFn: async (value) =>
       pb.collection(Collections.Tenants).update<TenantsResponse>(id, value, {
-        expand: "user",
+        expand: 'user',
       }),
     onSuccess: (value) =>
       toast.success(`Changes saved`, {
-        description:
-          `Tenant ${value.expand.user.firstName} ${value.expand.user.lastName} has been updated`,
+        description: `Tenant ${value.expand.user.firstName} ${value.expand.user.lastName} has been updated`,
       }),
     onError: (err) =>
       toast.error(`An Error occured when updating the tenant ${id}`, {

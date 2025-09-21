@@ -1,10 +1,10 @@
-import type z from "zod";
-import { withForm } from "@/components/ui/form";
+import type z from 'zod';
+import { withForm } from '@/components/ui/form';
 import {
   insertTenantSchema,
   updateTenantSchema,
-} from "@/pocketbase/schemas/tenants";
-import type { UsersRecord } from "@/pocketbase/types";
+} from '@/pocketbase/schemas/tenants';
+import type { UsersRecord } from '@/pocketbase/types';
 
 export const CreateTenantForm = withForm({
   defaultValues: {} as z.infer<typeof insertTenantSchema>,
