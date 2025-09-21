@@ -1,14 +1,15 @@
-import { createFileRoute } from '@tanstack/react-router';
-import { zodValidator } from '@tanstack/zod-adapter';
-import z from 'zod';
-import DataTable from '@/components/ui/kibo-ui/table/data-table';
-import { pb } from '@/pocketbase';
-import { Collections } from '@/pocketbase/types';
-import CreateApartmentDialogForm from './-actions/create';
-import LoadingComponent from './-loading';
-import { columns } from './-table';
+import { createFileRoute } from "@tanstack/react-router";
+import { zodValidator } from "@tanstack/zod-adapter";
+import z from "zod";
+import DataTable from "@/components/ui/kibo-ui/table/data-table";
+import { pb } from "@/pocketbase";
+import { Collections } from "@/pocketbase/types";
+import CreateApartmentDialogForm from "./-actions/create";
+import LoadingComponent from "./-loading";
+import { columns } from "./-table";
+import { listApartmentUnitsQuery } from "@/pocketbase/queries/apartmentUnits";
 
-export const Route = createFileRoute('/dashboard/apartments/')({
+export const Route = createFileRoute("/dashboard/apartments/")({
   component: RouteComponent,
   pendingComponent: LoadingComponent,
   validateSearch: zodValidator(
@@ -19,11 +20,9 @@ export const Route = createFileRoute('/dashboard/apartments/')({
   ),
   beforeLoad: ({ search }) => ({ search }),
   loader: ({ context }) =>
-    pb
-      .collection(Collections.ApartmentUnits)
-      .getList(context.search.page, context.search.perPage, {
-        sort: '-created',
-      }),
+    context.queryClient.fetchQuery(
+      listApartmentUnitsQuery(context.search.page, context.search.perPage),
+    ),
 });
 
 function RouteComponent() {

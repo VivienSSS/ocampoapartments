@@ -1,14 +1,15 @@
-import { createFileRoute } from '@tanstack/react-router';
-import { zodValidator } from '@tanstack/zod-adapter';
-import z from 'zod';
-import DataTable from '@/components/ui/kibo-ui/table/data-table';
-import { pb } from '@/pocketbase';
-import { Collections } from '@/pocketbase/types';
-import CreateMaintenanceDialogForm from './-actions/create';
-import LoadingComponent from './-loading';
-import { columns } from './-table';
+import { createFileRoute } from "@tanstack/react-router";
+import { zodValidator } from "@tanstack/zod-adapter";
+import z from "zod";
+import DataTable from "@/components/ui/kibo-ui/table/data-table";
+import { pb } from "@/pocketbase";
+import { Collections } from "@/pocketbase/types";
+import CreateMaintenanceDialogForm from "./-actions/create";
+import LoadingComponent from "./-loading";
+import { columns } from "./-table";
+import { listMaintenanceRequestsQuery } from "@/pocketbase/queries/maintenanceRequests";
 
-export const Route = createFileRoute('/dashboard/maintenances/')({
+export const Route = createFileRoute("/dashboard/maintenances/")({
   component: RouteComponent,
   pendingComponent: LoadingComponent,
   validateSearch: zodValidator(
@@ -19,9 +20,9 @@ export const Route = createFileRoute('/dashboard/maintenances/')({
   ),
   beforeLoad: ({ search }) => ({ search }),
   loader: ({ context }) =>
-    pb
-      .collection(Collections.MaintenanceRequests)
-      .getList(context.search.page, context.search.perPage),
+    context.queryClient.fetchQuery(
+      listMaintenanceRequestsQuery(context.search.page, context.search.perPage),
+    ),
 });
 
 function RouteComponent() {

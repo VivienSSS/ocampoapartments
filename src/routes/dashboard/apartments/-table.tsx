@@ -1,32 +1,33 @@
-import type { ColumnDef } from '@tanstack/react-table';
-import { TableColumnHeader } from '@/components/ui/kibo-ui/table';
-import type { ApartmentUnitsResponse } from '@/pocketbase/types';
+import type { ColumnDef } from "@tanstack/react-table";
+import { TableColumnHeader } from "@/components/ui/kibo-ui/table";
+import type { ApartmentUnitsResponse } from "@/pocketbase/queries/apartmentUnits";
 
 export const columns: ColumnDef<ApartmentUnitsResponse>[] = [
   {
-    accessorKey: 'floorNumber',
+    accessorKey: "floorNumber",
     header: ({ column }) => (
       <TableColumnHeader column={column} title="Floor Number" />
     ),
   },
   {
-    accessorKey: 'price',
+    accessorKey: "price",
     header: ({ column }) => <TableColumnHeader column={column} title="Price" />,
   },
   {
-    accessorKey: 'property',
+    accessorKey: "id",
     header: ({ column }) => (
       <TableColumnHeader column={column} title="Property" />
     ),
+    cell: ({ row }) => row.original.expand.property.address,
   },
   {
-    accessorKey: 'unitLetter',
+    accessorKey: "unitLetter",
     header: ({ column }) => (
       <TableColumnHeader column={column} title="Unit Letter" />
     ),
   },
   {
-    accessorKey: 'capacity',
+    accessorKey: "capacity",
     header: ({ column }) => (
       <TableColumnHeader column={column} title="Capacity" />
     ),

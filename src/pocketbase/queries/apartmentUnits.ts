@@ -1,0 +1,103 @@
+import { mutationOptions, queryOptions } from "@tanstack/react-query";
+import type { ClientResponseError } from "pocketbase";
+import { toast } from "sonner";
+import type z from "zod";
+import { pb } from "..";
+import type {
+  insertApartmentUnitSchema,
+  updateApartmentUnitSchema,
+} from "../schemas/apartmentUnits";
+import {
+  type ApartmentUnitsResponse as ApartmentUnitsClientResponse,
+  Collections,
+  type PropertiesRecord,
+} from "../types";
+
+export type ApartmentUnitsResponse = ApartmentUnitsClientResponse<
+  { property: PropertiesRecord }
+>;
+
+export const listApartmentUnitsQuery = (page: number, perPage: number) =>
+  queryOptions({
+    queryKey: [Collections.ApartmentUnits, page, perPage],
+    queryFn: () =>
+      pb.collection<ApartmentUnitsResponse>(Collections.ApartmentUnits).getList(
+        page,
+        perPage,
+        {
+          expand: "property",
+        },
+      ),
+  });
+
+export const viewApartmentUnitQuery = (id: string) =>
+  queryOptions({
+    queryKey: [Collections.ApartmentUnits, id],
+    queryFn: () =>
+      pb.collection<ApartmentUnitsResponse>(Collections.ApartmentUnits).getOne(
+        id,
+        {
+          expand: "property",
+        },
+      ),
+  });
+
+export const createApartmentUnitMutation = mutationOptions<
+  ApartmentUnitsResponse,
+  ClientResponseError,
+  z.infer<typeof insertApartmentUnitSchema>
+>({
+  mutationFn: async (value) =>
+    pb.collection(Collections.ApartmentUnits).create<ApartmentUnitsResponse>(
+      value,
+      {
+        expand: "property",
+      },
+    ),
+  onSuccess: (value) =>
+    toast.success(`Successfully create`, {
+      description: `Apartment unit ${value.unitLetter} added`,
+    }),
+  onError: (err) =>
+    toast.error(`An Error occured when creating an apartment unit`, {
+      description: err.message,
+    }),
+});
+
+export const updateApartmentUnitMutation = (id: string) =>
+  mutationOptions<
+    ApartmentUnitsResponse,
+    ClientResponseError,
+    z.infer<typeof updateApartmentUnitSchema>
+  >({
+    mutationFn: async (value) =>
+      pb.collection(Collections.ApartmentUnits).update<ApartmentUnitsResponse>(
+        id,
+        value,
+        {
+          expand: "property",
+        },
+      ),
+    onSuccess: (value) =>
+      toast.success(`Changes saved`, {
+        description: `Apartment unit ${value.unitLetter} has been updated`,
+      }),
+    onError: (err) =>
+      toast.error(`An Error occured when updating the apartment unit ${id}`, {
+        description: err.message,
+      }),
+  });
+
+export const deleteApartmentUnitMutation = (id: string) =>
+  mutationOptions({
+    mutationFn: async () =>
+      pb.collection(Collections.ApartmentUnits).delete(id),
+    onSuccess: () =>
+      toast.success(`Deleted sucessfully`, {
+        description: `Apartment unit ${id} has been deleted succesfully`,
+      }),
+    onError: (err) =>
+      toast.error(`An Error occured when deleting the apartment unit ${id}`, {
+        description: err.message,
+      }),
+  });
