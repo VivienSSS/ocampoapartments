@@ -1,6 +1,11 @@
-import { useNavigate } from '@tanstack/react-router';
-import React from 'react';
-import type z from 'zod';
+import { useMutation } from "@tanstack/react-query";
+import {
+  useNavigate,
+  useRouteContext,
+  useSearch,
+} from "@tanstack/react-router";
+import React from "react";
+import type z from "zod";
 import {
   Dialog,
   DialogContent,
@@ -8,31 +13,43 @@ import {
   DialogHeader,
   DialogTitle,
   DialogTrigger,
-} from '@/components/ui/dialog';
-import { useAppForm } from '@/components/ui/form';
-import { pb } from '@/pocketbase';
-import { insertPropertySchema } from '@/pocketbase/schemas/properties';
-import { Collections } from '@/pocketbase/types';
-import { CreatePropertyForm } from './form';
+} from "@/components/ui/dialog";
+import { useAppForm } from "@/components/ui/form";
+import {
+  createPropertyMutation,
+  listPropertiesQuery,
+} from "@/pocketbase/queries/properties";
+import { insertPropertySchema } from "@/pocketbase/schemas/properties";
+import { CreatePropertyForm } from "./form";
 
 const CreatePropertyDialogForm = () => {
-  const navigate = useNavigate({ from: '/dashboard/properties' });
+  const navigate = useNavigate({ from: "/dashboard/properties" });
+  const searchParams = useSearch({ from: "/dashboard/properties/" });
+  const propertyMutation = useMutation(createPropertyMutation);
+  const { queryClient } = useRouteContext({ from: "/dashboard/properties/" });
 
   const form = useAppForm({
     defaultValues: {} as z.infer<typeof insertPropertySchema>,
     validators: {
       onChange: insertPropertySchema,
     },
-    onSubmit: async ({ value }) => {
-      await pb.collection(Collections.Properties).create(value); // if error, will not continue below
-
-      navigate({ to: '/dashboard/properties' });
-    },
+    onSubmit: async ({ value }) =>
+      propertyMutation.mutateAsync(value, {
+        onSuccess: () => {
+          queryClient.invalidateQueries(
+            listPropertiesQuery(searchParams.page, searchParams.perPage),
+          );
+          navigate({ to: "/dashboard/properties", search: { new: undefined } });
+        },
+      }),
   });
 
   return (
-    <Dialog>
-      <DialogTrigger>Create Property</DialogTrigger>
+    <Dialog
+      open={searchParams.new}
+      onOpenChange={() =>
+        navigate({ to: "/dashboard/properties", search: { new: undefined } })}
+    >
       <DialogContent>
         <DialogHeader>
           <DialogTitle>Create a new property</DialogTitle>

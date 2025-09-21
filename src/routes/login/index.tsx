@@ -1,17 +1,17 @@
-import { createFileRoute, redirect } from "@tanstack/react-router";
-import type z from "zod";
-import { useAppForm } from "@/components/ui/form";
-import { pb } from "@/pocketbase";
-import { loginUserSchema } from "@/pocketbase/schemas/users";
-import LoginForm from "./-form";
-import { useMutation } from "@tanstack/react-query";
-import { loginUserMutation } from "@/pocketbase/queries/users";
+import { useMutation } from '@tanstack/react-query';
+import { createFileRoute, redirect } from '@tanstack/react-router';
+import type z from 'zod';
+import { useAppForm } from '@/components/ui/form';
+import { pb } from '@/pocketbase';
+import { loginUserMutation } from '@/pocketbase/queries/users';
+import { loginUserSchema } from '@/pocketbase/schemas/users';
+import LoginForm from './-form';
 
-export const Route = createFileRoute("/login/")({
+export const Route = createFileRoute('/login/')({
   component: RouteComponent,
   beforeLoad: () => {
     if (pb.authStore.isValid) {
-      throw redirect({ to: "/dashboard/announcements" }); // for fail
+      throw redirect({ to: '/dashboard/announcements' }); // for fail
     }
   },
 });
@@ -28,7 +28,7 @@ function RouteComponent() {
     onSubmit: async ({ value }) => {
       await loginMutation.mutateAsync(value);
 
-      navigate({ to: "/dashboard/announcements" }); //for success
+      navigate({ to: '/dashboard/announcements' }); //for success
     },
   });
 

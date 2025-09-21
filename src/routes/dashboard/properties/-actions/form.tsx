@@ -1,10 +1,10 @@
-import type z from 'zod';
-import { withForm } from '@/components/ui/form';
+import type z from "zod";
+import { withForm } from "@/components/ui/form";
 import {
   insertPropertySchema,
   updatePropertySchema,
-} from '@/pocketbase/schemas/properties';
-import { PropertiesBranchOptions } from '@/pocketbase/types';
+} from "@/pocketbase/schemas/properties";
+import { PropertiesBranchOptions } from "@/pocketbase/types";
 
 export const CreatePropertyForm = withForm({
   defaultValues: {} as z.infer<typeof insertPropertySchema>,
@@ -45,10 +45,24 @@ export const EditPropertyForm = withForm({
   render: ({ form }) => (
     <>
       <form.AppField name="address">
-        {(field) => <field.TextAreaField />}
+        {(field) => (
+          <field.TextAreaField
+            className="col-span-full"
+            placeholder="Your address"
+          />
+        )}
       </form.AppField>
       <form.AppField name="branch">
-        {(field) => <field.TextField />}
+        {(field) => (
+          <field.SelectField
+            options={Object.keys(PropertiesBranchOptions).map((key) => ({
+              label: key,
+              value: key,
+            }))}
+            className="col-span-full"
+            placeholder="Branch Type"
+          />
+        )}
       </form.AppField>
     </>
   ),

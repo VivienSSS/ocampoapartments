@@ -8,7 +8,7 @@ export const userSchema = z.object({
   firstName: z.string().max(255),
   isActive: z.boolean().optional(),
   lastName: z.string().max(255),
-  password: z.string().min(8),
+  password: z.string().min(8, 'Minimum of 8 characters'),
   role: z.enum(UsersRoleOptions),
   tokenKey: z.string(),
   username: z.string(),

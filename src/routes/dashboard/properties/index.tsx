@@ -1,38 +1,52 @@
-import { createFileRoute } from '@tanstack/react-router';
-import { zodValidator } from '@tanstack/zod-adapter';
-import { z } from 'zod';
-import DataTable from '@/components/ui/kibo-ui/table/data-table';
-import { searchParams } from '@/lib/utils';
-import { pb } from '@/pocketbase';
-import { propertySchema } from '@/pocketbase/schemas/properties';
-import { Collections } from '@/pocketbase/types';
-import CreatePropertyDialogForm from './-actions/create';
-import LoadingComponent from './-loading';
-import { columns } from './-table';
+import { createFileRoute } from "@tanstack/react-router";
+import { zodValidator } from "@tanstack/zod-adapter";
+import { z } from "zod";
+import DataTable from "@/components/ui/kibo-ui/table/data-table";
+import { searchParams } from "@/lib/utils";
+import { pb } from "@/pocketbase";
+import { listPropertiesQuery } from "@/pocketbase/queries/properties";
+import { propertySchema } from "@/pocketbase/schemas/properties";
+import { Collections } from "@/pocketbase/types";
+import CreatePropertyDialogForm from "./-actions/create";
+import LoadingComponent from "./-loading";
+import { columns } from "./-table";
+import { Button } from "@/components/ui/button";
+import DeletePropertyDialogForm from "./-actions/delete";
+import EditPropertyDialogForm from "./-actions/edit";
 
-export const Route = createFileRoute('/dashboard/properties/')({
+export const Route = createFileRoute("/dashboard/properties/")({
   component: RouteComponent,
   pendingComponent: LoadingComponent,
   validateSearch: zodValidator(searchParams(propertySchema.keyof())),
   beforeLoad: ({ search }) => ({ search }),
   loader: ({ context }) =>
-    pb
-      .collection(Collections.Properties)
-      .getList(context.search.page, context.search.perPage),
+    context.queryClient.fetchQuery(
+      listPropertiesQuery(context.search.page, context.search.perPage),
+    ),
 });
 
 function RouteComponent() {
+  const navigate = Route.useNavigate();
   const properties = Route.useLoaderData();
 
   return (
     <article>
       <section>Title</section>
-      <section>Controls</section>
+      <section>
+        <Button
+          onClick={() =>
+            navigate({ search: (prev) => ({ ...prev, new: true }) })}
+        >
+          Create Property
+        </Button>
+      </section>
       <section>
         <DataTable columns={columns} data={properties} />
       </section>
       <section>
         <CreatePropertyDialogForm />
+        <DeletePropertyDialogForm />
+        <EditPropertyDialogForm />
       </section>
     </article>
   );
