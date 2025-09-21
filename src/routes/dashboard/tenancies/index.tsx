@@ -4,9 +4,9 @@ import z from 'zod';
 import DataTable from '@/components/ui/kibo-ui/table/data-table';
 import { pb } from '@/pocketbase';
 import { Collections } from '@/pocketbase/types';
+import CreateTenantDialogForm from './-actions/create';
 import LoadingComponent from './-loading';
 import { columns } from './-table';
-import CreateTenantDialogForm from './-actions/create';
 
 export const Route = createFileRoute('/dashboard/tenancies/')({
   component: RouteComponent,
@@ -21,7 +21,9 @@ export const Route = createFileRoute('/dashboard/tenancies/')({
   loader: ({ context }) =>
     pb
       .collection(Collections.Tenants)
-      .getList(context.search.page, context.search.perPage, { sort: "-created" }),
+      .getList(context.search.page, context.search.perPage, {
+        sort: '-created',
+      }),
 });
 
 function RouteComponent() {

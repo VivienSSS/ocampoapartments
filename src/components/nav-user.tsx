@@ -1,5 +1,6 @@
-"use client"
+'use client';
 
+import { useNavigate } from '@tanstack/react-router';
 import {
   BadgeCheck,
   Bell,
@@ -7,13 +8,8 @@ import {
   CreditCard,
   LogOut,
   Sparkles,
-} from "lucide-react"
-
-import {
-  Avatar,
-  AvatarFallback,
-  AvatarImage,
-} from "@/components/ui/avatar"
+} from 'lucide-react';
+import { Avatar, AvatarFallback, AvatarImage } from '@/components/ui/avatar';
 import {
   DropdownMenu,
   DropdownMenuContent,
@@ -22,27 +18,26 @@ import {
   DropdownMenuLabel,
   DropdownMenuSeparator,
   DropdownMenuTrigger,
-} from "@/components/ui/dropdown-menu"
+} from '@/components/ui/dropdown-menu';
 import {
   SidebarMenu,
   SidebarMenuButton,
   SidebarMenuItem,
   useSidebar,
-} from "@/components/ui/sidebar"
-import { pb } from "@/pocketbase"
-import { useNavigate } from "@tanstack/react-router"
+} from '@/components/ui/sidebar';
+import { pb } from '@/pocketbase';
 
 export function NavUser({
   user,
 }: {
   user: {
-    name: string
-    email: string
-    avatar: string
-  }
+    name: string;
+    email: string;
+    avatar: string;
+  };
 }) {
-  const { isMobile } = useSidebar()
-  const navigate = useNavigate({ from: "/dashboard" })
+  const { isMobile } = useSidebar();
+  const navigate = useNavigate({ from: '/dashboard' });
 
   return (
     <SidebarMenu>
@@ -59,7 +54,8 @@ export function NavUser({
                   {(() => {
                     const names = user.name.split(' ');
                     const firstInitial = names[0]?.[0] ?? '';
-                    const lastInitial = names.length > 1 ? names[names.length - 1][0] : '';
+                    const lastInitial =
+                      names.length > 1 ? names[names.length - 1][0] : '';
                     return firstInitial + lastInitial;
                   })()}
                 </AvatarFallback>
@@ -73,7 +69,7 @@ export function NavUser({
           </DropdownMenuTrigger>
           <DropdownMenuContent
             className="w-(--radix-dropdown-menu-trigger-width) min-w-56 rounded-lg"
-            side={isMobile ? "bottom" : "right"}
+            side={isMobile ? 'bottom' : 'right'}
             align="start"
             sideOffset={4}
           >
@@ -85,7 +81,8 @@ export function NavUser({
                     {(() => {
                       const names = user.name.split(' ');
                       const firstInitial = names[0]?.[0] ?? '';
-                      const lastInitial = names.length > 1 ? names[names.length - 1][0] : '';
+                      const lastInitial =
+                        names.length > 1 ? names[names.length - 1][0] : '';
                       return firstInitial + lastInitial;
                     })()}
                   </AvatarFallback>
@@ -119,10 +116,12 @@ export function NavUser({
               </DropdownMenuItem>
             </DropdownMenuGroup>
             <DropdownMenuSeparator />
-            <DropdownMenuItem onClick={() => {
-              pb.authStore.clear()
-              navigate({ to: "/login" })
-            }}>
+            <DropdownMenuItem
+              onClick={() => {
+                pb.authStore.clear();
+                navigate({ to: '/login' });
+              }}
+            >
               <LogOut />
               Log out
             </DropdownMenuItem>
@@ -130,5 +129,5 @@ export function NavUser({
         </DropdownMenu>
       </SidebarMenuItem>
     </SidebarMenu>
-  )
+  );
 }

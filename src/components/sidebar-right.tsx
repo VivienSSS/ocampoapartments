@@ -1,9 +1,9 @@
-import * as React from "react"
-import { Bell, Plus } from "lucide-react"
+import { Bell, Plus } from 'lucide-react';
+import type * as React from 'react';
 
-import { Calendars } from "@/components/calendars"
-import { DatePicker } from "@/components/date-picker"
-import { NavUser } from "@/components/nav-user"
+import { Calendars } from '@/components/calendars';
+import { DatePicker } from '@/components/date-picker';
+import { NavUser } from '@/components/nav-user';
 import {
   Sidebar,
   SidebarContent,
@@ -14,31 +14,36 @@ import {
   SidebarMenuItem,
   SidebarRail,
   SidebarSeparator,
-} from "@/components/ui/sidebar"
-import { pb } from "@/pocketbase"
+} from '@/components/ui/sidebar';
+import { pb } from '@/pocketbase';
 
 // This is sample data.
 const data = {
   user: {
-    name: `${pb.authStore.record?.firstName} ${pb.authStore.record?.lastName}` || "Empty",
-    email: pb.authStore.record?.email || "Empty",
-    avatar: pb.files.getURL(pb.authStore.record ?? {}, pb.authStore.record?.image),
+    name:
+      `${pb.authStore.record?.firstName} ${pb.authStore.record?.lastName}` ||
+      'Empty',
+    email: pb.authStore.record?.email || 'Empty',
+    avatar: pb.files.getURL(
+      pb.authStore.record ?? {},
+      pb.authStore.record?.image,
+    ),
   },
   calendars: [
     {
-      name: "My Calendars",
-      items: ["Personal", "Work", "Family"],
+      name: 'My Calendars',
+      items: ['Personal', 'Work', 'Family'],
     },
     {
-      name: "Favorites",
-      items: ["Holidays", "Birthdays"],
+      name: 'Favorites',
+      items: ['Holidays', 'Birthdays'],
     },
     {
-      name: "Other",
-      items: ["Travel", "Reminders", "Deadlines"],
+      name: 'Other',
+      items: ['Travel', 'Reminders', 'Deadlines'],
     },
   ],
-}
+};
 
 export function SidebarRight({
   ...props
@@ -68,5 +73,5 @@ export function SidebarRight({
         </SidebarMenu>
       </SidebarFooter>
     </Sidebar>
-  )
+  );
 }

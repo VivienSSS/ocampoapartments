@@ -4,9 +4,9 @@ import z from 'zod';
 import DataTable from '@/components/ui/kibo-ui/table/data-table';
 import { pb } from '@/pocketbase';
 import { Collections } from '@/pocketbase/types';
+import CreateBillingDialogForm from './-actions/create';
 import LoadingComponent from './-loading';
 import { columns } from './-table';
-import CreateBillingDialogForm from './-actions/create';
 
 export const Route = createFileRoute('/dashboard/billing/')({
   component: RouteComponent,
@@ -22,7 +22,7 @@ export const Route = createFileRoute('/dashboard/billing/')({
     pb
       .collection(Collections.Bills)
       .getList(context.search.page, context.search.perPage, {
-        sort: "-created"
+        sort: '-created',
       }),
 });
 

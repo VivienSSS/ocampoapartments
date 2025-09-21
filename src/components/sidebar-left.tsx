@@ -1,4 +1,3 @@
-import * as React from "react"
 import {
   AudioWaveform,
   Blocks,
@@ -19,78 +18,84 @@ import {
   Settings2,
   Sparkles,
   Trash2,
-} from "lucide-react"
+} from 'lucide-react';
+import type * as React from 'react';
 
-import { NavFavorites } from "@/components/nav-favorites"
-import { NavMain } from "@/components/nav-main"
-import { NavSecondary } from "@/components/nav-secondary"
-import { NavWorkspaces } from "@/components/nav-workspaces"
-import { TeamSwitcher } from "@/components/team-switcher"
+import { NavFavorites } from '@/components/nav-favorites';
+import { NavMain } from '@/components/nav-main';
+import { NavSecondary } from '@/components/nav-secondary';
+import { NavWorkspaces } from '@/components/nav-workspaces';
+import { TeamSwitcher } from '@/components/team-switcher';
 import {
   Sidebar,
   SidebarContent,
   SidebarHeader,
   SidebarRail,
-} from "@/components/ui/sidebar"
+} from '@/components/ui/sidebar';
 
 // This is sample data.
 const data = {
   teams: [
     {
-      name: "Acme Inc",
+      name: 'Acme Inc',
       logo: Command,
-      plan: "Enterprise",
+      plan: 'Enterprise',
     },
     {
-      name: "Acme Corp.",
+      name: 'Acme Corp.',
       logo: AudioWaveform,
-      plan: "Startup",
+      plan: 'Startup',
     },
     {
-      name: "Evil Corp.",
+      name: 'Evil Corp.',
       logo: Command,
-      plan: "Free",
+      plan: 'Free',
     },
   ],
   navMain: [
     {
-      title: "Search",
-      url: "#",
+      title: 'Search',
+      url: '#',
       icon: Search,
     },
     {
-      title: "Announcements",
-      url: "/dashboard/announcements",
+      title: 'Announcements',
+      url: '/dashboard/announcements',
       icon: Megaphone,
-    }, {
-      title: "Apartments",
-      url: "/dashboard/apartments",
+    },
+    {
+      title: 'Apartments',
+      url: '/dashboard/apartments',
       icon: Hotel,
-    }, {
-      title: "Billing",
-      url: "/dashboard/billing",
+    },
+    {
+      title: 'Billing',
+      url: '/dashboard/billing',
       icon: ReceiptText,
-    }, {
-      title: "Maintenance",
-      url: "/dashboard/maintenances",
+    },
+    {
+      title: 'Maintenance',
+      url: '/dashboard/maintenances',
       icon: Hammer,
-    }, {
-      title: "Payments",
-      url: "/dashboard/payments",
+    },
+    {
+      title: 'Payments',
+      url: '/dashboard/payments',
       icon: HandCoins,
-    }, {
-      title: "Properties",
-      url: "/dashboard/properties",
+    },
+    {
+      title: 'Properties',
+      url: '/dashboard/properties',
       icon: MapPinHouse,
     },
     {
-      title: "Tenants",
-      url: "/dashboard/tenants",
+      title: 'Tenants',
+      url: '/dashboard/tenants',
       icon: BookUser,
     },
     {
-      title: "Tenancies",
-      url: "/dashboard/tenancies",
+      title: 'Tenancies',
+      url: '/dashboard/tenancies',
       icon: House,
     },
   ],
@@ -280,7 +285,7 @@ const data = {
     //   ],
     // },
   ],
-}
+};
 
 export function SidebarLeft({
   ...props
@@ -288,7 +293,6 @@ export function SidebarLeft({
   return (
     <Sidebar className="border-r-0" {...props}>
       <SidebarHeader>
-        <TeamSwitcher teams={data.teams} />
         <NavMain items={data.navMain} />
       </SidebarHeader>
       <SidebarContent>
@@ -298,5 +302,5 @@ export function SidebarLeft({
       </SidebarContent>
       <SidebarRail />
     </Sidebar>
-  )
+  );
 }
