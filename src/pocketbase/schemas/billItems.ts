@@ -1,5 +1,5 @@
-import z from 'zod';
-import { BillItemsChargeTypeOptions } from '../types';
+import z from "zod";
+import { BillItemsChargeTypeOptions } from "../types";
 
 export const billItemsSchema = z.object({
   amount: z.number().nonnegative().optional(),
@@ -15,6 +15,7 @@ export const insertBillItemsSchema = billItemsSchema.omit({
   id: true,
   created: true,
   updated: true,
+  bill: true,
 });
 
 export const updateBillItemsSchema = insertBillItemsSchema.partial();

@@ -1,18 +1,27 @@
-import { useSuspenseQuery } from '@tanstack/react-query';
-import type z from 'zod';
-import { withForm } from '@/components/ui/form';
-import { pb } from '@/pocketbase';
-import { insertBillSchema, updateBillSchema } from '@/pocketbase/schemas/bills';
-import { BillsStatusOptions, Collections } from '@/pocketbase/types';
+import { useSuspenseQuery } from "@tanstack/react-query";
+import type z from "zod";
+import { withFieldGroup, withForm } from "@/components/ui/form";
+import { pb } from "@/pocketbase";
+import { insertBillSchema, updateBillSchema } from "@/pocketbase/schemas/bills";
+import {
+  BillItemsChargeTypeOptions,
+  BillsStatusOptions,
+  Collections,
+} from "@/pocketbase/types";
+import { Button } from "@/components/ui/button";
+import type { insertBillItemsSchema } from "@/pocketbase/schemas/billItems";
+import { Card, CardContent } from "@/components/ui/card";
 
 export const CreateBillingForm = withForm({
-  defaultValues: {} as z.infer<typeof insertBillSchema>,
+  defaultValues: {
+    items: [{}],
+  } as z.infer<typeof insertBillSchema>,
   validators: {
     onChange: insertBillSchema,
   },
   render: ({ form }) => {
     const { data: tenancies } = useSuspenseQuery({
-      queryKey: ['properties'],
+      queryKey: ["properties"],
       queryFn: () => pb.collection(Collections.Tenancies).getFullList(),
     });
 
@@ -36,6 +45,29 @@ export const CreateBillingForm = withForm({
             <field.DateField className="col-span-full" label="Due Date" />
           )}
         </form.AppField>
+        <form.AppField name="items" mode="array">
+          {(field) => (
+            <>
+              {field.state.value?.map((item, index) => (
+                <CreateBillingItemForm
+                  key={`${item.description}-${item.amount}`}
+                  form={form}
+                  fields={`items[${index}]`}
+                />
+              ))}
+              <Button
+                onClick={() =>
+                  field.pushValue({
+                    chargeType: BillItemsChargeTypeOptions.Electricity,
+                    description: "",
+                    amount: undefined,
+                  })}
+              >
+                Add Item
+              </Button>
+            </>
+          )}
+        </form.AppField>
         <form.AppField name="status">
           {(field) => (
             <field.SelectField
@@ -49,6 +81,35 @@ export const CreateBillingForm = withForm({
           )}
         </form.AppField>
       </>
+    );
+  },
+});
+
+export const CreateBillingItemForm = withFieldGroup({
+  defaultValues: {} as z.infer<typeof insertBillItemsSchema>,
+  render: ({ group }) => {
+    return (
+      <Card className="col-span-full">
+        <CardContent className="grid grid-cols-1 gap-5">
+          <group.AppField name="chargeType">
+            {(field) => (
+              <field.SelectField
+                label="Charge Type"
+                options={Object.keys(BillItemsChargeTypeOptions).map((o) => ({
+                  label: o,
+                  value: o,
+                }))}
+              />
+            )}
+          </group.AppField>
+          <group.AppField name="amount">
+            {(field) => <field.TextField label="Amount" />}
+          </group.AppField>
+          <group.AppField name="description">
+            {(field) => <field.TextAreaField label="Description" />}
+          </group.AppField>
+        </CardContent>
+      </Card>
     );
   },
 });

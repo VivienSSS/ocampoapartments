@@ -1,10 +1,10 @@
-import { createFormHook, createFormHookContexts } from '@tanstack/react-form';
-import CheckBoxField from '../field-components/checkbox-field';
-import DateField from '../field-components/date-field';
-import SelectField from '../field-components/select-field';
-import TextAreaField from '../field-components/text-area-field';
-import TextField from '../field-components/text-field';
-import { Button } from './button';
+import { createFormHook, createFormHookContexts } from "@tanstack/react-form";
+import CheckBoxField from "../field-components/checkbox-field";
+import DateField from "../field-components/date-field";
+import SelectField from "../field-components/select-field";
+import TextAreaField from "../field-components/text-area-field";
+import TextField from "../field-components/text-field";
+import { Button } from "./button";
 
 // export useFieldContext for use in your custom components
 export const { fieldContext, formContext, useFieldContext, useFormContext } =
@@ -24,10 +24,9 @@ const SubmitButton = ({ ...props }: React.ComponentProps<typeof Button>) => {
   );
 };
 
-export const { useAppForm, withForm } = createFormHook({
+export const { useAppForm, withForm, withFieldGroup } = createFormHook({
   fieldContext,
   formContext,
-  // We'll learn more about these options later
   fieldComponents: {
     TextField,
     CheckBoxField,
