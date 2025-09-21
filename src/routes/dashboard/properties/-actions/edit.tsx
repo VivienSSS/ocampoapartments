@@ -51,7 +51,10 @@ const EditPropertyDialogForm = () => {
           queryClient.invalidateQueries(
             listPropertiesQuery(searchQuery.page, searchQuery.perPage),
           );
-          navigate({ to: "/dashboard/properties", search: { new: undefined } });
+          navigate({
+            to: "/dashboard/properties",
+            search: { edit: undefined, id: undefined },
+          });
         },
       }),
   });
