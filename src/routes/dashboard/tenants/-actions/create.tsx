@@ -1,31 +1,30 @@
-import { useMutation, useQuery } from '@tanstack/react-query';
+import { useMutation, useQuery } from "@tanstack/react-query";
 import {
   useNavigate,
   useRouteContext,
   useSearch,
-} from '@tanstack/react-router';
-import React from 'react';
-import type z from 'zod';
+} from "@tanstack/react-router";
+import type z from "zod";
 import {
   Dialog,
   DialogContent,
   DialogDescription,
   DialogHeader,
   DialogTitle,
-} from '@/components/ui/dialog';
-import { useAppForm } from '@/components/ui/form';
-import { insertTenantSchema } from '@/pocketbase/schemas/tenants';
-import { CreateTenantForm } from './form';
+} from "@/components/ui/dialog";
+import { useAppForm } from "@/components/ui/form";
+import { insertTenantSchema } from "@/pocketbase/schemas/tenants";
+import { CreateTenantForm } from "./form";
 import {
   createTenantMutation,
   listTenantsQuery,
-} from '@/pocketbase/queries/tenants';
-import { listUserQuery } from '@/pocketbase/queries/users';
+} from "@/pocketbase/queries/tenants";
+import { listUserQuery } from "@/pocketbase/queries/users";
 
 const CreateTenantDialogForm = () => {
-  const navigate = useNavigate({ from: '/dashboard/tenants' });
-  const searchParams = useSearch({ from: '/dashboard/tenants/' });
-  const { queryClient } = useRouteContext({ from: '/dashboard/tenants/' });
+  const navigate = useNavigate({ from: "/dashboard/tenants" });
+  const searchParams = useSearch({ from: "/dashboard/tenants/" });
+  const { queryClient } = useRouteContext({ from: "/dashboard/tenants/" });
 
   const tenantMutation = useMutation(createTenantMutation);
   const { data: users } = useQuery(
@@ -41,7 +40,6 @@ const CreateTenantDialogForm = () => {
     validators: {
       onChange: insertTenantSchema,
     },
-
     onSubmit: async ({ value }) =>
       tenantMutation.mutateAsync(value, {
         onSuccess: () => {

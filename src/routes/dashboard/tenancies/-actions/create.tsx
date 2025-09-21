@@ -2,28 +2,28 @@ import {
   useNavigate,
   useRouteContext,
   useSearch,
-} from '@tanstack/react-router';
-import type z from 'zod';
+} from "@tanstack/react-router";
+import type z from "zod";
 import {
   Dialog,
   DialogContent,
   DialogDescription,
   DialogHeader,
   DialogTitle,
-} from '@/components/ui/dialog';
-import { useAppForm } from '@/components/ui/form';
-import { insertTenanciesSchema } from '@/pocketbase/schemas/tenancies';
-import { CreateTenancyForm } from './form';
-import { useMutation } from '@tanstack/react-query';
+} from "@/components/ui/dialog";
+import { useAppForm } from "@/components/ui/form";
+import { insertTenanciesSchema } from "@/pocketbase/schemas/tenancies";
+import { CreateTenancyForm } from "./form";
+import { useMutation } from "@tanstack/react-query";
 import {
   createTenancyMutation,
   listTenanciesQuery,
-} from '@/pocketbase/queries/tenancies';
+} from "@/pocketbase/queries/tenancies";
 
 const CreateTenancyDialogForm = () => {
-  const navigate = useNavigate({ from: '/dashboard/tenancies' });
-  const search = useSearch({ from: '/dashboard/tenancies/' });
-  const { queryClient } = useRouteContext({ from: '/dashboard/tenancies/' });
+  const navigate = useNavigate({ from: "/dashboard/tenancies" });
+  const search = useSearch({ from: "/dashboard/tenancies/" });
+  const { queryClient } = useRouteContext({ from: "/dashboard/tenancies/" });
 
   const mutation = useMutation(createTenancyMutation);
 
@@ -32,14 +32,13 @@ const CreateTenancyDialogForm = () => {
     validators: {
       onChange: insertTenanciesSchema,
     },
-
     onSubmit: async ({ value }) => {
       mutation.mutate(value, {
         onSuccess: () => {
           queryClient.invalidateQueries(
             listTenanciesQuery(search.page, search.perPage),
           );
-          navigate({ to: '/dashboard/tenancies', search: { new: undefined } });
+          navigate({ to: "/dashboard/tenancies", search: { new: undefined } });
         },
       });
     },
@@ -49,8 +48,7 @@ const CreateTenancyDialogForm = () => {
     <Dialog
       open={!!search.new}
       onOpenChange={() =>
-        navigate({ to: '/dashboard/tenancies', search: { new: undefined } })
-      }
+        navigate({ to: "/dashboard/tenancies", search: { new: undefined } })}
     >
       <DialogContent>
         <DialogHeader>

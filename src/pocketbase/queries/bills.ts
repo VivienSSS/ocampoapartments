@@ -1,21 +1,35 @@
-import { mutationOptions, queryOptions } from '@tanstack/react-query';
-import type { ClientResponseError } from 'pocketbase';
-import { toast } from 'sonner';
-import type z from 'zod';
-import { pb } from '..';
-import type { insertBillSchema, updateBillSchema } from '../schemas/bills';
-import { type BillsResponse, Collections } from '../types';
+import { mutationOptions, queryOptions } from "@tanstack/react-query";
+import type { ClientResponseError } from "pocketbase";
+import { toast } from "sonner";
+import type z from "zod";
+import { pb } from "..";
+import type { insertBillSchema, updateBillSchema } from "../schemas/bills";
+import {
+  type BillsResponse as BillsClientResponse,
+  Collections,
+  type TenanciesRecord,
+} from "../types";
+
+export type BillsResponse = BillsClientResponse<{
+  tenancy: TenanciesRecord;
+}>;
 
 export const listBillsQuery = (page: number, perPage: number) =>
   queryOptions({
     queryKey: [Collections.Bills, page, perPage],
-    queryFn: () => pb.collection(Collections.Bills).getList(page, perPage),
+    queryFn: () =>
+      pb.collection<BillsResponse>(Collections.Bills).getList(page, perPage, {
+        expand: "tenancy",
+      }),
   });
 
 export const viewBillQuery = (id: string) =>
   queryOptions({
     queryKey: [Collections.Bills, id],
-    queryFn: () => pb.collection(Collections.Bills).getOne(id),
+    queryFn: () =>
+      pb.collection<BillsResponse>(Collections.Bills).getOne(id, {
+        expand: "tenancy",
+      }),
   });
 
 export const createBillMutation = mutationOptions<
@@ -23,7 +37,10 @@ export const createBillMutation = mutationOptions<
   ClientResponseError,
   z.infer<typeof insertBillSchema>
 >({
-  mutationFn: async (value) => pb.collection(Collections.Bills).create(value),
+  mutationFn: async (value) =>
+    pb.collection(Collections.Bills).create<BillsResponse>(value, {
+      expand: "tenancy",
+    }),
   onSuccess: (value) =>
     toast.success(`Successfully create`, {
       description: `Bill created for tenancy: ${value.tenancy}`,
@@ -41,7 +58,9 @@ export const updateBillMutation = (id: string) =>
     z.infer<typeof updateBillSchema>
   >({
     mutationFn: async (value) =>
-      pb.collection(Collections.Bills).update(id, value),
+      pb.collection(Collections.Bills).update<BillsResponse>(id, value, {
+        expand: "tenancy",
+      }),
     onSuccess: (value) =>
       toast.success(`Changes saved`, {
         description: `Bill ${value.id} has been updated`,
