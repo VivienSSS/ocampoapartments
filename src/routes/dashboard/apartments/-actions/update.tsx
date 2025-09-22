@@ -1,46 +1,55 @@
-import { useAppForm } from '@/components/ui/form';
-import { EditApartmentForm } from './form';
+import { useAppForm } from "@/components/ui/form";
+import { EditApartmentForm } from "./form";
 import {
   listApartmentUnitsQuery,
   updateApartmentUnitMutation,
   viewApartmentUnitQuery,
-} from '@/pocketbase/queries/apartmentUnits';
-import { updateApartmentUnitSchema } from '@/pocketbase/schemas/apartmentUnits';
-import { useMutation, useQuery } from '@tanstack/react-query';
+} from "@/pocketbase/queries/apartmentUnits";
+import { updateApartmentUnitSchema } from "@/pocketbase/schemas/apartmentUnits";
+import { useMutation, useQueries, useQuery } from "@tanstack/react-query";
 import {
   useNavigate,
   useRouteContext,
   useSearch,
-} from '@tanstack/react-router';
+} from "@tanstack/react-router";
 import {
   Dialog,
   DialogContent,
   DialogDescription,
   DialogHeader,
   DialogTitle,
-} from '@/components/ui/dialog';
-import type z from 'zod';
+} from "@/components/ui/dialog";
+import type z from "zod";
+import { listPropertiesQuery } from "@/pocketbase/queries/properties";
 
 const EditApartmentDialogForm = () => {
-  const navigate = useNavigate({ from: '/dashboard/apartments' });
-  const searchQuery = useSearch({ from: '/dashboard/apartments/' });
-  const { queryClient } = useRouteContext({ from: '/dashboard/apartments/' });
+  const navigate = useNavigate({ from: "/dashboard/apartments" });
+  const searchQuery = useSearch({ from: "/dashboard/apartments/" });
+  const { queryClient } = useRouteContext({ from: "/dashboard/apartments/" });
 
   const mutation = useMutation(
-    updateApartmentUnitMutation(searchQuery.id ?? ''),
+    updateApartmentUnitMutation(searchQuery.id ?? ""),
   );
 
-  const { data: apt } = useQuery(
+  const [{ data: apt }, { data: properties }] = useQueries(
     {
-      ...viewApartmentUnitQuery(searchQuery.id ?? ''),
-      enabled: !!searchQuery.id && searchQuery.edit,
+      queries: [
+        {
+          ...viewApartmentUnitQuery(searchQuery.id ?? ""),
+          enabled: !!searchQuery.id && searchQuery.edit,
+        },
+        {
+          ...listPropertiesQuery(1, 500),
+          enabled: !!searchQuery.id && searchQuery.edit,
+        },
+      ],
     },
     queryClient,
   );
 
   const form = useAppForm({
     defaultValues: {
-      unitLetter: apt?.unitLetter ?? '',
+      unitLetter: apt?.unitLetter ?? "",
       property: apt?.property ?? undefined,
     } as z.infer<typeof updateApartmentUnitSchema>,
     validators: { onChange: updateApartmentUnitSchema },
@@ -51,7 +60,7 @@ const EditApartmentDialogForm = () => {
             listApartmentUnitsQuery(searchQuery.page, searchQuery.perPage),
           );
           navigate({
-            to: '/dashboard/apartments',
+            to: "/dashboard/apartments",
             search: { edit: undefined, id: undefined },
           });
         },
@@ -63,10 +72,9 @@ const EditApartmentDialogForm = () => {
       open={!!searchQuery.edit && !!searchQuery.id}
       onOpenChange={() =>
         navigate({
-          to: '/dashboard/apartments',
+          to: "/dashboard/apartments",
           search: { edit: undefined, id: undefined },
-        })
-      }
+        })}
     >
       <DialogContent>
         <DialogHeader>
@@ -81,7 +89,10 @@ const EditApartmentDialogForm = () => {
           }}
         >
           <form.AppForm>
-            <EditApartmentForm form={form} />
+            <EditApartmentForm
+              form={form}
+              properties={properties?.items ?? []}
+            />
             <form.SubmitButton>Update Apartment</form.SubmitButton>
           </form.AppForm>
         </form>

@@ -37,10 +37,23 @@ export const createBillMutation = mutationOptions<
   ClientResponseError,
   z.infer<typeof insertBillSchema>
 >({
-  mutationFn: async (value) =>
-    pb.collection(Collections.Bills).create<BillsResponse>(value, {
+  mutationFn: async (value) => {
+    const { items, ...bill } = value;
+
+    const billRecord = await pb.collection(Collections.Bills).create<
+      BillsResponse
+    >(bill, {
       expand: "tenancy",
-    }),
+    });
+
+    for (const item of items) {
+      const billItem = { bill: billRecord.id, ...item };
+
+      await pb.collection(Collections.BillItems).create(billItem);
+    }
+
+    return billRecord;
+  },
   onSuccess: (value) =>
     toast.success(`Successfully create`, {
       description: `Bill created for tenancy: ${value.tenancy}`,

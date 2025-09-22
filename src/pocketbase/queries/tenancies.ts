@@ -1,22 +1,22 @@
-import { mutationOptions, queryOptions } from '@tanstack/react-query';
-import type { ClientResponseError } from 'pocketbase';
-import { toast } from 'sonner';
-import type z from 'zod';
-import { pb } from '..';
+import { mutationOptions, queryOptions } from "@tanstack/react-query";
+import type { ClientResponseError } from "pocketbase";
+import { toast } from "sonner";
+import type z from "zod";
+import { pb } from "..";
 import type {
   insertTenanciesSchema,
   updateTenanciesSchema,
-} from '../schemas/tenancies';
+} from "../schemas/tenancies";
 import {
-  type ApartmentUnitsRecord,
   Collections,
   type TenanciesResponse as TenanciesClientResponse,
-} from '../types';
-import type { TenantsResponse } from './tenants';
+} from "../types";
+import type { TenantsResponse } from "./tenants";
+import type { ApartmentUnitsResponse } from "./apartmentUnits";
 
 export type TenanciesResponse = TenanciesClientResponse<{
   tenant: TenantsResponse;
-  unit: ApartmentUnitsRecord;
+  unit: ApartmentUnitsResponse;
 }>;
 
 export const listTenanciesQuery = (page: number, perPage: number) =>
@@ -26,7 +26,7 @@ export const listTenanciesQuery = (page: number, perPage: number) =>
       pb
         .collection(Collections.Tenancies)
         .getList<TenanciesResponse>(page, perPage, {
-          expand: 'tenant.user,unit',
+          expand: "tenant.user,unit.property",
         }),
   });
 

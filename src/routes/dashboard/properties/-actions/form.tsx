@@ -1,16 +1,28 @@
-import type z from 'zod';
-import { withForm } from '@/components/ui/form';
+import type z from "zod";
+import { withForm } from "@/components/ui/form";
 import {
   insertPropertySchema,
   updatePropertySchema,
-} from '@/pocketbase/schemas/properties';
-import { PropertiesBranchOptions } from '@/pocketbase/types';
+} from "@/pocketbase/schemas/properties";
+import { PropertiesBranchOptions } from "@/pocketbase/types";
+import { formOptions } from "@tanstack/react-form";
 
-export const CreatePropertyForm = withForm({
+export const CreatePropertyFormOption = formOptions({
   defaultValues: {} as z.infer<typeof insertPropertySchema>,
   validators: {
     onChange: insertPropertySchema,
   },
+});
+
+export const UpdatePropertyFormOption = formOptions({
+  defaultValues: {} as z.infer<typeof updatePropertySchema>,
+  validators: {
+    onChange: updatePropertySchema,
+  },
+});
+
+export const CreatePropertyForm = withForm({
+  defaultValues: {} as z.infer<typeof insertPropertySchema>,
   render: ({ form }) => (
     <>
       <form.AppField name="address">
@@ -39,9 +51,6 @@ export const CreatePropertyForm = withForm({
 
 export const EditPropertyForm = withForm({
   defaultValues: {} as z.infer<typeof updatePropertySchema>,
-  validators: {
-    onChange: updatePropertySchema,
-  },
   render: ({ form }) => (
     <>
       <form.AppField name="address">

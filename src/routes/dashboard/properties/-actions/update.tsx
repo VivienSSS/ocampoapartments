@@ -24,12 +24,12 @@ import { EditPropertyForm } from './form';
 const EditPropertyDialogForm = () => {
   const navigate = useNavigate({ from: '/dashboard/properties' });
   const searchQuery = useSearch({ from: '/dashboard/properties/' });
-  const propertyMutation = useMutation(updatePropertyMutation(searchQuery.id!));
+  const propertyMutation = useMutation(updatePropertyMutation(searchQuery.id ?? ''));
   const { queryClient } = useRouteContext({ from: '/dashboard/properties/' });
 
   const { data: property } = useQuery(
     {
-      ...viewPropertiesQuery(searchQuery.id!),
+      ...viewPropertiesQuery(searchQuery.id ?? ''),
       enabled: !!searchQuery.id && searchQuery.delete,
     },
     queryClient,
