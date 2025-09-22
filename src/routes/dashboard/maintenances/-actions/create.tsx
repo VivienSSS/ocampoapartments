@@ -1,56 +1,86 @@
-import { Dialog, DialogContent, DialogDescription, DialogHeader, DialogTitle, DialogTrigger } from '@/components/ui/dialog'
-import { useAppForm } from '@/components/ui/form'
-import { pb } from '@/pocketbase'
-import { insertMaintenanceRequestSchema } from '@/pocketbase/schemas/maintenanceRequests'
-import { Collections, MaintenanceRequestsStatusOptions } from '@/pocketbase/types'
-import { useNavigate } from '@tanstack/react-router'
-import React from 'react'
-import type z from 'zod'
-import { CreatePropertyForm } from '../../properties/-actions/form'
-import { CreateMaintenanceForm } from './form'
+import { useMutation } from '@tanstack/react-query';
+import {
+  useNavigate,
+  useRouteContext,
+  useSearch,
+} from '@tanstack/react-router';
+import type z from 'zod';
+import {
+  Dialog,
+  DialogContent,
+  DialogDescription,
+  DialogHeader,
+  DialogTitle,
+} from '@/components/ui/dialog';
+import { useAppForm } from '@/components/ui/form';
+import { insertMaintenanceRequestSchema } from '@/pocketbase/schemas/maintenanceRequests';
+import { CreateMaintenanceForm } from './form';
+import {
+  createMaintenanceRequestMutation,
+  listMaintenanceRequestsQuery,
+} from '@/pocketbase/queries/maintenanceRequests';
 
 const CreateMaintenanceDialogForm = () => {
+  const navigate = useNavigate({ from: '/dashboard/maintenances' });
+  const searchParams = useSearch({ from: '/dashboard/maintenances/' });
+  const { queryClient } = useRouteContext({ from: '/dashboard/maintenances/' });
 
-    const navigate = useNavigate({ from: "/dashboard/maintenances" })
+  const maintenanceMutation = useMutation(createMaintenanceRequestMutation);
 
-    const form = useAppForm({
-        defaultValues: {
-            status: MaintenanceRequestsStatusOptions.Pending,
-        } as z.infer<typeof insertMaintenanceRequestSchema>,
-        validators: {
-            onChange: insertMaintenanceRequestSchema
+  const form = useAppForm({
+    defaultValues: {
+      status: 'pending',
+    } as unknown as z.infer<typeof insertMaintenanceRequestSchema>,
+    validators: {
+      onChange: insertMaintenanceRequestSchema,
+    },
+    onSubmit: async ({ value }) =>
+      maintenanceMutation.mutateAsync(value, {
+        onSuccess: () => {
+          queryClient.invalidateQueries(
+            listMaintenanceRequestsQuery(
+              searchParams.page,
+              searchParams.perPage,
+            ),
+          );
+          navigate({
+            to: '/dashboard/maintenances',
+            search: { new: undefined },
+          });
         },
-        onSubmit: async ({ value }) => {
+      }),
+  });
 
-            await pb.collection(Collections.MaintenanceRequests).create(value) // if error, will not continue below
+  return (
+    <Dialog
+      open={searchParams.new}
+      onOpenChange={() =>
+        navigate({ to: '/dashboard/maintenances', search: { new: undefined } })
+      }
+    >
+      <DialogContent>
+        <DialogHeader>
+          <DialogTitle>Create a new request</DialogTitle>
+          <DialogDescription>Enter the right information</DialogDescription>
+        </DialogHeader>
+        <form
+          className="grid grid-cols-4 gap-2.5"
+          onSubmit={(e) => {
+            e.preventDefault();
+            e.stopPropagation();
+            form.handleSubmit();
+          }}
+        >
+          <form.AppForm>
+            <CreateMaintenanceForm form={form} />
+            <form.SubmitButton className="col-span-full">
+              Create a maintenance request
+            </form.SubmitButton>
+          </form.AppForm>
+        </form>
+      </DialogContent>
+    </Dialog>
+  );
+};
 
-            navigate({ to: "/dashboard/maintenances" })
-        }
-    })
-
-    return (
-        <Dialog>
-            <DialogTrigger>Create Maintenance Request</DialogTrigger>
-            <DialogContent>
-                <DialogHeader>
-                    <DialogTitle>Create a new request</DialogTitle>
-                    <DialogDescription>Enter the right information</DialogDescription>
-                </DialogHeader>
-                <form
-                    className='grid grid-cols-4 gap-2.5'
-                    onSubmit={e => {
-                        e.preventDefault();
-                        e.stopPropagation();
-                        form.handleSubmit()
-                    }}>
-                    <form.AppForm>
-                        <CreateMaintenanceForm form={form} />
-                        <form.SubmitButton className='col-span-full'>Create a maintenance request</form.SubmitButton>
-                    </form.AppForm>
-                </form>
-            </DialogContent>
-        </Dialog>
-    )
-}
-
-export default CreateMaintenanceDialogForm
+export default CreateMaintenanceDialogForm;

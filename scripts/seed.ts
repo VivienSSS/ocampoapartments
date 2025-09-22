@@ -92,6 +92,7 @@ async function seedUsers(count: number = 10) {
       lastName,
       role: UsersRoleOptions.Tenant,
       isActive: true,
+      contactEmail: email,
     });
     users.push(user as UsersResponse);
   }
@@ -106,9 +107,6 @@ async function seedTenants(users: UsersResponse[]) {
   for (const user of users) {
     const tenant = await pb.collection(Collections.Tenants).create({
       user: user.id,
-      firstName: user.firstName,
-      lastName: user.lastName,
-      email: user.email,
       phoneNumber: faker.phone.number({ style: 'international' }),
       facebookName: faker.internet.username(),
     });

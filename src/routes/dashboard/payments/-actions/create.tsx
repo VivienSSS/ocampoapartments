@@ -1,53 +1,79 @@
-import { Dialog, DialogContent, DialogDescription, DialogHeader, DialogTitle, DialogTrigger } from '@/components/ui/dialog'
-import { useAppForm } from '@/components/ui/form'
-import { pb } from '@/pocketbase'
-import { insertPaymentSchema } from '@/pocketbase/schemas/payments'
-import { Collections } from '@/pocketbase/types'
-import { useNavigate } from '@tanstack/react-router'
-import React from 'react'
-import type z from 'zod'
-import { CreatePaymentForm } from './form'
+import {
+  useNavigate,
+  useRouteContext,
+  useSearch,
+} from '@tanstack/react-router';
+import type z from 'zod';
+import {
+  Dialog,
+  DialogContent,
+  DialogDescription,
+  DialogHeader,
+  DialogTitle,
+} from '@/components/ui/dialog';
+import { useAppForm } from '@/components/ui/form';
+import { CreatePaymentForm } from './form';
+import { insertPaymentSchema } from '@/pocketbase/schemas/payments';
+import { useMutation } from '@tanstack/react-query';
+import {
+  createPaymentMutation,
+  listPaymentsQuery,
+} from '@/pocketbase/queries/payments';
 
 const CreatePaymentDialogForm = () => {
+  const navigate = useNavigate({ from: '/dashboard/payments' });
+  const search = useSearch({ from: '/dashboard/payments/' });
+  const { queryClient } = useRouteContext({ from: '/dashboard/payments/' });
 
-    const navigate = useNavigate({ from: "/dashboard/payments" })
+  const mutation = useMutation(createPaymentMutation);
 
-    const form = useAppForm({
-        defaultValues: {} as z.infer<typeof insertPaymentSchema>,
-        validators: {
-            onChange: insertPaymentSchema
+  const form = useAppForm({
+    defaultValues: {} as z.infer<typeof insertPaymentSchema>,
+    validators: {
+      onChange: insertPaymentSchema,
+    },
+    onSubmit: async ({ value }) => {
+      mutation.mutate(value, {
+        onSuccess: () => {
+          queryClient.invalidateQueries(
+            listPaymentsQuery(search.page, search.perPage),
+          );
+          navigate({ to: '/dashboard/payments', search: { new: undefined } });
         },
-        onSubmit: async ({ value }) => {
+      });
+    },
+  });
 
-            await pb.collection(Collections.Payments).create(value)
+  return (
+    <Dialog
+      open={!!search.new}
+      onOpenChange={() =>
+        navigate({ to: '/dashboard/payments', search: { new: undefined } })
+      }
+    >
+      <DialogContent>
+        <DialogHeader>
+          <DialogTitle>Create a new payment</DialogTitle>
+          <DialogDescription>Enter the right information</DialogDescription>
+        </DialogHeader>
+        <form
+          className="grid grid-cols-4 gap-2.5"
+          onSubmit={(e) => {
+            e.preventDefault();
+            e.stopPropagation();
+            form.handleSubmit();
+          }}
+        >
+          <form.AppForm>
+            <CreatePaymentForm form={form} />
+            <form.SubmitButton className="col-span-full">
+              Create Payment
+            </form.SubmitButton>
+          </form.AppForm>
+        </form>
+      </DialogContent>
+    </Dialog>
+  );
+};
 
-            navigate({ to: "/dashboard/payments" })
-        }
-    })
-
-    return (
-        <Dialog>
-            <DialogTrigger>Create Payment</DialogTrigger>
-            <DialogContent>
-                <DialogHeader>
-                    <DialogTitle>Create a new property</DialogTitle>
-                    <DialogDescription>Enter the right information</DialogDescription>
-                </DialogHeader>
-                <form
-                    className='grid grid-cols-4 gap-2.5'
-                    onSubmit={e => {
-                        e.preventDefault();
-                        e.stopPropagation();
-                        form.handleSubmit()
-                    }}>
-                    <form.AppForm>
-                        <CreatePaymentForm form={form} />
-                        <form.SubmitButton className='col-span-full'>Create Payment</form.SubmitButton>
-                    </form.AppForm>
-                </form>
-            </DialogContent>
-        </Dialog>
-    )
-}
-
-export default CreatePaymentDialogForm
+export default CreatePaymentDialogForm;

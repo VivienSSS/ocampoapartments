@@ -1,56 +1,90 @@
-import { Dialog, DialogContent, DialogDescription, DialogHeader, DialogTitle, DialogTrigger } from '@/components/ui/dialog'
-import { useAppForm } from '@/components/ui/form'
-import { pb } from '@/pocketbase'
-import { insertAnnouncementSchema } from '@/pocketbase/schemas/announcements'
-import { Collections } from '@/pocketbase/types'
-import { useNavigate } from '@tanstack/react-router'
-import React from 'react'
-import type z from 'zod'
-import { CreateAnnouncementForm } from './form'
+import { useMutation } from "@tanstack/react-query";
+import {
+  useNavigate,
+  useRouteContext,
+  useSearch,
+} from "@tanstack/react-router";
+import z from "zod";
+import {
+  Dialog,
+  DialogContent,
+  DialogDescription,
+  DialogHeader,
+  DialogTitle,
+} from "@/components/ui/dialog";
+import { useAppForm } from "@/components/ui/form";
+import { insertAnnouncementSchema } from "@/pocketbase/schemas/announcements";
+import { CreateAnnouncementForm } from "./form";
+import {
+  createAnnouncementMutation,
+  listAnnouncementsQuery,
+} from "@/pocketbase/queries/announcements";
+import { pb } from "@/pocketbase";
 
 const CreateAnnouncementDialogForm = () => {
+  const navigate = useNavigate({ from: "/dashboard/announcements" });
+  const searchParams = useSearch({ from: "/dashboard/announcements/" });
+  const { queryClient } = useRouteContext({
+    from: "/dashboard/announcements/",
+  });
 
-    const navigate = useNavigate({ from: "/dashboard/announcements" })
+  const announcementMutation = useMutation(createAnnouncementMutation);
 
-    const form = useAppForm({
-        defaultValues: {
-            author: pb.authStore.record?.id,
-        } as z.infer<typeof insertAnnouncementSchema>,
-        validators: {
-            onChange: insertAnnouncementSchema
+  const form = useAppForm({
+    defaultValues: {
+      title: "",
+      message: "",
+      author: pb.authStore.record?.id,
+    } as z.infer<typeof insertAnnouncementSchema>,
+    validators: {
+      onChange: insertAnnouncementSchema,
+    },
+    onSubmit: async ({ value }) =>
+      announcementMutation.mutateAsync(value, {
+        onSuccess: () => {
+          queryClient.invalidateQueries(
+            listAnnouncementsQuery(searchParams.page, searchParams.perPage),
+          );
+          navigate({
+            to: "/dashboard/announcements",
+            search: { new: undefined },
+          });
         },
-        onSubmit: async ({ value }) => {
+      }),
+  });
 
-            await pb.collection(Collections.Announcements).create(value)
+  return (
+    <Dialog
+      open={searchParams.new}
+      onOpenChange={() =>
+        navigate({
+          to: "/dashboard/announcements",
+          search: { new: undefined },
+        })}
+    >
+      <DialogContent>
+        <DialogHeader>
+          <DialogTitle>Create a new announcement</DialogTitle>
+          <DialogDescription>Enter the right information</DialogDescription>
+        </DialogHeader>
+        <form
+          className="grid grid-cols-4 gap-2.5"
+          onSubmit={(e) => {
+            e.preventDefault();
+            e.stopPropagation();
+            form.handleSubmit();
+          }}
+        >
+          <form.AppForm>
+            <CreateAnnouncementForm form={form} />
+            <form.SubmitButton className="col-span-full">
+              Create announcement
+            </form.SubmitButton>
+          </form.AppForm>
+        </form>
+      </DialogContent>
+    </Dialog>
+  );
+};
 
-            navigate({ to: "/dashboard/announcements" })
-        }
-    })
-
-    return (
-        <Dialog>
-            <DialogTrigger>Create Announcement</DialogTrigger>
-            <DialogContent>
-                <DialogHeader>
-                    <DialogTitle>Create a new announcement</DialogTitle>
-                    <DialogDescription>Enter the right information</DialogDescription>
-                </DialogHeader>
-                <form
-                    className='grid grid-cols-4 gap-2.5'
-                    onSubmit={e => {
-                        e.preventDefault();
-                        e.stopPropagation();
-                        form.handleSubmit()
-                    }}>
-                    <form.AppForm>
-                        <CreateAnnouncementForm form={form} />
-                        <form.SubmitButton className='col-span-full'>Create announcement</form.SubmitButton>
-                    </form.AppForm>
-                </form>
-            </DialogContent>
-        </Dialog>
-    )
-}
-
-export default CreateAnnouncementDialogForm
-
+export default CreateAnnouncementDialogForm;

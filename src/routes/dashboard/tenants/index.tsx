@@ -2,40 +2,50 @@ import { createFileRoute } from '@tanstack/react-router';
 import { zodValidator } from '@tanstack/zod-adapter';
 import z from 'zod';
 import DataTable from '@/components/ui/kibo-ui/table/data-table';
-import { pb } from '@/pocketbase';
-import { Collections } from '@/pocketbase/types';
+import { searchParams } from '@/lib/utils';
+import CreateTenantDialogForm from './-actions/create';
 import LoadingComponent from './-loading';
 import { columns } from './-table';
-import CreateTenantDialogForm from './-actions/create';
+import { listTenantsQuery } from '@/pocketbase/queries/tenants';
+import DeleteTenantDialogForm from './-actions/delete';
+import EditTenantDialogForm from './-actions/update';
+import { tenantSchema } from '@/pocketbase/schemas/tenants';
+import { Button } from '@/components/ui/button';
 
 export const Route = createFileRoute('/dashboard/tenants/')({
   component: RouteComponent,
   pendingComponent: LoadingComponent,
-  validateSearch: zodValidator(
-    z.object({
-      page: z.number().nonnegative().default(1).catch(1),
-      perPage: z.number().nonnegative().default(10).catch(10),
-    }),
-  ),
+  validateSearch: zodValidator(searchParams(tenantSchema.keyof())),
   beforeLoad: ({ search }) => ({ search }),
   loader: ({ context }) =>
-    pb
-      .collection(Collections.Tenants)
-      .getList(context.search.page, context.search.perPage, { sort: "-created" }),
+    context.queryClient.fetchQuery(
+      listTenantsQuery(context.search.page, context.search.perPage),
+    ),
 });
 
 function RouteComponent() {
+  const navigate = Route.useNavigate();
   const tenants = Route.useLoaderData();
 
   return (
     <article>
-      <section></section>
-      <section></section>
+      <section>Title</section>
+      <section>
+        <Button
+          onClick={() =>
+            navigate({ search: (prev) => ({ ...prev, new: true }) })
+          }
+        >
+          Create Tenant
+        </Button>
+      </section>
       <section>
         <DataTable columns={columns} data={tenants} />
       </section>
       <section>
         <CreateTenantDialogForm />
+        <DeleteTenantDialogForm />
+        <EditTenantDialogForm />
       </section>
     </article>
   );

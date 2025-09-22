@@ -2,39 +2,49 @@ import { createFileRoute } from '@tanstack/react-router';
 import { zodValidator } from '@tanstack/zod-adapter';
 import z from 'zod';
 import DataTable from '@/components/ui/kibo-ui/table/data-table';
-import { pb } from '@/pocketbase';
-import { Collections } from '@/pocketbase/types';
+import { searchParams } from '@/lib/utils';
+import CreateAnnouncementDialogForm from './-actions/create';
 import LoadingComponent from './-loading';
 import { columns } from './-table';
-import CreateAnnouncementDialogForm from './-actions/create';
+import DeleteAnnouncementDialogForm from './-actions/delete';
+import EditAnnouncementDialogForm from './-actions/update';
+import { announcementSchema } from '@/pocketbase/schemas/announcements';
+import { Button } from '@/components/ui/button';
+import { listAnnouncementsQuery } from '@/pocketbase/queries/announcements';
 
 export const Route = createFileRoute('/dashboard/announcements/')({
   component: RouteComponent,
   pendingComponent: LoadingComponent,
-  validateSearch: zodValidator(
-    z.object({
-      page: z.number().nonnegative().default(1).catch(1),
-      perPage: z.number().nonnegative().default(10).catch(10),
-    }),
-  ),
+  validateSearch: zodValidator(searchParams(announcementSchema.keyof())),
   beforeLoad: ({ search }) => ({ search }),
   loader: ({ context }) =>
-    pb
-      .collection(Collections.Announcements)
-      .getList(context.search.page, context.search.perPage),
+    context.queryClient.fetchQuery(
+      listAnnouncementsQuery(context.search.page, context.search.perPage),
+    ),
 });
 
 function RouteComponent() {
+  const navigate = Route.useNavigate();
   const announcements = Route.useLoaderData();
   return (
     <article>
-      <section></section>
-      <section></section>
+      <section>Title</section>
+      <section>
+        <Button
+          onClick={() =>
+            navigate({ search: (prev) => ({ ...prev, new: true }) })
+          }
+        >
+          Create Announcement
+        </Button>
+      </section>
       <section>
         <DataTable columns={columns} data={announcements} />
       </section>
       <section>
         <CreateAnnouncementDialogForm />
+        <DeleteAnnouncementDialogForm />
+        <EditAnnouncementDialogForm />
       </section>
     </article>
   );
