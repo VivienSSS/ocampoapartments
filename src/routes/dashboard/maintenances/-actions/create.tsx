@@ -13,12 +13,12 @@ import {
   DialogTitle,
 } from '@/components/ui/dialog';
 import { useAppForm } from '@/components/ui/form';
-import { insertMaintenanceRequestSchema } from '@/pocketbase/schemas/maintenanceRequests';
-import { CreateMaintenanceForm } from './form';
 import {
   createMaintenanceRequestMutation,
   listMaintenanceRequestsQuery,
 } from '@/pocketbase/queries/maintenanceRequests';
+import { insertMaintenanceRequestSchema } from '@/pocketbase/schemas/maintenanceRequests';
+import { CreateMaintenanceForm } from './form';
 
 const CreateMaintenanceDialogForm = () => {
   const navigate = useNavigate({ from: '/dashboard/maintenances' });

@@ -1,47 +1,59 @@
-import { useAppForm } from "@/components/ui/form";
-import { EditTenancyForm } from "./form";
-import {
-  listTenanciesQuery,
-  updateTenancyMutation,
-  viewTenancyQuery,
-} from "@/pocketbase/queries/tenancies";
-import { updateTenanciesSchema } from "@/pocketbase/schemas/tenancies";
-import { useMutation, useQuery } from "@tanstack/react-query";
+import { useMutation, useQueries, useQuery } from '@tanstack/react-query';
 import {
   useNavigate,
   useRouteContext,
   useSearch,
-} from "@tanstack/react-router";
+} from '@tanstack/react-router';
+import type z from 'zod';
 import {
   Dialog,
   DialogContent,
   DialogDescription,
   DialogHeader,
   DialogTitle,
-} from "@/components/ui/dialog";
-import type z from "zod";
+} from '@/components/ui/dialog';
+import { useAppForm } from '@/components/ui/form';
+import {
+  listTenanciesQuery,
+  updateTenancyMutation,
+  viewTenancyQuery,
+} from '@/pocketbase/queries/tenancies';
+import { updateTenanciesSchema } from '@/pocketbase/schemas/tenancies';
+import { EditTenancyForm } from './form';
+import { listTenantsQuery } from '@/pocketbase/queries/tenants';
+import { listApartmentUnitsQuery } from '@/pocketbase/queries/apartmentUnits';
 
 const EditTenancyDialogForm = () => {
-  const navigate = useNavigate({ from: "/dashboard/tenancies" });
-  const searchQuery = useSearch({ from: "/dashboard/tenancies/" });
-  const { queryClient } = useRouteContext({ from: "/dashboard/tenancies/" });
+  const navigate = useNavigate({ from: '/dashboard/tenancies' });
+  const searchQuery = useSearch({ from: '/dashboard/tenancies/' });
+  const { queryClient } = useRouteContext({ from: '/dashboard/tenancies/' });
 
-  const mutation = useMutation(
-    updateTenancyMutation(searchQuery.id ?? ""),
-  );
+  const mutation = useMutation(updateTenancyMutation(searchQuery.id ?? ''));
 
-  const { data: tenancy } = useQuery(
+  const [{ data: tenants }, { data: apartmentUnits }, { data: tenancy }] = useQueries(
     {
-      ...viewTenancyQuery(searchQuery.id ?? ""),
-      enabled: !!searchQuery.id && searchQuery.edit,
+      queries: [
+        {
+          ...listTenantsQuery(1, 500),
+          enabled: !!searchQuery.id && searchQuery.edit
+        },
+        {
+          ...listApartmentUnitsQuery(1, 500),
+          enabled: !!searchQuery.id && searchQuery.edit
+        },
+        {
+          ...viewTenancyQuery(searchQuery.id ?? ''),
+          enabled: !!searchQuery.id && searchQuery.edit,
+        },
+      ],
     },
     queryClient,
   );
 
   const form = useAppForm({
     defaultValues: {
-      tenant: tenancy?.tenant ?? "",
-      unit: tenancy?.unit ?? "",
+      tenant: tenancy?.tenant ?? '',
+      unit: tenancy?.unit ?? '',
       leaseStartDate: tenancy?.leaseStartDate
         ? new Date(tenancy.leaseStartDate)
         : undefined,
@@ -57,7 +69,7 @@ const EditTenancyDialogForm = () => {
             listTenanciesQuery(searchQuery.page, searchQuery.perPage),
           );
           navigate({
-            to: "/dashboard/tenancies",
+            to: '/dashboard/tenancies',
             search: { edit: undefined, id: undefined },
           });
         },
@@ -69,9 +81,10 @@ const EditTenancyDialogForm = () => {
       open={!!searchQuery.edit && !!searchQuery.id}
       onOpenChange={() =>
         navigate({
-          to: "/dashboard/tenancies",
+          to: '/dashboard/tenancies',
           search: { edit: undefined, id: undefined },
-        })}
+        })
+      }
     >
       <DialogContent>
         <DialogHeader>
@@ -87,7 +100,7 @@ const EditTenancyDialogForm = () => {
           }}
         >
           <form.AppForm>
-            <EditTenancyForm form={form} />
+            <EditTenancyForm form={form} tenants={tenants?.items ?? []} apartmentUnits={apartmentUnits?.items ?? []} />
             <form.SubmitButton>Update Tenancy</form.SubmitButton>
           </form.AppForm>
         </form>

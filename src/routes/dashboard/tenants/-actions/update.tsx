@@ -1,17 +1,10 @@
-import { useAppForm } from '@/components/ui/form';
-import { EditApartmentForm } from './form';
-import {
-  listTenantsQuery,
-  updateTenantMutation,
-  viewTenantQuery,
-} from '@/pocketbase/queries/tenants';
-import { updateTenantSchema } from '@/pocketbase/schemas/tenants';
 import { useMutation, useQueries, useQuery } from '@tanstack/react-query';
 import {
   useNavigate,
   useRouteContext,
   useSearch,
 } from '@tanstack/react-router';
+import type z from 'zod';
 import {
   Dialog,
   DialogContent,
@@ -19,8 +12,15 @@ import {
   DialogHeader,
   DialogTitle,
 } from '@/components/ui/dialog';
-import type z from 'zod';
+import { useAppForm } from '@/components/ui/form';
+import {
+  listTenantsQuery,
+  updateTenantMutation,
+  viewTenantQuery,
+} from '@/pocketbase/queries/tenants';
 import { listUserQuery } from '@/pocketbase/queries/users';
+import type { updateTenantSchema } from '@/pocketbase/schemas/tenants';
+import { EditApartmentForm } from './form';
 
 const EditTenantDialogForm = () => {
   const navigate = useNavigate({ from: '/dashboard/tenants' });

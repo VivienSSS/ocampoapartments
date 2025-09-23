@@ -1,16 +1,16 @@
 import { createFileRoute } from '@tanstack/react-router';
 import { zodValidator } from '@tanstack/zod-adapter';
 import z from 'zod';
+import { Button } from '@/components/ui/button';
 import DataTable from '@/components/ui/kibo-ui/table/data-table';
 import { searchParams } from '@/lib/utils';
+import { listBillsQuery } from '@/pocketbase/queries/bills';
+import { billSchema } from '@/pocketbase/schemas/bills';
 import CreateBillingDialogForm from './-actions/create';
-import LoadingComponent from './-loading';
-import { columns } from './-table';
 import DeleteBillingDialogForm from './-actions/delete';
 import EditBillingDialogForm from './-actions/update';
-import { billSchema } from '@/pocketbase/schemas/bills';
-import { Button } from '@/components/ui/button';
-import { listBillsQuery } from '@/pocketbase/queries/bills';
+import LoadingComponent from './-loading';
+import { columns } from './-table';
 
 export const Route = createFileRoute('/dashboard/billing/')({
   component: RouteComponent,

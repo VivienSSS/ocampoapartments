@@ -1,3 +1,9 @@
+import { useMutation, useQuery } from '@tanstack/react-query';
+import {
+  useNavigate,
+  useRouteContext,
+  useSearch,
+} from '@tanstack/react-router';
 import {
   AlertDialog,
   AlertDialogAction,
@@ -8,12 +14,6 @@ import {
   AlertDialogHeader,
   AlertDialogTitle,
 } from '@/components/ui/alert-dialog';
-import { useMutation, useQuery } from '@tanstack/react-query';
-import {
-  useNavigate,
-  useRouteContext,
-  useSearch,
-} from '@tanstack/react-router';
 import {
   deleteApartmentUnitMutation,
   listApartmentUnitsQuery,
@@ -50,7 +50,7 @@ const DeleteApartmentDialogForm = () => {
       <AlertDialogContent>
         <AlertDialogHeader>
           <AlertDialogTitle>
-            Are you sure to delete `{apt?.unitLetter}`
+            Are you sure to delete apartment unit `{apt?.unitLetter}`
           </AlertDialogTitle>
           <AlertDialogDescription>
             This action cannot be undone

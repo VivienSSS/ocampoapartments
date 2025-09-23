@@ -1,3 +1,9 @@
+import { useMutation, useQuery } from '@tanstack/react-query';
+import {
+  useNavigate,
+  useRouteContext,
+  useSearch,
+} from '@tanstack/react-router';
 import {
   AlertDialog,
   AlertDialogAction,
@@ -13,12 +19,6 @@ import {
   listTenantsQuery,
   viewTenantQuery,
 } from '@/pocketbase/queries/tenants';
-import { useMutation, useQuery } from '@tanstack/react-query';
-import {
-  useNavigate,
-  useRouteContext,
-  useSearch,
-} from '@tanstack/react-router';
 
 const DeleteTenantDialogForm = () => {
   const searchQuery = useSearch({ from: '/dashboard/tenants/' });

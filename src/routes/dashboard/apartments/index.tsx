@@ -1,19 +1,19 @@
-import { createFileRoute } from "@tanstack/react-router";
-import { zodValidator } from "@tanstack/zod-adapter";
-import z from "zod";
-import DataTable from "@/components/ui/kibo-ui/table/data-table";
-import { searchParams } from "@/lib/utils";
+import { createFileRoute } from '@tanstack/react-router';
+import { zodValidator } from '@tanstack/zod-adapter';
+import z from 'zod';
+import { Button } from '@/components/ui/button';
+import DataTable from '@/components/ui/kibo-ui/table/data-table';
+import { searchParams } from '@/lib/utils';
+import { listApartmentUnitsQuery } from '@/pocketbase/queries/apartmentUnits';
+import { apartmentUnitSchema } from '@/pocketbase/schemas/apartmentUnits';
 // ...existing code
-import CreateApartmentDialogForm from "./-actions/create";
-import LoadingComponent from "./-loading";
-import { columns } from "./-table";
-import { listApartmentUnitsQuery } from "@/pocketbase/queries/apartmentUnits";
-import DeleteApartmentDialogForm from "./-actions/delete";
-import EditApartmentDialogForm from "./-actions/update";
-import { apartmentUnitSchema } from "@/pocketbase/schemas/apartmentUnits";
-import { Button } from "@/components/ui/button";
+import CreateApartmentDialogForm from './-actions/create';
+import DeleteApartmentDialogForm from './-actions/delete';
+import EditApartmentDialogForm from './-actions/update';
+import LoadingComponent from './-loading';
+import { columns } from './-table';
 
-export const Route = createFileRoute("/dashboard/apartments/")({
+export const Route = createFileRoute('/dashboard/apartments/')({
   component: RouteComponent,
   pendingComponent: LoadingComponent,
   validateSearch: zodValidator(searchParams(apartmentUnitSchema.keyof())),
@@ -34,7 +34,8 @@ function RouteComponent() {
       <section>
         <Button
           onClick={() =>
-            navigate({ search: (prev) => ({ ...prev, new: true }) })}
+            navigate({ search: (prev) => ({ ...prev, new: true }) })
+          }
         >
           Create Apartment
         </Button>

@@ -1,9 +1,62 @@
+import { useNavigate } from '@tanstack/react-router';
 import type { ColumnDef } from '@tanstack/react-table';
+import { format } from 'date-fns';
+import { MoreHorizontal } from 'lucide-react';
+import { Button } from '@/components/ui/button';
+import {
+  DropdownMenu,
+  DropdownMenuContent,
+  DropdownMenuItem,
+  DropdownMenuTrigger,
+} from '@/components/ui/dropdown-menu';
 import { TableColumnHeader } from '@/components/ui/kibo-ui/table';
 import type { MaintenanceRequestsResponse } from '@/pocketbase/queries/maintenanceRequests';
-import { format } from 'date-fns';
 
 export const columns: ColumnDef<MaintenanceRequestsResponse>[] = [
+  {
+    header: 'Actions',
+    cell: ({ row }) => {
+      const navigate = useNavigate({ from: '/dashboard/maintenances' });
+
+      return (
+        <DropdownMenu>
+          <DropdownMenuTrigger asChild>
+            <Button variant={'ghost'} size={'icon'}>
+              <MoreHorizontal />
+            </Button>
+          </DropdownMenuTrigger>
+          <DropdownMenuContent>
+            <DropdownMenuItem
+              onClick={() =>
+                navigate({
+                  search: (prev) => ({
+                    ...prev,
+                    id: row.original.id,
+                    edit: true,
+                  }),
+                })
+              }
+            >
+              Edit
+            </DropdownMenuItem>
+            <DropdownMenuItem
+              onClick={() =>
+                navigate({
+                  search: (prev) => ({
+                    ...prev,
+                    id: row.original.id,
+                    delete: true,
+                  }),
+                })
+              }
+            >
+              Delete
+            </DropdownMenuItem>
+          </DropdownMenuContent>
+        </DropdownMenu>
+      );
+    },
+  },
   {
     accessorKey: 'tenant',
     header: ({ column }) => (
@@ -58,3 +111,4 @@ export const columns: ColumnDef<MaintenanceRequestsResponse>[] = [
     cell: ({ row }) => format(row.original.completedDate, 'PPP'),
   },
 ];
+

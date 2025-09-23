@@ -1,30 +1,30 @@
-import { useMutation, useQuery } from "@tanstack/react-query";
+import { useMutation, useQuery } from '@tanstack/react-query';
 import {
   useNavigate,
   useRouteContext,
   useSearch,
-} from "@tanstack/react-router";
-import type z from "zod";
+} from '@tanstack/react-router';
+import type z from 'zod';
 import {
   Dialog,
   DialogContent,
   DialogDescription,
   DialogHeader,
   DialogTitle,
-} from "@/components/ui/dialog";
-import { useAppForm } from "@/components/ui/form";
-import type { insertApartmentUnitSchema } from "@/pocketbase/schemas/apartmentUnits";
-import { CreateApartmentForm } from "./form";
+} from '@/components/ui/dialog';
+import { useAppForm } from '@/components/ui/form';
 import {
   createApartmentUnitMutation,
   listApartmentUnitsQuery,
-} from "@/pocketbase/queries/apartmentUnits";
-import { listPropertiesQuery } from "@/pocketbase/queries/properties";
+} from '@/pocketbase/queries/apartmentUnits';
+import { listPropertiesQuery } from '@/pocketbase/queries/properties';
+import type { insertApartmentUnitSchema } from '@/pocketbase/schemas/apartmentUnits';
+import { CreateApartmentForm } from './form';
 
 const CreateApartmentDialogForm = () => {
-  const navigate = useNavigate({ from: "/dashboard/apartments" });
-  const searchQuery = useSearch({ from: "/dashboard/apartments/" });
-  const { queryClient } = useRouteContext({ from: "/dashboard/apartments/" });
+  const navigate = useNavigate({ from: '/dashboard/apartments' });
+  const searchQuery = useSearch({ from: '/dashboard/apartments/' });
+  const { queryClient } = useRouteContext({ from: '/dashboard/apartments/' });
 
   const apartmentMutation = useMutation(createApartmentUnitMutation);
 
@@ -44,7 +44,7 @@ const CreateApartmentDialogForm = () => {
           queryClient.invalidateQueries(
             listApartmentUnitsQuery(searchQuery.page, searchQuery.perPage),
           );
-          navigate({ to: "/dashboard/apartments", search: { new: undefined } });
+          navigate({ to: '/dashboard/apartments', search: { new: undefined } });
         },
       }),
   });
@@ -52,7 +52,8 @@ const CreateApartmentDialogForm = () => {
     <Dialog
       open={searchQuery.new}
       onOpenChange={() =>
-        navigate({ to: "/dashboard/apartments", search: { new: undefined } })}
+        navigate({ to: '/dashboard/apartments', search: { new: undefined } })
+      }
     >
       <DialogContent>
         <DialogHeader>

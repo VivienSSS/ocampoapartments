@@ -1,13 +1,13 @@
-import { useSuspenseQuery } from "@tanstack/react-query";
-import type z from "zod";
-import { withForm } from "@/components/ui/form";
-import { pb } from "@/pocketbase";
-import {
-  type insertApartmentUnitSchema,
+import { formOptions } from '@tanstack/react-form';
+import { useSuspenseQuery } from '@tanstack/react-query';
+import type z from 'zod';
+import { withForm } from '@/components/ui/form';
+import { pb } from '@/pocketbase';
+import type {
+  insertApartmentUnitSchema,
   updateApartmentUnitSchema,
-} from "@/pocketbase/schemas/apartmentUnits";
-import { Collections, type PropertiesResponse } from "@/pocketbase/types";
-import { formOptions } from "@tanstack/react-form";
+} from '@/pocketbase/schemas/apartmentUnits';
+import { Collections, type PropertiesResponse } from '@/pocketbase/types';
 
 export const CreateApartmentUnitFormOption = formOptions({
   defaultValues: {} as z.infer<typeof insertApartmentUnitSchema>,

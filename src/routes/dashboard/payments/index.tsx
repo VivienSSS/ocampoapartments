@@ -1,9 +1,9 @@
 import { createFileRoute } from '@tanstack/react-router';
 import { zodValidator } from '@tanstack/zod-adapter';
-import { searchParams } from '@/lib/utils';
-import { paymentSchema } from '@/pocketbase/schemas/payments';
 import DataTable from '@/components/ui/kibo-ui/table/data-table';
+import { searchParams } from '@/lib/utils';
 import { listPaymentsQuery } from '@/pocketbase/queries/payments';
+import { paymentSchema } from '@/pocketbase/schemas/payments';
 import CreatePaymentDialogForm from './-actions/create';
 import LoadingComponent from './-loading';
 import { columns } from './-table';

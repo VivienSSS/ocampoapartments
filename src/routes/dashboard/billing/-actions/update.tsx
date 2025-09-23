@@ -1,36 +1,36 @@
-import { useAppForm } from "@/components/ui/form";
-import { useMutation, useQuery } from "@tanstack/react-query";
+import { useMutation, useQuery } from '@tanstack/react-query';
 import {
   useNavigate,
   useRouteContext,
   useSearch,
-} from "@tanstack/react-router";
-import { EditBillingForm } from "./form";
-import { updateBillSchema } from "@/pocketbase/schemas/bills";
-import {
-  listBillsQuery,
-  updateBillMutation,
-  viewBillQuery,
-} from "@/pocketbase/queries/bills";
+} from '@tanstack/react-router';
+import type z from 'zod';
 import {
   Dialog,
   DialogContent,
   DialogDescription,
   DialogHeader,
   DialogTitle,
-} from "@/components/ui/dialog";
-import type z from "zod";
+} from '@/components/ui/dialog';
+import { useAppForm } from '@/components/ui/form';
+import {
+  listBillsQuery,
+  updateBillMutation,
+  viewBillQuery,
+} from '@/pocketbase/queries/bills';
+import { updateBillSchema } from '@/pocketbase/schemas/bills';
+import { EditBillingForm } from './form';
 
 const EditBillingDialogForm = () => {
-  const navigate = useNavigate({ from: "/dashboard/billing" });
-  const searchQuery = useSearch({ from: "/dashboard/billing/" });
-  const { queryClient } = useRouteContext({ from: "/dashboard/billing/" });
+  const navigate = useNavigate({ from: '/dashboard/billing' });
+  const searchQuery = useSearch({ from: '/dashboard/billing/' });
+  const { queryClient } = useRouteContext({ from: '/dashboard/billing/' });
 
-  const billMutation = useMutation(updateBillMutation(searchQuery.id ?? ""));
+  const billMutation = useMutation(updateBillMutation(searchQuery.id ?? ''));
 
   const { data: bill } = useQuery(
     {
-      ...viewBillQuery(searchQuery.id ?? ""),
+      ...viewBillQuery(searchQuery.id ?? ''),
       enabled: !!searchQuery.id && searchQuery.edit,
     },
     queryClient,
@@ -38,9 +38,9 @@ const EditBillingDialogForm = () => {
 
   const form = useAppForm({
     defaultValues: {
-      tenancy: bill?.tenancy ?? "",
+      tenancy: bill?.tenancy ?? '',
       dueDate: bill?.dueDate ? new Date(bill.dueDate) : undefined,
-      status: bill?.status ?? "",
+      status: bill?.status ?? '',
     } as z.infer<typeof updateBillSchema>,
     validators: {
       onChange: updateBillSchema,
@@ -52,7 +52,7 @@ const EditBillingDialogForm = () => {
             listBillsQuery(searchQuery.page, searchQuery.perPage),
           );
           navigate({
-            to: "/dashboard/billing",
+            to: '/dashboard/billing',
             search: { edit: undefined, id: undefined },
           });
         },
@@ -64,9 +64,10 @@ const EditBillingDialogForm = () => {
       open={!!searchQuery.edit && !!searchQuery.id}
       onOpenChange={() =>
         navigate({
-          to: "/dashboard/billing",
+          to: '/dashboard/billing',
           search: { edit: undefined, id: undefined },
-        })}
+        })
+      }
     >
       <DialogContent>
         <DialogHeader>

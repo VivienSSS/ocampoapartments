@@ -8,8 +8,10 @@ import {
   House,
   MapPinHouse,
   Megaphone,
+  Pickaxe,
   ReceiptText,
   Search,
+  ShieldUser,
 } from 'lucide-react';
 import type * as React from 'react';
 
@@ -68,6 +70,11 @@ const data = {
       title: 'Maintenance',
       url: '/dashboard/maintenances',
       icon: Hammer,
+    },
+    {
+      title: 'Maintenance Workers',
+      url: '/dashboard/maintenanceworkers',
+      icon: ShieldUser,
     },
     {
       title: 'Payments',

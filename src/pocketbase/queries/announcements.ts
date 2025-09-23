@@ -1,17 +1,17 @@
-import { mutationOptions, queryOptions } from "@tanstack/react-query";
-import type { ClientResponseError } from "pocketbase";
-import { toast } from "sonner";
-import type z from "zod";
-import { pb } from "..";
+import { mutationOptions, queryOptions } from '@tanstack/react-query';
+import type { ClientResponseError } from 'pocketbase';
+import { toast } from 'sonner';
+import type z from 'zod';
+import { pb } from '..';
 import type {
   insertAnnouncementSchema,
   updateAnnouncementSchema,
-} from "../schemas/announcements";
+} from '../schemas/announcements';
 import {
   type AnnouncementsResponse as AnnouncementsClientResponse,
   Collections,
   type UsersRecord,
-} from "../types";
+} from '../types';
 
 export type AnnouncementsResponse = AnnouncementsClientResponse<{
   author: UsersRecord;
@@ -23,19 +23,18 @@ export const listAnnouncementsQuery = (page: number, perPage: number) =>
     queryFn: () =>
       pb
         .collection<AnnouncementsResponse>(Collections.Announcements)
-        .getList(page, perPage, { expand: "author" }),
+        .getList(page, perPage, { expand: 'author' }),
   });
 
 export const viewAnnouncementQuery = (id: string) =>
   queryOptions({
     queryKey: [Collections.Announcements, id],
     queryFn: () =>
-      pb.collection<AnnouncementsResponse>(Collections.Announcements).getOne(
-        id,
-        {
-          expand: "author",
-        },
-      ),
+      pb
+        .collection<AnnouncementsResponse>(Collections.Announcements)
+        .getOne(id, {
+          expand: 'author',
+        }),
   });
 
 export const createAnnouncementMutation = mutationOptions<
@@ -46,7 +45,7 @@ export const createAnnouncementMutation = mutationOptions<
   mutationFn: async (value) =>
     pb
       .collection(Collections.Announcements)
-      .create<AnnouncementsResponse>(value, { expand: "author" }),
+      .create<AnnouncementsResponse>(value, { expand: 'author' }),
   onSuccess: (value) =>
     toast.success(`Successfully create`, {
       description: `Announcement created: ${value.title}`,
@@ -66,7 +65,7 @@ export const updateAnnouncementMutation = (id: string) =>
     mutationFn: async (value) =>
       pb
         .collection(Collections.Announcements)
-        .update<AnnouncementsResponse>(id, value, { expand: "author" }),
+        .update<AnnouncementsResponse>(id, value, { expand: 'author' }),
     onSuccess: (value) =>
       toast.success(`Changes saved`, {
         description: `Announcement ${value.title} has been updated`,

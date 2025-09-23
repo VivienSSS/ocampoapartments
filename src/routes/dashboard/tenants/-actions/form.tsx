@@ -2,7 +2,7 @@ import type z from 'zod';
 import { withForm } from '@/components/ui/form';
 import {
   insertTenantSchema,
-  updateTenantSchema,
+  type updateTenantSchema,
 } from '@/pocketbase/schemas/tenants';
 import type { UsersRecord } from '@/pocketbase/types';
 

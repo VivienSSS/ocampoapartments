@@ -1,19 +1,19 @@
-import { mutationOptions, queryOptions } from "@tanstack/react-query";
-import type { ClientResponseError } from "pocketbase";
-import { toast } from "sonner";
-import type z from "zod";
-import { pb } from "..";
+import { mutationOptions, queryOptions } from '@tanstack/react-query';
+import type { ClientResponseError } from 'pocketbase';
+import { toast } from 'sonner';
+import type z from 'zod';
+import { pb } from '..';
 import type {
   insertMaintenanceRequestSchema,
   updateMaintenanceRequestSchema,
-} from "../schemas/maintenanceRequests";
+} from '../schemas/maintenanceRequests';
 import {
   Collections,
   type MaintenanceRequestsResponse as MaintenanceRequestsClientResponse,
   type MaintenanceWorkersRecord,
-} from "../types";
-import type { TenantsResponse } from "./tenants";
-import type { ApartmentUnitsResponse } from "./apartmentUnits";
+} from '../types';
+import type { ApartmentUnitsResponse } from './apartmentUnits';
+import type { TenantsResponse } from './tenants';
 
 export type MaintenanceRequestsResponse = MaintenanceRequestsClientResponse<{
   tenant: TenantsResponse;
@@ -28,8 +28,8 @@ export const listMaintenanceRequestsQuery = (page: number, perPage: number) =>
       pb
         .collection(Collections.MaintenanceRequests)
         .getList<MaintenanceRequestsResponse>(page, perPage, {
-          expand: "tenant.user,unit,worker",
-          fields: "*,description:excerpt(25,true)",
+          expand: 'tenant.user,unit,worker',
+          fields: '*,description:excerpt(25,true)',
         }),
   });
 
@@ -41,7 +41,7 @@ export const viewMaintenanceRequestQuery = (id: string) =>
         .collection<MaintenanceRequestsResponse>(
           Collections.MaintenanceRequests,
         )
-        .getOne(id, { expand: "tenant.user,unit,worker" }),
+        .getOne(id, { expand: 'tenant.user,unit,worker' }),
   });
 
 export const createMaintenanceRequestMutation = mutationOptions<
@@ -50,9 +50,11 @@ export const createMaintenanceRequestMutation = mutationOptions<
   z.infer<typeof insertMaintenanceRequestSchema>
 >({
   mutationFn: async (value) =>
-    pb.collection(Collections.MaintenanceRequests).create<
-      MaintenanceRequestsResponse
-    >(value, { expand: "tenant.user,unit,worker" }),
+    pb
+      .collection(Collections.MaintenanceRequests)
+      .create<MaintenanceRequestsResponse>(value, {
+        expand: 'tenant.user,unit,worker',
+      }),
   onSuccess: (value) =>
     toast.success(`Successfully create`, {
       description: `Maintenance request created: ${value.id}`,
@@ -74,7 +76,7 @@ export const updateMaintenanceRequestMutation = (id: string) =>
         .collection<MaintenanceRequestsResponse>(
           Collections.MaintenanceRequests,
         )
-        .update(id, value, { expand: "tenant.user,unit,worker" }),
+        .update(id, value, { expand: 'tenant.user,unit,worker' }),
     onSuccess: (value) =>
       toast.success(`Changes saved`, {
         description: `Maintenance request ${value.id} has been updated`,

@@ -1,16 +1,16 @@
 import { createFileRoute } from '@tanstack/react-router';
 import { zodValidator } from '@tanstack/zod-adapter';
 import z from 'zod';
+import { Button } from '@/components/ui/button';
 import DataTable from '@/components/ui/kibo-ui/table/data-table';
 import { searchParams } from '@/lib/utils';
-import CreateTenantDialogForm from './-actions/create';
-import LoadingComponent from './-loading';
-import { columns } from './-table';
 import { listTenantsQuery } from '@/pocketbase/queries/tenants';
+import { tenantSchema } from '@/pocketbase/schemas/tenants';
+import CreateTenantDialogForm from './-actions/create';
 import DeleteTenantDialogForm from './-actions/delete';
 import EditTenantDialogForm from './-actions/update';
-import { tenantSchema } from '@/pocketbase/schemas/tenants';
-import { Button } from '@/components/ui/button';
+import LoadingComponent from './-loading';
+import { columns } from './-table';
 
 export const Route = createFileRoute('/dashboard/tenants/')({
   component: RouteComponent,

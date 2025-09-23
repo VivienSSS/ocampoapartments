@@ -1,15 +1,15 @@
+import { useNavigate } from '@tanstack/react-router';
 import type { ColumnDef } from '@tanstack/react-table';
-import { TableColumnHeader } from '@/components/ui/kibo-ui/table';
-import type { TenantsResponse } from '@/pocketbase/queries/tenants';
+import { MoreHorizontal } from 'lucide-react';
+import { Button } from '@/components/ui/button';
 import {
   DropdownMenu,
   DropdownMenuContent,
   DropdownMenuItem,
   DropdownMenuTrigger,
 } from '@/components/ui/dropdown-menu';
-import { MoreHorizontal } from 'lucide-react';
-import { Button } from '@/components/ui/button';
-import { useNavigate } from '@tanstack/react-router';
+import { TableColumnHeader } from '@/components/ui/kibo-ui/table';
+import type { TenantsResponse } from '@/pocketbase/queries/tenants';
 
 export const columns: ColumnDef<TenantsResponse>[] = [
   {

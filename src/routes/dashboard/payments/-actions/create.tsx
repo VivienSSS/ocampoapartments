@@ -1,3 +1,4 @@
+import { useMutation } from '@tanstack/react-query';
 import {
   useNavigate,
   useRouteContext,
@@ -12,13 +13,12 @@ import {
   DialogTitle,
 } from '@/components/ui/dialog';
 import { useAppForm } from '@/components/ui/form';
-import { CreatePaymentForm } from './form';
-import { insertPaymentSchema } from '@/pocketbase/schemas/payments';
-import { useMutation } from '@tanstack/react-query';
 import {
   createPaymentMutation,
   listPaymentsQuery,
 } from '@/pocketbase/queries/payments';
+import { insertPaymentSchema } from '@/pocketbase/schemas/payments';
+import { CreatePaymentForm } from './form';
 
 const CreatePaymentDialogForm = () => {
   const navigate = useNavigate({ from: '/dashboard/payments' });

@@ -1,39 +1,39 @@
-import { useMutation } from "@tanstack/react-query";
+import { useMutation } from '@tanstack/react-query';
 import {
   useNavigate,
   useRouteContext,
   useSearch,
-} from "@tanstack/react-router";
-import z from "zod";
+} from '@tanstack/react-router';
+import type z from 'zod';
 import {
   Dialog,
   DialogContent,
   DialogDescription,
   DialogHeader,
   DialogTitle,
-} from "@/components/ui/dialog";
-import { useAppForm } from "@/components/ui/form";
-import { insertAnnouncementSchema } from "@/pocketbase/schemas/announcements";
-import { CreateAnnouncementForm } from "./form";
+} from '@/components/ui/dialog';
+import { useAppForm } from '@/components/ui/form';
+import { pb } from '@/pocketbase';
 import {
   createAnnouncementMutation,
   listAnnouncementsQuery,
-} from "@/pocketbase/queries/announcements";
-import { pb } from "@/pocketbase";
+} from '@/pocketbase/queries/announcements';
+import { insertAnnouncementSchema } from '@/pocketbase/schemas/announcements';
+import { CreateAnnouncementForm } from './form';
 
 const CreateAnnouncementDialogForm = () => {
-  const navigate = useNavigate({ from: "/dashboard/announcements" });
-  const searchParams = useSearch({ from: "/dashboard/announcements/" });
+  const navigate = useNavigate({ from: '/dashboard/announcements' });
+  const searchParams = useSearch({ from: '/dashboard/announcements/' });
   const { queryClient } = useRouteContext({
-    from: "/dashboard/announcements/",
+    from: '/dashboard/announcements/',
   });
 
   const announcementMutation = useMutation(createAnnouncementMutation);
 
   const form = useAppForm({
     defaultValues: {
-      title: "",
-      message: "",
+      title: '',
+      message: '',
       author: pb.authStore.record?.id,
     } as z.infer<typeof insertAnnouncementSchema>,
     validators: {
@@ -46,7 +46,7 @@ const CreateAnnouncementDialogForm = () => {
             listAnnouncementsQuery(searchParams.page, searchParams.perPage),
           );
           navigate({
-            to: "/dashboard/announcements",
+            to: '/dashboard/announcements',
             search: { new: undefined },
           });
         },
@@ -58,9 +58,10 @@ const CreateAnnouncementDialogForm = () => {
       open={searchParams.new}
       onOpenChange={() =>
         navigate({
-          to: "/dashboard/announcements",
+          to: '/dashboard/announcements',
           search: { new: undefined },
-        })}
+        })
+      }
     >
       <DialogContent>
         <DialogHeader>

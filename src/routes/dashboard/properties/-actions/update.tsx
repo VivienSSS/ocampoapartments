@@ -1,16 +1,10 @@
-import { useAppForm } from '@/components/ui/form';
-import {
-  listPropertiesQuery,
-  updatePropertyMutation,
-  viewPropertiesQuery,
-} from '@/pocketbase/queries/properties';
-import { updatePropertySchema } from '@/pocketbase/schemas/properties';
 import { useMutation, useQuery } from '@tanstack/react-query';
 import {
   useNavigate,
   useRouteContext,
   useSearch,
 } from '@tanstack/react-router';
+import type z from 'zod';
 import {
   Dialog,
   DialogContent,
@@ -18,13 +12,21 @@ import {
   DialogHeader,
   DialogTitle,
 } from '@/components/ui/dialog';
-import type z from 'zod';
+import { useAppForm } from '@/components/ui/form';
+import {
+  listPropertiesQuery,
+  updatePropertyMutation,
+  viewPropertiesQuery,
+} from '@/pocketbase/queries/properties';
+import { updatePropertySchema } from '@/pocketbase/schemas/properties';
 import { EditPropertyForm } from './form';
 
 const EditPropertyDialogForm = () => {
   const navigate = useNavigate({ from: '/dashboard/properties' });
   const searchQuery = useSearch({ from: '/dashboard/properties/' });
-  const propertyMutation = useMutation(updatePropertyMutation(searchQuery.id ?? ''));
+  const propertyMutation = useMutation(
+    updatePropertyMutation(searchQuery.id ?? ''),
+  );
   const { queryClient } = useRouteContext({ from: '/dashboard/properties/' });
 
   const { data: property } = useQuery(

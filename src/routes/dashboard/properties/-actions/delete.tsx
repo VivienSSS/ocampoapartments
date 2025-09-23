@@ -1,3 +1,9 @@
+import { useMutation, useQuery } from '@tanstack/react-query';
+import {
+  useNavigate,
+  useRouteContext,
+  useSearch,
+} from '@tanstack/react-router';
 import {
   AlertDialog,
   AlertDialogAction,
@@ -12,12 +18,6 @@ import {
   deletePropertyMutation,
   viewPropertiesQuery,
 } from '@/pocketbase/queries/properties';
-import { useMutation, useQuery } from '@tanstack/react-query';
-import {
-  useNavigate,
-  useRouteContext,
-  useSearch,
-} from '@tanstack/react-router';
 
 const DeletePropertyDialogForm = () => {
   const searchQuery = useSearch({ from: '/dashboard/properties/' });

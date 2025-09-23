@@ -1,18 +1,18 @@
-import { mutationOptions, queryOptions } from "@tanstack/react-query";
-import type { ClientResponseError } from "pocketbase";
-import { toast } from "sonner";
-import type z from "zod";
-import { pb } from "..";
+import { mutationOptions, queryOptions } from '@tanstack/react-query';
+import type { ClientResponseError } from 'pocketbase';
+import { toast } from 'sonner';
+import type z from 'zod';
+import { pb } from '..';
 import type {
   insertTenanciesSchema,
   updateTenanciesSchema,
-} from "../schemas/tenancies";
+} from '../schemas/tenancies';
 import {
   Collections,
   type TenanciesResponse as TenanciesClientResponse,
-} from "../types";
-import type { TenantsResponse } from "./tenants";
-import type { ApartmentUnitsResponse } from "./apartmentUnits";
+} from '../types';
+import type { ApartmentUnitsResponse } from './apartmentUnits';
+import type { TenantsResponse } from './tenants';
 
 export type TenanciesResponse = TenanciesClientResponse<{
   tenant: TenantsResponse;
@@ -26,7 +26,7 @@ export const listTenanciesQuery = (page: number, perPage: number) =>
       pb
         .collection(Collections.Tenancies)
         .getList<TenanciesResponse>(page, perPage, {
-          expand: "tenant.user,unit.property",
+          expand: 'tenant.user,unit.property',
         }),
   });
 
@@ -34,7 +34,7 @@ export const viewTenancyQuery = (id: string) =>
   queryOptions({
     queryKey: [Collections.Tenancies, id],
     queryFn: () =>
-      pb.collection(Collections.Tenancies).getOne<TenanciesResponse>(id),
+      pb.collection(Collections.Tenancies).getOne<TenanciesResponse>(id, { expand: 'tenant.user,unit.property', }),
   });
 
 export const createTenancyMutation = mutationOptions<
@@ -43,7 +43,7 @@ export const createTenancyMutation = mutationOptions<
   z.infer<typeof insertTenanciesSchema>
 >({
   mutationFn: async (value) =>
-    pb.collection(Collections.Tenancies).create(value),
+    pb.collection(Collections.Tenancies).create(value, { expand: 'tenant.user,unit.property', }),
   onSuccess: (value) =>
     toast.success(`Successfully create`, {
       description: `Tenancy created: ${value.id}`,
@@ -61,7 +61,7 @@ export const updateTenancyMutation = (id: string) =>
     z.infer<typeof updateTenanciesSchema>
   >({
     mutationFn: async (value) =>
-      pb.collection(Collections.Tenancies).update(id, value),
+      pb.collection(Collections.Tenancies).update(id, value, { expand: 'tenant.user,unit.property', }),
     onSuccess: (value) =>
       toast.success(`Changes saved`, {
         description: `Tenancy ${value.id} has been updated`,

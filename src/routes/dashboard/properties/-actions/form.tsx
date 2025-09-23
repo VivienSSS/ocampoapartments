@@ -1,11 +1,11 @@
-import type z from "zod";
-import { withForm } from "@/components/ui/form";
+import { formOptions } from '@tanstack/react-form';
+import type z from 'zod';
+import { withForm } from '@/components/ui/form';
 import {
   insertPropertySchema,
   updatePropertySchema,
-} from "@/pocketbase/schemas/properties";
-import { PropertiesBranchOptions } from "@/pocketbase/types";
-import { formOptions } from "@tanstack/react-form";
+} from '@/pocketbase/schemas/properties';
+import { PropertiesBranchOptions } from '@/pocketbase/types';
 
 export const CreatePropertyFormOption = formOptions({
   defaultValues: {} as z.infer<typeof insertPropertySchema>,

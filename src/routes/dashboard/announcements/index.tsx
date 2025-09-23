@@ -1,16 +1,16 @@
 import { createFileRoute } from '@tanstack/react-router';
 import { zodValidator } from '@tanstack/zod-adapter';
 import z from 'zod';
+import { Button } from '@/components/ui/button';
 import DataTable from '@/components/ui/kibo-ui/table/data-table';
 import { searchParams } from '@/lib/utils';
+import { listAnnouncementsQuery } from '@/pocketbase/queries/announcements';
+import { announcementSchema } from '@/pocketbase/schemas/announcements';
 import CreateAnnouncementDialogForm from './-actions/create';
-import LoadingComponent from './-loading';
-import { columns } from './-table';
 import DeleteAnnouncementDialogForm from './-actions/delete';
 import EditAnnouncementDialogForm from './-actions/update';
-import { announcementSchema } from '@/pocketbase/schemas/announcements';
-import { Button } from '@/components/ui/button';
-import { listAnnouncementsQuery } from '@/pocketbase/queries/announcements';
+import LoadingComponent from './-loading';
+import { columns } from './-table';
 
 export const Route = createFileRoute('/dashboard/announcements/')({
   component: RouteComponent,

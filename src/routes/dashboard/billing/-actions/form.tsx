@@ -1,16 +1,16 @@
-import { useSuspenseQuery } from "@tanstack/react-query";
-import type z from "zod";
-import { withFieldGroup, withForm } from "@/components/ui/form";
-import { pb } from "@/pocketbase";
-import { insertBillSchema, updateBillSchema } from "@/pocketbase/schemas/bills";
+import { useSuspenseQuery } from '@tanstack/react-query';
+import type z from 'zod';
+import { Button } from '@/components/ui/button';
+import { Card, CardContent } from '@/components/ui/card';
+import { withFieldGroup, withForm } from '@/components/ui/form';
+import { pb } from '@/pocketbase';
+import type { insertBillItemsSchema } from '@/pocketbase/schemas/billItems';
+import { insertBillSchema, updateBillSchema } from '@/pocketbase/schemas/bills';
 import {
   BillItemsChargeTypeOptions,
   BillsStatusOptions,
   Collections,
-} from "@/pocketbase/types";
-import { Button } from "@/components/ui/button";
-import type { insertBillItemsSchema } from "@/pocketbase/schemas/billItems";
-import { Card, CardContent } from "@/components/ui/card";
+} from '@/pocketbase/types';
 
 export const CreateBillingForm = withForm({
   defaultValues: {
@@ -21,7 +21,7 @@ export const CreateBillingForm = withForm({
   },
   render: ({ form }) => {
     const { data: tenancies } = useSuspenseQuery({
-      queryKey: ["properties"],
+      queryKey: ['properties'],
       queryFn: () => pb.collection(Collections.Tenancies).getFullList(),
     });
 
@@ -59,9 +59,10 @@ export const CreateBillingForm = withForm({
                 onClick={() =>
                   field.pushValue({
                     chargeType: BillItemsChargeTypeOptions.Electricity,
-                    description: "",
+                    description: '',
                     amount: undefined,
-                  })}
+                  })
+                }
               >
                 Add Item
               </Button>
