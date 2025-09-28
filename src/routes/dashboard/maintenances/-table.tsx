@@ -19,14 +19,22 @@ export const columns: ColumnDef<MaintenanceRequestsResponse>[] = [
     header: ({ column }) => (
       <TableColumnHeader column={column} title="Tenant" />
     ),
-    cell: ({ row }) =>
-      `${row.original.expand.tenant.expand.user.firstName} ${row.original.expand.tenant.expand.user.lastName}`,
+    cell: ({ row }) => {
+      const user = row.original.expand?.tenant?.expand?.user;
+      const first = user?.firstName ?? 'Unknown';
+      const last = user?.lastName ?? '';
+      return `${first} ${last}`.trim();
+    },
   },
   {
     accessorKey: 'unit',
     header: ({ column }) => <TableColumnHeader column={column} title="Unit" />,
-    cell: ({ row }) =>
-      `${row.original.expand.unit.unitLetter} - ${row.original.expand.unit.floorNumber}`,
+    cell: ({ row }) => {
+      const unit = row.original.expand?.unit;
+      const letter = unit?.unitLetter ?? 'N/A';
+      const floor = unit?.floorNumber ?? 'N/A';
+      return `${letter} - ${floor}`;
+    },
   },
   {
     accessorKey: 'description',
@@ -86,38 +94,51 @@ export const columns: ColumnDef<MaintenanceRequestsResponse>[] = [
     header: ({ column }) => (
       <TableColumnHeader column={column} title="Worker" />
     ),
-    cell: ({ row }) => `${row.original.expand.worker.name}`,
+    cell: ({ row }) => {
+      const workerName = row.original.expand?.worker?.name ?? 'Unassigned';
+      return `${workerName}`;
+    },
   },
   {
     accessorKey: 'submittedDate',
     header: ({ column }) => (
       <TableColumnHeader column={column} title="Submitted Date" />
     ),
-    cell: ({ row }) => format(row.original.submittedDate, 'PPP'),
+    cell: ({ row }) => {
+      const date = new Date(row.original.submittedDate);
+      return Number.isNaN(date.getTime()) ? 'N/A' : format(date, 'PPP');
+    },
   },
   {
     accessorKey: 'completedDate',
     header: ({ column }) => (
       <TableColumnHeader column={column} title="Completed Date" />
     ),
-    cell: ({ row }) =>
-      row.original.completedDate
-        ? format(row.original.completedDate, 'PPP')
-        : 'N/A',
+    cell: ({ row }) => {
+      if (!row.original.completedDate) return 'N/A';
+      const date = new Date(row.original.completedDate);
+      return Number.isNaN(date.getTime()) ? 'N/A' : format(date, 'PPP');
+    },
   },
   {
     accessorKey: 'created',
     header: ({ column }) => (
       <TableColumnHeader column={column} title="Created" />
     ),
-    cell: ({ row }) => format(new Date(row.getValue('created')), 'PPP'),
+    cell: ({ row }) => {
+      const date = new Date(row.getValue('created'));
+      return Number.isNaN(date.getTime()) ? 'N/A' : format(date, 'PPP');
+    },
   },
   {
     accessorKey: 'updated',
     header: ({ column }) => (
       <TableColumnHeader column={column} title="Updated" />
     ),
-    cell: ({ row }) => format(new Date(row.getValue('updated')), 'PPP'),
+    cell: ({ row }) => {
+      const date = new Date(row.getValue('updated'));
+      return Number.isNaN(date.getTime()) ? 'N/A' : format(date, 'PPP');
+    },
   },
   {
     header: 'Actions',

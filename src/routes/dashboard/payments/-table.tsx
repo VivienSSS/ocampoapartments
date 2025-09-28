@@ -23,6 +23,17 @@ export const columns: ColumnDef<PaymentsResponse>[] = [
     header: ({ column }) => (
       <TableColumnHeader column={column} title="Tenant" />
     ),
+    cell: ({ row }) => {
+      const tenant = (row.original.expand as any)?.tenant;
+      // Prefer the tenant.facebookName, otherwise try the linked user first/last name,
+      // otherwise fall back to the tenant id or 'Unknown'.
+      const facebookName = tenant?.facebookName;
+      const user = tenant?.expand?.user;
+      const first = user?.firstName ?? '';
+      const last = user?.lastName ?? '';
+      const userFull = `${first} ${last}`.trim();
+      return facebookName ?? (userFull || tenant?.id) ?? 'Unknown';
+    },
   },
   {
     accessorKey: 'amountPaid',
