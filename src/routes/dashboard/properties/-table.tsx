@@ -1,6 +1,8 @@
 import { useNavigate } from '@tanstack/react-router';
 import type { ColumnDef } from '@tanstack/react-table';
+import { format } from 'date-fns';
 import { MoreHorizontal } from 'lucide-react';
+import { Badge } from '@/components/ui/badge';
 import { Button } from '@/components/ui/button';
 import {
   DropdownMenu,
@@ -12,6 +14,36 @@ import { TableColumnHeader } from '@/components/ui/kibo-ui/table';
 import type { PropertiesResponse } from '@/pocketbase/types';
 
 export const columns: ColumnDef<PropertiesResponse>[] = [
+  {
+    accessorKey: 'address',
+    header: ({ column }) => (
+      <TableColumnHeader column={column} title="Address" />
+    ),
+    cell: ({ row }) => (
+      <div className="truncate w-32">{row.getValue('address')}</div>
+    ),
+  },
+  {
+    accessorKey: 'branch',
+    header: ({ column }) => (
+      <TableColumnHeader column={column} title="Branch" />
+    ),
+    cell: ({ row }) => <Badge>{row.getValue('branch')}</Badge>,
+  },
+  {
+    accessorKey: 'created',
+    header: ({ column }) => (
+      <TableColumnHeader column={column} title="Created" />
+    ),
+    cell: ({ row }) => format(new Date(row.getValue('created')), 'PPP'),
+  },
+  {
+    accessorKey: 'updated',
+    header: ({ column }) => (
+      <TableColumnHeader column={column} title="Updated" />
+    ),
+    cell: ({ row }) => format(new Date(row.getValue('updated')), 'PPP'),
+  },
   {
     header: 'Actions',
     cell: ({ row }) => {
@@ -55,17 +87,5 @@ export const columns: ColumnDef<PropertiesResponse>[] = [
         </DropdownMenu>
       );
     },
-  },
-  {
-    accessorKey: 'address',
-    header: ({ column }) => (
-      <TableColumnHeader column={column} title="Address" />
-    ),
-  },
-  {
-    accessorKey: 'branch',
-    header: ({ column }) => (
-      <TableColumnHeader column={column} title="Branch" />
-    ),
   },
 ];

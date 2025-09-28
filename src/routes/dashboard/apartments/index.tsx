@@ -26,12 +26,15 @@ export const Route = createFileRoute('/dashboard/apartments/')({
 
 function RouteComponent() {
   const navigate = Route.useNavigate();
+  const searchQuery = Route.useSearch();
   const apartmentUnits = Route.useLoaderData();
 
   return (
     <article>
-      <section>Title</section>
-      <section>
+      <section className="py-2.5">
+        <h1 className="text-2xl font-bold">Apartments</h1>
+      </section>
+      <section className='flex justify-between py-2.5'>
         <Button
           onClick={() =>
             navigate({ search: (prev) => ({ ...prev, new: true }) })
@@ -39,6 +42,14 @@ function RouteComponent() {
         >
           Create Apartment
         </Button>
+        <div className='flex gap-2.5'>
+          <Button disabled={searchQuery.page === 1} onClick={() => navigate({ search: (prev) => ({ ...prev, page: searchQuery.page - 1 }) })}>
+            Prev
+          </Button>
+          <Button disabled={searchQuery.page >= apartmentUnits.totalPages} onClick={() => navigate({ search: (prev) => ({ ...prev, page: searchQuery.page + 1 }) })}>
+            Next
+          </Button>
+        </div>
       </section>
       <section>
         <DataTable columns={columns} data={apartmentUnits} />

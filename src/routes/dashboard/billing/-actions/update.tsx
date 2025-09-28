@@ -38,8 +38,6 @@ const EditBillingDialogForm = () => {
 
   const form = useAppForm({
     defaultValues: {
-      tenancy: bill?.tenancy ?? '',
-      dueDate: bill?.dueDate ? new Date(bill.dueDate) : undefined,
       status: bill?.status ?? '',
     } as z.infer<typeof updateBillSchema>,
     validators: {

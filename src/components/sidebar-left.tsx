@@ -25,8 +25,110 @@ import {
   SidebarHeader,
   SidebarRail,
 } from '@/components/ui/sidebar';
+import { pb } from '@/pocketbase';
+import { UsersRoleOptions } from '@/pocketbase/types';
 
-// This is sample data.
+const showNav = () => {
+  switch (pb.authStore.record?.role) {
+    case UsersRoleOptions.Administrator:
+      return [
+        {
+          title: 'Announcements',
+          url: '/dashboard/announcements',
+          icon: Megaphone,
+        },
+        {
+          title: 'Apartments',
+          url: '/dashboard/apartments',
+          icon: Hotel,
+        },
+        {
+          title: 'Billing',
+          url: '/dashboard/billing',
+          icon: ReceiptText,
+        },
+        {
+          title: 'Maintenance',
+          url: '/dashboard/maintenances',
+          icon: Hammer,
+        },
+        {
+          title: 'Maintenance Workers',
+          url: '/dashboard/maintenanceworkers',
+          icon: ShieldUser,
+        },
+        {
+          title: 'Payments',
+          url: '/dashboard/payments',
+          icon: HandCoins,
+        },
+        {
+          title: 'Properties',
+          url: '/dashboard/properties',
+          icon: MapPinHouse,
+        },
+        {
+          title: 'Tenants',
+          url: '/dashboard/tenants',
+          icon: BookUser,
+        },
+        {
+          title: 'Tenancies',
+          url: '/dashboard/tenancies',
+          icon: House,
+        },
+      ];
+    case UsersRoleOptions['Building Admin']:
+      return [
+        {
+          title: 'Announcements',
+          url: '/dashboard/announcements',
+          icon: Megaphone,
+        },
+        {
+          title: 'Maintenance',
+          url: '/dashboard/maintenances',
+          icon: Hammer,
+        },
+        {
+          title: 'Maintenance Workers',
+          url: '/dashboard/maintenanceworkers',
+          icon: ShieldUser,
+        },
+      ];
+    case UsersRoleOptions.Tenant:
+      return [
+        {
+          title: 'Announcements',
+          url: '/dashboard/announcements',
+          icon: Megaphone,
+        },
+        {
+          title: 'Billing',
+          url: '/dashboard/billing',
+          icon: ReceiptText,
+        },
+        {
+          title: 'Maintenance',
+          url: '/dashboard/maintenances',
+          icon: Hammer,
+        },
+        {
+          title: 'Payment History',
+          url: '/dashboard/payments',
+          icon: HandCoins,
+        },
+        {
+          title: 'Your information',
+          url: '/dashboard/tenants',
+          icon: BookUser,
+        },
+      ];
+    default:
+      return [];
+  }
+}
+
 const data = {
   teams: [
     {
@@ -39,11 +141,6 @@ const data = {
       logo: AudioWaveform,
       plan: 'Startup',
     },
-    {
-      name: 'Evil Corp.',
-      logo: Command,
-      plan: 'Free',
-    },
   ],
   navMain: [
     {
@@ -51,51 +148,7 @@ const data = {
       url: '#',
       icon: Search,
     },
-    {
-      title: 'Announcements',
-      url: '/dashboard/announcements',
-      icon: Megaphone,
-    },
-    {
-      title: 'Apartments',
-      url: '/dashboard/apartments',
-      icon: Hotel,
-    },
-    {
-      title: 'Billing',
-      url: '/dashboard/billing',
-      icon: ReceiptText,
-    },
-    {
-      title: 'Maintenance',
-      url: '/dashboard/maintenances',
-      icon: Hammer,
-    },
-    {
-      title: 'Maintenance Workers',
-      url: '/dashboard/maintenanceworkers',
-      icon: ShieldUser,
-    },
-    {
-      title: 'Payments',
-      url: '/dashboard/payments',
-      icon: HandCoins,
-    },
-    {
-      title: 'Properties',
-      url: '/dashboard/properties',
-      icon: MapPinHouse,
-    },
-    {
-      title: 'Tenants',
-      url: '/dashboard/tenants',
-      icon: BookUser,
-    },
-    {
-      title: 'Tenancies',
-      url: '/dashboard/tenancies',
-      icon: House,
-    },
+    ...Array.from(showNav())
   ],
   navSecondary: [
     // {
@@ -289,7 +342,7 @@ export function SidebarLeft({
   ...props
 }: React.ComponentProps<typeof Sidebar>) {
   return (
-    <Sidebar className="border-r-0" {...props}>
+    <Sidebar {...props}>
       <SidebarHeader>
         <NavMain items={data.navMain} />
       </SidebarHeader>
@@ -298,7 +351,6 @@ export function SidebarLeft({
         <NavWorkspaces workspaces={data.workspaces} />
         <NavSecondary items={data.navSecondary} className="mt-auto" />
       </SidebarContent>
-      <SidebarRail />
     </Sidebar>
   );
 }

@@ -1,11 +1,20 @@
-import { createFileRoute, Outlet, redirect } from '@tanstack/react-router';
+import {
+  createFileRoute,
+  Link,
+  Outlet,
+  redirect,
+  useMatches,
+} from '@tanstack/react-router';
+import React from 'react';
 import { SidebarLeft } from '@/components/sidebar-left';
 import { SidebarRight } from '@/components/sidebar-right';
 import {
   Breadcrumb,
   BreadcrumbItem,
+  BreadcrumbLink,
   BreadcrumbList,
   BreadcrumbPage,
+  BreadcrumbSeparator,
 } from '@/components/ui/breadcrumb';
 import { Separator } from '@/components/ui/separator';
 import {
@@ -23,11 +32,43 @@ export const Route = createFileRoute('/dashboard')({
 });
 
 function RouteComponent() {
+  const matches = useMatches();
+
+  const breadcrumbs = matches
+    .filter((match) => {
+      return match.pathname !== '/' && match.pathname !== '/dashboard';
+    })
+    .map((match, index, array) => {
+      const isLast = index === array.length - 1;
+      const title =
+        match.pathname
+          .split('/')
+          .filter(Boolean)
+          .pop()
+          ?.replace(/-/g, ' ')
+          .replace(/\b\w/g, (l) => l.toUpperCase()) ?? '';
+
+      return (
+        <React.Fragment key={match.id}>
+          <BreadcrumbItem>
+            {isLast ? (
+              <BreadcrumbPage>{title}</BreadcrumbPage>
+            ) : (
+              <BreadcrumbLink asChild>
+                <Link to={match.pathname}>{title}</Link>
+              </BreadcrumbLink>
+            )}
+          </BreadcrumbItem>
+          {!isLast && <BreadcrumbSeparator />}
+        </React.Fragment>
+      );
+    });
+
   return (
     <SidebarProvider>
-      <SidebarLeft />
-      <SidebarInset>
-        <header className="bg-background sticky top-0 flex h-14 shrink-0 items-center gap-2">
+      <SidebarLeft variant="sidebar" />
+      <SidebarInset className="m-4 rounded-md overflow-x-auto">
+        <header className="sticky top-0 flex h-14 shrink-0 items-center gap-2">
           <div className="flex flex-1 items-center gap-2 px-3">
             <SidebarTrigger />
             <Separator
@@ -37,10 +78,12 @@ function RouteComponent() {
             <Breadcrumb>
               <BreadcrumbList>
                 <BreadcrumbItem>
-                  <BreadcrumbPage className="line-clamp-1">
-                    Project Management & Task Tracking
-                  </BreadcrumbPage>
+                  <BreadcrumbLink asChild>
+                    <Link to="/dashboard">Dashboard</Link>
+                  </BreadcrumbLink>
                 </BreadcrumbItem>
+                {breadcrumbs.length > 0 && <BreadcrumbSeparator />}
+                {breadcrumbs}
               </BreadcrumbList>
             </Breadcrumb>
           </div>

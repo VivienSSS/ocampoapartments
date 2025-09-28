@@ -28,7 +28,7 @@ if (rootEl) {
   const root = ReactDOM.createRoot(rootEl);
   root.render(
     <React.StrictMode>
-      <ThemeProvider defaultTheme="dark" storageKey="apartment-system">
+      <ThemeProvider defaultTheme="light" storageKey="apartment-system">
         <QueryClientProvider client={queryClient}>
           <RouterProvider router={router} />
           <Toaster />

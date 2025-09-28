@@ -6,7 +6,6 @@ import { pb } from '@/pocketbase';
 import { loginUserMutation } from '@/pocketbase/queries/users';
 import { loginUserSchema } from '@/pocketbase/schemas/users';
 import { LoginForm } from '@/components/login-form';
-import { GalleryVerticalEnd } from "lucide-react"
 
 export const Route = createFileRoute('/login/')({
   component: RouteComponent,

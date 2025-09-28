@@ -10,9 +10,7 @@ import { Collections, PaymentsPaymentMethodOptions } from '@/pocketbase/types';
 
 export const CreatePaymentForm = withForm({
   defaultValues: {} as z.infer<typeof insertPaymentSchema>,
-  validators: {
-    onChange: insertPaymentSchema,
-  },
+
   render: ({ form }) => {
     const [tenants, bills] = useSuspenseQueries({
       queries: [
@@ -84,6 +82,14 @@ export const CreatePaymentForm = withForm({
         <form.AppField name="transactionId">
           {(field) => (
             <field.TextField
+              className="col-span-full"
+              placeholder="Transaction ID"
+            />
+          )}
+        </form.AppField>
+        <form.AppField name="screenshot">
+          {(field) => (
+            <field.FileField
               className="col-span-full"
               placeholder="Transaction ID"
             />

@@ -26,9 +26,9 @@ const CreateBillingDialogForm = () => {
 
   const form = useAppForm({
     defaultValues: {} as z.infer<typeof insertBillSchema>,
-    validators: {
-      onChange: insertBillSchema,
-    },
+    // validators: {
+    //   onChange: insertBillSchema,
+    // },
     onSubmit: async ({ value }) =>
       billMutation.mutateAsync(value, {
         onSuccess: () => {

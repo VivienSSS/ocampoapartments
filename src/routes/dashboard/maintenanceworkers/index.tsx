@@ -13,6 +13,7 @@ import { listMaintenanceWorkersQuery } from '@/pocketbase/queries/maintenanceWor
 import { Button } from '@/components/ui/button';
 import CreateWorkerDialogForm from './-actions/create';
 import EditWorkerDialogForm from './-actions/update';
+import DeleteWorkerDialogForm from './-actions/delete';
 
 export const Route = createFileRoute('/dashboard/maintenanceworkers/')({
   component: RouteComponent,
@@ -26,19 +27,45 @@ export const Route = createFileRoute('/dashboard/maintenanceworkers/')({
 
 function RouteComponent() {
   const navigate = Route.useNavigate();
-  const announcements = Route.useLoaderData();
+  const searchQuery = Route.useSearch();
+  const maintenanceWorkers = Route.useLoaderData();
   return (
     <article>
-      <section></section>
-      <section>
+      <section className="py-2.5">
+        <h1 className="text-2xl font-bold">Maintenance Workers</h1>
+      </section>
+      <section className='flex justify-between py-2.5'>
         <Button onClick={() => navigate({ search: (prev) => ({ ...prev, new: true }) })}>Create Worker</Button>
+        <div className='flex gap-2.5'>
+          <Button
+            disabled={searchQuery.page === 1}
+            onClick={() =>
+              navigate({
+                search: (prev) => ({ ...prev, page: searchQuery.page - 1 }),
+              })
+            }
+          >
+            Prev
+          </Button>
+          <Button
+            disabled={searchQuery.page >= maintenanceWorkers.totalPages}
+            onClick={() =>
+              navigate({
+                search: (prev) => ({ ...prev, page: searchQuery.page + 1 }),
+              })
+            }
+          >
+            Next
+          </Button>
+        </div>
       </section>
       <section>
-        <DataTable columns={columns} data={announcements} />
+        <DataTable columns={columns} data={maintenanceWorkers} />
       </section>
       <section>
         <CreateWorkerDialogForm />
         <EditWorkerDialogForm />
+        <DeleteWorkerDialogForm />
       </section>
     </article>
   );

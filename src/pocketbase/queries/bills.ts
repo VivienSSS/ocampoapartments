@@ -7,11 +7,11 @@ import type { insertBillSchema, updateBillSchema } from '../schemas/bills';
 import {
   type BillsResponse as BillsClientResponse,
   Collections,
-  type TenanciesRecord,
 } from '../types';
+import type { TenanciesResponse } from './tenancies';
 
 export type BillsResponse = BillsClientResponse<{
-  tenancy: TenanciesRecord;
+  tenancy: TenanciesResponse;
 }>;
 
 export const listBillsQuery = (page: number, perPage: number) =>
@@ -19,7 +19,7 @@ export const listBillsQuery = (page: number, perPage: number) =>
     queryKey: [Collections.Bills, page, perPage],
     queryFn: () =>
       pb.collection<BillsResponse>(Collections.Bills).getList(page, perPage, {
-        expand: 'tenancy',
+        expand: 'tenancy.tenant.user,tenancy.tenant.unit',
       }),
   });
 
@@ -28,7 +28,7 @@ export const viewBillQuery = (id: string) =>
     queryKey: [Collections.Bills, id],
     queryFn: () =>
       pb.collection<BillsResponse>(Collections.Bills).getOne(id, {
-        expand: 'tenancy',
+        expand: 'tenancy.tenant.user,tenancy.tenant.unit',
       }),
   });
 
@@ -43,7 +43,7 @@ export const createBillMutation = mutationOptions<
     const billRecord = await pb
       .collection(Collections.Bills)
       .create<BillsResponse>(bill, {
-        expand: 'tenancy',
+        expand: 'tenancy.tenant.user,tenancy.tenant.unit',
       });
 
     for (const item of items) {
@@ -72,7 +72,7 @@ export const updateBillMutation = (id: string) =>
   >({
     mutationFn: async (value) =>
       pb.collection(Collections.Bills).update<BillsResponse>(id, value, {
-        expand: 'tenancy',
+        expand: 'tenancy.tenant.user,tenancy.tenant.unit',
       }),
     onSuccess: (value) =>
       toast.success(`Changes saved`, {

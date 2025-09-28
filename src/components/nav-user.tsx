@@ -26,6 +26,7 @@ import {
   useSidebar,
 } from '@/components/ui/sidebar';
 import { pb } from '@/pocketbase';
+import { ModeToggle } from './mode-toggle';
 
 export function NavUser({
   user,
@@ -93,6 +94,8 @@ export function NavUser({
                 </div>
               </div>
             </DropdownMenuLabel>
+            <DropdownMenuSeparator />
+            <ModeToggle />
             <DropdownMenuSeparator />
             <DropdownMenuItem
               onClick={() => {

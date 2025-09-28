@@ -24,12 +24,15 @@ export const Route = createFileRoute('/dashboard/tenancies/')({
 
 function RouteComponent() {
   const navigate = Route.useNavigate();
-  const tenants = Route.useLoaderData();
+  const searchQuery = Route.useSearch();
+  const tenancies = Route.useLoaderData();
 
   return (
     <article>
-      <section></section>
-      <section>
+      <section className="py-2.5">
+        <h1 className="text-2xl font-bold">Tenancies</h1>
+      </section>
+      <section className='flex justify-between py-2.5'>
         <Button
           onClick={() =>
             navigate({ search: (prev) => ({ ...prev, new: true }) })
@@ -37,9 +40,31 @@ function RouteComponent() {
         >
           Create Resident
         </Button>
+        <div className='flex gap-2.5'>
+          <Button
+            disabled={searchQuery.page === 1}
+            onClick={() =>
+              navigate({
+                search: (prev) => ({ ...prev, page: searchQuery.page - 1 }),
+              })
+            }
+          >
+            Prev
+          </Button>
+          <Button
+            disabled={searchQuery.page >= tenancies.totalPages}
+            onClick={() =>
+              navigate({
+                search: (prev) => ({ ...prev, page: searchQuery.page + 1 }),
+              })
+            }
+          >
+            Next
+          </Button>
+        </div>
       </section>
       <section>
-        <DataTable columns={columns} data={tenants} />
+        <DataTable columns={columns} data={tenancies} />
       </section>
       <section>
         <CreateTenantDialogForm />

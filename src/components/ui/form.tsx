@@ -5,6 +5,7 @@ import SelectField from '../field-components/select-field';
 import TextAreaField from '../field-components/text-area-field';
 import TextField from '../field-components/text-field';
 import { Button } from './button';
+import FileField from '../field-components/file-field';
 
 // export useFieldContext for use in your custom components
 export const { fieldContext, formContext, useFieldContext, useFormContext } =
@@ -33,6 +34,7 @@ export const { useAppForm, withForm, withFieldGroup } = createFormHook({
     DateField,
     SelectField,
     TextAreaField,
+    FileField,
   },
   formComponents: { SubmitButton },
 });

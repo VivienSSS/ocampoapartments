@@ -11,19 +11,17 @@ import {
   BillsStatusOptions,
   Collections,
 } from '@/pocketbase/types';
+import { listTenanciesQuery } from '@/pocketbase/queries/tenancies';
 
 export const CreateBillingForm = withForm({
   defaultValues: {
     items: [{}],
   } as z.infer<typeof insertBillSchema>,
-  validators: {
-    onChange: insertBillSchema,
-  },
+  // validators: {
+  //   onChange: insertBillSchema,
+  // },
   render: ({ form }) => {
-    const { data: tenancies } = useSuspenseQuery({
-      queryKey: ['properties'],
-      queryFn: () => pb.collection(Collections.Tenancies).getFullList(),
-    });
+    const { data: tenancies } = useSuspenseQuery(listTenanciesQuery(1, 100));
 
     return (
       <>
@@ -31,8 +29,8 @@ export const CreateBillingForm = withForm({
           {(field) => (
             <field.SelectField
               className="col-span-full"
-              options={tenancies.map((value) => ({
-                label: value.tenant,
+              options={tenancies.items.map((value) => ({
+                label: `${value.expand.tenant.expand.user.firstName} ${value.expand.tenant.expand.user.lastName}`,
                 value: value.id,
               }))}
               label="Tenancies"
@@ -56,6 +54,7 @@ export const CreateBillingForm = withForm({
                 />
               ))}
               <Button
+                type='button'
                 onClick={() =>
                   field.pushValue({
                     chargeType: BillItemsChargeTypeOptions.Electricity,
@@ -122,14 +121,17 @@ export const EditBillingForm = withForm({
   },
   render: ({ form }) => (
     <>
-      <form.AppField name="tenancy">
-        {(field) => <field.TextField />}
-      </form.AppField>
-      <form.AppField name="dueDate">
-        {(field) => <field.TextField />}
-      </form.AppField>
       <form.AppField name="status">
-        {(field) => <field.TextField />}
+        {(field) => (
+          <field.SelectField
+            className="col-span-full"
+            options={Object.keys(BillsStatusOptions).map((value) => ({
+              label: value,
+              value: value,
+            }))}
+            placeholder="Status"
+          />
+        )}
       </form.AppField>
     </>
   ),

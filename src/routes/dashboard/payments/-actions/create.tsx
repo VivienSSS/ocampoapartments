@@ -29,9 +29,6 @@ const CreatePaymentDialogForm = () => {
 
   const form = useAppForm({
     defaultValues: {} as z.infer<typeof insertPaymentSchema>,
-    validators: {
-      onChange: insertPaymentSchema,
-    },
     onSubmit: async ({ value }) => {
       mutation.mutate(value, {
         onSuccess: () => {
