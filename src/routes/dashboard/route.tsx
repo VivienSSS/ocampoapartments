@@ -40,13 +40,16 @@ function RouteComponent() {
     })
     .map((match, index, array) => {
       const isLast = index === array.length - 1;
+      const rawSegment =
+        match.pathname.split('/').filter(Boolean).pop() ?? '';
+
+      const titleMap: Record<string, string> = {
+        // prettier display names for path segments that are single-word ids
+        maintenanceworkers: 'Maintenance Workers',
+      };
+
       const title =
-        match.pathname
-          .split('/')
-          .filter(Boolean)
-          .pop()
-          ?.replace(/-/g, ' ')
-          .replace(/\b\w/g, (l) => l.toUpperCase()) ?? '';
+        (titleMap[rawSegment] ?? rawSegment.replace(/-/g, ' ').replace(/\b\w/g, (l) => l.toUpperCase())) || '';
 
       return (
         <React.Fragment key={match.id}>

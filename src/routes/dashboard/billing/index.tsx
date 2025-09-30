@@ -6,6 +6,8 @@ import DataTable from '@/components/ui/kibo-ui/table/data-table';
 import { searchParams } from '@/lib/utils';
 import { listBillsQuery } from '@/pocketbase/queries/bills';
 import { billSchema } from '@/pocketbase/schemas/bills';
+import { pb } from '@/pocketbase';
+import { UsersRoleOptions } from '@/pocketbase/types';
 import CreateBillingDialogForm from './-actions/create';
 import DeleteBillingDialogForm from './-actions/delete';
 import EditBillingDialogForm from './-actions/update';
@@ -34,13 +36,15 @@ function RouteComponent() {
         <h1 className="text-2xl font-bold">Billing</h1>
       </section>
       <section className='flex justify-between py-2.5'>
-        <Button
-          onClick={() =>
-            navigate({ search: (prev) => ({ ...prev, new: true }) })
-          }
-        >
-          Create Billing
-        </Button>
+        {pb.authStore.record?.role !== UsersRoleOptions.Tenant && (
+          <Button
+            onClick={() =>
+              navigate({ search: (prev) => ({ ...prev, new: true }) })
+            }
+          >
+            Create Billing
+          </Button>
+        )}
         <div className='flex gap-2.5'>
           <Button
             disabled={searchQuery.page === 1}
@@ -68,7 +72,9 @@ function RouteComponent() {
         <DataTable columns={columns} data={bills} />
       </section>
       <section>
-        <CreateBillingDialogForm />
+        {pb.authStore.record?.role !== UsersRoleOptions.Tenant && (
+          <CreateBillingDialogForm />
+        )}
         <DeleteBillingDialogForm />
         <EditBillingDialogForm />
       </section>

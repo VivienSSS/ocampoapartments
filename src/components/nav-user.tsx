@@ -100,7 +100,7 @@ export function NavUser({
             <DropdownMenuItem
               onClick={() => {
                 pb.authStore.clear();
-                navigate({ to: '/login' });
+                navigate({ to: '/' });
               }}
             >
               <LogOut />

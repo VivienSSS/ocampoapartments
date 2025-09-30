@@ -11,6 +11,7 @@ import DeleteTenantDialogForm from './-actions/delete';
 import EditTenantDialogForm from './-actions/update';
 import LoadingComponent from './-loading';
 import { columns } from './-table';
+import { pb } from '@/pocketbase';
 
 export const Route = createFileRoute('/dashboard/tenants/')({
   component: RouteComponent,
@@ -33,7 +34,7 @@ function RouteComponent() {
       <section className="py-2.5">
         <h1 className="text-2xl font-bold">Tenants</h1>
       </section>
-      <section className='flex justify-between py-2.5'>
+      {pb.authStore?.record?.role !== "Tenant" && <section className='flex justify-between py-2.5'>
         <Button
           onClick={() =>
             navigate({ search: (prev) => ({ ...prev, new: true }) })
@@ -63,7 +64,7 @@ function RouteComponent() {
             Next
           </Button>
         </div>
-      </section>
+      </section>}
       <section>
         <DataTable columns={columns} data={tenants} />
       </section>

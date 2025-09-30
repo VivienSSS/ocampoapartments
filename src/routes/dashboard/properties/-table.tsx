@@ -14,21 +14,22 @@ import { TableColumnHeader } from '@/components/ui/kibo-ui/table';
 import type { PropertiesResponse } from '@/pocketbase/types';
 
 export const columns: ColumnDef<PropertiesResponse>[] = [
+
+  {
+    accessorKey: 'branch',
+    header: ({ column }) => (
+      <TableColumnHeader column={column} title="Branch" />
+    ),
+    cell: ({ row }) => <Badge className='bg-[#928c6f]'>{row.getValue('branch')}</Badge>,
+  },
   {
     accessorKey: 'address',
     header: ({ column }) => (
       <TableColumnHeader column={column} title="Address" />
     ),
     cell: ({ row }) => (
-      <div className="truncate w-32">{row.getValue('address')}</div>
+      <div>{row.getValue('address')}</div>
     ),
-  },
-  {
-    accessorKey: 'branch',
-    header: ({ column }) => (
-      <TableColumnHeader column={column} title="Branch" />
-    ),
-    cell: ({ row }) => <Badge>{row.getValue('branch')}</Badge>,
   },
   {
     accessorKey: 'created',

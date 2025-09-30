@@ -4,6 +4,9 @@ import { format } from 'date-fns';
 import { MoreHorizontal } from 'lucide-react';
 import { Badge } from '@/components/ui/badge';
 import { Button } from '@/components/ui/button';
+import { useSuspenseQuery } from '@tanstack/react-query';
+import { pb } from '@/pocketbase';
+import { Collections } from '@/pocketbase/types';
 import {
   DropdownMenu,
   DropdownMenuContent,
@@ -14,6 +17,28 @@ import { TableColumnHeader } from '@/components/ui/kibo-ui/table';
 import type { BillsResponse } from '@/pocketbase/queries/bills';
 
 export const columns: ColumnDef<BillsResponse>[] = [
+  {
+    accessorKey: 'chargeTypes',
+    header: ({ column }) => (
+      <TableColumnHeader column={column} title="Charge Types" />
+    ),
+    cell: ({ row }) => {
+      const billId = row.original.id;
+      const { data } = useSuspenseQuery({
+        queryKey: [Collections.BillItems, billId],
+        queryFn: () =>
+          pb.collection(Collections.BillItems).getList(1, 100, {
+            filter: `bill = '${billId}'`,
+          }),
+      });
+
+      const types = (data?.items ?? []).map((i: any) => i.chargeType).filter(Boolean);
+      const unique = Array.from(new Set(types));
+
+      return unique.length ? unique.join(', ') : '—';
+    },
+  },
+
   {
     accessorKey: 'tenancy',
     header: ({ column }) => (

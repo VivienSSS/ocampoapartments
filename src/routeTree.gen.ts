@@ -11,7 +11,6 @@
 import { Route as rootRouteImport } from './routes/__root'
 import { Route as DashboardRouteRouteImport } from './routes/dashboard/route'
 import { Route as IndexRouteImport } from './routes/index'
-import { Route as LoginIndexRouteImport } from './routes/login/index'
 import { Route as DashboardTenantsIndexRouteImport } from './routes/dashboard/tenants/index'
 import { Route as DashboardTenanciesIndexRouteImport } from './routes/dashboard/tenancies/index'
 import { Route as DashboardPropertiesIndexRouteImport } from './routes/dashboard/properties/index'
@@ -30,11 +29,6 @@ const DashboardRouteRoute = DashboardRouteRouteImport.update({
 const IndexRoute = IndexRouteImport.update({
   id: '/',
   path: '/',
-  getParentRoute: () => rootRouteImport,
-} as any)
-const LoginIndexRoute = LoginIndexRouteImport.update({
-  id: '/login/',
-  path: '/login/',
   getParentRoute: () => rootRouteImport,
 } as any)
 const DashboardTenantsIndexRoute = DashboardTenantsIndexRouteImport.update({
@@ -91,7 +85,6 @@ const DashboardAnnouncementsIndexRoute =
 export interface FileRoutesByFullPath {
   '/': typeof IndexRoute
   '/dashboard': typeof DashboardRouteRouteWithChildren
-  '/login': typeof LoginIndexRoute
   '/dashboard/announcements': typeof DashboardAnnouncementsIndexRoute
   '/dashboard/apartments': typeof DashboardApartmentsIndexRoute
   '/dashboard/billing': typeof DashboardBillingIndexRoute
@@ -105,7 +98,6 @@ export interface FileRoutesByFullPath {
 export interface FileRoutesByTo {
   '/': typeof IndexRoute
   '/dashboard': typeof DashboardRouteRouteWithChildren
-  '/login': typeof LoginIndexRoute
   '/dashboard/announcements': typeof DashboardAnnouncementsIndexRoute
   '/dashboard/apartments': typeof DashboardApartmentsIndexRoute
   '/dashboard/billing': typeof DashboardBillingIndexRoute
@@ -120,7 +112,6 @@ export interface FileRoutesById {
   __root__: typeof rootRouteImport
   '/': typeof IndexRoute
   '/dashboard': typeof DashboardRouteRouteWithChildren
-  '/login/': typeof LoginIndexRoute
   '/dashboard/announcements/': typeof DashboardAnnouncementsIndexRoute
   '/dashboard/apartments/': typeof DashboardApartmentsIndexRoute
   '/dashboard/billing/': typeof DashboardBillingIndexRoute
@@ -136,7 +127,6 @@ export interface FileRouteTypes {
   fullPaths:
     | '/'
     | '/dashboard'
-    | '/login'
     | '/dashboard/announcements'
     | '/dashboard/apartments'
     | '/dashboard/billing'
@@ -150,7 +140,6 @@ export interface FileRouteTypes {
   to:
     | '/'
     | '/dashboard'
-    | '/login'
     | '/dashboard/announcements'
     | '/dashboard/apartments'
     | '/dashboard/billing'
@@ -164,7 +153,6 @@ export interface FileRouteTypes {
     | '__root__'
     | '/'
     | '/dashboard'
-    | '/login/'
     | '/dashboard/announcements/'
     | '/dashboard/apartments/'
     | '/dashboard/billing/'
@@ -179,7 +167,6 @@ export interface FileRouteTypes {
 export interface RootRouteChildren {
   IndexRoute: typeof IndexRoute
   DashboardRouteRoute: typeof DashboardRouteRouteWithChildren
-  LoginIndexRoute: typeof LoginIndexRoute
 }
 
 declare module '@tanstack/react-router' {
@@ -196,13 +183,6 @@ declare module '@tanstack/react-router' {
       path: '/'
       fullPath: '/'
       preLoaderRoute: typeof IndexRouteImport
-      parentRoute: typeof rootRouteImport
-    }
-    '/login/': {
-      id: '/login/'
-      path: '/login'
-      fullPath: '/login'
-      preLoaderRoute: typeof LoginIndexRouteImport
       parentRoute: typeof rootRouteImport
     }
     '/dashboard/tenants/': {
@@ -302,7 +282,6 @@ const DashboardRouteRouteWithChildren = DashboardRouteRoute._addFileChildren(
 const rootRouteChildren: RootRouteChildren = {
   IndexRoute: IndexRoute,
   DashboardRouteRoute: DashboardRouteRouteWithChildren,
-  LoginIndexRoute: LoginIndexRoute,
 }
 export const routeTree = rootRouteImport
   ._addFileChildren(rootRouteChildren)

@@ -11,12 +11,24 @@ import {
   DropdownMenuTrigger,
 } from '@/components/ui/dropdown-menu';
 import { TableColumnHeader } from '@/components/ui/kibo-ui/table';
-import type { PaymentsResponse } from '@/pocketbase/types';
+import type { PaymentsResponse } from '@/pocketbase/queries/payments';
+import {
+  Tooltip,
+  TooltipContent,
+  TooltipTrigger,
+} from "@/components/ui/tooltip"
+
 
 export const columns: ColumnDef<PaymentsResponse>[] = [
   {
     accessorKey: 'bill',
-    header: ({ column }) => <TableColumnHeader column={column} title="Bill" />,
+    header: ({ column }) => <TableColumnHeader column={column} title="Bill Status" />,
+    cell: ({ row }) => <Tooltip>
+      <TooltipTrigger>{row.original.expand.bill.status}</TooltipTrigger>
+      <TooltipContent>
+        Due Date - {format(row.original.expand.bill.dueDate, 'PPP')}
+      </TooltipContent>
+    </Tooltip>
   },
   {
     accessorKey: 'tenant',
@@ -24,15 +36,14 @@ export const columns: ColumnDef<PaymentsResponse>[] = [
       <TableColumnHeader column={column} title="Tenant" />
     ),
     cell: ({ row }) => {
-      const tenant = (row.original.expand as any)?.tenant;
+      const tenant = row.original.expand.tenant;
       // Prefer the tenant.facebookName, otherwise try the linked user first/last name,
       // otherwise fall back to the tenant id or 'Unknown'.
-      const facebookName = tenant?.facebookName;
       const user = tenant?.expand?.user;
       const first = user?.firstName ?? '';
       const last = user?.lastName ?? '';
       const userFull = `${first} ${last}`.trim();
-      return facebookName ?? (userFull || tenant?.id) ?? 'Unknown';
+      return (userFull || tenant?.id) ?? 'Unknown';
     },
   },
   {
@@ -85,49 +96,5 @@ export const columns: ColumnDef<PaymentsResponse>[] = [
       <TableColumnHeader column={column} title="Updated" />
     ),
     cell: ({ row }) => format(new Date(row.getValue('updated')), 'PPP'),
-  },
-  {
-    header: 'Actions',
-    cell: ({ row }) => {
-      const navigate = useNavigate({ from: '/dashboard/payments' });
-
-      return (
-        <DropdownMenu>
-          <DropdownMenuTrigger asChild>
-            <Button variant={'ghost'} size={'icon'}>
-              <MoreHorizontal />
-            </Button>
-          </DropdownMenuTrigger>
-          <DropdownMenuContent>
-            <DropdownMenuItem
-              onClick={() =>
-                navigate({
-                  search: (prev) => ({
-                    ...prev,
-                    id: row.original.id,
-                    edit: true,
-                  }),
-                })
-              }
-            >
-              Edit
-            </DropdownMenuItem>
-            <DropdownMenuItem
-              onClick={() =>
-                navigate({
-                  search: (prev) => ({
-                    ...prev,
-                    id: row.original.id,
-                    delete: true,
-                  }),
-                })
-              }
-            >
-              Delete
-            </DropdownMenuItem>
-          </DropdownMenuContent>
-        </DropdownMenu>
-      );
-    },
   },
 ];

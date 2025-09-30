@@ -48,7 +48,5 @@ export const loginUserMutation = mutationOptions<
 >({
   mutationFn: async (v) =>
     pb.collection(Collections.Users).authWithPassword(v.email, v.password),
-  onSuccess: () =>
-    toast.success('Login success', { description: 'redirecting...' }),
   onError: (err) => toast.error(err.name, { description: err.message }),
 });

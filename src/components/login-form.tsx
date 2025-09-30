@@ -15,6 +15,7 @@ import { loginUserSchema } from "@/pocketbase/schemas/users"
 import { useMutation } from "@tanstack/react-query"
 import { loginUserMutation } from "@/pocketbase/queries/users"
 import { useNavigate } from "@tanstack/react-router"
+import { toast } from "sonner"
 
 export function LoginForm({
   className,
@@ -29,33 +30,28 @@ export function LoginForm({
       onChange: loginUserSchema,
     },
     onSubmit: async ({ value }) => {
-      await loginMutation.mutateAsync(value);
+      const result = await loginMutation.mutateAsync(value);
 
-      navigate({ to: '/dashboard/announcements' }); //for success
+      if (!result.record.isActive) {
+        toast.error('This accound is inactive', { description: 'please contact the administrator for more details' })
+      } else[
+        navigate({ to: '/dashboard/announcements' }) //for success
+      ]
     },
   });
 
 
   return (
-    <div className={cn("flex flex-col gap-6", className)} {...props}>
-      <Card>
-        <CardHeader className="text-center">
-          <CardTitle className="text-xl">Welcome back</CardTitle>
-          {/* <CardDescription>
-            Login with your Apple or Google account
-          </CardDescription> */}
-        </CardHeader>
-        <CardContent>
-          <form
-            className="grid grid-cols-4 gap-5"
-            onSubmit={(e) => {
-              e.preventDefault()
-              e.stopPropagation()
-              form.handleSubmit()
-            }}
-          >
-            <form.AppForm>
-              {/* <div className="flex flex-col gap-4">
+    <form
+      className="grid grid-cols-4 gap-5"
+      onSubmit={(e) => {
+        e.preventDefault()
+        e.stopPropagation()
+        form.handleSubmit()
+      }}
+    >
+      <form.AppForm>
+        {/* <div className="flex flex-col gap-4">
                 <Button variant="outline" className="w-full">
                   <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24">
                     <path
@@ -80,31 +76,24 @@ export function LoginForm({
                   Or continue with
                 </span>
               </div> */}
-              <form.AppField name="email">
-                {(field) => (
-                  <field.TextField className="col-span-full" type="email" placeholder="abc@email.com" />
-                )}
-              </form.AppField>
-              <form.AppField name="password">
-                {(field) => <field.TextField className="col-span-full" type="password" placeholder="*******" />}
-              </form.AppField>
-              <form.SubmitButton className="col-span-full">
-                Login
-              </form.SubmitButton>
-              {/* <div className="text-center text-sm col-span-full">
+        <form.AppField name="email">
+          {(field) => (
+            <field.TextField className="col-span-full" type="email" placeholder="abc@email.com" />
+          )}
+        </form.AppField>
+        <form.AppField name="password">
+          {(field) => <field.TextField className="col-span-full" type="password" placeholder="*******" />}
+        </form.AppField>
+        <form.SubmitButton className="col-span-full">
+          Login
+        </form.SubmitButton>
+        {/* <div className="text-center text-sm col-span-full">
                 Don&apos;t have an account?{" "}
                 <a href="#" className="underline underline-offset-4">
                   Sign up
                 </a>
               </div> */}
-            </form.AppForm>
-          </form>
-        </CardContent>
-      </Card>
-      {/* <div className="text-muted-foreground *:[a]:hover:text-primary text-center text-xs text-balance *:[a]:underline *:[a]:underline-offset-4">
-        By clicking continue, you agree to our <a href="#">Terms of Service</a>{" "}
-        and <a href="#">Privacy Policy</a>.
-      </div> */}
-    </div>
+      </form.AppForm>
+    </form>
   )
 }

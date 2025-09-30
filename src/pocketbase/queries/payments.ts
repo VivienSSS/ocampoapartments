@@ -11,12 +11,12 @@ import {
   type BillsRecord,
   Collections,
   type PaymentsResponse as PaymentsClientResponse,
-  type TenantsRecord,
 } from '../types';
+import type { TenantsResponse } from './tenants';
 
 export type PaymentsResponse = PaymentsClientResponse<{
   bill: BillsRecord;
-  tenant: TenantsRecord;
+  tenant: TenantsResponse;
 }>;
 
 export const listPaymentsQuery = (page: number, perPage: number) =>
@@ -26,7 +26,7 @@ export const listPaymentsQuery = (page: number, perPage: number) =>
       pb
         .collection<PaymentsResponse>(Collections.Payments)
         .getList(page, perPage, {
-          expand: 'bill,tenant',
+          expand: 'bill,tenant.user',
         }),
   });
 
