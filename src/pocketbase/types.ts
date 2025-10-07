@@ -186,7 +186,6 @@ export type MaintenanceWorkersRecord = {
 }
 
 export enum PaymentsPaymentMethodOptions {
-	"Over the counter" = "Over the counter",
 	"GCash" = "GCash",
 }
 export type PaymentsRecord = {

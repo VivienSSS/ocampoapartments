@@ -1,4 +1,4 @@
-import { Bell } from 'lucide-react';
+import { Bell, BellPlus } from 'lucide-react';
 import type * as React from 'react';
 
 import { Calendars } from '@/components/calendars';
@@ -15,6 +15,17 @@ import {
   SidebarSeparator,
 } from '@/components/ui/sidebar';
 import { pb } from '@/pocketbase';
+import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogTrigger } from './ui/dialog';
+import {
+  Item,
+  ItemActions,
+  ItemContent,
+  ItemDescription,
+  ItemFooter,
+  ItemHeader,
+  ItemMedia,
+  ItemTitle,
+} from "@/components/ui/item"
 
 // This is sample data.
 const data = {
@@ -27,6 +38,7 @@ const data = {
       pb.authStore.record ?? {},
       pb.authStore.record?.image,
     ),
+    role: pb.authStore.record?.role
   },
   calendars: [
     {
@@ -64,10 +76,29 @@ export function SidebarRight({
       <SidebarFooter>
         <SidebarMenu>
           <SidebarMenuItem>
-            <SidebarMenuButton>
-              <Bell />
-              <span>Announcements</span>
-            </SidebarMenuButton>
+            <Dialog>
+              <DialogTrigger asChild>
+                <SidebarMenuButton>
+                  <Bell />
+                  <span>Notifications</span>
+                </SidebarMenuButton>
+              </DialogTrigger>
+              <DialogContent>
+                <DialogHeader>
+                  <DialogTitle>Notifications</DialogTitle>
+                </DialogHeader>
+                <Item variant="muted" size="sm">
+                  <ItemMedia>
+                    <BellPlus className="size-5" />
+                  </ItemMedia>
+                  <ItemContent>
+                    <ItemTitle>Item</ItemTitle>
+                    <ItemDescription>Item</ItemDescription>
+                  </ItemContent>
+                  <ItemActions />
+                </Item>
+              </DialogContent>
+            </Dialog>
           </SidebarMenuItem>
         </SidebarMenu>
       </SidebarFooter>
