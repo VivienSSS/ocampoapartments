@@ -15,7 +15,9 @@ import {
   AlertDialogTitle,
 } from '@/components/ui/alert-dialog';
 import {
+  batchDeleteAnnouncementMutation,
   deleteAnnouncementMutation,
+  inAnnouncementsQuery,
   listAnnouncementsQuery,
   viewAnnouncementQuery,
 } from '@/pocketbase/queries/announcements';
@@ -29,30 +31,30 @@ const DeleteAnnouncementDialogForm = () => {
 
   const { data: ann } = useQuery(
     {
-      ...viewAnnouncementQuery(searchQuery.id ?? ''),
-      enabled: !!searchQuery.id && searchQuery.delete,
+      ...inAnnouncementsQuery(searchQuery.selected),
+      enabled: !!searchQuery.selected && searchQuery.delete,
     },
     queryClient,
   );
 
   const deleteMutation = useMutation(
-    deleteAnnouncementMutation(searchQuery.id ?? ''),
+    batchDeleteAnnouncementMutation(searchQuery.selected),
     queryClient,
   );
 
   return (
     <AlertDialog
-      open={!!searchQuery.delete && !!searchQuery.id}
+      open={!!searchQuery.delete && !!searchQuery.selected}
       onOpenChange={() =>
         navigate({
-          search: (prev) => ({ ...prev, delete: undefined, id: undefined }),
+          search: (prev) => ({ ...prev, delete: undefined }),
         })
       }
     >
       <AlertDialogContent>
         <AlertDialogHeader>
           <AlertDialogTitle>
-            Are you sure to delete `{ann?.title}`
+            Are you sure to delete {ann?.map((record) => `\`${record.title}\``).join(',')}
           </AlertDialogTitle>
           <AlertDialogDescription>
             This action cannot be undone
@@ -74,7 +76,7 @@ const DeleteAnnouncementDialogForm = () => {
                     search: (prev) => ({
                       ...prev,
                       delete: undefined,
-                      id: undefined,
+                      selected: []
                     }),
                   });
                 },

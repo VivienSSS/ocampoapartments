@@ -1,7 +1,8 @@
-import { useNavigate } from '@tanstack/react-router';
+import { useNavigate, useSearch } from '@tanstack/react-router';
 import type { ColumnDef } from '@tanstack/react-table';
 import { format } from 'date-fns';
 import { MoreHorizontal } from 'lucide-react';
+import { Checkbox } from '@/components/ui/checkbox';
 import { Button } from '@/components/ui/button';
 import {
   DropdownMenu,
@@ -14,11 +15,72 @@ import type { AnnouncementsResponse } from '@/pocketbase/queries/announcements';
 
 export const columns: ColumnDef<AnnouncementsResponse>[] = [
   {
+    id: 'select',
+    header: ({ table }) => {
+      const navigate = useNavigate({ from: '/dashboard/announcements' });
+      const searchQuery = useSearch({ from: '/dashboard/announcements/' })
+      return <Checkbox
+        checked={searchQuery.selected.length === table.getRowModel().rows.map(row => row.original.id).length}
+        onCheckedChange={(checked) => {
+          if (checked) {
+            navigate({
+              search: (prev) => ({
+                ...prev,
+                selected: table.getRowModel().rows.map(row => row.original.id),
+              }),
+            })
+          } else {
+            navigate({
+              search: (prev) => ({
+                ...prev,
+                selected: []
+              }),
+            })
+          }
+        }
+        }
+      />
+    },
+    cell: ({ row }) => {
+      const navigate = useNavigate({ from: '/dashboard/announcements' });
+      const searchQuery = useSearch({ from: '/dashboard/announcements/' })
+
+      return (
+        <div className="flex justify-center">
+          <Checkbox
+            checked={searchQuery.selected?.includes(row.original.id)}
+            onCheckedChange={(checked) => {
+              if (checked) {
+                searchQuery.selected.push(row.original.id)
+                navigate({
+                  search: (prev) => ({
+                    ...prev,
+                    selected: searchQuery.selected,
+                  }),
+                })
+              } else {
+                navigate({
+                  search: (prev) => ({
+                    ...prev,
+                    selected: searchQuery.selected.filter((id: string) => id !== row.original.id),
+                  }),
+                })
+              }
+            }
+            }
+          />
+        </div>
+      );
+    },
+  },
+  {
     accessorKey: 'title',
+    enableSorting: false,
     header: ({ column }) => <TableColumnHeader column={column} title="Title" />,
   },
   {
     accessorKey: 'message',
+    enableSorting: false,
     header: ({ column }) => (
       <TableColumnHeader column={column} title="Message" />
     ),
@@ -28,6 +90,7 @@ export const columns: ColumnDef<AnnouncementsResponse>[] = [
   },
   {
     accessorKey: 'author',
+    enableSorting: false,
     header: ({ column }) => (
       <TableColumnHeader column={column} title="Author" />
     ),
@@ -35,6 +98,7 @@ export const columns: ColumnDef<AnnouncementsResponse>[] = [
   },
   {
     accessorKey: 'created',
+    enableSorting: false,
     header: ({ column }) => (
       <TableColumnHeader column={column} title="Created" />
     ),
@@ -42,54 +106,11 @@ export const columns: ColumnDef<AnnouncementsResponse>[] = [
   },
   {
     accessorKey: 'updated',
+    enableSorting: false,
     header: ({ column }) => (
       <TableColumnHeader column={column} title="Updated" />
     ),
     cell: ({ row }) => format(new Date(row.getValue('updated')), 'PPP'),
-  },
-  {
-    header: 'Actions',
-    cell: ({ row }) => {
-      const navigate = useNavigate({ from: '/dashboard/announcements' });
-
-      return (
-        <DropdownMenu>
-          <DropdownMenuTrigger asChild>
-            <Button variant={'ghost'} size={'icon'}>
-              <MoreHorizontal />
-            </Button>
-          </DropdownMenuTrigger>
-          <DropdownMenuContent>
-            <DropdownMenuItem
-              onClick={() =>
-                navigate({
-                  search: (prev) => ({
-                    ...prev,
-                    id: row.original.id,
-                    edit: true,
-                  }),
-                })
-              }
-            >
-              Edit
-            </DropdownMenuItem>
-            <DropdownMenuItem
-              onClick={() =>
-                navigate({
-                  search: (prev) => ({
-                    ...prev,
-                    id: row.original.id,
-                    delete: true,
-                  }),
-                })
-              }
-            >
-              Delete
-            </DropdownMenuItem>
-          </DropdownMenuContent>
-        </DropdownMenu>
-      );
-    },
   },
 ];
 

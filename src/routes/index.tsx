@@ -275,6 +275,48 @@ function RouteComponent() {
           </div>
         </div>
       </section>
+      <section
+        id="contact"
+        className="w-full bg-[#18181B] text-white py-16 px-8 flex flex-col md:flex-row justify-between items-start mt-16"
+      >
+        <div className="flex-1 min-w-[220px] mb-8 md:mb-0">
+          <div className="font-bold text-2xl mb-2">Ocampo's Apartment</div>
+          <div className="mb-4 text-[#F3F4F6]">
+            Humble comfort embraced. <br />
+            Experience the warmth of simple, cozy living in our thoughtfully <br />
+            designed apartment spaces — where comfort, convenience, and  <br />
+            a sense of home come together naturally.
+          </div>
+        </div>
+        <div className="flex-1 min-w-[220px] mb-8 md:mb-0">
+          <div className="font-bold mb-4">Contact Info</div>
+          <div className="flex items-center gap-2 mb-2">
+            <svg width="20" height="20" fill="none" stroke="#F3F4F6" strokeWidth="2" viewBox="0 0 24 24"><path d="M22 16.92V19a2 2 0 0 1-2.18 2A19.86 19.86 0 0 1 3 5.18 2 2 0 0 1 5 3h2.09a2 2 0 0 1 2 1.72c.13 1.13.37 2.24.72 3.31a2 2 0 0 1-.45 2.11l-1.27 1.27a16 16 0 0 0 6.29 6.29l1.27-1.27a2 2 0 0 1 2.11-.45c1.07.35 2.18.59 3.31.72a2 2 0 0 1 1.72 2z" /></svg>
+            (555) 123-4567
+          </div>
+          <div className="flex items-center gap-2 mb-2">
+            <svg width="20" height="20" fill="none" stroke="#F3F4F6" strokeWidth="2" viewBox="0 0 24 24"><path d="M4 4h16v16H4z" /><path d="M22 6l-10 7L2 6" /></svg>
+            info@apartmentlux.com
+          </div>
+          <div className="flex items-center gap-2 mb-2">
+            <svg width="20" height="20" fill="none" stroke="#F3F4F6" strokeWidth="2" viewBox="0 0 24 24"><path d="M21 10.5V7a5 5 0 0 0-10 0v3.5" /><path d="M12 17v2" /><circle cx="12" cy="14" r="3" /><path d="M12 17v2" /></svg>
+            406 Marine Road Veterans Village <br />
+            Brgy. Holy Spirit<br />
+            Quezon City, Metro Manila
+          </div>
+        </div>
+      </section>
+      <footer className="w-full bg-[#18181B] text-[#F3F4F6] py-6 px-8 border-t border-[#23272F]">
+        <div className="max-w-7xl mx-auto flex flex-col md:flex-row justify-between items-center">
+          <div className="mb-2 md:mb-0">
+            &copy; 2025 Ocampo's Apartment. All rights reserved.
+          </div>
+          <div className="flex gap-6">
+            <a href="/privacy-policy" className="text-[#F3F4F6] hover:underline text-sm">Privacy Policy</a>
+            <a href="/terms-of-service" className="text-[#F3F4F6] hover:underline text-sm">Terms of Service</a>
+          </div>
+        </div>
+      </footer>
     </div>
   );
 }

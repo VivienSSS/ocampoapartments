@@ -11,6 +11,7 @@ import DeleteAnnouncementDialogForm from './-actions/delete';
 import EditAnnouncementDialogForm from './-actions/update';
 import LoadingComponent from './-loading';
 import { columns } from './-table';
+import { ChevronLeft, ChevronRight, Plus, Edit, Trash } from 'lucide-react';
 
 export const Route = createFileRoute('/dashboard/announcements/')({
   component: RouteComponent,
@@ -29,29 +30,59 @@ function RouteComponent() {
   const announcements = Route.useLoaderData();
   return (
     <article>
-      <section className="py-2.5">
+      <section className="flex items-center justify-between py-2.5">
         <h1 className="text-2xl font-bold">Announcements</h1>
-      </section>
-      <section className='flex justify-between py-2.5'>
-        <Button
-          onClick={() =>
-            navigate({ search: (prev) => ({ ...prev, new: true }) })
-          }
-        >
-          Create Announcement
-        </Button>
         <div className='flex gap-2.5'>
+          <Button
+            disabled={searchQuery.selected.length > 1}
+            onClick={() =>
+              navigate({
+                search: (prev) => ({
+                  ...prev,
+                  id: searchQuery.selected[0],
+                  edit: true,
+                }),
+              })
+            }
+          >
+            <Edit /> Edit
+          </Button>
+          <Button
+            variant="destructive"
+            disabled={!(searchQuery.id ?? searchQuery.selected)}
+            onClick={() =>
+              navigate({
+                search: (prev) => ({
+                  ...prev,
+                  delete: true,
+                }),
+              })
+            }
+          >
+            <Trash /> Delete
+          </Button>
           <Button disabled={searchQuery.page === 1} onClick={() => navigate({ search: (prev) => ({ ...prev, page: searchQuery.page - 1 }) })}>
-            Prev
+            <ChevronLeft />
           </Button>
           <Button disabled={searchQuery.page >= announcements.totalPages} onClick={() => navigate({ search: (prev) => ({ ...prev, page: searchQuery.page + 1 }) })}>
-            Next
+            <ChevronRight />
           </Button>
         </div>
       </section>
       <section>
         <DataTable columns={columns} data={announcements} />
       </section>
+      <div className="flex justify-end py-2.5">
+        <div className="flex gap-2">
+          <Button className=''
+            onClick={() =>
+              navigate({ search: (prev) => ({ ...prev, new: true }) })
+            }
+          >
+            <Plus /> Add
+          </Button>
+        </div>
+      </div>
       <section>
         <CreateAnnouncementDialogForm />
         <DeleteAnnouncementDialogForm />
