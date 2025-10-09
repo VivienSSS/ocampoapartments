@@ -15,9 +15,9 @@ import {
   AlertDialogTitle,
 } from '@/components/ui/alert-dialog';
 import {
-  deleteApartmentUnitMutation,
+  batchDeleteApartmentUnitMutation,
+  inApartmentUnitsQuery,
   listApartmentUnitsQuery,
-  viewApartmentUnitQuery,
 } from '@/pocketbase/queries/apartmentUnits';
 
 const DeleteApartmentDialogForm = () => {
@@ -27,30 +27,33 @@ const DeleteApartmentDialogForm = () => {
 
   const { data: apt } = useQuery(
     {
-      ...viewApartmentUnitQuery(searchQuery.id ?? ''),
-      enabled: !!searchQuery.id && searchQuery.delete,
+      ...inApartmentUnitsQuery(searchQuery.selected),
+      enabled: !!searchQuery.selected && searchQuery.delete,
     },
     queryClient,
   );
 
   const deleteMutation = useMutation(
-    deleteApartmentUnitMutation(searchQuery.id ?? ''),
+    batchDeleteApartmentUnitMutation(searchQuery.selected),
     queryClient,
   );
 
   return (
     <AlertDialog
-      open={!!searchQuery.delete && !!searchQuery.id}
+      open={!!searchQuery.delete && !!searchQuery.selected}
       onOpenChange={() =>
         navigate({
-          search: (prev) => ({ ...prev, delete: undefined, id: undefined }),
+          search: (prev) => ({ ...prev, delete: undefined }),
         })
       }
     >
       <AlertDialogContent>
         <AlertDialogHeader>
           <AlertDialogTitle>
-            Are you sure to delete apartment unit `{apt?.unitLetter}`
+            Are you sure to delete{' '}
+            {apt
+              ?.map((record) => `\`${record.unitLetter}\``)
+              .join(',')}
           </AlertDialogTitle>
           <AlertDialogDescription>
             This action cannot be undone
@@ -72,7 +75,7 @@ const DeleteApartmentDialogForm = () => {
                     search: (prev) => ({
                       ...prev,
                       delete: undefined,
-                      id: undefined,
+                      selected: [],
                     }),
                   });
                 },

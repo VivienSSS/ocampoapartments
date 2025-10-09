@@ -82,6 +82,19 @@ export const updateApartmentUnitMutation = (id: string) =>
       }),
   });
 
+export const inApartmentUnitsQuery = (selected: string[]) =>
+  queryOptions({
+    queryKey: [Collections.ApartmentUnits, selected],
+    queryFn: () =>
+      pb
+        .collection<ApartmentUnitsResponse>(Collections.ApartmentUnits)
+        .getFullList({
+          filter: selected.map((id) => `id='${id}'`).join('||'),
+          expand: 'property',
+          requestKey: null,
+        }),
+  });
+
 export const deleteApartmentUnitMutation = (id: string) =>
   mutationOptions({
     mutationFn: async () =>
@@ -93,5 +106,26 @@ export const deleteApartmentUnitMutation = (id: string) =>
     onError: (err) =>
       toast.error(`An Error occured when deleting the apartment unit ${id}`, {
         description: err.message,
+      }),
+  });
+
+export const batchDeleteApartmentUnitMutation = (selected: string[]) =>
+  mutationOptions({
+    mutationFn: async () => {
+      const batch = pb.createBatch();
+
+      for (const id of selected) {
+        batch.collection(Collections.ApartmentUnits).delete(id);
+      }
+
+      return await batch.send({ requestKey: null });
+    },
+    onSuccess: () =>
+      toast.success(`Deleted successfully`, {
+        description: `Apartment units ${selected.join(', ')} have been deleted successfully`,
+      }),
+    onError: (err) =>
+      toast.error(`An error occurred when deleting the apartment units`, {
+        description: `Apartment units: ${selected.join(', ')}\n${err.message}`,
       }),
   });

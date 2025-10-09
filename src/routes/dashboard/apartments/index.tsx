@@ -1,17 +1,16 @@
 import { createFileRoute } from '@tanstack/react-router';
 import { zodValidator } from '@tanstack/zod-adapter';
-import z from 'zod';
 import { Button } from '@/components/ui/button';
 import DataTable from '@/components/ui/kibo-ui/table/data-table';
 import { searchParams } from '@/lib/utils';
 import { listApartmentUnitsQuery } from '@/pocketbase/queries/apartmentUnits';
 import { apartmentUnitSchema } from '@/pocketbase/schemas/apartmentUnits';
-// ...existing code
 import CreateApartmentDialogForm from './-actions/create';
 import DeleteApartmentDialogForm from './-actions/delete';
 import EditApartmentDialogForm from './-actions/update';
 import LoadingComponent from './-loading';
 import { columns } from './-table';
+import { ChevronLeft, ChevronRight, Plus, Edit, Trash } from 'lucide-react';
 
 export const Route = createFileRoute('/dashboard/apartments/')({
   component: RouteComponent,
@@ -31,29 +30,73 @@ function RouteComponent() {
 
   return (
     <article>
-      <section className="py-2.5">
+      <section className="flex items-center justify-between py-2.5">
         <h1 className="text-2xl font-bold">Apartments</h1>
-      </section>
-      <section className='flex justify-between py-2.5'>
-        <Button
-          onClick={() =>
-            navigate({ search: (prev) => ({ ...prev, new: true }) })
-          }
-        >
-          Create Apartment
-        </Button>
-        <div className='flex gap-2.5'>
-          <Button disabled={searchQuery.page === 1} onClick={() => navigate({ search: (prev) => ({ ...prev, page: searchQuery.page - 1 }) })}>
-            Prev
+        <div className="flex gap-2.5">
+          <Button
+            disabled={searchQuery.selected.length > 1}
+            onClick={() =>
+              navigate({
+                search: (prev) => ({
+                  ...prev,
+                  id: searchQuery.selected[0],
+                  edit: true,
+                }),
+              })
+            }
+          >
+            <Edit /> Edit
           </Button>
-          <Button disabled={searchQuery.page >= apartmentUnits.totalPages} onClick={() => navigate({ search: (prev) => ({ ...prev, page: searchQuery.page + 1 }) })}>
-            Next
+          <Button
+            variant="destructive"
+            disabled={!(searchQuery.id ?? searchQuery.selected)}
+            onClick={() =>
+              navigate({
+                search: (prev) => ({
+                  ...prev,
+                  delete: true,
+                }),
+              })
+            }
+          >
+            <Trash /> Delete
+          </Button>
+          <Button
+            disabled={searchQuery.page === 1}
+            onClick={() =>
+              navigate({
+                search: (prev) => ({ ...prev, page: searchQuery.page - 1 }),
+              })
+            }
+          >
+            <ChevronLeft />
+          </Button>
+          <Button
+            disabled={searchQuery.page >= apartmentUnits.totalPages}
+            onClick={() =>
+              navigate({
+                search: (prev) => ({ ...prev, page: searchQuery.page + 1 }),
+              })
+            }
+          >
+            <ChevronRight />
           </Button>
         </div>
       </section>
       <section>
         <DataTable columns={columns} data={apartmentUnits} />
       </section>
+      <div className="flex justify-end py-2.5">
+        <div className="flex gap-2">
+          <Button
+            onClick={() =>
+              navigate({ search: (prev) => ({ ...prev, new: true }) })
+            }
+          >
+            <Plus /> Add
+          </Button>
+        </div>
+      </div>
       <section>
         <CreateApartmentDialogForm />
         <DeleteApartmentDialogForm />

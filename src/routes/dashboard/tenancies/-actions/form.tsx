@@ -10,11 +10,13 @@ import {
 } from '@/pocketbase/schemas/tenancies';
 import { Collections } from '@/pocketbase/types';
 
+export enum LeaseContract {
+  HalfYear = '6 Months',
+  FullYear = '1 Year',
+}
+
 export const CreateTenancyForm = withForm({
-  defaultValues: {} as z.infer<typeof insertTenanciesSchema>,
-  validators: {
-    onChange: insertTenanciesSchema,
-  },
+  defaultValues: {} as Omit<z.infer<typeof insertTenanciesSchema>, 'leaseStartDate' | 'leaseEndDate'> & { leaseContract: LeaseContract },
   props: {} as {
     tenants: TenantsResponse[];
     apartmentUnits: ApartmentUnitsResponse[];
@@ -46,19 +48,16 @@ export const CreateTenancyForm = withForm({
             />
           )}
         </form.AppField>
-        <form.AppField name="leaseStartDate">
+        <form.AppField name="leaseContract">
           {(field) => (
-            <field.DateField
+            <field.SelectField
               className="col-span-full"
-              label="Lease Start Date"
+              options={Object.values(LeaseContract).map((obj) => ({ label: obj, value: obj }))}
+              placeholder="Lease Contract"
             />
           )}
         </form.AppField>
-        <form.AppField name="leaseEndDate">
-          {(field) => (
-            <field.DateField className="col-span-full" label="Lease End Date" />
-          )}
-        </form.AppField>
+
       </>
     );
   },

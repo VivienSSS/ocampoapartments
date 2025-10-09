@@ -20,7 +20,7 @@ import {
 } from '@/pocketbase/queries/tenancies';
 import { listTenantsQuery } from '@/pocketbase/queries/tenants';
 import { insertTenanciesSchema } from '@/pocketbase/schemas/tenancies';
-import { CreateTenancyForm } from './form';
+import { CreateTenancyForm, LeaseContract } from './form';
 
 const CreateTenancyDialogForm = () => {
   const navigate = useNavigate({ from: '/dashboard/tenancies' });
@@ -43,19 +43,37 @@ const CreateTenancyDialogForm = () => {
   });
 
   const form = useAppForm({
-    defaultValues: {} as z.infer<typeof insertTenanciesSchema>,
-    validators: {
-      onChange: insertTenanciesSchema,
-    },
+    defaultValues: {} as Omit<z.infer<typeof insertTenanciesSchema>, 'leaseStartDate' | 'leaseEndDate'> & { leaseContract: LeaseContract },
     onSubmit: async ({ value }) => {
-      mutation.mutate(value, {
-        onSuccess: () => {
-          queryClient.invalidateQueries(
-            listTenanciesQuery(search.page, search.perPage),
-          );
-          navigate({ to: '/dashboard/tenancies', search: { new: undefined } });
+
+      const now = new Date();
+      let leaseEndDate: Date;
+
+      if (value.leaseContract === LeaseContract.FullYear) {
+        leaseEndDate = new Date(now);
+        leaseEndDate.setFullYear(now.getFullYear() + 1);
+      } else {
+        leaseEndDate = new Date(now);
+        leaseEndDate.setMonth(now.getMonth() + 6);
+      }
+
+      mutation.mutate(
+        {
+          unit: value.unit,
+          tenant: value.tenant,
+          leaseStartDate: now,
+          leaseEndDate,
         },
-      });
+        {
+          onSuccess: () => {
+            queryClient.invalidateQueries(
+              listTenanciesQuery(search.page, search.perPage),
+            );
+            navigate({ to: '/dashboard/tenancies', search: { new: undefined } });
+          },
+        }
+      );
+
     },
   });
 
