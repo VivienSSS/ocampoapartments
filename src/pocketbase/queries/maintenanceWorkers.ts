@@ -22,6 +22,15 @@ export const viewMaintenanceWorkerQuery = (id: string) =>
     queryFn: () => pb.collection(Collections.MaintenanceWorkers).getOne(id),
   });
 
+export const inMaintenanceWorkersQuery = (ids: string[]) =>
+  queryOptions({
+    queryKey: [Collections.MaintenanceWorkers, 'in', ids],
+    queryFn: () =>
+      pb
+        .collection(Collections.MaintenanceWorkers)
+        .getFullList({ filter: `id ~ "${ids.join('", "')}"`, requestKey: null }),
+  });
+
 export const createMaintenanceWorkerMutation = mutationOptions<
   MaintenanceWorkersResponse,
   ClientResponseError,
@@ -75,4 +84,25 @@ export const deleteMaintenanceWorkerMutation = (id: string) =>
           description: err.message,
         },
       ),
+  });
+
+export const batchDeleteMaintenanceWorkerMutation = (selected: string[]) =>
+  mutationOptions({
+    mutationFn: async () => {
+      const batch = pb.createBatch();
+
+      for (const id of selected) {
+        batch.collection(Collections.MaintenanceWorkers).delete(id);
+      }
+
+      return await batch.send({ requestKey: null });
+    },
+    onSuccess: () =>
+      toast.success(`Deleted successfully`, {
+        description: `Maintenance workers ${selected.join(', ')} have been deleted successfully`,
+      }),
+    onError: (err) =>
+      toast.error(`An error occurred when deleting the maintenance workers`, {
+        description: `Maintenance workers: ${selected.join(', ')}\n${err.message}`,
+      }),
   });

@@ -22,6 +22,7 @@ import {
 export const columns: ColumnDef<PaymentsResponse>[] = [
   {
     accessorKey: 'bill',
+    enableSorting: false,
     header: ({ column }) => <TableColumnHeader column={column} title="Bill Status" />,
     cell: ({ row }) => <Tooltip>
       <TooltipTrigger>{row.original.expand.bill.status}</TooltipTrigger>
@@ -32,6 +33,7 @@ export const columns: ColumnDef<PaymentsResponse>[] = [
   },
   {
     accessorKey: 'tenant',
+    enableSorting: false,
     header: ({ column }) => (
       <TableColumnHeader column={column} title="Tenant" />
     ),
@@ -48,6 +50,7 @@ export const columns: ColumnDef<PaymentsResponse>[] = [
   },
   {
     accessorKey: 'amountPaid',
+    enableSorting: false,
     header: ({ column }) => (
       <TableColumnHeader column={column} title="Amount Paid" />
     ),
@@ -59,6 +62,7 @@ export const columns: ColumnDef<PaymentsResponse>[] = [
   },
   {
     accessorKey: 'paymentMethod',
+    enableSorting: false,
     header: ({ column }) => (
       <TableColumnHeader column={column} title="Payment Method" />
     ),
@@ -66,6 +70,7 @@ export const columns: ColumnDef<PaymentsResponse>[] = [
   },
   {
     accessorKey: 'paymentDate',
+    enableSorting: false,
     header: ({ column }) => (
       <TableColumnHeader column={column} title="Payment Date" />
     ),
@@ -73,18 +78,21 @@ export const columns: ColumnDef<PaymentsResponse>[] = [
   },
   {
     accessorKey: 'transactionId',
+    enableSorting: false,
     header: ({ column }) => (
       <TableColumnHeader column={column} title="Transaction ID" />
     ),
   },
   {
     accessorKey: 'screenshot',
+    enableSorting: false,
     header: ({ column }) => (
       <TableColumnHeader column={column} title="Screenshot" />
     ),
   },
   {
     accessorKey: 'created',
+    enableSorting: false,
     header: ({ column }) => (
       <TableColumnHeader column={column} title="Created" />
     ),
@@ -92,6 +100,7 @@ export const columns: ColumnDef<PaymentsResponse>[] = [
   },
   {
     accessorKey: 'updated',
+    enableSorting: false,
     header: ({ column }) => (
       <TableColumnHeader column={column} title="Updated" />
     ),

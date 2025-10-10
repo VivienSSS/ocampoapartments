@@ -1,9 +1,10 @@
-import { useNavigate } from '@tanstack/react-router';
+import { useNavigate, useSearch } from '@tanstack/react-router';
 import type { ColumnDef } from '@tanstack/react-table';
 import { format } from 'date-fns';
 import { MoreHorizontal } from 'lucide-react';
 import { Badge } from '@/components/ui/badge';
 import { Button } from '@/components/ui/button';
+import { Checkbox } from '@/components/ui/checkbox';
 import {
   DropdownMenu,
   DropdownMenuContent,
@@ -15,7 +16,67 @@ import type { MaintenanceRequestsResponse } from '@/pocketbase/queries/maintenan
 
 export const columns: ColumnDef<MaintenanceRequestsResponse>[] = [
   {
+    id: 'select',
+    header: ({ table }) => {
+      const navigate = useNavigate({ from: '/dashboard/maintenances' });
+      const searchQuery = useSearch({ from: '/dashboard/maintenances/' })
+      return <Checkbox
+        checked={searchQuery.selected.length === table.getRowModel().rows.map(row => row.original.id).length}
+        onCheckedChange={(checked) => {
+          if (checked) {
+            navigate({
+              search: (prev) => ({
+                ...prev,
+                selected: table.getRowModel().rows.map(row => row.original.id),
+              }),
+            })
+          } else {
+            navigate({
+              search: (prev) => ({
+                ...prev,
+                selected: []
+              }),
+            })
+          }
+        }
+        }
+      />
+    },
+    cell: ({ row }) => {
+      const navigate = useNavigate({ from: '/dashboard/maintenances' });
+      const searchQuery = useSearch({ from: '/dashboard/maintenances/' })
+
+      return (
+        <div className="flex justify-center">
+          <Checkbox
+            checked={searchQuery.selected?.includes(row.original.id)}
+            onCheckedChange={(checked) => {
+              if (checked) {
+                searchQuery.selected.push(row.original.id)
+                navigate({
+                  search: (prev) => ({
+                    ...prev,
+                    selected: searchQuery.selected,
+                  }),
+                })
+              } else {
+                navigate({
+                  search: (prev) => ({
+                    ...prev,
+                    selected: searchQuery.selected.filter((id: string) => id !== row.original.id),
+                  }),
+                })
+              }
+            }
+            }
+          />
+        </div>
+      );
+    },
+  },
+  {
     accessorKey: 'tenant',
+    enableSorting: false,
     header: ({ column }) => (
       <TableColumnHeader column={column} title="Tenant" />
     ),
@@ -28,16 +89,18 @@ export const columns: ColumnDef<MaintenanceRequestsResponse>[] = [
   },
   {
     accessorKey: 'unit',
-    header: ({ column }) => <TableColumnHeader column={column} title="Unit" />,
+    enableSorting: false,
+    header: ({ column }) => <TableColumnHeader column={column} title="Address" />,
     cell: ({ row }) => {
       const unit = row.original.expand?.unit;
       const letter = unit?.unitLetter ?? 'N/A';
       const floor = unit?.floorNumber ?? 'N/A';
-      return `${letter} - ${floor}`;
+      return `${floor}${letter}`;
     },
   },
   {
     accessorKey: 'description',
+    enableSorting: false,
     header: ({ column }) => (
       <TableColumnHeader column={column} title="Description" />
     ),
@@ -47,6 +110,7 @@ export const columns: ColumnDef<MaintenanceRequestsResponse>[] = [
   },
   {
     accessorKey: 'urgency',
+    enableSorting: false,
     header: ({ column }) => (
       <TableColumnHeader column={column} title="Urgency" />
     ),
@@ -69,6 +133,7 @@ export const columns: ColumnDef<MaintenanceRequestsResponse>[] = [
   },
   {
     accessorKey: 'status',
+    enableSorting: false,
     header: ({ column }) => (
       <TableColumnHeader column={column} title="Status" />
     ),
@@ -91,6 +156,7 @@ export const columns: ColumnDef<MaintenanceRequestsResponse>[] = [
   },
   {
     accessorKey: 'worker',
+    enableSorting: false,
     header: ({ column }) => (
       <TableColumnHeader column={column} title="Worker" />
     ),
@@ -101,6 +167,7 @@ export const columns: ColumnDef<MaintenanceRequestsResponse>[] = [
   },
   {
     accessorKey: 'submittedDate',
+    enableSorting: false,
     header: ({ column }) => (
       <TableColumnHeader column={column} title="Submitted Date" />
     ),
@@ -111,6 +178,7 @@ export const columns: ColumnDef<MaintenanceRequestsResponse>[] = [
   },
   {
     accessorKey: 'completedDate',
+    enableSorting: false,
     header: ({ column }) => (
       <TableColumnHeader column={column} title="Completed Date" />
     ),
@@ -122,6 +190,7 @@ export const columns: ColumnDef<MaintenanceRequestsResponse>[] = [
   },
   {
     accessorKey: 'created',
+    enableSorting: false,
     header: ({ column }) => (
       <TableColumnHeader column={column} title="Created" />
     ),
@@ -132,56 +201,13 @@ export const columns: ColumnDef<MaintenanceRequestsResponse>[] = [
   },
   {
     accessorKey: 'updated',
+    enableSorting: false,
     header: ({ column }) => (
       <TableColumnHeader column={column} title="Updated" />
     ),
     cell: ({ row }) => {
       const date = new Date(row.getValue('updated'));
       return Number.isNaN(date.getTime()) ? 'N/A' : format(date, 'PPP');
-    },
-  },
-  {
-    header: 'Actions',
-    cell: ({ row }) => {
-      const navigate = useNavigate({ from: '/dashboard/maintenances' });
-
-      return (
-        <DropdownMenu>
-          <DropdownMenuTrigger asChild>
-            <Button variant={'ghost'} size={'icon'}>
-              <MoreHorizontal />
-            </Button>
-          </DropdownMenuTrigger>
-          <DropdownMenuContent>
-            <DropdownMenuItem
-              onClick={() =>
-                navigate({
-                  search: (prev) => ({
-                    ...prev,
-                    id: row.original.id,
-                    edit: true,
-                  }),
-                })
-              }
-            >
-              Edit
-            </DropdownMenuItem>
-            <DropdownMenuItem
-              onClick={() =>
-                navigate({
-                  search: (prev) => ({
-                    ...prev,
-                    id: row.original.id,
-                    delete: true,
-                  }),
-                })
-              }
-            >
-              Delete
-            </DropdownMenuItem>
-          </DropdownMenuContent>
-        </DropdownMenu>
-      );
     },
   },
 ];

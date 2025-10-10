@@ -81,24 +81,28 @@ export const columns: ColumnDef<ApartmentUnitsResponse>[] = [
   },
   {
     accessorKey: 'unitLetter',
+    enableSorting: false,
     header: ({ column }) => (
       <TableColumnHeader column={column} title="Unit Letter" />
     ),
   },
   {
     accessorKey: 'floorNumber',
+    enableSorting: false,
     header: ({ column }) => (
       <TableColumnHeader column={column} title="Floor Number" />
     ),
   },
   {
     accessorKey: 'capacity',
+    enableSorting: false,
     header: ({ column }) => (
       <TableColumnHeader column={column} title="Capacity" />
     ),
   },
   {
     accessorKey: 'price',
+    enableSorting: false,
     header: ({ column }) => <TableColumnHeader column={column} title="Price" />,
     cell: ({ row }) =>
       new Intl.NumberFormat('en-PH', {
@@ -108,13 +112,15 @@ export const columns: ColumnDef<ApartmentUnitsResponse>[] = [
   },
   {
     accessorKey: 'property',
+    enableSorting: false,
     header: ({ column }) => (
       <TableColumnHeader column={column} title="Property" />
     ),
-    cell: ({ row }) => row.original.expand.property.address,
+    cell: ({ row }) => row.original.expand.property.branch,
   },
   {
     accessorKey: 'isAvailable',
+    enableSorting: false,
     header: ({ column }) => (
       <TableColumnHeader column={column} title="Status" />
     ),
@@ -126,6 +132,7 @@ export const columns: ColumnDef<ApartmentUnitsResponse>[] = [
   },
   {
     accessorKey: 'created',
+    enableSorting: false,
     header: ({ column }) => (
       <TableColumnHeader column={column} title="Created" />
     ),
@@ -133,6 +140,7 @@ export const columns: ColumnDef<ApartmentUnitsResponse>[] = [
   },
   {
     accessorKey: 'updated',
+    enableSorting: false,
     header: ({ column }) => (
       <TableColumnHeader column={column} title="Updated" />
     ),

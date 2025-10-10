@@ -33,6 +33,19 @@ export const viewTenantQuery = (id: string) =>
       }),
   });
 
+export const inTenantsQuery = (selected: string[]) =>
+  queryOptions({
+    queryKey: [Collections.Tenants, selected],
+    queryFn: () =>
+      pb
+        .collection<TenantsResponse>(Collections.Tenants)
+        .getFullList({
+          filter: selected.map((id) => `id='${id}'`).join('||'),
+          expand: 'user',
+          requestKey: null,
+        }),
+  });
+
 export const createTenantMutation = mutationOptions<
   TenantsResponse,
   ClientResponseError,
@@ -82,5 +95,26 @@ export const deleteTenantMutation = (id: string) =>
     onError: (err) =>
       toast.error(`An Error occured when deleting the tenant ${id}`, {
         description: err.message,
+      }),
+  });
+
+export const batchDeleteTenantMutation = (selected: string[]) =>
+  mutationOptions({
+    mutationFn: async () => {
+      const batch = pb.createBatch();
+
+      for (const id of selected) {
+        batch.collection(Collections.Tenants).delete(id);
+      }
+
+      return await batch.send({ requestKey: null });
+    },
+    onSuccess: () =>
+      toast.success(`Deleted successfully`, {
+        description: `Tenants ${selected.join(', ')} have been deleted successfully`,
+      }),
+    onError: (err) =>
+      toast.error(`An error occurred when deleting the tenants`, {
+        description: `Tenants: ${selected.join(', ')}\n${err.message}`,
       }),
   });

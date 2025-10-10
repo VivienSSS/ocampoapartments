@@ -1,6 +1,5 @@
 import { createFileRoute } from '@tanstack/react-router';
 import { zodValidator } from '@tanstack/zod-adapter';
-import z from 'zod';
 import { Button } from '@/components/ui/button';
 import DataTable from '@/components/ui/kibo-ui/table/data-table';
 import { searchParams } from '@/lib/utils';
@@ -13,6 +12,7 @@ import DeleteBillingDialogForm from './-actions/delete';
 import EditBillingDialogForm from './-actions/update';
 import LoadingComponent from './-loading';
 import { columns } from './-table';
+import { ChevronLeft, ChevronRight, Plus, Edit, Trash } from 'lucide-react';
 
 export const Route = createFileRoute('/dashboard/billing/')({
   component: RouteComponent,
@@ -32,45 +32,61 @@ function RouteComponent() {
 
   return (
     <article>
-      <section className="py-2.5">
+      <section className="flex items-center justify-between py-2.5">
         <h1 className="text-2xl font-bold">Billing</h1>
-      </section>
-      <section className='flex justify-between py-2.5'>
-        {pb.authStore.record?.role !== UsersRoleOptions.Tenant && (
-          <Button
-            onClick={() =>
-              navigate({ search: (prev) => ({ ...prev, new: true }) })
-            }
-          >
-            Create Billing
-          </Button>
-        )}
         <div className='flex gap-2.5'>
           <Button
-            disabled={searchQuery.page === 1}
+            disabled={searchQuery.selected.length > 1}
             onClick={() =>
               navigate({
-                search: (prev) => ({ ...prev, page: searchQuery.page - 1 }),
+                search: (prev) => ({
+                  ...prev,
+                  id: searchQuery.selected[0],
+                  edit: true,
+                }),
               })
             }
           >
-            Prev
+            <Edit /> Edit
           </Button>
           <Button
-            disabled={searchQuery.page >= bills.totalPages}
+            variant="destructive"
+            disabled={!(searchQuery.id ?? searchQuery.selected)}
             onClick={() =>
               navigate({
-                search: (prev) => ({ ...prev, page: searchQuery.page + 1 }),
+                search: (prev) => ({
+                  ...prev,
+                  delete: true,
+                }),
               })
             }
           >
-            Next
+            <Trash /> Delete
+          </Button>
+          <Button disabled={searchQuery.page === 1} onClick={() => navigate({ search: (prev) => ({ ...prev, page: searchQuery.page - 1 }) })}>
+            <ChevronLeft />
+          </Button>
+          <Button disabled={searchQuery.page >= bills.totalPages} onClick={() => navigate({ search: (prev) => ({ ...prev, page: searchQuery.page + 1 }) })}>
+            <ChevronRight />
           </Button>
         </div>
       </section>
       <section>
         <DataTable columns={columns} data={bills} />
       </section>
+      <div className="flex justify-end py-2.5">
+        <div className="flex gap-2">
+          {pb.authStore.record?.role !== UsersRoleOptions.Tenant && (
+            <Button className=''
+              onClick={() =>
+                navigate({ search: (prev) => ({ ...prev, new: true }) })
+              }
+            >
+              <Plus /> Add
+            </Button>
+          )}
+        </div>
+      </div>
       <section>
         {pb.authStore.record?.role !== UsersRoleOptions.Tenant && (
           <CreateBillingDialogForm />

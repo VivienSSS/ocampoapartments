@@ -15,9 +15,9 @@ import {
   AlertDialogTitle,
 } from '@/components/ui/alert-dialog';
 import {
-  deleteBillMutation,
+  batchDeleteBillMutation,
+  inBillsQuery,
   listBillsQuery,
-  viewBillQuery,
 } from '@/pocketbase/queries/bills';
 
 const DeleteBillingDialogForm = () => {
@@ -25,35 +25,35 @@ const DeleteBillingDialogForm = () => {
   const navigate = useNavigate({ from: '/dashboard/billing' });
   const { queryClient } = useRouteContext({ from: '/dashboard/billing/' });
 
-  const { data: bill } = useQuery(
+  const { data: bills } = useQuery(
     {
-      ...viewBillQuery(searchQuery.id ?? ''),
-      enabled: !!searchQuery.id && searchQuery.delete,
+      ...inBillsQuery(searchQuery.selected),
+      enabled: !!searchQuery.selected && searchQuery.delete,
     },
     queryClient,
   );
 
   const deleteMutation = useMutation(
-    deleteBillMutation(searchQuery.id ?? ''),
+    batchDeleteBillMutation(searchQuery.selected),
     queryClient,
   );
 
   return (
     <AlertDialog
-      open={!!searchQuery.delete && !!searchQuery.id}
+      open={!!searchQuery.delete && !!searchQuery.selected}
       onOpenChange={() =>
         navigate({
-          search: (prev) => ({ ...prev, delete: undefined, id: undefined }),
+          search: (prev) => ({ ...prev, delete: undefined }),
         })
       }
     >
       <AlertDialogContent>
         <AlertDialogHeader>
           <AlertDialogTitle>
-            Are you absolutely sure to delete `{bill?.id}`
+            Are you sure to delete {bills?.map((record) => `\`${record.id}\``).join(',')}
           </AlertDialogTitle>
           <AlertDialogDescription>
-            This action cannot be undone. This will permanently delete the bill.
+            This action cannot be undone
           </AlertDialogDescription>
         </AlertDialogHeader>
         <AlertDialogFooter>
@@ -69,7 +69,7 @@ const DeleteBillingDialogForm = () => {
                     search: (prev) => ({
                       ...prev,
                       delete: undefined,
-                      id: undefined,
+                      selected: []
                     }),
                   });
                 },

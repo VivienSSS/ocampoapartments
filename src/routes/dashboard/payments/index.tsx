@@ -8,6 +8,7 @@ import CreatePaymentDialogForm from './-actions/create';
 import LoadingComponent from './-loading';
 import { columns } from './-table';
 import { Button } from '@/components/ui/button';
+import { ChevronLeft, ChevronRight, Plus } from 'lucide-react';
 
 export const Route = createFileRoute('/dashboard/payments/')({
   component: RouteComponent,
@@ -26,17 +27,8 @@ function RouteComponent() {
   const payments = Route.useLoaderData();
   return (
     <article>
-      <section className="py-2.5">
+      <section className="flex items-center justify-between py-2.5">
         <h1 className="text-2xl font-bold">Payments</h1>
-      </section>
-      <section className='flex justify-between py-2.5'>
-        <Button
-          onClick={() =>
-            navigate({ search: (prev) => ({ ...prev, new: true }) })
-          }
-        >
-          Create Payment
-        </Button>
         <div className='flex gap-2.5'>
           <Button
             disabled={searchQuery.page === 1}
@@ -46,7 +38,7 @@ function RouteComponent() {
               })
             }
           >
-            Prev
+            <ChevronLeft />
           </Button>
           <Button
             disabled={searchQuery.page >= payments.totalPages}
@@ -56,13 +48,24 @@ function RouteComponent() {
               })
             }
           >
-            Next
+            <ChevronRight />
           </Button>
         </div>
       </section>
       <section>
         <DataTable columns={columns} data={payments} />
       </section>
+      <div className="flex justify-end py-2.5">
+        <div className="flex gap-2">
+          <Button
+            onClick={() =>
+              navigate({ search: (prev) => ({ ...prev, new: true }) })
+            }
+          >
+            <Plus /> Add
+          </Button>
+        </div>
+      </div>
       <section>
         <CreatePaymentDialogForm />
       </section>

@@ -15,9 +15,9 @@ import {
     AlertDialogTitle,
 } from '@/components/ui/alert-dialog';
 import {
-    deleteMaintenanceWorkerMutation,
+    batchDeleteMaintenanceWorkerMutation,
+    inMaintenanceWorkersQuery,
     listMaintenanceWorkersQuery,
-    viewMaintenanceWorkerQuery,
 } from '@/pocketbase/queries/maintenanceWorkers';
 
 const DeleteWorkerDialogForm = () => {
@@ -27,32 +27,32 @@ const DeleteWorkerDialogForm = () => {
         from: '/dashboard/maintenanceworkers/',
     });
 
-    const { data: worker } = useQuery(
+    const { data: workers } = useQuery(
         {
-            ...viewMaintenanceWorkerQuery(searchQuery.id ?? ''),
-            enabled: !!searchQuery.id && searchQuery.delete,
+            ...inMaintenanceWorkersQuery(searchQuery.selected),
+            enabled: !!searchQuery.selected && searchQuery.delete,
         },
         queryClient,
     );
 
     const deleteMutation = useMutation(
-        deleteMaintenanceWorkerMutation(searchQuery.id ?? ''),
+        batchDeleteMaintenanceWorkerMutation(searchQuery.selected),
         queryClient,
     );
 
     return (
         <AlertDialog
-            open={!!searchQuery.delete && !!searchQuery.id}
+            open={!!searchQuery.delete && !!searchQuery.selected}
             onOpenChange={() =>
                 navigate({
-                    search: (prev) => ({ ...prev, delete: undefined, id: undefined }),
+                    search: (prev) => ({ ...prev, delete: undefined }),
                 })
             }
         >
             <AlertDialogContent>
                 <AlertDialogHeader>
                     <AlertDialogTitle>
-                        Are you sure to delete `{worker?.name}`
+                        Are you sure to delete {workers?.map((record) => `\`${record.name}\``).join(',')}
                     </AlertDialogTitle>
                     <AlertDialogDescription>
                         This action cannot be undone
@@ -74,7 +74,7 @@ const DeleteWorkerDialogForm = () => {
                                         search: (prev) => ({
                                             ...prev,
                                             delete: undefined,
-                                            id: undefined,
+                                            selected: []
                                         }),
                                     });
                                 },

@@ -26,14 +26,15 @@ const EditMaintenanceDialogForm = () => {
   const searchQuery = useSearch({ from: '/dashboard/maintenances/' });
   const { queryClient } = useRouteContext({ from: '/dashboard/maintenances/' });
 
+  const currentId = searchQuery.id ?? searchQuery.selected[0];
   const mutation = useMutation(
-    updateMaintenanceRequestMutation(searchQuery.id ?? ''),
+    updateMaintenanceRequestMutation(currentId ?? ''),
   );
 
   const { data: req } = useQuery(
     {
-      ...viewMaintenanceRequestQuery(searchQuery.id ?? ''),
-      enabled: !!searchQuery.id && searchQuery.edit,
+      ...viewMaintenanceRequestQuery(currentId ?? ''),
+      enabled: !!currentId && searchQuery.edit,
     },
     queryClient,
   );
@@ -60,11 +61,10 @@ const EditMaintenanceDialogForm = () => {
 
   return (
     <Dialog
-      open={!!searchQuery.edit && !!searchQuery.id}
+      open={!!searchQuery.edit && !!currentId}
       onOpenChange={() =>
         navigate({
-          to: '/dashboard/maintenances',
-          search: { edit: undefined, id: undefined },
+          search: (prev) => ({ ...prev, edit: undefined, id: undefined }),
         })
       }
     >

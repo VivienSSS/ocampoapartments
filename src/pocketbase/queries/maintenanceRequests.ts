@@ -106,3 +106,32 @@ export const deleteMaintenanceRequestMutation = (id: string) =>
         },
       ),
   });
+
+export const inMaintenanceRequestsQuery = (selected: string[]) => queryOptions({
+  queryKey: [Collections.MaintenanceRequests, selected],
+  queryFn: () =>
+    pb
+      .collection<MaintenanceRequestsResponse>(Collections.MaintenanceRequests)
+      .getFullList({ filter: selected.map((id) => `id='${id}'`).join("||"), requestKey: null }),
+});
+
+export const batchDeleteMaintenanceRequestMutation = (selected: string[]) =>
+  mutationOptions({
+    mutationFn: async () => {
+      const batch = pb.createBatch();
+
+      for (const id of selected) {
+        batch.collection(Collections.MaintenanceRequests).delete(id);
+      }
+
+      return await batch.send({ requestKey: null });
+    },
+    onSuccess: () =>
+      toast.success(`Deleted successfully`, {
+        description: `Maintenance requests ${selected.join(', ')} have been deleted successfully`,
+      }),
+    onError: (err) =>
+      toast.error(`An error occurred when deleting the maintenance requests`, {
+        description: `Maintenance requests: ${selected.join(', ')}\n${err.message}`,
+      }),
+  });

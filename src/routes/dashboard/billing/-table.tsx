@@ -1,9 +1,10 @@
-import { useNavigate } from '@tanstack/react-router';
+import { useNavigate, useSearch } from '@tanstack/react-router';
 import type { ColumnDef } from '@tanstack/react-table';
 import { format } from 'date-fns';
 import { MoreHorizontal } from 'lucide-react';
 import { Badge } from '@/components/ui/badge';
 import { Button } from '@/components/ui/button';
+import { Checkbox } from '@/components/ui/checkbox';
 import { useSuspenseQuery } from '@tanstack/react-query';
 import { pb } from '@/pocketbase';
 import { Collections } from '@/pocketbase/types';
@@ -18,7 +19,67 @@ import type { BillsResponse } from '@/pocketbase/queries/bills';
 
 export const columns: ColumnDef<BillsResponse>[] = [
   {
+    id: 'select',
+    header: ({ table }) => {
+      const navigate = useNavigate({ from: '/dashboard/billing' });
+      const searchQuery = useSearch({ from: '/dashboard/billing/' })
+      return <Checkbox
+        checked={searchQuery.selected.length === table.getRowModel().rows.map(row => row.original.id).length}
+        onCheckedChange={(checked) => {
+          if (checked) {
+            navigate({
+              search: (prev) => ({
+                ...prev,
+                selected: table.getRowModel().rows.map(row => row.original.id),
+              }),
+            })
+          } else {
+            navigate({
+              search: (prev) => ({
+                ...prev,
+                selected: []
+              }),
+            })
+          }
+        }
+        }
+      />
+    },
+    cell: ({ row }) => {
+      const navigate = useNavigate({ from: '/dashboard/billing' });
+      const searchQuery = useSearch({ from: '/dashboard/billing/' })
+
+      return (
+        <div className="flex justify-center">
+          <Checkbox
+            checked={searchQuery.selected?.includes(row.original.id)}
+            onCheckedChange={(checked) => {
+              if (checked) {
+                searchQuery.selected.push(row.original.id)
+                navigate({
+                  search: (prev) => ({
+                    ...prev,
+                    selected: searchQuery.selected,
+                  }),
+                })
+              } else {
+                navigate({
+                  search: (prev) => ({
+                    ...prev,
+                    selected: searchQuery.selected.filter((id: string) => id !== row.original.id),
+                  }),
+                })
+              }
+            }
+            }
+          />
+        </div>
+      );
+    },
+  },
+  {
     accessorKey: 'chargeTypes',
+    enableSorting: false,
     header: ({ column }) => (
       <TableColumnHeader column={column} title="Charge Types" />
     ),
@@ -41,6 +102,7 @@ export const columns: ColumnDef<BillsResponse>[] = [
 
   {
     accessorKey: 'tenancy',
+    enableSorting: false,
     header: ({ column }) => (
       <TableColumnHeader column={column} title="Tenancy" />
     ),
@@ -49,6 +111,7 @@ export const columns: ColumnDef<BillsResponse>[] = [
   },
   {
     accessorKey: 'dueDate',
+    enableSorting: false,
     header: ({ column }) => (
       <TableColumnHeader column={column} title="Due Date" />
     ),
@@ -56,6 +119,7 @@ export const columns: ColumnDef<BillsResponse>[] = [
   },
   {
     accessorKey: 'status',
+    enableSorting: false,
     header: ({ column }) => (
       <TableColumnHeader column={column} title="Status" />
     ),
@@ -78,6 +142,7 @@ export const columns: ColumnDef<BillsResponse>[] = [
   },
   {
     accessorKey: 'created',
+    enableSorting: false,
     header: ({ column }) => (
       <TableColumnHeader column={column} title="Created" />
     ),
@@ -85,39 +150,10 @@ export const columns: ColumnDef<BillsResponse>[] = [
   },
   {
     accessorKey: 'updated',
+    enableSorting: false,
     header: ({ column }) => (
       <TableColumnHeader column={column} title="Updated" />
     ),
     cell: ({ row }) => format(new Date(row.getValue('updated')), 'PPP'),
-  },
-  {
-    header: 'Actions',
-    cell: ({ row }) => {
-      const navigate = useNavigate({ from: '/dashboard/billing' });
-      return (
-        <DropdownMenu>
-          <DropdownMenuTrigger asChild>
-            <Button variant={'ghost'} size={'icon'}>
-              <MoreHorizontal />
-            </Button>
-          </DropdownMenuTrigger>
-          <DropdownMenuContent>
-            <DropdownMenuItem
-              onClick={() =>
-                navigate({
-                  search: (prev) => ({
-                    ...prev,
-                    id: row.original.id,
-                    edit: true,
-                  }),
-                })
-              }
-            >
-              Edit Status
-            </DropdownMenuItem>
-          </DropdownMenuContent>
-        </DropdownMenu>
-      );
-    },
   },
 ];

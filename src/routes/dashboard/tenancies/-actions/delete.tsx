@@ -14,44 +14,46 @@ import {
   AlertDialogHeader,
   AlertDialogTitle,
 } from '@/components/ui/alert-dialog';
-import { deleteTenancyMutation, viewTenancyQuery } from '@/pocketbase/queries/tenancies';
+import {
+  batchDeleteTenancyMutation,
+  inTenanciesQuery,
+  listTenanciesQuery
+} from '@/pocketbase/queries/tenancies';
 
 const DeleteTenancyDialogForm = () => {
   const searchQuery = useSearch({ from: '/dashboard/tenancies/' });
   const navigate = useNavigate({ from: '/dashboard/tenancies' });
   const { queryClient } = useRouteContext({ from: '/dashboard/tenancies/' });
 
-  const { data: tenancy } = useQuery(
+  const { data: tenancies } = useQuery(
     {
-      ...viewTenancyQuery(searchQuery.id ?? ''),
-      enabled: !!searchQuery.id && searchQuery.delete,
+      ...inTenanciesQuery(searchQuery.selected ?? []),
+      enabled: !!(searchQuery.selected?.length) && searchQuery.delete,
     },
     queryClient,
   );
 
   const deleteMutation = useMutation(
-    deleteTenancyMutation(searchQuery.id ?? ''),
+    batchDeleteTenancyMutation(searchQuery.selected ?? []),
     queryClient,
   );
 
   return (
     <AlertDialog
-      open={!!searchQuery.delete && !!searchQuery.id}
+      open={!!searchQuery.delete && !!(searchQuery.selected?.length)}
       onOpenChange={() =>
         navigate({
-          search: (prev) => ({ ...prev, delete: undefined, id: undefined }),
+          search: (prev) => ({ ...prev, delete: undefined }),
         })
       }
     >
       <AlertDialogContent>
         <AlertDialogHeader>
           <AlertDialogTitle>
-            Are you absolutely sure to delete `{tenancy?.expand.tenant.expand.user.firstName}{' '}
-            {tenancy?.expand.tenant.expand.user.lastName}`
+            Are you sure to delete {tenancies?.map((record) => `\`${record.expand.tenant.expand.user.firstName} ${record.expand.tenant.expand.user.lastName}\``).join(',')}
           </AlertDialogTitle>
           <AlertDialogDescription>
-            This action cannot be undone. This will permanently delete the
-            tenant and remove their data.
+            This action cannot be undone
           </AlertDialogDescription>
         </AlertDialogHeader>
         <AlertDialogFooter>
@@ -60,11 +62,17 @@ const DeleteTenancyDialogForm = () => {
             onClick={() =>
               deleteMutation.mutate(undefined, {
                 onSuccess: () => {
+                  queryClient.invalidateQueries(
+                    listTenanciesQuery(
+                      searchQuery.page,
+                      searchQuery.perPage,
+                    ),
+                  );
                   navigate({
                     search: (prev) => ({
                       ...prev,
                       delete: undefined,
-                      id: undefined,
+                      selected: []
                     }),
                   });
                 },

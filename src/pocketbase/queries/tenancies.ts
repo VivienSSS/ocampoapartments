@@ -84,3 +84,32 @@ export const deleteTenancyMutation = (id: string) =>
         description: err.message,
       }),
   });
+
+export const inTenanciesQuery = (selected: string[]) => queryOptions({
+  queryKey: [Collections.Tenancies, selected],
+  queryFn: () =>
+    pb
+      .collection<TenanciesResponse>(Collections.Tenancies)
+      .getFullList({ filter: selected.map((id) => `id='${id}'`).join("||"), expand: 'tenant.user,unit.property', requestKey: null }),
+});
+
+export const batchDeleteTenancyMutation = (selected: string[]) =>
+  mutationOptions({
+    mutationFn: async () => {
+      const batch = pb.createBatch();
+
+      for (const id of selected) {
+        batch.collection(Collections.Tenancies).delete(id);
+      }
+
+      return await batch.send({ requestKey: null });
+    },
+    onSuccess: () =>
+      toast.success(`Deleted successfully`, {
+        description: `Tenancies ${selected.join(', ')} have been deleted successfully`,
+      }),
+    onError: (err) =>
+      toast.error(`An error occurred when deleting the tenancies`, {
+        description: `Tenancies: ${selected.join(', ')}\n${err.message}`,
+      }),
+  });

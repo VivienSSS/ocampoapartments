@@ -15,9 +15,9 @@ import {
   AlertDialogTitle,
 } from '@/components/ui/alert-dialog';
 import {
-  deleteMaintenanceRequestMutation,
+  batchDeleteMaintenanceRequestMutation,
+  inMaintenanceRequestsQuery,
   listMaintenanceRequestsQuery,
-  viewMaintenanceRequestQuery,
 } from '@/pocketbase/queries/maintenanceRequests';
 
 const DeleteMaintenanceDialog = () => {
@@ -25,41 +25,42 @@ const DeleteMaintenanceDialog = () => {
   const searchQuery = useSearch({ from: '/dashboard/maintenances/' });
   const { queryClient } = useRouteContext({ from: '/dashboard/maintenances/' });
 
-  const { data: req } = useQuery(
+  const { data: reqs } = useQuery(
     {
-      ...viewMaintenanceRequestQuery(searchQuery.id ?? ''),
-      enabled: !!searchQuery.id && searchQuery.delete,
+      ...inMaintenanceRequestsQuery(searchQuery.selected),
+      enabled: !!searchQuery.selected && searchQuery.delete,
     },
     queryClient,
   );
 
-  const mutation = useMutation(
-    deleteMaintenanceRequestMutation(searchQuery.id ?? ''),
+  const deleteMutation = useMutation(
+    batchDeleteMaintenanceRequestMutation(searchQuery.selected),
+    queryClient,
   );
 
   return (
     <AlertDialog
-      open={!!searchQuery.delete && !!searchQuery.id}
+      open={!!searchQuery.delete && !!searchQuery.selected}
       onOpenChange={() =>
         navigate({
-          to: '/dashboard/maintenances',
-          search: { delete: undefined, id: undefined },
+          search: (prev) => ({ ...prev, delete: undefined }),
         })
       }
     >
       <AlertDialogContent>
         <AlertDialogHeader>
-          <AlertDialogTitle>Delete maintenance request</AlertDialogTitle>
+          <AlertDialogTitle>
+            Are you sure to delete {reqs?.map((record) => `\`${record.description}\``).join(',')}
+          </AlertDialogTitle>
           <AlertDialogDescription>
-            Are you sure you want to delete the request by{' '}
-            {req?.reporterName ?? 'this user'}?
+            This action cannot be undone
           </AlertDialogDescription>
         </AlertDialogHeader>
         <AlertDialogFooter>
           <AlertDialogCancel>Cancel</AlertDialogCancel>
           <AlertDialogAction
             onClick={() =>
-              mutation.mutate(undefined, {
+              deleteMutation.mutate(undefined, {
                 onSuccess: () => {
                   queryClient.invalidateQueries(
                     listMaintenanceRequestsQuery(
@@ -68,14 +69,17 @@ const DeleteMaintenanceDialog = () => {
                     ),
                   );
                   navigate({
-                    to: '/dashboard/maintenances',
-                    search: { delete: undefined, id: undefined },
+                    search: (prev) => ({
+                      ...prev,
+                      delete: undefined,
+                      selected: []
+                    }),
                   });
                 },
               })
             }
           >
-            Delete
+            Continue
           </AlertDialogAction>
         </AlertDialogFooter>
       </AlertDialogContent>

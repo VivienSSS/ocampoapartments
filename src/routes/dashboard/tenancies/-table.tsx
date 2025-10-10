@@ -1,9 +1,10 @@
-import { useNavigate } from '@tanstack/react-router';
+import { useNavigate, useSearch } from '@tanstack/react-router';
 import type { ColumnDef } from '@tanstack/react-table';
 import { format } from 'date-fns';
 import { MoreHorizontal } from 'lucide-react';
 import { Badge } from '@/components/ui/badge';
 import { Button } from '@/components/ui/button';
+import { Checkbox } from '@/components/ui/checkbox';
 import {
   DropdownMenu,
   DropdownMenuContent,
@@ -15,23 +16,84 @@ import type { TenanciesResponse } from '@/pocketbase/queries/tenancies';
 
 export const columns: ColumnDef<TenanciesResponse>[] = [
   {
+    id: 'select',
+    header: ({ table }) => {
+      const navigate = useNavigate({ from: '/dashboard/tenancies' });
+      const searchQuery = useSearch({ from: '/dashboard/tenancies/' })
+      return <Checkbox
+        checked={searchQuery.selected?.length === table.getRowModel().rows.map(row => row.original.id).length}
+        onCheckedChange={(checked) => {
+          if (checked) {
+            navigate({
+              search: (prev) => ({
+                ...prev,
+                selected: table.getRowModel().rows.map(row => row.original.id),
+              }),
+            })
+          } else {
+            navigate({
+              search: (prev) => ({
+                ...prev,
+                selected: []
+              }),
+            })
+          }
+        }
+        }
+      />
+    },
+    cell: ({ row }) => {
+      const navigate = useNavigate({ from: '/dashboard/tenancies' });
+      const searchQuery = useSearch({ from: '/dashboard/tenancies/' })
+
+      return (
+        <div className="flex justify-center">
+          <Checkbox
+            checked={searchQuery.selected?.includes(row.original.id)}
+            onCheckedChange={(checked) => {
+              if (checked) {
+                navigate({
+                  search: (prev) => ({
+                    ...prev,
+                    selected: [...(searchQuery.selected ?? []), row.original.id],
+                  }),
+                })
+              } else {
+                navigate({
+                  search: (prev) => ({
+                    ...prev,
+                    selected: (searchQuery.selected ?? []).filter((id: string) => id !== row.original.id),
+                  }),
+                })
+              }
+            }
+            }
+          />
+        </div>
+      );
+    },
+  },
+  {
     accessorKey: 'expand.tenant',
+    enableSorting: false,
     header: ({ column }) => (
-      <TableColumnHeader column={column} title="Tenant" />
+      <TableColumnHeader column={column} title="Tenant Name" />
     ),
     cell: ({ row }) =>
       `${row.original.expand.tenant.expand.user.firstName} ${row.original.expand.tenant.expand.user.lastName}`,
   },
   {
     accessorKey: 'unit',
+    enableSorting: false,
     header: ({ column }) => (
-      <TableColumnHeader column={column} title="Apartment Unit" />
+      <TableColumnHeader column={column} title="Address" />
     ),
     cell: ({ row }) =>
-      `${row.original.expand.unit.expand.property.address} - ${row.original.expand.unit.unitLetter} - ${row.original.expand.unit.floorNumber}`,
+      `${row.original.expand.unit.expand.property.branch} - ${row.original.expand.unit.floorNumber}${row.original.expand.unit.unitLetter}`,
   },
   {
     accessorKey: 'leaseStartDate',
+    enableSorting: false,
     header: ({ column }) => (
       <TableColumnHeader column={column} title="Lease Start Date" />
     ),
@@ -39,6 +101,7 @@ export const columns: ColumnDef<TenanciesResponse>[] = [
   },
   {
     accessorKey: 'leaseEndDate',
+    enableSorting: false,
     header: ({ column }) => (
       <TableColumnHeader column={column} title="Lease End Date" />
     ),
@@ -46,6 +109,7 @@ export const columns: ColumnDef<TenanciesResponse>[] = [
   },
   {
     accessorKey: 'status',
+    enableSorting: false,
     header: ({ column }) => <TableColumnHeader column={column} title="Status" />,
     cell: ({ row }) => {
       const isActive = new Date(row.original.leaseEndDate) > new Date();
@@ -58,6 +122,7 @@ export const columns: ColumnDef<TenanciesResponse>[] = [
   },
   {
     accessorKey: 'created',
+    enableSorting: false,
     header: ({ column }) => (
       <TableColumnHeader column={column} title="Created" />
     ),
@@ -65,53 +130,11 @@ export const columns: ColumnDef<TenanciesResponse>[] = [
   },
   {
     accessorKey: 'updated',
+    enableSorting: false,
     header: ({ column }) => (
       <TableColumnHeader column={column} title="Updated" />
     ),
     cell: ({ row }) => format(new Date(row.getValue('updated')), 'PPP'),
   },
-  {
-    header: 'Actions',
-    cell: ({ row }) => {
-      const navigate = useNavigate({ from: '/dashboard/tenants' });
 
-      return (
-        <DropdownMenu>
-          <DropdownMenuTrigger asChild>
-            <Button variant={'ghost'} size={'icon'}>
-              <MoreHorizontal />
-            </Button>
-          </DropdownMenuTrigger>
-          <DropdownMenuContent>
-            <DropdownMenuItem
-              onClick={() =>
-                navigate({
-                  search: (prev) => ({
-                    ...prev,
-                    id: row.original.id,
-                    edit: true,
-                  }),
-                })
-              }
-            >
-              Edit
-            </DropdownMenuItem>
-            <DropdownMenuItem
-              onClick={() =>
-                navigate({
-                  search: (prev) => ({
-                    ...prev,
-                    id: row.original.id,
-                    delete: true,
-                  }),
-                })
-              }
-            >
-              Delete
-            </DropdownMenuItem>
-          </DropdownMenuContent>
-        </DropdownMenu>
-      );
-    },
-  },
 ];

@@ -48,7 +48,7 @@ const showNav = () => {
           icon: ReceiptText,
         },
         {
-          title: 'Maintenance',
+          title: 'Maintenance Requests',
           url: '/dashboard/maintenances',
           icon: Hammer,
         },
@@ -86,7 +86,7 @@ const showNav = () => {
           icon: Megaphone,
         },
         {
-          title: 'Maintenance',
+          title: 'Maintenance Requests',
           url: '/dashboard/maintenances',
           icon: Hammer,
         },
@@ -109,7 +109,7 @@ const showNav = () => {
           icon: ReceiptText,
         },
         {
-          title: 'Maintenance',
+          title: 'Maintenance Requests',
           url: '/dashboard/maintenances',
           icon: Hammer,
         },

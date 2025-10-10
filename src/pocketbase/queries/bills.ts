@@ -23,6 +23,18 @@ export const listBillsQuery = (page: number, perPage: number) =>
       }),
   });
 
+export const inBillsQuery = (selected: string[]) => queryOptions({
+  queryKey: [Collections.Bills, selected],
+  queryFn: () =>
+    pb
+      .collection<BillsResponse>(Collections.Bills)
+      .getFullList({
+        filter: selected.map((id) => `id='${id}'`).join("||"),
+        expand: 'tenancy.tenant.user,tenancy.tenant.unit',
+        requestKey: null
+      }),
+});
+
 export const viewBillQuery = (id: string) =>
   queryOptions({
     queryKey: [Collections.Bills, id],
@@ -94,5 +106,26 @@ export const deleteBillMutation = (id: string) =>
     onError: (err) =>
       toast.error(`An Error occured when deleting the bill ${id}`, {
         description: err.message,
+      }),
+  });
+
+export const batchDeleteBillMutation = (selected: string[]) =>
+  mutationOptions({
+    mutationFn: async () => {
+      const batch = pb.createBatch();
+
+      for (const id of selected) {
+        batch.collection(Collections.Bills).delete(id);
+      }
+
+      return await batch.send({ requestKey: null });
+    },
+    onSuccess: () =>
+      toast.success(`Deleted successfully`, {
+        description: `Bills ${selected.join(', ')} have been deleted successfully`,
+      }),
+    onError: (err) =>
+      toast.error(`An error occurred when deleting the bills`, {
+        description: `Bills: ${selected.join(', ')}\n${err.message}`,
       }),
   });

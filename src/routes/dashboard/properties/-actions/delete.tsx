@@ -15,8 +15,9 @@ import {
   AlertDialogTitle,
 } from '@/components/ui/alert-dialog';
 import {
-  deletePropertyMutation,
-  viewPropertiesQuery,
+  batchDeletePropertyMutation,
+  inPropertiesQuery,
+  listPropertiesQuery,
 } from '@/pocketbase/queries/properties';
 
 const DeletePropertyDialogForm = () => {
@@ -24,36 +25,35 @@ const DeletePropertyDialogForm = () => {
   const navigate = useNavigate({ from: '/dashboard/properties' });
   const { queryClient } = useRouteContext({ from: '/dashboard/properties/' });
 
-  const { data: property } = useQuery(
+  const { data: properties } = useQuery(
     {
-      ...viewPropertiesQuery(searchQuery.id!),
-      enabled: !!searchQuery.id && searchQuery.delete,
+      ...inPropertiesQuery(searchQuery.selected),
+      enabled: !!searchQuery.selected && searchQuery.delete,
     },
     queryClient,
   );
 
   const deleteMutation = useMutation(
-    deletePropertyMutation(searchQuery.id!),
+    batchDeletePropertyMutation(searchQuery.selected),
     queryClient,
   );
 
   return (
     <AlertDialog
-      open={searchQuery.delete && !!searchQuery.id}
+      open={!!searchQuery.delete && !!searchQuery.selected}
       onOpenChange={() =>
         navigate({
-          search: (prev) => ({ ...prev, delete: undefined, id: undefined }),
+          search: (prev) => ({ ...prev, delete: undefined }),
         })
       }
     >
       <AlertDialogContent>
         <AlertDialogHeader>
           <AlertDialogTitle>
-            Are you absolutely sure to delete `{property?.address}`
+            Are you sure to delete {properties?.map((record) => `\`${record.address}\``).join(',')}
           </AlertDialogTitle>
           <AlertDialogDescription>
-            This action cannot be undone. This will permanently delete your
-            account and remove your data from our servers.
+            This action cannot be undone
           </AlertDialogDescription>
         </AlertDialogHeader>
         <AlertDialogFooter>
@@ -63,13 +63,13 @@ const DeletePropertyDialogForm = () => {
               deleteMutation.mutate(undefined, {
                 onSuccess: () => {
                   queryClient.invalidateQueries(
-                    viewPropertiesQuery(searchQuery.id!),
+                    listPropertiesQuery(searchQuery.page, searchQuery.perPage),
                   );
                   navigate({
                     search: (prev) => ({
                       ...prev,
                       delete: undefined,
-                      id: undefined,
+                      selected: []
                     }),
                   });
                 },
