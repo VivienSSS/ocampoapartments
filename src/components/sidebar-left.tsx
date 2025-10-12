@@ -119,7 +119,7 @@ const showNav = () => {
           icon: HandCoins,
         },
         {
-          title: 'Your information',
+          title: 'Your Information',
           url: '/dashboard/tenants',
           icon: BookUser,
         },

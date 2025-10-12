@@ -33,6 +33,21 @@ export const viewTenantQuery = (id: string) =>
       }),
   });
 
+export const getCurrentTenantQuery = (userId: string) =>
+  queryOptions({
+    queryKey: [Collections.Tenants, 'current', userId],
+    queryFn: async () => {
+      const result = await pb.collection(Collections.Tenants).getFullList<TenantsResponse>({
+        filter: `user = '${userId}'`,
+        expand: 'user',
+      });
+      if (result.length === 0) {
+        throw new Error('Tenant not found for current user');
+      }
+      return result[0];
+    },
+  });
+
 export const inTenantsQuery = (selected: string[]) =>
   queryOptions({
     queryKey: [Collections.Tenants, selected],

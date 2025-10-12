@@ -213,7 +213,7 @@ func PaymentNotification(app *pocketbase.PocketBase) {
 
 		dueDate := bill.GetString("dueDate")
 		userFullName := fmt.Sprintf("%s %s", user.GetString("firstName"), user.GetString("lastName"))
-		paymentAmount := e.Record.GetFloat("amount")
+		paymentAmount := e.Record.GetFloat("amountPaid")
 		paymentDate := e.Record.GetString("created")
 		paymentMethod := e.Record.GetString("paymentMethod")
 

@@ -13,50 +13,21 @@ import {
 
 } from "@/components/ui/dialog";
 
-import {
-  Card,
-  CardContent,
-  CardDescription,
-  CardHeader,
-  CardTitle,
-} from "@/components/ui/card";
+
 import { LoginForm } from '@/components/login-form';
+import PropertyTabs from '@/components/property-tabs';
+import { listApartmentUnitsQuery } from '@/pocketbase/queries/apartmentUnits';
 
 
 export const Route = createFileRoute('/')({
   component: RouteComponent,
-  loader: async () => {
-    const healthCheck = await pb.health.check();
-    return { healthCheck };
+  loader: async ({ context }) => {
+    const availableUnits = await context.queryClient.ensureQueryData(listApartmentUnitsQuery(1, 1000))
+    return { availableUnits };
   },
 });
 
-const cards = [
-  {
-    title: "Sample Text",
-    description: ".............",
-    href: "/images/bedroom-1.jpg",
-    src: "/images/bedroom-1.jpg",
-    alt: "Cozy bedroom",
-    body: ".",
-  },
-  {
-    title: "Sample Text",
-    description: ".............",
-    href: "/image2.jpg",
-    src: "/image2.jpg",
-    alt: "Modern amenities",
-    body: ".",
-  },
-  {
-    title: "Sample Text",
-    description: ".............",
-    href: "/image3.jpg",
-    src: "/image3.jpg",
-    alt: "24/7 support",
-    body: ".",
-  },
-];
+
 
 function RouteComponent() {
   // We'll render the cards in a responsive grid — no pagination or scroll controls
@@ -177,7 +148,7 @@ function RouteComponent() {
       </section>
 
       {/* Available Units text section (moved from hero as plain text) */}
-      <section id="units" className="py-16 px-4 bg-background">
+      {/* <section id="units" className="py-16 px-4 bg-background">
         <div className="max-w-4xl mx-auto text-center">
           <h2 className="text-3xl font-bold mb-6">Available Units</h2>
         </div>
@@ -211,9 +182,12 @@ function RouteComponent() {
             })}
           </div>
         </div>
-      </section>
+      </section> */}
 
       {/* CTA Section */}
+      <section>
+        <PropertyTabs />
+      </section>
       <section id="about" className="py-15 px-4 bg-muted text-center">
         <h2 className="text-3xl font-bold mb-6">About Us</h2>
         <p className="text-xl text-muted-foreground mb-8 max-w-2xl mx-auto">
@@ -223,18 +197,17 @@ function RouteComponent() {
           in the province of Pampanga.
         </p>
       </section>
-
       {/* Locations / Maps Section */}
-      <section id="maps" className="py-16 px-4 bg-background">
+      {/* <section id="maps" className="py-16 px-4 bg-background">
         <div className="max-w-6xl mx-auto">
           <div className="text-center mb-8">
             <h2 className="text-3xl font-bold">Our Locations</h2>
             <p className="text-muted-foreground mt-2">Find us and nearby points of interest on the map.</p>
-          </div>
+          </div> */}
 
-          <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
-            {/* Map 1 */}
-            <Card className="overflow-hidden">
+      {/* <div className="grid grid-cols-1 md:grid-cols-2 gap-6"> */}
+      {/* Map 1 */}
+      {/* <Card className="overflow-hidden">
               <CardHeader>
                 <CardTitle>Ocampo Apartments (Quezon City)</CardTitle>
                 <CardDescription>406 Marine Rd, Quezon City, Metro Manila</CardDescription>
@@ -251,10 +224,10 @@ function RouteComponent() {
                   />
                 </div>
               </CardContent>
-            </Card>
+            </Card> */}
 
-            {/* Map 2 */}
-            <Card className="overflow-hidden">
+      {/* Map 2 */}
+      {/* <Card className="overflow-hidden">
               <CardHeader>
                 <CardTitle>San Roque, Lubao (Pampanga)</CardTitle>
                 <CardDescription>San Roque Dau, Lubao, Pampanga</CardDescription>
@@ -274,7 +247,7 @@ function RouteComponent() {
             </Card>
           </div>
         </div>
-      </section>
+      </section> */}
       <section
         id="contact"
         className="w-full bg-[#18181B] text-white py-16 px-8 flex flex-col md:flex-row justify-between items-start mt-16"
