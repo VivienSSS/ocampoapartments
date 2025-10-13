@@ -47,7 +47,7 @@ export const CreateMaintenanceForm = withForm({
                 label: value.facebookName,
                 value: value.id,
               }))}
-              placeholder="Tenant"
+              label='Tenant'
             />
           )}
         </form.AppField>
@@ -59,7 +59,7 @@ export const CreateMaintenanceForm = withForm({
                 label: value.unitLetter,
                 value: value.id,
               }))}
-              placeholder="Unit"
+              label='Unit'
             />
           )}
         </form.AppField>
@@ -70,7 +70,7 @@ export const CreateMaintenanceForm = withForm({
                 (value) => ({ label: value, value: value }),
               )}
               className="col-span-full"
-              placeholder="Urgency"
+              label='Urgency'
             />
           )}
         </form.AppField>
@@ -81,7 +81,7 @@ export const CreateMaintenanceForm = withForm({
               options={Object.keys(MaintenanceRequestsStatusOptions).map(
                 (value) => ({ label: value, value: value }),
               )}
-              placeholder="Status"
+              label='Status'
             />
           )}
         </form.AppField>
@@ -93,7 +93,7 @@ export const CreateMaintenanceForm = withForm({
                 label: value.name,
                 value: value.id,
               }))}
-              placeholder="Worker"
+              label='Worker'
             />
           )}
         </form.AppField>
@@ -101,7 +101,8 @@ export const CreateMaintenanceForm = withForm({
           {(field) => (
             <field.TextAreaField
               className="col-span-full"
-              placeholder="Description"
+              label='Description'
+              placeholder="ex. We have a broken faucet. . ."
             />
           )}
         </form.AppField>
@@ -109,15 +110,8 @@ export const CreateMaintenanceForm = withForm({
           {(field) => (
             <field.DateField
               className="col-span-full"
+              label='Submitted Date'
               placeholder="Submitted Date"
-            />
-          )}
-        </form.AppField>
-        <form.AppField name="completedDate">
-          {(field) => (
-            <field.DateField
-              className="col-span-full"
-              placeholder="Completed Date"
             />
           )}
         </form.AppField>
@@ -133,26 +127,14 @@ export const EditMaintenanceForm = withForm({
   },
   render: ({ form }) => (
     <>
-      <form.AppField name="tenant">
-        {(field) => <field.TextField placeholder="Tenant" />}
-      </form.AppField>
-      <form.AppField name="unit">
-        {(field) => <field.TextField placeholder="Unit" />}
-      </form.AppField>
-      <form.AppField name="urgency">
-        {(field) => <field.TextField placeholder="Urgency" />}
-      </form.AppField>
-      <form.AppField name="status">
-        {(field) => <field.TextField placeholder="Status" />}
-      </form.AppField>
-      <form.AppField name="worker">
-        {(field) => <field.TextField placeholder="Worker" />}
-      </form.AppField>
-      <form.AppField name="description">
-        {(field) => <field.TextField placeholder="Description" />}
-      </form.AppField>
-      <form.AppField name="submittedDate">
-        {(field) => <field.TextField placeholder="Submitted Date" />}
+      <form.AppField name="completedDate">
+        {(field) => (
+          <field.DateField
+            className="col-span-full"
+            label='Completed Date'
+            placeholder="Completed Date"
+          />
+        )}
       </form.AppField>
     </>
   ),

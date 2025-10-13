@@ -12,6 +12,7 @@ import {
   Collections,
 } from '@/pocketbase/types';
 import { listTenanciesQuery } from '@/pocketbase/queries/tenancies';
+import { BadgePlus } from 'lucide-react';
 
 export const CreateBillingForm = withForm({
   defaultValues: {
@@ -38,6 +39,18 @@ export const CreateBillingForm = withForm({
             />
           )}
         </form.AppField>
+        <form.AppField name="status">
+          {(field) => (
+            <field.SelectField
+              className="col-span-full"
+              options={Object.keys(BillsStatusOptions).map((value) => ({
+                label: value,
+                value: value,
+              }))}
+              label="Status"
+            />
+          )}
+        </form.AppField>
         <form.AppField name="dueDate">
           {(field) => (
             <field.DateField className="col-span-full" label="Due Date" />
@@ -55,6 +68,7 @@ export const CreateBillingForm = withForm({
               ))}
               <Button
                 type='button'
+                className='bg-emerald-500'
                 onClick={() =>
                   field.pushValue({
                     chargeType: BillItemsChargeTypeOptions.Electricity,
@@ -63,23 +77,12 @@ export const CreateBillingForm = withForm({
                   })
                 }
               >
-                Add Item
+                <BadgePlus /> Add Item
               </Button>
             </>
           )}
         </form.AppField>
-        <form.AppField name="status">
-          {(field) => (
-            <field.SelectField
-              className="col-span-full"
-              options={Object.keys(BillsStatusOptions).map((value) => ({
-                label: value,
-                value: value,
-              }))}
-              placeholder="Status"
-            />
-          )}
-        </form.AppField>
+
       </>
     );
   },

@@ -80,7 +80,7 @@ const EditTenantDialogForm = () => {
     >
       <DialogContent>
         <DialogHeader>
-          <DialogTitle>Edit existing tenant</DialogTitle>
+          <DialogTitle>Edit Existing Tenant</DialogTitle>
           <DialogDescription>Enter the right information</DialogDescription>
         </DialogHeader>
         <form
@@ -93,7 +93,7 @@ const EditTenantDialogForm = () => {
         >
           <form.AppForm>
             <EditApartmentForm form={form} users={users?.items || []} />
-            <form.SubmitButton>Update Tenant</form.SubmitButton>
+            <form.SubmitButton className='col-span-full mt-2'>Update Tenant</form.SubmitButton>
           </form.AppForm>
         </form>
       </DialogContent>

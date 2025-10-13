@@ -40,20 +40,20 @@ const data = {
     ),
     role: pb.authStore.record?.role
   },
-  calendars: [
-    {
-      name: 'My Calendars',
-      items: ['Personal', 'Work', 'Family'],
-    },
-    {
-      name: 'Favorites',
-      items: ['Holidays', 'Birthdays'],
-    },
-    {
-      name: 'Other',
-      items: ['Travel', 'Reminders', 'Deadlines'],
-    },
-  ],
+  // calendars: [
+  //   {
+  //     name: 'My Calendars',
+  //     items: ['Personal', 'Work', 'Family'],
+  //   },
+  //   {
+  //     name: 'Favorites',
+  //     items: ['Holidays', 'Birthdays'],
+  //   },
+  //   {
+  //     name: 'Other',
+  //     items: ['Travel', 'Reminders', 'Deadlines'],
+  //   },
+  // ],
 };
 
 export function SidebarRight({
@@ -71,7 +71,7 @@ export function SidebarRight({
       <SidebarContent>
         <DatePicker />
         <SidebarSeparator className="mx-0" />
-        <Calendars calendars={data.calendars} />
+        {/* <Calendars calendars={data.calendars} /> */}
       </SidebarContent>
       <SidebarFooter>
         <SidebarMenu>

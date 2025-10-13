@@ -79,7 +79,7 @@ const EditApartmentDialogForm = () => {
     >
       <DialogContent>
         <DialogHeader>
-          <DialogTitle>Edit apartment unit</DialogTitle>
+          <DialogTitle>Edit Apartment Unit</DialogTitle>
           <DialogDescription>Update information</DialogDescription>
         </DialogHeader>
         <form
@@ -94,7 +94,9 @@ const EditApartmentDialogForm = () => {
               form={form}
               properties={properties?.items ?? []}
             />
-            <form.SubmitButton>Update Apartment</form.SubmitButton>
+            <div className="mt-6">
+              <form.SubmitButton>Update Unit</form.SubmitButton>
+            </div>
           </form.AppForm>
         </form>
       </DialogContent>

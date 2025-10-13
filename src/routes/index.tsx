@@ -17,6 +17,7 @@ import {
 import { LoginForm } from '@/components/login-form';
 import PropertyTabs from '@/components/property-tabs';
 import { listApartmentUnitsQuery } from '@/pocketbase/queries/apartmentUnits';
+import { MapPinHouse } from 'lucide-react';
 
 
 export const Route = createFileRoute('/')({
@@ -88,6 +89,16 @@ function RouteComponent() {
               </button>
 
               <a
+                href="#units"
+                onClick={(e: MouseEvent<HTMLAnchorElement>) => {
+                  e.preventDefault();
+                  scrollTo('units');
+                }}
+                className="text-sm text-muted-foreground hover:text-foreground"
+              >
+                Properties
+              </a>
+              <a
                 href="#about"
                 onClick={(e: MouseEvent<HTMLAnchorElement>) => {
                   e.preventDefault();
@@ -98,24 +109,14 @@ function RouteComponent() {
                 About
               </a>
               <a
-                href="#units"
+                href="#contact"
                 onClick={(e: MouseEvent<HTMLAnchorElement>) => {
                   e.preventDefault();
-                  scrollTo('units');
+                  scrollTo('contact');
                 }}
                 className="text-sm text-muted-foreground hover:text-foreground"
               >
-                Units
-              </a>
-              <a
-                href="#maps"
-                onClick={(e: MouseEvent<HTMLAnchorElement>) => {
-                  e.preventDefault();
-                  scrollTo('maps');
-                }}
-                className="text-sm text-muted-foreground hover:text-foreground"
-              >
-                Location
+                Contact Us
               </a>
 
             </nav>
@@ -265,17 +266,17 @@ function RouteComponent() {
           <div className="font-bold mb-4">Contact Info</div>
           <div className="flex items-center gap-2 mb-2">
             <svg width="20" height="20" fill="none" stroke="#F3F4F6" strokeWidth="2" viewBox="0 0 24 24"><path d="M22 16.92V19a2 2 0 0 1-2.18 2A19.86 19.86 0 0 1 3 5.18 2 2 0 0 1 5 3h2.09a2 2 0 0 1 2 1.72c.13 1.13.37 2.24.72 3.31a2 2 0 0 1-.45 2.11l-1.27 1.27a16 16 0 0 0 6.29 6.29l1.27-1.27a2 2 0 0 1 2.11-.45c1.07.35 2.18.59 3.31.72a2 2 0 0 1 1.72 2z" /></svg>
-            (555) 123-4567
+            (+63) 9176564268
           </div>
           <div className="flex items-center gap-2 mb-2">
             <svg width="20" height="20" fill="none" stroke="#F3F4F6" strokeWidth="2" viewBox="0 0 24 24"><path d="M4 4h16v16H4z" /><path d="M22 6l-10 7L2 6" /></svg>
-            info@apartmentlux.com
+            arlene.ocampo@gmail.com
           </div>
           <div className="flex items-center gap-2 mb-2">
-            <svg width="20" height="20" fill="none" stroke="#F3F4F6" strokeWidth="2" viewBox="0 0 24 24"><path d="M21 10.5V7a5 5 0 0 0-10 0v3.5" /><path d="M12 17v2" /><circle cx="12" cy="14" r="3" /><path d="M12 17v2" /></svg>
+            <MapPinHouse className='w-5 h-5' />
             406 Marine Road Veterans Village <br />
-            Brgy. Holy Spirit<br />
-            Quezon City, Metro Manila
+            Brgy. Holy Spirit, Quezon City<br />
+            Metro Manila, Philippines
           </div>
         </div>
       </section>

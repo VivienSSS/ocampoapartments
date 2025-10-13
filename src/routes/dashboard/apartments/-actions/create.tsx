@@ -57,7 +57,7 @@ const CreateApartmentDialogForm = () => {
     >
       <DialogContent>
         <DialogHeader>
-          <DialogTitle>Create a new property</DialogTitle>
+          <DialogTitle>Want to add a new unit?</DialogTitle>
           <DialogDescription>Enter the right information</DialogDescription>
         </DialogHeader>
         <form
@@ -73,8 +73,8 @@ const CreateApartmentDialogForm = () => {
               form={form}
               properties={properties?.items ?? []}
             />
-            <form.SubmitButton className="col-span-full">
-              Create apartment
+            <form.SubmitButton className="col-span-full mt-2">
+              Create Unit
             </form.SubmitButton>
           </form.AppForm>
         </form>

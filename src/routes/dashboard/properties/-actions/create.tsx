@@ -46,7 +46,7 @@ const CreatePropertyDialogForm = () => {
     >
       <DialogContent>
         <DialogHeader>
-          <DialogTitle>Create a new property</DialogTitle>
+          <DialogTitle>Want to add a new apartment property?</DialogTitle>
           <DialogDescription>Enter the right information</DialogDescription>
         </DialogHeader>
         <form
@@ -59,7 +59,7 @@ const CreatePropertyDialogForm = () => {
         >
           <form.AppForm>
             <CreatePropertyForm form={form} />
-            <form.SubmitButton>Create property</form.SubmitButton>
+            <form.SubmitButton className='mt-3 col-span-full'>Create Property</form.SubmitButton>
           </form.AppForm>
         </form>
       </DialogContent>

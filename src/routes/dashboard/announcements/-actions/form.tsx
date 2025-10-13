@@ -56,19 +56,21 @@ export const EditAnnouncementForm = withForm({
   },
   render: ({ form }) => (
     <>
-      <form.AppField name="author">
-        {(field) => (
-          <field.TextField hidden className="col-span-full" label="Author" />
-        )}
-      </form.AppField>
-      <form.AppField name="title">
-        {(field) => <field.TextField className="col-span-full" label="Title" />}
-      </form.AppField>
-      <form.AppField name="message">
-        {(field) => (
-          <field.TextField className="col-span-full" label="Message" />
-        )}
-      </form.AppField>
+      <div className="grid gap-6 grid-cols-4">
+        {/* <form.AppField name="author">
+          {(field) => (
+            <field.TextField hidden className="col-span-full" label="Author" />
+          )}
+        </form.AppField> */}
+        <form.AppField name="title">
+          {(field) => <field.TextField className="col-span-full" label="Title" />}
+        </form.AppField>
+        <form.AppField name="message">
+          {(field) => (
+            <field.TextField className="col-span-full" label="Message" />
+          )}
+        </form.AppField>
+      </div>
     </>
   ),
 });

@@ -65,7 +65,7 @@ const CreateAnnouncementDialogForm = () => {
     >
       <DialogContent>
         <DialogHeader>
-          <DialogTitle>Create a new announcement</DialogTitle>
+          <DialogTitle>Want to add a new announcement?</DialogTitle>
           <DialogDescription>Enter the right information</DialogDescription>
         </DialogHeader>
         <form
@@ -79,7 +79,7 @@ const CreateAnnouncementDialogForm = () => {
           <form.AppForm>
             <CreateAnnouncementForm form={form} />
             <form.SubmitButton className="col-span-full">
-              Create announcement
+              Create Announcement
             </form.SubmitButton>
           </form.AppForm>
         </form>

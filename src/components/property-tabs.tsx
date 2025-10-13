@@ -4,8 +4,11 @@ import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardHeader, CardTitle, CardDescription } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
 import { Tabs, TabsList, TabsTrigger, TabsContent } from "@/components/ui/tabs";
+import { Dialog, DialogContent, DialogDescription, DialogHeader, DialogTitle, DialogTrigger } from "@/components/ui/dialog";
+import { Separator } from "@/components/ui/separator";
 import { useLoaderData } from "@tanstack/react-router";
 import type { ApartmentUnitsResponse } from "@/pocketbase/queries/apartmentUnits";
+import { ListStart, MapPin, Package, Home, Users, Wifi, Car, Zap, Droplets, Shield, Phone, Mail, Star } from "lucide-react";
 
 // TypeScript interfaces for transformed data
 interface PropertyGroup {
@@ -35,11 +38,14 @@ function PropertyTabs() {
     return mapConfig[branch as keyof typeof mapConfig] || null;
   };
 
-  // Group units by property branch
+  // Group units by property branch (only available units)
   const propertyGroups = useMemo(() => {
     const groups: Record<string, PropertyGroup> = {};
 
     availableUnits.items.forEach(unit => {
+      // Only include available units
+      if (!unit.isAvailable) return;
+
       const branch = unit.expand?.property?.branch || 'Unknown';
       if (!groups[branch]) {
         groups[branch] = {
@@ -58,13 +64,13 @@ function PropertyTabs() {
   const [activeTab, setActiveTab] = useState<string>(branches[0] || "");
 
   return (
-    <section className="w-full bg-background py-20 flex flex-col items-center">
+    <section id="units" className="w-full bg-background py-20 flex flex-col items-center">
       <div className="mb-4">
         <Badge variant="secondary" className="px-4 py-1 font-semibold">Featured Properties</Badge>
       </div>
       <h2 className="text-4xl font-bold text-foreground mb-4 text-center">Discover Your Perfect Home</h2>
       <p className="text-xl text-muted-foreground mb-8 text-center max-w-2xl">
-        Explore our carefully curated selection of premium apartments across New York's most desirable neighborhoods, each offering unique amenities and stunning views.
+        Explore our carefully curated selection of premium apartment units with each offering unique amenities and stunning views.
       </p>
 
       <Tabs value={activeTab} onValueChange={setActiveTab} className="w-full max-w-5xl">
@@ -84,16 +90,13 @@ function PropertyTabs() {
             <Card className="w-full">
               <CardHeader>
                 <CardTitle className="text-2xl">{branch} Property</CardTitle>
-                <div className="flex items-center gap-2 text-muted-foreground">
-                  <svg width="20" height="20" fill="none" stroke="currentColor" strokeWidth="2" viewBox="0 0 24 24">
-                    <path d="M21 10c0 7-9 13-9 13s-9-6-9-13a9 9 0 0 1 18 0z" />
-                    <circle cx="12" cy="10" r="3" />
-                  </svg>
+                <div className="flex items-center gap-1 text-muted-foreground">
+                  <MapPin />
                   <div dangerouslySetInnerHTML={{ __html: propertyGroups[branch].address }} />
                 </div>
-                <p className="text-muted-foreground">
-                  Premium apartments with {propertyGroups[branch].units.length} available unit{propertyGroups[branch].units.length !== 1 ? 's' : ''}
-                </p>
+                <div className="flex items-center gap-1 text-muted-foreground">
+                  <Package /> {propertyGroups[branch].units.length} available unit{propertyGroups[branch].units.length !== 1 ? 's' : ''} with bedframes and closets included
+                </div>
               </CardHeader>
 
               <CardContent className="space-y-8">
@@ -136,10 +139,10 @@ function PropertyTabs() {
                           </div>
                         </div>
                         <Badge
-                          variant={unit.isAvailable ? "default" : "secondary"}
+                          variant="default"
                           className="absolute top-4 left-4"
                         >
-                          {unit.isAvailable ? "Available" : "Occupied"}
+                          Available
                         </Badge>
                       </div>
 
@@ -161,11 +164,8 @@ function PropertyTabs() {
                         </div>
 
                         <div className="grid grid-cols-2 gap-4 text-muted-foreground text-sm">
-                          <span className="flex items-center gap-1">
-                            <svg width="16" height="16" fill="none" stroke="currentColor" strokeWidth="2" viewBox="0 0 24 24">
-                              <path d="M3 9l9-7 9 7v11a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2z" />
-                              <polyline points="9,22 9,12 15,12 15,22" />
-                            </svg>
+                          <span className="flex items-center gap-1 ">
+                            <ListStart className="w-4 h-4" />
                             Floor {unit.floorNumber}
                           </span>
                           {unit.capacity && (
@@ -176,7 +176,7 @@ function PropertyTabs() {
                                 <path d="M22 21v-2a4 4 0 0 0-3-3.87" />
                                 <path d="M16 3.13a4 4 0 0 1 0 7.75" />
                               </svg>
-                              {unit.capacity} person{unit.capacity !== 1 ? 's' : ''}
+                              {unit.capacity} person{unit.capacity !== 1 ? 's' : ''} max
                             </span>
                           )}
                         </div>
@@ -188,21 +188,163 @@ function PropertyTabs() {
                           <Badge variant="outline" className="text-xs">
                             {unit.floorNumber}{unit.floorNumber === 1 ? 'st' : unit.floorNumber === 2 ? 'nd' : unit.floorNumber === 3 ? 'rd' : 'th'} Floor
                           </Badge>
-                          {unit.isAvailable && (
-                            <Badge variant="outline" className="text-xs text-green-600">
-                              Available Now
-                            </Badge>
-                          )}
+                          <Badge variant="outline" className="text-xs text-green-600">
+                            Available Now
+                          </Badge>
                         </div>
 
-                        <Button
-                          className="w-full"
-                          variant={unit.isAvailable ? "default" : "secondary"}
-                          size="lg"
-                          disabled={!unit.isAvailable}
-                        >
-                          {unit.isAvailable ? "View Details" : "Contact for Availability"}
-                        </Button>
+                        <Dialog>
+                          <DialogTrigger asChild>
+                            <Button
+                              className="w-full"
+                              variant="default"
+                              size="lg"
+                            >
+                              View Details
+                            </Button>
+                          </DialogTrigger>
+
+                          <DialogContent className="max-w-3xl max-h-[80vh] overflow-y-auto">
+                            <DialogHeader>
+                              <DialogTitle className="flex items-center gap-2">
+                                <Home className="w-5 h-5" />
+                                Unit {unit.unitLetter} - {branch} Property
+                              </DialogTitle>
+                              <DialogDescription>
+                                This apartment unit is eligible for a closet and a bedframe ★
+                              </DialogDescription>
+                            </DialogHeader>
+
+                            <div className="space-y-6">
+                              {/* Unit Overview */}
+                              <div className="grid grid-cols-1 md:grid-cols-1 gap-4">
+                                <Card>
+                                  <CardHeader className="pb-4">
+                                    <CardTitle className="text-lg">Unit Information</CardTitle>
+                                  </CardHeader>
+                                  <CardContent className="space-y-2">
+                                    <div className="flex justify-between">
+                                      <span className="text-muted-foreground">Unit Letter:</span>
+                                      <span className="font-medium">{unit.unitLetter}</span>
+                                    </div>
+                                    <div className="flex justify-between">
+                                      <span className="text-muted-foreground">Floor:</span>
+                                      <span className="font-medium">{unit.floorNumber}</span>
+                                    </div>
+                                    <div className="flex justify-between">
+                                      <span className="text-muted-foreground">Capacity:</span>
+                                      <span className="font-medium">{unit.capacity || 'Not specified'} person{unit.capacity !== 1 ? 's' : ''} maximum</span>
+                                    </div>
+                                    <div className="flex justify-between">
+                                      <span className="text-muted-foreground">Monthly Rent:</span>
+                                      <span className="font-bold text-lg">
+                                        {unit.price ? `₱${unit.price.toLocaleString()}` : 'Price on request'}
+                                      </span>
+                                    </div>
+                                  </CardContent>
+                                </Card>
+                              </div>
+
+
+
+                              {/* Amenities & Features */}
+                              {/* <div>
+                                <h3 className="text-lg font-semibold mb-4 flex items-center gap-2">
+                                  <Package className="w-5 h-5" />
+                                  Included Amenities & Features
+                                </h3>
+                                <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+                                  <div className="space-y-3">
+                                    <div className="flex items-center gap-2">
+                                      <Home className="w-4 h-4 text-green-600" />
+                                      <span>Fully furnished bedroom</span>
+                                    </div>
+                                    <div className="flex items-center gap-2">
+                                      <Package className="w-4 h-4 text-green-600" />
+                                      <span>Bedframe and closet included</span>
+                                    </div>
+                                    <div className="flex items-center gap-2">
+                                      <Wifi className="w-4 h-4 text-green-600" />
+                                      <span>High-speed internet ready</span>
+                                    </div>
+                                    <div className="flex items-center gap-2">
+                                      <Zap className="w-4 h-4 text-green-600" />
+                                      <span>Electricity included</span>
+                                    </div>
+                                  </div>
+                                  <div className="space-y-3">
+                                    <div className="flex items-center gap-2">
+                                      <Droplets className="w-4 h-4 text-green-600" />
+                                      <span>Water supply included</span>
+                                    </div>
+                                    <div className="flex items-center gap-2">
+                                      <Shield className="w-4 h-4 text-green-600" />
+                                      <span>24/7 security</span>
+                                    </div>
+                                    <div className="flex items-center gap-2">
+                                      <Car className="w-4 h-4 text-green-600" />
+                                      <span>Parking available</span>
+                                    </div>
+                                    <div className="flex items-center gap-2">
+                                      <Users className="w-4 h-4 text-green-600" />
+                                      <span>Common area access</span>
+                                    </div>
+                                  </div>
+                                </div>
+                              </div> */}
+
+                              <Separator />
+
+                              {/* Lease Terms */}
+                              <div>
+                                <h3 className="text-lg font-semibold mb-4">Lease Terms & Rental Contract</h3>
+                                <div className="bg-muted/50 p-4 rounded-lg space-y-2 text-sm">
+                                  <div className="text-justify">The landlord requires (1)
+                                    month advance rent payment, (2) months deposit, and ₱2,000 refundable deposit for the
+                                    water and electricity. If a potential tenant decides to cancel their move-in at the last
+                                    minute, all payments made, including any deposits or fees, will not be refunded. Tenants that reside in Pampanga and paid late will have a fee of ₱250.
+                                    Otherwise if not, there is no fee. </div>
+                                  <div>• <strong>Utilities:</strong> Electricity and water included in rent.</div>
+                                  <div>• <strong>Pets:</strong> Small pets allowed with no additional deposit.</div>
+                                  <div>• <strong>Parking:</strong> (1) motorcycle only, additional is ₱500/month.</div>
+                                </div>
+                              </div>
+
+
+
+                              {/* Contact Information
+                              <div>
+                                <h3 className="text-lg font-semibold mb-4">Contact Information</h3>
+                                <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+                                  <div className="flex items-center gap-3 p-3 bg-muted/30 rounded-lg">
+                                    <Phone />
+                                    <div>
+                                      <div className="font-medium">Phone</div>
+                                      <div className="text-sm text-muted-foreground">(+63) 9176564268</div>
+                                    </div>
+                                  </div>
+                                  <div className="flex items-center gap-3 p-3 bg-muted/30 rounded-lg">
+                                    <Mail />
+                                    <div>
+                                      <div className="font-medium">Email</div>
+                                      <div className="text-sm text-muted-foreground">arlene.ocampo@gmail.com</div>
+                                    </div>
+                                  </div>
+                                </div>
+                              </div> */}
+
+                              {/* Action Buttons */}
+                              {/* <div className="flex gap-3 pt-4">
+                                <Button className="flex-1" size="lg">
+                                  Schedule Viewing
+                                </Button>
+                                <Button variant="outline" className="flex-1" size="lg">
+                                  Contact Owner
+                                </Button>
+                              </div> */}
+                            </div>
+                          </DialogContent>
+                        </Dialog>
                       </CardContent>
                     </Card>
                   ))}

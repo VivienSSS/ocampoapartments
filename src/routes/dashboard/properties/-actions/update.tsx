@@ -71,7 +71,7 @@ const EditPropertyDialogForm = () => {
     >
       <DialogContent>
         <DialogHeader>
-          <DialogTitle>Edit existing property</DialogTitle>
+          <DialogTitle>Edit Existing Property</DialogTitle>
           <DialogDescription>Enter the right information</DialogDescription>
         </DialogHeader>
         <form
@@ -84,7 +84,7 @@ const EditPropertyDialogForm = () => {
         >
           <form.AppForm>
             <EditPropertyForm form={form} />
-            <form.SubmitButton>Update property</form.SubmitButton>
+            <form.SubmitButton className='mt-3 col-span-full'>Update Property</form.SubmitButton>
           </form.AppForm>
         </form>
       </DialogContent>

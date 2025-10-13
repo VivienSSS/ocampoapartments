@@ -58,7 +58,7 @@ const CreateTenantDialogForm = () => {
     >
       <DialogContent>
         <DialogHeader>
-          <DialogTitle>Create a new tenant</DialogTitle>
+          <DialogTitle>Want to add a new tenant?</DialogTitle>
           <DialogDescription>Enter the right information</DialogDescription>
         </DialogHeader>
         <form
@@ -71,7 +71,7 @@ const CreateTenantDialogForm = () => {
         >
           <form.AppForm>
             <CreateTenantForm form={form} users={users?.items ?? []} />
-            <form.SubmitButton className="col-span-full">
+            <form.SubmitButton className="col-span-full mt-2">
               Create Tenant
             </form.SubmitButton>
           </form.AppForm>

@@ -27,8 +27,8 @@ export const CreateApartmentForm = withForm({
           {(field) => (
             <field.TextField
               className="col-span-full"
-              label="Floor number"
-              placeholder="ex. 3"
+              label="Floor Number"
+              placeholder="ex. 1"
               type="number"
             />
           )}
@@ -37,8 +37,8 @@ export const CreateApartmentForm = withForm({
           {(field) => (
             <field.TextField
               className="col-span-2"
-              label="capacity"
-              placeholder="ex. 8"
+              label="Capacity"
+              placeholder="ex. 2"
               type="number"
             />
           )}
@@ -48,7 +48,7 @@ export const CreateApartmentForm = withForm({
             <field.TextField
               className="col-span-2"
               label="Price"
-              placeholder="ex. 500"
+              placeholder="ex. 5000"
               type="number"
             />
           )}
@@ -57,8 +57,8 @@ export const CreateApartmentForm = withForm({
           {(field) => (
             <field.TextField
               className="col-span-full"
-              label="Unit letter"
-              placeholder="A"
+              label="Unit Letter"
+              placeholder="ex. A"
             />
           )}
         </form.AppField>
@@ -71,7 +71,6 @@ export const CreateApartmentForm = withForm({
                 value: value.id,
               }))}
               label="Property"
-              placeholder="id"
             />
           )}
         </form.AppField>
@@ -84,13 +83,13 @@ export const EditApartmentForm = withForm({
   ...UpdateApartmentUnitFormOption,
   props: {} as { properties: PropertiesResponse[] },
   render: ({ form, properties }) => (
-    <>
+    <div className="grid gap-6 grid-cols-4">
       <form.AppField name="floorNumber">
         {(field) => (
           <field.TextField
             className="col-span-full"
-            label="Floor number"
-            placeholder="ex. 3"
+            label="Floor Number"
+            placeholder="ex. 1"
             type="number"
           />
         )}
@@ -99,8 +98,8 @@ export const EditApartmentForm = withForm({
         {(field) => (
           <field.TextField
             className="col-span-2"
-            label="capacity"
-            placeholder="ex. 8"
+            label="Capacity"
+            placeholder="ex. 2"
             type="number"
           />
         )}
@@ -110,7 +109,7 @@ export const EditApartmentForm = withForm({
           <field.TextField
             className="col-span-2"
             label="Price"
-            placeholder="ex. 500"
+            placeholder="ex. 5000"
             type="number"
           />
         )}
@@ -119,8 +118,8 @@ export const EditApartmentForm = withForm({
         {(field) => (
           <field.TextField
             className="col-span-full"
-            label="Unit letter"
-            placeholder="A"
+            label="Unit Letter"
+            placeholder="ex. A"
           />
         )}
       </form.AppField>
@@ -133,10 +132,9 @@ export const EditApartmentForm = withForm({
               value: value.id,
             }))}
             label="Property"
-            placeholder="id"
           />
         )}
       </form.AppField>
-    </>
+    </div>
   ),
 });

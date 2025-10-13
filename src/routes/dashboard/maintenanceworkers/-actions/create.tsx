@@ -61,7 +61,7 @@ const CreateWorkerDialogForm = () => {
     >
       <DialogContent>
         <DialogHeader>
-          <DialogTitle>Create a new announcement</DialogTitle>
+          <DialogTitle>Want to add a new worker?</DialogTitle>
           <DialogDescription>Enter the right information</DialogDescription>
         </DialogHeader>
         <form
@@ -75,7 +75,7 @@ const CreateWorkerDialogForm = () => {
           <form.AppForm>
             <CreateWorkersForm form={form} />
             <form.SubmitButton className="col-span-full">
-              Create worker
+              Create Worker
             </form.SubmitButton>
           </form.AppForm>
         </form>

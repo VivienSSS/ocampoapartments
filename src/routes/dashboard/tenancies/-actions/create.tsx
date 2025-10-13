@@ -86,7 +86,7 @@ const CreateTenancyDialogForm = () => {
     >
       <DialogContent>
         <DialogHeader>
-          <DialogTitle>Create tenancy</DialogTitle>
+          <DialogTitle>Want to add a new tenancy?</DialogTitle>
           <DialogDescription>Enter the right information</DialogDescription>
         </DialogHeader>
         <form
@@ -103,7 +103,7 @@ const CreateTenancyDialogForm = () => {
               tenants={tenants?.items ?? []}
               apartmentUnits={apartmentUnits?.items ?? []}
             />
-            <form.SubmitButton className="col-span-full">
+            <form.SubmitButton className="col-span-full mt-2">
               Create Tenancy
             </form.SubmitButton>
           </form.AppForm>

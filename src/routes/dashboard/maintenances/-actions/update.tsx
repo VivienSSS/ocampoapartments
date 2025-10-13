@@ -70,7 +70,7 @@ const EditMaintenanceDialogForm = () => {
     >
       <DialogContent>
         <DialogHeader>
-          <DialogTitle>Edit maintenance request</DialogTitle>
+          <DialogTitle>Edit Request</DialogTitle>
           <DialogDescription>Update information</DialogDescription>
         </DialogHeader>
         <form
@@ -82,7 +82,7 @@ const EditMaintenanceDialogForm = () => {
         >
           <form.AppForm>
             <EditMaintenanceForm form={form} />
-            <form.SubmitButton>Update Request</form.SubmitButton>
+            <form.SubmitButton className='mt-4'>Update Request</form.SubmitButton>
           </form.AppForm>
         </form>
       </DialogContent>

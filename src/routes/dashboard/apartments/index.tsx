@@ -31,7 +31,7 @@ function RouteComponent() {
   return (
     <article>
       <section className="flex items-center justify-between py-2.5">
-        <h1 className="text-2xl font-bold">Apartments</h1>
+        <h1 className="text-2xl font-bold">Apartment Units</h1>
         <div className="flex gap-2.5">
           <Button
             disabled={searchQuery.selected.length > 1}

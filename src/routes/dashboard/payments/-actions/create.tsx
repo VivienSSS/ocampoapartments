@@ -50,7 +50,7 @@ const CreatePaymentDialogForm = () => {
     >
       <DialogContent>
         <DialogHeader>
-          <DialogTitle>Create a new payment</DialogTitle>
+          <DialogTitle>Want to create a new payment?</DialogTitle>
           <DialogDescription>Enter the right information</DialogDescription>
         </DialogHeader>
         <form

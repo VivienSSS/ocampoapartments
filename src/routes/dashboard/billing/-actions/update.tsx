@@ -69,7 +69,7 @@ const EditBillingDialogForm = () => {
     >
       <DialogContent>
         <DialogHeader>
-          <DialogTitle>Edit bill</DialogTitle>
+          <DialogTitle>Edit Bill</DialogTitle>
           <DialogDescription>Update billing information</DialogDescription>
         </DialogHeader>
         <form
@@ -81,7 +81,9 @@ const EditBillingDialogForm = () => {
         >
           <form.AppForm>
             <EditBillingForm form={form} />
-            <form.SubmitButton>Update Bill</form.SubmitButton>
+            <div className="mt-6">
+              <form.SubmitButton>Update Bill</form.SubmitButton>
+            </div>
           </form.AppForm>
         </form>
       </DialogContent>

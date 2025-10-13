@@ -64,7 +64,7 @@ export const EditWorkersForm = withForm({
       </form.AppField>
       <form.AppField name="isAvailable">
         {(field) => (
-          <field.CheckBoxField className="col-span-full" label="Is Available" />
+          <field.CheckBoxField className="col-span-full mt-2" label="Is Available" />
         )}
       </form.AppField>
     </>

@@ -99,12 +99,35 @@ export const columns: ColumnDef<BillsResponse>[] = [
       return unique.length ? unique.join(', ') : '—';
     },
   },
+  {
+    accessorKey: 'totalAmount',
+    enableSorting: false,
+    header: ({ column }) => (
+      <TableColumnHeader column={column} title="Total Amount" />
+    ),
+    cell: ({ row }) => {
+      const billId = row.original.id;
+      const { data } = useSuspenseQuery({
+        queryKey: [Collections.BillItems, billId],
+        queryFn: () =>
+          pb.collection(Collections.BillItems).getList(1, 100, {
+            filter: `bill = '${billId}'`,
+          }),
+      });
+
+      const total = (data?.items ?? []).reduce((sum: number, item: any) => {
+        return sum + (item.amount || 0);
+      }, 0);
+
+      return total > 0 ? `₱${total.toFixed(2)}` : '—';
+    },
+  },
 
   {
     accessorKey: 'tenancy',
     enableSorting: false,
     header: ({ column }) => (
-      <TableColumnHeader column={column} title="Tenancy" />
+      <TableColumnHeader column={column} title="Tenant" />
     ),
     cell: ({ row }) =>
       `${row.original.expand.tenancy.expand.tenant.expand.user.firstName} ${row.original.expand.tenancy.expand.tenant.expand.user.lastName}`,

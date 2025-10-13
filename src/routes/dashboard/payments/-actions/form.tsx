@@ -35,7 +35,7 @@ export const CreatePaymentForm = withForm({
                 label: value.facebookName || value.id,
                 value: value.id,
               }))}
-              placeholder="Tenant"
+              label="Tenant"
             />
           )}
         </form.AppField>
@@ -47,7 +47,7 @@ export const CreatePaymentForm = withForm({
                 label: value.id,
                 value: value.id,
               }))}
-              placeholder="Bill"
+              label="Bill"
             />
           )}
         </form.AppField>
@@ -58,7 +58,7 @@ export const CreatePaymentForm = withForm({
               options={Object.keys(PaymentsPaymentMethodOptions).map(
                 (value) => ({ label: value, value: value }),
               )}
-              placeholder="Payment Method"
+              label="Payment Method"
             />
           )}
         </form.AppField>
@@ -66,7 +66,7 @@ export const CreatePaymentForm = withForm({
           {(field) => (
             <field.TextField
               className="col-span-full"
-              placeholder="Amount Paid"
+              label="Amount Paid"
               type="number"
             />
           )}
@@ -75,7 +75,7 @@ export const CreatePaymentForm = withForm({
           {(field) => (
             <field.DateField
               className="col-span-full"
-              placeholder="Payment Date"
+              label="Payment Date"
             />
           )}
         </form.AppField>
@@ -83,7 +83,8 @@ export const CreatePaymentForm = withForm({
           {(field) => (
             <field.TextField
               className="col-span-full"
-              placeholder="Transaction ID"
+              label="Transaction ID and Proof of Payment"
+              placeholder='ex. 12345678910'
             />
           )}
         </form.AppField>
@@ -91,7 +92,7 @@ export const CreatePaymentForm = withForm({
           {(field) => (
             <field.FileField
               className="col-span-full"
-              placeholder="Transaction ID"
+              label="Proof of Payment"
             />
           )}
         </form.AppField>

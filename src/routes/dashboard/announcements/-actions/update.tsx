@@ -84,7 +84,9 @@ const EditAnnouncementDialogForm = () => {
         >
           <form.AppForm>
             <EditAnnouncementForm form={form} />
-            <form.SubmitButton>Update Announcement</form.SubmitButton>
+            <div className="mt-6">
+              <form.SubmitButton>Update Announcement</form.SubmitButton>
+            </div>
           </form.AppForm>
         </form>
       </DialogContent>

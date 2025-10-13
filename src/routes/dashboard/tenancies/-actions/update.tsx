@@ -88,7 +88,7 @@ const EditTenancyDialogForm = () => {
     >
       <DialogContent>
         <DialogHeader>
-          <DialogTitle>Edit tenancy</DialogTitle>
+          <DialogTitle>Edit Tenancy</DialogTitle>
           <DialogDescription>Update tenancy information</DialogDescription>
         </DialogHeader>
         <form
@@ -101,7 +101,7 @@ const EditTenancyDialogForm = () => {
         >
           <form.AppForm>
             <EditTenancyForm form={form} tenants={tenants?.items ?? []} apartmentUnits={apartmentUnits?.items ?? []} />
-            <form.SubmitButton>Update Tenancy</form.SubmitButton>
+            <form.SubmitButton className='col-span-full mt-2'>Update Tenancy</form.SubmitButton>
           </form.AppForm>
         </form>
       </DialogContent>

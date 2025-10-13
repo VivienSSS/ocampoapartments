@@ -49,7 +49,7 @@ const CreateBillingDialogForm = () => {
     >
       <DialogContent className="!max-h-3/4 overflow-y-auto">
         <DialogHeader>
-          <DialogTitle>Create billing</DialogTitle>
+          <DialogTitle>Want to add a new billing to a tenant?</DialogTitle>
           <DialogDescription>Enter the right information</DialogDescription>
         </DialogHeader>
         <form
@@ -62,7 +62,7 @@ const CreateBillingDialogForm = () => {
         >
           <form.AppForm>
             <CreateBillingForm form={form} />
-            <form.SubmitButton>Create Billing</form.SubmitButton>
+            <form.SubmitButton className='col-span-full'>Create Billing</form.SubmitButton>
           </form.AppForm>
         </form>
       </DialogContent>

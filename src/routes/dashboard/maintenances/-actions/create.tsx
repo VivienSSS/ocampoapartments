@@ -60,7 +60,7 @@ const CreateMaintenanceDialogForm = () => {
     >
       <DialogContent>
         <DialogHeader>
-          <DialogTitle>Create a new request</DialogTitle>
+          <DialogTitle>Want to add a new request?</DialogTitle>
           <DialogDescription>Enter the right information</DialogDescription>
         </DialogHeader>
         <form
@@ -73,8 +73,8 @@ const CreateMaintenanceDialogForm = () => {
         >
           <form.AppForm>
             <CreateMaintenanceForm form={form} />
-            <form.SubmitButton className="col-span-full">
-              Create a maintenance request
+            <form.SubmitButton className="col-span-full mt-4">
+              Create Request
             </form.SubmitButton>
           </form.AppForm>
         </form>

@@ -68,7 +68,7 @@ const EditWorkerDialogForm = () => {
         >
             <DialogContent>
                 <DialogHeader>
-                    <DialogTitle>Create a new announcement</DialogTitle>
+                    <DialogTitle>Edit Worker</DialogTitle>
                     <DialogDescription>Enter the right information</DialogDescription>
                 </DialogHeader>
                 <form
@@ -82,7 +82,7 @@ const EditWorkerDialogForm = () => {
                     <form.AppForm>
                         <EditWorkersForm form={form} />
                         <form.SubmitButton className="col-span-full">
-                            Update worker
+                            Update Worker
                         </form.SubmitButton>
                     </form.AppForm>
                 </form>
