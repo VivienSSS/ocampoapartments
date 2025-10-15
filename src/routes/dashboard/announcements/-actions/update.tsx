@@ -12,14 +12,14 @@ import {
   DialogHeader,
   DialogTitle,
 } from '@/components/ui/dialog';
-import { useAppForm } from '@/components/ui/form';
 import {
   listAnnouncementsQuery,
   updateAnnouncementMutation,
   viewAnnouncementQuery,
 } from '@/pocketbase/queries/announcements';
 import { updateAnnouncementSchema } from '@/pocketbase/schemas/announcements';
-import { EditAnnouncementForm } from './form';
+import { AutoForm } from '@/components/ui/autoform';
+import { ZodProvider } from '@autoform/zod';
 
 const EditAnnouncementDialogForm = () => {
   const navigate = useNavigate({ from: '/dashboard/announcements' });
@@ -40,26 +40,6 @@ const EditAnnouncementDialogForm = () => {
     queryClient,
   );
 
-  const form = useAppForm({
-    defaultValues: {
-      title: ann?.title ?? '',
-      message: ann?.message ?? '',
-    } as z.infer<typeof updateAnnouncementSchema>,
-    validators: { onChange: updateAnnouncementSchema },
-    onSubmit: async ({ value }) =>
-      mutation.mutateAsync(value, {
-        onSuccess: () => {
-          queryClient.invalidateQueries(
-            listAnnouncementsQuery(searchQuery.page, searchQuery.perPage),
-          );
-          navigate({
-            to: '/dashboard/announcements',
-            search: { edit: undefined, id: undefined },
-          });
-        },
-      }),
-  });
-
   return (
     <Dialog
       open={!!searchQuery.edit && !!searchQuery.id}
@@ -75,20 +55,7 @@ const EditAnnouncementDialogForm = () => {
           <DialogTitle>Edit announcement</DialogTitle>
           <DialogDescription>Update information</DialogDescription>
         </DialogHeader>
-        <form
-          onSubmit={(e) => {
-            e.preventDefault();
-            e.stopPropagation();
-            form.handleSubmit();
-          }}
-        >
-          <form.AppForm>
-            <EditAnnouncementForm form={form} />
-            <div className="mt-6">
-              <form.SubmitButton>Update Announcement</form.SubmitButton>
-            </div>
-          </form.AppForm>
-        </form>
+        <AutoForm schema={new ZodProvider(updateAnnouncementSchema)} />
       </DialogContent>
     </Dialog>
   );

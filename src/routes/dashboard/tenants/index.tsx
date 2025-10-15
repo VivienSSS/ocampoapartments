@@ -70,7 +70,7 @@ function RouteComponent() {
     return (
       <article>
         <section className="flex items-center justify-between py-2.5">
-          <h1 className="scroll-m-20 text-4xl font-extrabold tracking-tight text-balance">
+          <h1 className="text-2xl font-bold">
             Tenants
           </h1>
         </section>
@@ -86,9 +86,7 @@ function RouteComponent() {
   return (
     <article>
       <section className="flex items-center justify-between py-2.5">
-        <h1 className="scroll-m-20 text-4xl font-extrabold tracking-tight text-balance">
-          Tenants
-        </h1>
+        <h1 className="text-2xl font-bold">Tenants</h1>
         <div className='flex gap-2.5'>
           <Button
             disabled={searchQuery.selected.length > 1}

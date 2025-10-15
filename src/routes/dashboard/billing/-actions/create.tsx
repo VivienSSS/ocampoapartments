@@ -12,10 +12,11 @@ import {
   DialogHeader,
   DialogTitle,
 } from '@/components/ui/dialog';
-import { useAppForm } from '@/components/ui/form';
 import { createBillMutation, listBillsQuery } from '@/pocketbase/queries/bills';
 import { insertBillSchema } from '@/pocketbase/schemas/bills';
-import { CreateBillingForm } from './form';
+import { AutoForm } from '@/components/ui/autoform';
+import { ZodProvider } from '@autoform/zod';
+import { insertBillItemsSchema } from '@/pocketbase/schemas/billItems';
 
 const CreateBillingDialogForm = () => {
   const navigate = useNavigate({ from: '/dashboard/billing' });
@@ -24,21 +25,7 @@ const CreateBillingDialogForm = () => {
 
   const billMutation = useMutation(createBillMutation);
 
-  const form = useAppForm({
-    defaultValues: {} as z.infer<typeof insertBillSchema>,
-    // validators: {
-    //   onChange: insertBillSchema,
-    // },
-    onSubmit: async ({ value }) =>
-      billMutation.mutateAsync(value, {
-        onSuccess: () => {
-          queryClient.invalidateQueries(
-            listBillsQuery(searchParams.page, searchParams.perPage),
-          );
-          navigate({ to: '/dashboard/billing', search: { new: undefined } });
-        },
-      }),
-  });
+
 
   return (
     <Dialog
@@ -52,19 +39,7 @@ const CreateBillingDialogForm = () => {
           <DialogTitle>Want to add a new billing to a tenant?</DialogTitle>
           <DialogDescription>Enter the right information</DialogDescription>
         </DialogHeader>
-        <form
-          className="grid grid-cols-4 gap-5"
-          onSubmit={(e) => {
-            e.preventDefault();
-            e.stopPropagation();
-            form.handleSubmit();
-          }}
-        >
-          <form.AppForm>
-            <CreateBillingForm form={form} />
-            <form.SubmitButton className='col-span-full'>Create Billing</form.SubmitButton>
-          </form.AppForm>
-        </form>
+        <AutoForm schema={new ZodProvider(insertBillSchema)} />
       </DialogContent>
     </Dialog>
   );

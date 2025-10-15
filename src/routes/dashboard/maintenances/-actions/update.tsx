@@ -12,14 +12,14 @@ import {
   DialogHeader,
   DialogTitle,
 } from '@/components/ui/dialog';
-import { useAppForm } from '@/components/ui/form';
 import {
   listMaintenanceRequestsQuery,
   updateMaintenanceRequestMutation,
   viewMaintenanceRequestQuery,
 } from '@/pocketbase/queries/maintenanceRequests';
 import { updateMaintenanceRequestSchema } from '@/pocketbase/schemas/maintenanceRequests';
-import { EditMaintenanceForm } from './form';
+import { AutoForm } from '@/components/ui/autoform';
+import { ZodProvider } from '@autoform/zod';
 
 const EditMaintenanceDialogForm = () => {
   const navigate = useNavigate({ from: '/dashboard/maintenances' });
@@ -39,26 +39,6 @@ const EditMaintenanceDialogForm = () => {
     queryClient,
   );
 
-  const form = useAppForm({
-    defaultValues: {
-      description: req?.description ?? '',
-      status: req?.status ?? '',
-    } as z.infer<typeof updateMaintenanceRequestSchema>,
-    validators: { onChange: updateMaintenanceRequestSchema },
-    onSubmit: async ({ value }) =>
-      mutation.mutateAsync(value, {
-        onSuccess: () => {
-          queryClient.invalidateQueries(
-            listMaintenanceRequestsQuery(searchQuery.page, searchQuery.perPage),
-          );
-          navigate({
-            to: '/dashboard/maintenances',
-            search: { edit: undefined, id: undefined },
-          });
-        },
-      }),
-  });
-
   return (
     <Dialog
       open={!!searchQuery.edit && !!currentId}
@@ -73,18 +53,7 @@ const EditMaintenanceDialogForm = () => {
           <DialogTitle>Edit Request</DialogTitle>
           <DialogDescription>Update information</DialogDescription>
         </DialogHeader>
-        <form
-          onSubmit={(e) => {
-            e.preventDefault();
-            e.stopPropagation();
-            form.handleSubmit();
-          }}
-        >
-          <form.AppForm>
-            <EditMaintenanceForm form={form} />
-            <form.SubmitButton className='mt-4'>Update Request</form.SubmitButton>
-          </form.AppForm>
-        </form>
+        <AutoForm schema={new ZodProvider(updateMaintenanceRequestSchema)} />
       </DialogContent>
     </Dialog>
   );

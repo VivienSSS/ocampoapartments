@@ -12,14 +12,14 @@ import {
   DialogHeader,
   DialogTitle,
 } from '@/components/ui/dialog';
-import { useAppForm } from '@/components/ui/form';
 import { pb } from '@/pocketbase';
 import {
   createAnnouncementMutation,
   listAnnouncementsQuery,
 } from '@/pocketbase/queries/announcements';
 import { insertAnnouncementSchema } from '@/pocketbase/schemas/announcements';
-import { CreateAnnouncementForm } from './form';
+import { AutoForm } from '@/components/ui/autoform';
+import { ZodProvider } from '@autoform/zod';
 
 const CreateAnnouncementDialogForm = () => {
   const navigate = useNavigate({ from: '/dashboard/announcements' });
@@ -29,29 +29,6 @@ const CreateAnnouncementDialogForm = () => {
   });
 
   const announcementMutation = useMutation(createAnnouncementMutation);
-
-  const form = useAppForm({
-    defaultValues: {
-      title: '',
-      message: '',
-      author: pb.authStore.record?.id,
-    } as z.infer<typeof insertAnnouncementSchema>,
-    validators: {
-      onChange: insertAnnouncementSchema,
-    },
-    onSubmit: async ({ value }) =>
-      announcementMutation.mutateAsync(value, {
-        onSuccess: () => {
-          queryClient.invalidateQueries(
-            listAnnouncementsQuery(searchParams.page, searchParams.perPage),
-          );
-          navigate({
-            to: '/dashboard/announcements',
-            search: { new: undefined },
-          });
-        },
-      }),
-  });
 
   return (
     <Dialog
@@ -68,21 +45,7 @@ const CreateAnnouncementDialogForm = () => {
           <DialogTitle>Want to add a new announcement?</DialogTitle>
           <DialogDescription>Enter the right information</DialogDescription>
         </DialogHeader>
-        <form
-          className="grid grid-cols-4 gap-2.5"
-          onSubmit={(e) => {
-            e.preventDefault();
-            e.stopPropagation();
-            form.handleSubmit();
-          }}
-        >
-          <form.AppForm>
-            <CreateAnnouncementForm form={form} />
-            <form.SubmitButton className="col-span-full">
-              Create Announcement
-            </form.SubmitButton>
-          </form.AppForm>
-        </form>
+        <AutoForm schema={new ZodProvider(insertAnnouncementSchema)} />
       </DialogContent>
     </Dialog>
   );

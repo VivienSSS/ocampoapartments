@@ -12,14 +12,13 @@ import {
   DialogHeader,
   DialogTitle,
 } from '@/components/ui/dialog';
-import { useAppForm } from '@/components/ui/form';
 import {
-  listPropertiesQuery,
   updatePropertyMutation,
   viewPropertiesQuery,
 } from '@/pocketbase/queries/properties';
-import { updatePropertySchema } from '@/pocketbase/schemas/properties';
-import { EditPropertyForm } from './form';
+import { insertPropertySchema, updatePropertySchema } from '@/pocketbase/schemas/properties';
+import { AutoForm } from '@/components/ui/autoform';
+import { ZodProvider } from '@autoform/zod';
 
 const EditPropertyDialogForm = () => {
   const navigate = useNavigate({ from: '/dashboard/properties' });
@@ -37,28 +36,6 @@ const EditPropertyDialogForm = () => {
     queryClient,
   );
 
-  const form = useAppForm({
-    defaultValues: {
-      address: property?.address ?? '',
-      branch: property?.branch ?? '',
-    } as z.infer<typeof updatePropertySchema>,
-    validators: {
-      onChange: updatePropertySchema,
-    },
-    onSubmit: async ({ value }) =>
-      propertyMutation.mutateAsync(value, {
-        onSuccess: () => {
-          queryClient.invalidateQueries(
-            listPropertiesQuery(searchQuery.page, searchQuery.perPage),
-          );
-          navigate({
-            to: '/dashboard/properties',
-            search: { edit: undefined, id: undefined },
-          });
-        },
-      }),
-  });
-
   return (
     <Dialog
       open={searchQuery.edit && !!searchQuery.id}
@@ -74,19 +51,7 @@ const EditPropertyDialogForm = () => {
           <DialogTitle>Edit Existing Property</DialogTitle>
           <DialogDescription>Enter the right information</DialogDescription>
         </DialogHeader>
-        <form
-          className="grid grid-cols-4 gap-2.5"
-          onSubmit={(e) => {
-            e.preventDefault();
-            e.stopPropagation();
-            form.handleSubmit();
-          }}
-        >
-          <form.AppForm>
-            <EditPropertyForm form={form} />
-            <form.SubmitButton className='mt-3 col-span-full'>Update Property</form.SubmitButton>
-          </form.AppForm>
-        </form>
+        <AutoForm schema={new ZodProvider(insertPropertySchema)} />
       </DialogContent>
     </Dialog>
   );

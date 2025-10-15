@@ -12,15 +12,13 @@ import {
     DialogHeader,
     DialogTitle,
 } from '@/components/ui/dialog';
-import { useAppForm } from '@/components/ui/form';
 import {
-    createMaintenanceWorkerMutation,
-    listMaintenanceWorkersQuery,
     updateMaintenanceWorkerMutation,
     viewMaintenanceWorkerQuery,
 } from '@/pocketbase/queries/maintenanceWorkers';
 import { insertMaintenanceWorkerSchema, updateMaintenanceWorkerSchema } from '@/pocketbase/schemas/maintenanceWorkers';
-import { CreateWorkersForm, EditWorkersForm } from './form';
+import { AutoForm } from '@/components/ui/autoform';
+import { ZodProvider } from '@autoform/zod';
 
 const EditWorkerDialogForm = () => {
     const navigate = useNavigate({ from: '/dashboard/maintenanceworkers' });
@@ -35,26 +33,6 @@ const EditWorkerDialogForm = () => {
         ...viewMaintenanceWorkerQuery(searchParams.id ?? ''),
         enabled: searchParams.new && !!searchParams.id
     }, queryClient)
-
-    const form = useAppForm({
-        defaultValues: {
-            name: worker?.name,
-            contactDetails: worker?.contactDetails,
-            isAvailable: worker?.isAvailable,
-        } as z.infer<typeof updateMaintenanceWorkerSchema>,
-        onSubmit: async ({ value }) =>
-            maintenanceWorkerMutation.mutateAsync(value, {
-                onSuccess: () => {
-                    queryClient.invalidateQueries(
-                        listMaintenanceWorkersQuery(searchParams.page, searchParams.perPage),
-                    );
-                    navigate({
-                        to: '/dashboard/maintenanceworkers',
-                        search: { edit: undefined, id: undefined },
-                    });
-                },
-            }),
-    });
 
     return (
         <Dialog
@@ -71,21 +49,7 @@ const EditWorkerDialogForm = () => {
                     <DialogTitle>Edit Worker</DialogTitle>
                     <DialogDescription>Enter the right information</DialogDescription>
                 </DialogHeader>
-                <form
-                    className="grid grid-cols-4 gap-2.5"
-                    onSubmit={(e) => {
-                        e.preventDefault();
-                        e.stopPropagation();
-                        form.handleSubmit();
-                    }}
-                >
-                    <form.AppForm>
-                        <EditWorkersForm form={form} />
-                        <form.SubmitButton className="col-span-full">
-                            Update Worker
-                        </form.SubmitButton>
-                    </form.AppForm>
-                </form>
+                <AutoForm schema={new ZodProvider(updateMaintenanceWorkerSchema)} />
             </DialogContent>
         </Dialog>
     );
