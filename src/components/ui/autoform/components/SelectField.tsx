@@ -5,6 +5,7 @@ import {
   SelectTrigger,
   SelectValue,
 } from "@/components/ui/select";
+import { cn } from "@/lib/utils";
 import { AutoFormFieldProps } from "@autoform/react";
 import React from "react";
 
@@ -30,7 +31,7 @@ export const SelectField: React.FC<AutoFormFieldProps> = ({
       }}
       defaultValue={field.default}
     >
-      <SelectTrigger id={id} className={error ? "border-destructive" : ""}>
+      <SelectTrigger id={id} className={cn(error ? "border-destructive" : "", "w-full")}>
         <SelectValue placeholder="Select an option" />
       </SelectTrigger>
       <SelectContent>

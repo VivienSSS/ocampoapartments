@@ -45,7 +45,9 @@ const CreateAnnouncementDialogForm = () => {
           <DialogTitle>Want to add a new announcement?</DialogTitle>
           <DialogDescription>Enter the right information</DialogDescription>
         </DialogHeader>
-        <AutoForm schema={new ZodProvider(insertAnnouncementSchema)} />
+        <AutoForm onSubmit={(v: z.infer<typeof insertAnnouncementSchema>) => {
+
+        }} schema={new ZodProvider(insertAnnouncementSchema)} withSubmit />
       </DialogContent>
     </Dialog>
   );

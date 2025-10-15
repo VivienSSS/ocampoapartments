@@ -1,6 +1,7 @@
 import React from "react";
 import { Label } from "@/components/ui/label";
-import { FieldWrapperProps } from "@autoform/react";
+import type { FieldWrapperProps } from "@autoform/react";
+import { Field, FieldContent, FieldDescription, FieldError, FieldLabel } from "../../field";
 
 const DISABLED_LABELS = ["boolean", "object", "array"];
 
@@ -14,20 +15,29 @@ export const FieldWrapper: React.FC<FieldWrapperProps> = ({
   const isDisabled = DISABLED_LABELS.includes(field.type);
 
   return (
-    <div className="space-y-2">
-      {!isDisabled && (
-        <Label htmlFor={id}>
-          {label}
-          {field.required && <span className="text-destructive"> *</span>}
-        </Label>
-      )}
-      {children}
-      {field.fieldConfig?.description && (
-        <p className="text-sm text-muted-foreground">
-          {field.fieldConfig.description}
-        </p>
-      )}
-      {error && <p className="text-sm text-destructive">{error}</p>}
-    </div>
+    <Field>
+      {field.fieldConfig?.description ?
+        <FieldContent>
+          {!isDisabled && (
+            <FieldLabel htmlFor={id}>
+              {label}
+              {field.required && <span className="text-destructive"> *</span>}
+            </FieldLabel>
+          )}
+          {children}
+          <FieldDescription>{field.fieldConfig.description}</FieldDescription>
+          <FieldError>{error}</FieldError>
+        </FieldContent>
+        : <>
+          {!isDisabled && (
+            <FieldLabel htmlFor={id}>
+              {label}
+              {field.required && <span className="text-destructive"> *</span>}
+            </FieldLabel>
+          )}
+          {children}
+          <FieldError>{error}</FieldError>
+        </>}
+    </Field>
   );
 };

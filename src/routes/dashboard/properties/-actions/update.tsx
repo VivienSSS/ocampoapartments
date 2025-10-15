@@ -51,7 +51,7 @@ const EditPropertyDialogForm = () => {
           <DialogTitle>Edit Existing Property</DialogTitle>
           <DialogDescription>Enter the right information</DialogDescription>
         </DialogHeader>
-        <AutoForm schema={new ZodProvider(insertPropertySchema)} />
+        <AutoForm schema={new ZodProvider(updatePropertySchema)} />
       </DialogContent>
     </Dialog>
   );

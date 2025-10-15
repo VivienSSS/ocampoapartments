@@ -1,14 +1,15 @@
 import React from "react";
-import { ObjectWrapperProps } from "@autoform/react";
+import type { ObjectWrapperProps } from "@autoform/react";
+import { FieldGroup, FieldTitle } from "../../field";
 
 export const ObjectWrapper: React.FC<ObjectWrapperProps> = ({
   label,
   children,
 }) => {
   return (
-    <div className="space-y-4">
-      <h3 className="text-lg font-medium">{label}</h3>
+    <FieldGroup>
+      <FieldTitle>{label}</FieldTitle>
       {children}
-    </div>
+    </FieldGroup>
   );
 };

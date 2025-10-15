@@ -1,4 +1,4 @@
-import { useMutation, useQueries, useQuery } from '@tanstack/react-query';
+import { useMutation, useQuery } from '@tanstack/react-query';
 import {
   useNavigate,
   useRouteContext,
@@ -16,7 +16,6 @@ import {
   updateApartmentUnitMutation,
   viewApartmentUnitQuery,
 } from '@/pocketbase/queries/apartmentUnits';
-import { listPropertiesQuery } from '@/pocketbase/queries/properties';
 import { updateApartmentUnitSchema } from '@/pocketbase/schemas/apartmentUnits';
 import { AutoForm } from '@/components/ui/autoform';
 import { ZodProvider } from '@autoform/zod';
@@ -30,18 +29,10 @@ const EditApartmentDialogForm = () => {
     updateApartmentUnitMutation(searchQuery.id ?? ''),
   );
 
-  const [{ data: apt }, { data: properties }] = useQueries(
+  const { data: apt, isLoading } = useQuery(
     {
-      queries: [
-        {
-          ...viewApartmentUnitQuery(searchQuery.id ?? ''),
-          enabled: !!searchQuery.id && searchQuery.edit,
-        },
-        {
-          ...listPropertiesQuery(1, 500),
-          enabled: !!searchQuery.id && searchQuery.edit,
-        },
-      ],
+      ...viewApartmentUnitQuery(searchQuery.id ?? ''),
+      enabled: !!searchQuery.id && searchQuery.edit,
     },
     queryClient,
   );
@@ -61,7 +52,14 @@ const EditApartmentDialogForm = () => {
           <DialogTitle>Edit Apartment Unit</DialogTitle>
           <DialogDescription>Update information</DialogDescription>
         </DialogHeader>
-        <AutoForm schema={new ZodProvider(updateApartmentUnitSchema)} />
+        {!isLoading && <AutoForm
+          onSubmit={(value: z.infer<typeof updateApartmentUnitSchema>) => mutation.mutate(value, {
+            onSuccess: () => {
+              navigate({ to: '/dashboard/apartments', search: { new: undefined } })
+            }
+          })}
+          defaultValues={apt}
+          schema={new ZodProvider(updateApartmentUnitSchema)} withSubmit />}
       </DialogContent>
     </Dialog>
   );

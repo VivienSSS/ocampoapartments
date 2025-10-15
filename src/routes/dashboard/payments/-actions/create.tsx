@@ -17,6 +17,7 @@ import {
 import { AutoForm } from '@/components/ui/autoform';
 import { ZodProvider } from '@autoform/zod';
 import { insertPaymentSchema } from '@/pocketbase/schemas/payments';
+import type z from 'zod';
 
 const CreatePaymentDialogForm = () => {
   const navigate = useNavigate({ from: '/dashboard/payments' });
@@ -37,7 +38,11 @@ const CreatePaymentDialogForm = () => {
           <DialogTitle>Want to create a new payment?</DialogTitle>
           <DialogDescription>Enter the right information</DialogDescription>
         </DialogHeader>
-        <AutoForm schema={new ZodProvider(insertPaymentSchema)} />
+        <AutoForm
+          onSubmit={(value: z.infer<typeof insertPaymentSchema>) =>
+            mutation.mutate(value)
+          } schema={new ZodProvider(insertPaymentSchema)}
+          withSubmit />
       </DialogContent>
     </Dialog>
   );

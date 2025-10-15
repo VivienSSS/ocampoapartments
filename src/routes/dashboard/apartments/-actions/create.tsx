@@ -19,21 +19,13 @@ import {
 import { listPropertiesQuery } from '@/pocketbase/queries/properties';
 import { insertApartmentUnitSchema } from '@/pocketbase/schemas/apartmentUnits';
 import { AutoForm } from '@/components/ui/autoform';
+import type z from 'zod';
 
 const CreateApartmentDialogForm = () => {
   const navigate = useNavigate({ from: '/dashboard/apartments' });
   const searchQuery = useSearch({ from: '/dashboard/apartments/' });
-  const { queryClient } = useRouteContext({ from: '/dashboard/apartments/' });
 
-  const apartmentMutation = useMutation(createApartmentUnitMutation);
-
-  const { data: properties } = useQuery(
-    {
-      ...listPropertiesQuery(1, 500),
-      enabled: searchQuery.new,
-    },
-    queryClient,
-  );
+  const mutation = useMutation(createApartmentUnitMutation);
 
   return (
     <Dialog
@@ -47,7 +39,13 @@ const CreateApartmentDialogForm = () => {
           <DialogTitle>Want to add a new unit?</DialogTitle>
           <DialogDescription>Enter the right information</DialogDescription>
         </DialogHeader>
-        <AutoForm schema={new ZodProvider(insertApartmentUnitSchema)} />
+        <AutoForm
+          onSubmit={(value: z.infer<typeof insertApartmentUnitSchema>) => mutation.mutate(value, {
+            onSuccess: () => {
+              navigate({ to: '/dashboard/apartments', search: { new: undefined } })
+            }
+          })}
+          schema={new ZodProvider(insertApartmentUnitSchema)} withSubmit />
       </DialogContent>
     </Dialog>
   );

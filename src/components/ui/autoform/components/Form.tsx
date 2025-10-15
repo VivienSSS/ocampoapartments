@@ -1,4 +1,5 @@
 import React from "react";
+import { FieldSet } from "../../field";
 
 export const Form = React.forwardRef<
   HTMLFormElement,
@@ -6,7 +7,9 @@ export const Form = React.forwardRef<
 >(({ children, ...props }, ref) => {
   return (
     <form ref={ref} className="space-y-4" {...props}>
-      {children}
+      <FieldSet>
+        {children}
+      </FieldSet>
     </form>
   );
 });
