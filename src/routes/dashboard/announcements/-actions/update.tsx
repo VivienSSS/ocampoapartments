@@ -19,7 +19,8 @@ import {
   viewAnnouncementQuery,
 } from '@/pocketbase/queries/announcements';
 import { updateAnnouncementSchema } from '@/pocketbase/schemas/announcements';
-import { EditAnnouncementForm } from './form';
+import { AnnouncementForm } from './form';
+import FormDialog from '@/components/ui/form-dialog';
 
 const EditAnnouncementDialogForm = () => {
   const navigate = useNavigate({ from: '/dashboard/announcements' });
@@ -61,7 +62,7 @@ const EditAnnouncementDialogForm = () => {
   });
 
   return (
-    <Dialog
+    <FormDialog
       open={!!searchQuery.edit && !!searchQuery.id}
       onOpenChange={() =>
         navigate({
@@ -69,28 +70,19 @@ const EditAnnouncementDialogForm = () => {
           search: { edit: undefined, id: undefined },
         })
       }
+      onSubmit={() => {
+        form.handleSubmit();
+      }}
+      title={"Edit announcement"}
+      description={"Update Information"}
     >
-      <DialogContent>
-        <DialogHeader>
-          <DialogTitle>Edit announcement</DialogTitle>
-          <DialogDescription>Update information</DialogDescription>
-        </DialogHeader>
-        <form
-          onSubmit={(e) => {
-            e.preventDefault();
-            e.stopPropagation();
-            form.handleSubmit();
-          }}
-        >
-          <form.AppForm>
-            <EditAnnouncementForm form={form} />
-            <div className="mt-6">
-              <form.SubmitButton>Update Announcement</form.SubmitButton>
-            </div>
-          </form.AppForm>
-        </form>
-      </DialogContent>
-    </Dialog>
+      <form.AppForm>
+        <AnnouncementForm form={form as any} />
+        <div className="mt-6">
+          <form.SubmitButton>Update Announcement</form.SubmitButton>
+        </div>
+      </form.AppForm>
+    </FormDialog>
   );
 };
 

@@ -16,7 +16,6 @@ export const insertAnnouncementSchema = announcementSchema.omit({
   id: true,
   created: true,
   updated: true,
-  author: true,
 });
 
 export const updateAnnouncementSchema = insertAnnouncementSchema.partial();

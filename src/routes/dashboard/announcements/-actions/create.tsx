@@ -19,7 +19,8 @@ import {
   listAnnouncementsQuery,
 } from '@/pocketbase/queries/announcements';
 import { insertAnnouncementSchema } from '@/pocketbase/schemas/announcements';
-import { CreateAnnouncementForm } from './form';
+import { AnnouncementForm } from './form';
+import FormDialog from '@/components/ui/form-dialog';
 
 const CreateAnnouncementDialogForm = () => {
   const navigate = useNavigate({ from: '/dashboard/announcements' });
@@ -36,9 +37,6 @@ const CreateAnnouncementDialogForm = () => {
       message: '',
       author: pb.authStore.record?.id,
     } as z.infer<typeof insertAnnouncementSchema>,
-    validators: {
-      onChange: insertAnnouncementSchema,
-    },
     onSubmit: async ({ value }) =>
       announcementMutation.mutateAsync(value, {
         onSuccess: () => {
@@ -54,7 +52,7 @@ const CreateAnnouncementDialogForm = () => {
   });
 
   return (
-    <Dialog
+    <FormDialog
       open={searchParams.new}
       onOpenChange={() =>
         navigate({
@@ -62,29 +60,20 @@ const CreateAnnouncementDialogForm = () => {
           search: { new: undefined },
         })
       }
+      onSubmit={(e) => {
+        form.handleSubmit()
+      }}
+      title={"Want to add a new announcement?"}
+      description={"Enter the right information"}
+      className='grid grid-cols-4 gap-5'
     >
-      <DialogContent>
-        <DialogHeader>
-          <DialogTitle>Want to add a new announcement?</DialogTitle>
-          <DialogDescription>Enter the right information</DialogDescription>
-        </DialogHeader>
-        <form
-          className="grid grid-cols-4 gap-2.5"
-          onSubmit={(e) => {
-            e.preventDefault();
-            e.stopPropagation();
-            form.handleSubmit();
-          }}
-        >
-          <form.AppForm>
-            <CreateAnnouncementForm form={form} />
-            <form.SubmitButton className="col-span-full">
-              Create Announcement
-            </form.SubmitButton>
-          </form.AppForm>
-        </form>
-      </DialogContent>
-    </Dialog>
+      <form.AppForm>
+        <AnnouncementForm form={form as any} />
+        <form.SubmitButton className="col-span-full">
+          Create Announcement
+        </form.SubmitButton>
+      </form.AppForm>
+    </FormDialog>
   );
 };
 

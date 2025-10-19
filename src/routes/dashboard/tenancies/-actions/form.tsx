@@ -9,6 +9,7 @@ import {
   updateTenanciesSchema,
 } from '@/pocketbase/schemas/tenancies';
 import { Collections } from '@/pocketbase/types';
+import { AsyncSelect } from '@/components/ui/async-select';
 
 export enum LeaseContract {
   HalfYear = '6 Months',
@@ -26,26 +27,34 @@ export const CreateTenancyForm = withForm({
       <>
         <form.AppField name="tenant">
           {(field) => (
-            <field.SelectField
-              className="col-span-full"
-              options={tenants.map((value) => ({
-                label: value.facebookName,
-                value: value.id,
-              }))}
-              placeholder="Tenant"
-            />
+            <div className="col-span-full">
+              <AsyncSelect<TenantsResponse>
+                className='w-full'
+                fetcher={async (query) => (await pb.collection(Collections.Tenants).getList<TenantsResponse>(1, 10, { filter: `user.firstName ~ '%${query}%'`, expand: 'user', requestKey: null })).items}
+                getOptionValue={(option) => option.id}
+                getDisplayValue={(option) => `${option.expand.user.firstName} ${option.expand.user.lastName}`}
+                renderOption={(option) => <div>{`${option.expand.user.firstName} ${option.expand.user.lastName}`}</div>}
+                value={field.state.value}
+                onChange={field.handleChange}
+                label="Tenants"
+              />
+            </div>
           )}
         </form.AppField>
         <form.AppField name="unit">
           {(field) => (
-            <field.SelectField
-              className="col-span-full"
-              options={apartmentUnits.map((value) => ({
-                label: value.unitLetter,
-                value: value.id,
-              }))}
-              placeholder="Unit"
-            />
+            <div className="col-span-full">
+              <AsyncSelect<ApartmentUnitsResponse>
+                className='w-full'
+                fetcher={async (query) => (await pb.collection(Collections.ApartmentUnits).getList<ApartmentUnitsResponse>(1, 10, { filter: `floorNumber ~ '%${query}%' || unitLetter ~ '%${query}%' || property.branch ~ '%${query}%'`, expand: 'property', requestKey: null })).items}
+                getOptionValue={(option) => option.id}
+                getDisplayValue={(option) => `Unit ${option.unitLetter} - Floor ${option.floorNumber} - ${option.expand.property.branch}`}
+                renderOption={(option) => <div>{`Unit ${option.unitLetter} - Floor ${option.floorNumber} - ${option.expand.property.branch}`}</div>}
+                value={field.state.value}
+                onChange={field.handleChange}
+                label="Records"
+              />
+            </div>
           )}
         </form.AppField>
         <form.AppField name="leaseContract">

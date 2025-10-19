@@ -17,7 +17,9 @@ import {
 import { LoginForm } from '@/components/login-form';
 import PropertyTabs from '@/components/property-tabs';
 import { listApartmentUnitsQuery } from '@/pocketbase/queries/apartmentUnits';
-import { MapPinHouse } from 'lucide-react';
+import { MapPinHouse, Phone, Mail } from 'lucide-react';
+import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
+import { Separator } from "@/components/ui/separator";
 
 
 export const Route = createFileRoute('/')({
@@ -265,11 +267,11 @@ function RouteComponent() {
         <div className="flex-1 min-w-[220px] mb-8 md:mb-0">
           <div className="font-bold mb-4">Contact Info</div>
           <div className="flex items-center gap-2 mb-2">
-            <svg width="20" height="20" fill="none" stroke="#F3F4F6" strokeWidth="2" viewBox="0 0 24 24"><path d="M22 16.92V19a2 2 0 0 1-2.18 2A19.86 19.86 0 0 1 3 5.18 2 2 0 0 1 5 3h2.09a2 2 0 0 1 2 1.72c.13 1.13.37 2.24.72 3.31a2 2 0 0 1-.45 2.11l-1.27 1.27a16 16 0 0 0 6.29 6.29l1.27-1.27a2 2 0 0 1 2.11-.45c1.07.35 2.18.59 3.31.72a2 2 0 0 1 1.72 2z" /></svg>
+            <Phone className="w-5 h-5" stroke="#F3F4F6" />
             (+63) 9176564268
           </div>
           <div className="flex items-center gap-2 mb-2">
-            <svg width="20" height="20" fill="none" stroke="#F3F4F6" strokeWidth="2" viewBox="0 0 24 24"><path d="M4 4h16v16H4z" /><path d="M22 6l-10 7L2 6" /></svg>
+            <Mail className="w-5 h-5" stroke="#F3F4F6" />
             arlene.ocampo@gmail.com
           </div>
           <div className="flex items-center gap-2 mb-2">
@@ -286,8 +288,144 @@ function RouteComponent() {
             &copy; 2025 Ocampo's Apartment. All rights reserved.
           </div>
           <div className="flex gap-6">
-            <a href="/privacy-policy" className="text-[#F3F4F6] hover:underline text-sm">Privacy Policy</a>
-            <a href="/terms-of-service" className="text-[#F3F4F6] hover:underline text-sm">Terms of Service</a>
+            <Dialog>
+              <DialogTrigger asChild>
+                <button className="text-[#F3F4F6] hover:underline text-sm cursor-pointer">
+                  Privacy Policy
+                </button>
+              </DialogTrigger>
+              <DialogContent className="max-w-4xl max-h-[80vh] overflow-y-auto">
+                <DialogHeader>
+                  <DialogTitle className="scroll-m-20 text-2xl font-semibold tracking-tight">
+                    Privacy Policy
+                  </DialogTitle>
+                  <DialogDescription className="text-muted-foreground text-sm">
+                    Last updated: October 20, 2025
+                  </DialogDescription>
+                </DialogHeader>
+                <div className="space-y-4">
+                  <div>
+                    <h3 className="scroll-m-20 text-lg font-semibold tracking-tight mb-2">
+                      Introduction
+                    </h3>
+                    <p className="text-sm leading-6">
+                      Ocampo's Apartment ("we," "our," or "us") is committed to protecting your privacy. This policy explains what information we collect from tenants and prospects, why we collect it, and how it's used in our apartment management system. The privacy policy adheres to the Data Privacy Act of 2012 and other related laws of the Philippines.
+                    </p>
+                  </div>
+
+                  <div>
+                    <h3 className="scroll-m-20 text-lg font-semibold tracking-tight mb-2">
+                      What We Collect
+                    </h3>
+                    <p className="text-sm leading-6 mb-3">
+                      To provide our services, we collect the following personal information:
+                    </p>
+                    <ul className="my-4 ml-6 list-disc text-sm [&>li]:mt-1">
+                      <li>Basic personal details - full names, age, contact number, and e-mail for tenant identification and recordkeeping;</li>
+                      <li>Email address – for account setup, notices, and updates;</li>
+                      <li>Phone number – for calls, texts, and urgent communication;</li>
+                      <li>Facebook account – used only for login or ID verification; and</li>
+                      <li>Payment details – such as GCash or other payment references used to track rent payments</li>
+                    </ul>
+                    <p className="text-sm leading-6">
+                      We only collect what is necessary to operate the service and manage tenant relationships. You as the user are responsible for the data you submit and you are to ensure the submitted data is correct, complete, and updated.
+                    </p>
+                  </div>
+
+                  <div>
+                    <h3 className="scroll-m-20 text-lg font-semibold tracking-tight mb-2">
+                      How We Use Your Information
+                    </h3>
+                    <p className="text-sm leading-6 mb-3">
+                      Your information is used to:
+                    </p>
+                    <ul className="my-4 ml-6 list-disc text-sm [&>li]:mt-1">
+                      <li>Manage resident accounts and lease records</li>
+                      <li>Communicate with the landlord about payments, maintenance, and announcements</li>
+                      <li>Verify your identity (including optional Facebook login)</li>
+                      <li>Process and confirm rent payments (e.g., through GCash or similar platforms)</li>
+                    </ul>
+                    <p className="text-sm leading-6">
+                      We do not sell your data or use it for marketing or third-party advertising.
+                    </p>
+                  </div>
+
+                  <div>
+                    <h3 className="scroll-m-20 text-lg font-semibold tracking-tight mb-2">
+                      Who Has Access
+                    </h3>
+                    <p className="text-sm leading-6 mb-3">
+                      We are prohibited to share your data to third parties, your data will only be accessed by or shared to:
+                    </p>
+                    <ul className="my-4 ml-6 list-disc text-sm [&>li]:mt-1">
+                      <li>Authorized property management staff (the Administrator and the Building Administrator)</li>
+                      <li>System administrators and developers responsible for maintaining the platform</li>
+                      <li>Trusted service providers (e.g., hosting or SMS/email services) under strict confidentiality</li>
+                    </ul>
+                    <p className="text-sm leading-6">
+                      The service will only use the personal data for the purposes disclosed in this Privacy Policy and not for any ill purpose.
+                    </p>
+                  </div>
+
+                  <div>
+                    <h3 className="scroll-m-20 text-lg font-semibold tracking-tight mb-2">
+                      Data Security
+                    </h3>
+                    <p className="text-sm leading-6 mb-3">
+                      We take appropriate measures to protect your data, including secure access controls, and safe storage of payment records. The implemented are the following:
+                    </p>
+                    <ul className="my-4 ml-6 list-disc text-sm [&>li]:mt-1">
+                      <li>Any personal data provided is processed by the system using a secured connection.</li>
+                      <li>We only restrict roles of accounts to only authenticated and verified personnel who are responsible in holding the data.</li>
+                    </ul>
+                  </div>
+
+                  <div>
+                    <h3 className="scroll-m-20 text-lg font-semibold tracking-tight mb-2">
+                      How long do we keep your personal data?
+                    </h3>
+                    <ul className="my-4 ml-6 list-disc text-sm [&>li]:mt-1">
+                      <li>As long as the tenant resides in the apartment, the data provided will be maintained until the tenant moves out;</li>
+                      <li>If the tenant no longer resides in the apartment but has an unpaid transaction, the information will be maintained for a period of 6 months.</li>
+                    </ul>
+                  </div>
+
+                  <div className="border-t pt-3">
+                    <p className="text-sm leading-6 font-medium">
+                      By using this service, you agree to the terms of this Privacy Policy.
+                    </p>
+                  </div>
+                </div>
+              </DialogContent>
+            </Dialog>
+
+            <Dialog>
+              <DialogTrigger asChild>
+                <button className="text-[#F3F4F6] hover:underline text-sm cursor-pointer">
+                  Terms of Service
+                </button>
+              </DialogTrigger>
+              <DialogContent className="max-w-4xl max-h-[80vh] overflow-y-auto">
+                <DialogHeader>
+                  <DialogTitle className="scroll-m-20 text-2xl font-semibold tracking-tight">
+                    Terms of Service
+                  </DialogTitle>
+                  <DialogDescription className="text-muted-foreground text-sm">
+                    Last updated: October 20, 2025
+                  </DialogDescription>
+                </DialogHeader>
+                <div className="space-y-4">
+                  <div>
+                    <p className="text-sm leading-6 mb-3">
+                      The data kept in this website is solely for general information purposes and belongs to Ocampo's Apartment. In using the website, you are to agree to complying with the Privacy Policy and other relevant laws.
+                    </p>
+                    <p className="text-sm leading-6">
+                      The enclosed information within the website is prohibited to be published, replicated, presented, sold, distributed, or used in any manner without the permission of the establishment. Any action taken upon the information is at the user or viewer's risk.
+                    </p>
+                  </div>
+                </div>
+              </DialogContent>
+            </Dialog>
           </div>
         </div>
       </footer>
