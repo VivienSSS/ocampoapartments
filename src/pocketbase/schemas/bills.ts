@@ -5,10 +5,10 @@ import { fieldConfig } from '@autoform/zod';
 
 export const billSchema = z.object({
   created: z.date().optional(),
-  dueDate: z.date().check(fieldConfig({ label: "Due date", description: "Amount to charge" })),
+  dueDate: z.date().check(fieldConfig({ label: "Due Date" })),
   id: z.string(),
-  status: z.enum(BillsStatusOptions).check(fieldConfig({ label: "Bill items", description: "Amount to charge" })),
-  tenancy: z.string().check(fieldConfig({ label: "Bill items", description: "Amount to charge" })),
+  status: z.enum(BillsStatusOptions).check(fieldConfig({ label: "Status" })),
+  tenancy: z.string().check(fieldConfig({ label: "Tenant" })),
   updated: z.date().optional(),
 });
 

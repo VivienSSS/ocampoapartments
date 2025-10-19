@@ -55,7 +55,26 @@ const EditAnnouncementDialogForm = () => {
           <DialogTitle>Edit announcement</DialogTitle>
           <DialogDescription>Update information</DialogDescription>
         </DialogHeader>
-        <AutoForm schema={new ZodProvider(updateAnnouncementSchema)} />
+        {ann && (
+          <AutoForm
+            onSubmit={(value: z.infer<typeof updateAnnouncementSchema>) =>
+              mutation.mutate(value, {
+                onSuccess: () => {
+                  navigate({
+                    to: '/dashboard/announcements',
+                    search: { edit: undefined, id: undefined },
+                  });
+                },
+              })
+            }
+            defaultValues={{
+              title: ann.title,
+              message: ann.message,
+            }}
+            schema={new ZodProvider(updateAnnouncementSchema)}
+            withSubmit
+          />
+        )}
       </DialogContent>
     </Dialog>
   );

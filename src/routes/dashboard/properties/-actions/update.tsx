@@ -28,10 +28,10 @@ const EditPropertyDialogForm = () => {
   );
   const { queryClient } = useRouteContext({ from: '/dashboard/properties/' });
 
-  const { data: property } = useQuery(
+  const { data: property, isLoading } = useQuery(
     {
       ...viewPropertiesQuery(searchQuery.id ?? ''),
-      enabled: !!searchQuery.id && searchQuery.delete,
+      enabled: !!searchQuery.id && searchQuery.edit,
     },
     queryClient,
   );
@@ -51,7 +51,14 @@ const EditPropertyDialogForm = () => {
           <DialogTitle>Edit Existing Property</DialogTitle>
           <DialogDescription>Enter the right information</DialogDescription>
         </DialogHeader>
-        <AutoForm schema={new ZodProvider(updatePropertySchema)} />
+        {!isLoading && <AutoForm
+          onSubmit={(value: z.infer<typeof updatePropertySchema>) => propertyMutation.mutate(value, {
+            onSuccess: () => {
+              navigate({ to: '/dashboard/properties', search: { edit: undefined, id: undefined } })
+            }
+          })}
+          defaultValues={property}
+          schema={new ZodProvider(updatePropertySchema)} withSubmit />}
       </DialogContent>
     </Dialog>
   );

@@ -13,11 +13,9 @@ import {
   DialogTitle,
 } from '@/components/ui/dialog';
 import { pb } from '@/pocketbase';
-import {
-  createAnnouncementMutation,
-  listAnnouncementsQuery,
-} from '@/pocketbase/queries/announcements';
+import { createAnnouncementMutation } from '@/pocketbase/queries/announcements';
 import { insertAnnouncementSchema } from '@/pocketbase/schemas/announcements';
+import { Collections } from '@/pocketbase/types';
 import { AutoForm } from '@/components/ui/autoform';
 import { ZodProvider } from '@autoform/zod';
 
@@ -28,7 +26,20 @@ const CreateAnnouncementDialogForm = () => {
     from: '/dashboard/announcements/',
   });
 
-  const announcementMutation = useMutation(createAnnouncementMutation);
+  const announcementMutation = useMutation({
+    ...createAnnouncementMutation,
+    onSuccess: () => {
+      // Invalidate and refetch the announcements list
+      queryClient.invalidateQueries({
+        queryKey: [Collections.Announcements],
+      });
+      // Close the dialog
+      navigate({
+        to: '/dashboard/announcements',
+        search: { new: undefined },
+      });
+    },
+  });
 
   return (
     <Dialog
@@ -45,9 +56,18 @@ const CreateAnnouncementDialogForm = () => {
           <DialogTitle>Want to add a new announcement?</DialogTitle>
           <DialogDescription>Enter the right information</DialogDescription>
         </DialogHeader>
-        <AutoForm onSubmit={(v: z.infer<typeof insertAnnouncementSchema>) => {
-
-        }} schema={new ZodProvider(insertAnnouncementSchema)} withSubmit />
+        <AutoForm
+          onSubmit={(v: z.infer<typeof insertAnnouncementSchema>) => {
+            // Add the current user's ID as the author
+            const announcementData = {
+              ...v,
+              author: pb.authStore.model?.id || '',
+            };
+            announcementMutation.mutate(announcementData);
+          }}
+          schema={new ZodProvider(insertAnnouncementSchema)}
+          withSubmit
+        />
       </DialogContent>
     </Dialog>
   );

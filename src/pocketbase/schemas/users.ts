@@ -1,5 +1,6 @@
 import z from 'zod';
 import { UsersRoleOptions } from '../types';
+import { fieldConfig } from '@autoform/zod';
 
 export const userSchema = z.object({
   id: z.string(),
@@ -20,6 +21,8 @@ export const userSchema = z.object({
 export const loginUserSchema = userSchema.pick({
   email: true,
   password: true,
+}).extend({
+  password: z.string().check(fieldConfig({ inputProps: { type: "password" } }))
 });
 
 export const registerUserSchema = userSchema

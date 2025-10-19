@@ -1,4 +1,3 @@
-import React from "react";
 import {
   AutoForm as BaseAutoForm,
   type AutoFormUIComponents,
@@ -18,6 +17,7 @@ import { ArrayWrapper } from "./components/ArrayWrapper";
 import { ArrayElementWrapper } from "./components/ArrayElementWrapper";
 import { FileField } from "./components/FileField";
 import { RelationField } from "./components/RelationField";
+import { TextareaField } from "./components/TextareaField";
 
 const ShadcnUIComponents: AutoFormUIComponents = {
   Form,
@@ -36,7 +36,8 @@ export const ShadcnAutoFormFieldComponents = {
   date: DateField,
   select: SelectField,
   file: FileField,
-  relation: RelationField
+  relation: RelationField,
+  textarea: TextareaField
 } as const;
 export type FieldTypes = keyof typeof ShadcnAutoFormFieldComponents;
 

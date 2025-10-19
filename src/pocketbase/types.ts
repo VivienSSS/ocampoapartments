@@ -125,6 +125,7 @@ export enum BillItemsChargeTypeOptions {
 	"Rent" = "Rent",
 	"Water" = "Water",
 	"Electricity" = "Electricity",
+	"Miscellaneous" = "Miscellaneous",
 }
 export type BillItemsRecord = {
 	amount?: number

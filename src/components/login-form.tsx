@@ -26,7 +26,14 @@ export function LoginForm({
   const loginMutation = useMutation(loginUserMutation);
 
   return (
-
-    <AutoForm schema={new ZodProvider(loginUserSchema)} />
+    <AutoForm schema={new ZodProvider(loginUserSchema)} onSubmit={(value) => {
+      loginMutation.mutate(value, {
+        onSuccess: () => {
+          navigate({ to: "/dashboard/apartments" })
+        }
+      })
+    }}>
+      <Button>Login</Button>
+    </AutoForm>
   )
 }

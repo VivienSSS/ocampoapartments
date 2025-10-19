@@ -20,13 +20,12 @@ export function TenantProfile({ tenant }: TenantProfileProps) {
         <div className="max-w-4xl mx-auto space-y-8">
             {/* Profile Header */}
             <Card className="overflow-hidden">
-                <CardHeader className="relative pb-8">
+                <CardHeader className="relative pb-8 px-6">
                     {/* Cover Photo Area */}
                     <div className="h-36 bg-gradient-to-r from-primary/90 via-primary to-primary/80 rounded-lg -mx-6 -mt-6 mb-6 relative overflow-hidden">
                         <div className="absolute inset-0 bg-gradient-to-br from-transparent via-primary/20 to-primary/40"></div>
                         <div className="absolute inset-0 opacity-30 bg-gradient-to-tr from-primary-foreground/10 to-transparent"></div>
                     </div>
-
                     {/* Profile Info */}
                     <div className="flex flex-col sm:flex-row items-start sm:items-end gap-6 -mt-20 relative z-10">
                         <Avatar className="w-28 h-28 border-4 border-background shadow-xl ring-2 ring-primary/20">
@@ -63,17 +62,17 @@ export function TenantProfile({ tenant }: TenantProfileProps) {
             {/* Contact Information */}
             <div className="grid grid-cols-1 md:grid-cols-2 gap-8">
                 <Card className="hover:shadow-lg transition-all duration-300 border-muted-foreground/20">
-                    <CardHeader className="pb-4">
-                        <CardTitle className="flex items-center gap-3">
-                            <div className="p-2 rounded-lg bg-primary/10">
-                                <User className="w-5 h-5 text-primary" />
-                            </div>
-                            <h3 className="scroll-m-20 text-2xl font-semibold tracking-tight">
-                                Personal Information
-                            </h3>
-                        </CardTitle>
-                    </CardHeader>
                     <CardContent className="space-y-3">
+                        <CardHeader className="pb-4">
+                            <CardTitle className="flex items-center gap-3">
+                                <div className="p-2 rounded-lg bg-primary/10">
+                                    <User className="w-5 h-5 text-primary" />
+                                </div>
+                                <h3 className="scroll-m-20 text-2xl font-semibold tracking-tight">
+                                    Personal Information
+                                </h3>
+                            </CardTitle>
+                        </CardHeader>
                         <div className="flex items-center gap-4 p-4 rounded-xl bg-muted/50 hover:bg-muted/70 transition-all duration-200 border border-muted-foreground/10 hover:border-muted-foreground/20">
                             <div className="p-2 rounded-lg bg-primary/10">
                                 <Mail className="w-5 h-5 text-primary" />
@@ -111,17 +110,17 @@ export function TenantProfile({ tenant }: TenantProfileProps) {
                 </Card>
 
                 <Card className="hover:shadow-lg transition-all duration-300 border-muted-foreground/20">
-                    <CardHeader className="pb-4">
-                        <CardTitle className="flex items-center gap-3">
-                            <div className="p-2 rounded-lg bg-violet-100/50">
-                                <Calendar className="w-5 h-5 text-violet-600" />
-                            </div>
-                            <h3 className="scroll-m-20 text-2xl font-semibold tracking-tight">
-                                Account Details
-                            </h3>
-                        </CardTitle>
-                    </CardHeader>
                     <CardContent className="space-y-3">
+                        <CardHeader className="pb-4">
+                            <CardTitle className="flex items-center gap-3">
+                                <div className="p-2 rounded-lg bg-violet-100/50">
+                                    <Calendar className="w-5 h-5 text-violet-600" />
+                                </div>
+                                <h3 className="scroll-m-20 text-2xl font-semibold tracking-tight">
+                                    Account Details
+                                </h3>
+                            </CardTitle>
+                        </CardHeader>
                         <div className="flex items-center gap-4 p-4 rounded-xl bg-muted/50 hover:bg-muted/70 transition-all duration-200 border border-muted-foreground/10 hover:border-muted-foreground/20">
                             <div className="p-2 rounded-lg bg-primary/10">
                                 <div className="w-5 h-5 rounded-full bg-primary flex items-center justify-center">
@@ -159,14 +158,14 @@ export function TenantProfile({ tenant }: TenantProfileProps) {
 
             {/* Additional Info Card */}
             <Card className="hover:shadow-lg transition-all duration-300 border-muted-foreground/20">
-                <CardHeader className="pb-6">
-                    <CardTitle>
-                        <h2 className="scroll-m-20 border-b pb-4 text-3xl font-semibold tracking-tight transition-colors first:mt-0">
-                            Profile Overview
-                        </h2>
-                    </CardTitle>
-                </CardHeader>
                 <CardContent>
+                    <CardHeader className="pb-6">
+                        <CardTitle>
+                            <h2 className="scroll-m-20 border-b pb-4 text-3xl font-semibold tracking-tight transition-colors first:mt-0">
+                                Profile Overview
+                            </h2>
+                        </CardTitle>
+                    </CardHeader>
                     <div className="grid grid-cols-1 sm:grid-cols-3 gap-6">
                         <div className="text-center p-6 rounded-xl border bg-gradient-to-br from-primary/10 via-primary/5 to-transparent hover:from-primary/20 hover:via-primary/10 hover:to-primary/5 transition-all duration-300 group hover:shadow-lg hover:shadow-primary/25">
                             <div className="text-3xl font-bold text-primary mb-2 group-hover:scale-105 transition-transform duration-200">

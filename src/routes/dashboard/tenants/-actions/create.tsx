@@ -46,7 +46,13 @@ const CreateTenantDialogForm = () => {
           <DialogTitle>Want to add a new tenant?</DialogTitle>
           <DialogDescription>Enter the right information</DialogDescription>
         </DialogHeader>
-        <AutoForm schema={new ZodProvider(insertTenantSchema)} />
+        <AutoForm schema={new ZodProvider(insertTenantSchema)} onSubmit={(value) => {
+          tenantMutation.mutate(value, {
+            onSuccess: () => {
+              navigate({ search: { new: undefined } })
+            }
+          })
+        }} withSubmit />
       </DialogContent>
     </Dialog>
   );

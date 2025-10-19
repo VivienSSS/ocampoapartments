@@ -60,7 +60,11 @@ const EditTenantDialogForm = () => {
           <DialogTitle>Edit Existing Tenant</DialogTitle>
           <DialogDescription>Enter the right information</DialogDescription>
         </DialogHeader>
-        <AutoForm schema={new ZodProvider(updateTenantSchema)} />
+        <AutoForm
+          schema={new ZodProvider(updateTenantSchema)}
+          values={tenant}
+          withSubmit
+        />
       </DialogContent>
     </Dialog>
   );

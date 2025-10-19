@@ -54,7 +54,7 @@ const CreateTenancyDialogForm = () => {
           <DialogTitle>Want to add a new tenancy?</DialogTitle>
           <DialogDescription>Enter the right information</DialogDescription>
         </DialogHeader>
-        <AutoForm schema={new ZodProvider(insertTenanciesSchema)} />
+        <AutoForm schema={new ZodProvider(insertTenanciesSchema)} withSubmit />
       </DialogContent>
     </Dialog>
   );

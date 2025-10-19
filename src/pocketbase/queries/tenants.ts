@@ -71,7 +71,7 @@ export const createTenantMutation = mutationOptions<
       expand: 'user',
     }),
   onSuccess: (value) =>
-    toast.success(`Successfully create`, {
+    toast.success(`Successfully created`, {
       description: `Tenant created: ${value.expand.user.firstName} ${value.expand.user.lastName}`,
     }),
   onError: (err) =>
