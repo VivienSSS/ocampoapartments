@@ -12,6 +12,7 @@ import {
   DialogHeader,
   DialogTitle,
 } from '@/components/ui/dialog';
+import { useAppForm } from '@/components/ui/form';
 import { listApartmentUnitsQuery } from '@/pocketbase/queries/apartmentUnits';
 import {
   createTenancyMutation,
@@ -19,8 +20,7 @@ import {
 } from '@/pocketbase/queries/tenancies';
 import { listTenantsQuery } from '@/pocketbase/queries/tenants';
 import { insertTenanciesSchema } from '@/pocketbase/schemas/tenancies';
-import { AutoForm } from '@/components/ui/autoform';
-import { ZodProvider } from '@autoform/zod';
+import { CreateTenancyForm, LeaseContract } from './form';
 
 const CreateTenancyDialogForm = () => {
   const navigate = useNavigate({ from: '/dashboard/tenancies' });
@@ -42,6 +42,41 @@ const CreateTenancyDialogForm = () => {
     ],
   });
 
+  const form = useAppForm({
+    defaultValues: {} as Omit<z.infer<typeof insertTenanciesSchema>, 'leaseStartDate' | 'leaseEndDate'> & { leaseContract: LeaseContract },
+    onSubmit: async ({ value }) => {
+
+      const now = new Date();
+      let leaseEndDate: Date;
+
+      if (value.leaseContract === LeaseContract.FullYear) {
+        leaseEndDate = new Date(now);
+        leaseEndDate.setFullYear(now.getFullYear() + 1);
+      } else {
+        leaseEndDate = new Date(now);
+        leaseEndDate.setMonth(now.getMonth() + 6);
+      }
+
+      mutation.mutate(
+        {
+          unit: value.unit,
+          tenant: value.tenant,
+          leaseStartDate: now,
+          leaseEndDate,
+        },
+        {
+          onSuccess: () => {
+            queryClient.invalidateQueries(
+              listTenanciesQuery(search.page, search.perPage),
+            );
+            navigate({ to: '/dashboard/tenancies', search: { new: undefined } });
+          },
+        }
+      );
+
+    },
+  });
+
   return (
     <Dialog
       open={!!search.new}
@@ -54,7 +89,25 @@ const CreateTenancyDialogForm = () => {
           <DialogTitle>Want to add a new tenancy?</DialogTitle>
           <DialogDescription>Enter the right information</DialogDescription>
         </DialogHeader>
-        <AutoForm schema={new ZodProvider(insertTenanciesSchema)} withSubmit />
+        <form
+          className="grid grid-cols-4 gap-2.5"
+          onSubmit={(e) => {
+            e.preventDefault();
+            e.stopPropagation();
+            form.handleSubmit();
+          }}
+        >
+          <form.AppForm>
+            <CreateTenancyForm
+              form={form}
+              tenants={tenants?.items ?? []}
+              apartmentUnits={apartmentUnits?.items ?? []}
+            />
+            <form.SubmitButton className="col-span-full mt-2">
+              Create Tenancy
+            </form.SubmitButton>
+          </form.AppForm>
+        </form>
       </DialogContent>
     </Dialog>
   );

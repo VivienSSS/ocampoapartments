@@ -12,14 +12,14 @@ import {
   DialogHeader,
   DialogTitle,
 } from '@/components/ui/dialog';
+import { useAppForm } from '@/components/ui/form';
 import {
   listPaymentsQuery,
   updatePaymentMutation,
   viewPaymentQuery,
 } from '@/pocketbase/queries/payments';
-import { AutoForm } from '@/components/ui/autoform';
 import { updatePaymentSchema } from '@/pocketbase/schemas/payments';
-import { ZodProvider } from '@autoform/zod';
+import { EditPaymentForm } from './form';
 
 const EditPaymentDialogForm = () => {
   const navigate = useNavigate({ from: '/dashboard/payments' });
@@ -36,6 +36,31 @@ const EditPaymentDialogForm = () => {
     queryClient,
   );
 
+  const form = useAppForm({
+    defaultValues: {
+      amountPaid: payment?.amountPaid ?? 0,
+      bill: payment?.bill ?? '',
+      paymentMethod: payment?.paymentMethod ?? '',
+      paymentDate: payment?.paymentDate
+        ? new Date(payment.paymentDate)
+        : undefined,
+      transactionId: payment?.transactionId ?? '',
+    } as z.infer<typeof updatePaymentSchema>,
+    validators: { onChange: updatePaymentSchema },
+    onSubmit: async ({ value }) =>
+      mutation.mutateAsync(value, {
+        onSuccess: () => {
+          queryClient.invalidateQueries(
+            listPaymentsQuery(searchQuery.page, searchQuery.perPage),
+          );
+          navigate({
+            to: '/dashboard/payments',
+            search: { edit: undefined, id: undefined },
+          });
+        },
+      }),
+  });
+
   return (
     <Dialog
       open={!!searchQuery.edit && !!searchQuery.id}
@@ -46,12 +71,24 @@ const EditPaymentDialogForm = () => {
         })
       }
     >
-      <DialogContent className="!max-h-3/4 overflow-y-auto">
+      <DialogContent>
         <DialogHeader>
           <DialogTitle>Edit payment</DialogTitle>
           <DialogDescription>Update payment information</DialogDescription>
         </DialogHeader>
-        <AutoForm schema={new ZodProvider(updatePaymentSchema)} />
+        <form
+          className="grid grid-cols-4 gap-2.5"
+          onSubmit={(e) => {
+            e.preventDefault();
+            e.stopPropagation();
+            form.handleSubmit();
+          }}
+        >
+          <form.AppForm>
+            <EditPaymentForm form={form} />
+            <form.SubmitButton>Update Payment</form.SubmitButton>
+          </form.AppForm>
+        </form>
       </DialogContent>
     </Dialog>
   );

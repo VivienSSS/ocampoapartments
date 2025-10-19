@@ -12,12 +12,14 @@ import {
   DialogHeader,
   DialogTitle,
 } from '@/components/ui/dialog';
+import { useAppForm } from '@/components/ui/form';
 import { pb } from '@/pocketbase';
-import { createAnnouncementMutation } from '@/pocketbase/queries/announcements';
+import {
+  createAnnouncementMutation,
+  listAnnouncementsQuery,
+} from '@/pocketbase/queries/announcements';
 import { insertAnnouncementSchema } from '@/pocketbase/schemas/announcements';
-import { Collections } from '@/pocketbase/types';
-import { AutoForm } from '@/components/ui/autoform';
-import { ZodProvider } from '@autoform/zod';
+import { CreateAnnouncementForm } from './form';
 
 const CreateAnnouncementDialogForm = () => {
   const navigate = useNavigate({ from: '/dashboard/announcements' });
@@ -26,19 +28,29 @@ const CreateAnnouncementDialogForm = () => {
     from: '/dashboard/announcements/',
   });
 
-  const announcementMutation = useMutation({
-    ...createAnnouncementMutation,
-    onSuccess: () => {
-      // Invalidate and refetch the announcements list
-      queryClient.invalidateQueries({
-        queryKey: [Collections.Announcements],
-      });
-      // Close the dialog
-      navigate({
-        to: '/dashboard/announcements',
-        search: { new: undefined },
-      });
+  const announcementMutation = useMutation(createAnnouncementMutation);
+
+  const form = useAppForm({
+    defaultValues: {
+      title: '',
+      message: '',
+      author: pb.authStore.record?.id,
+    } as z.infer<typeof insertAnnouncementSchema>,
+    validators: {
+      onChange: insertAnnouncementSchema,
     },
+    onSubmit: async ({ value }) =>
+      announcementMutation.mutateAsync(value, {
+        onSuccess: () => {
+          queryClient.invalidateQueries(
+            listAnnouncementsQuery(searchParams.page, searchParams.perPage),
+          );
+          navigate({
+            to: '/dashboard/announcements',
+            search: { new: undefined },
+          });
+        },
+      }),
   });
 
   return (
@@ -56,18 +68,21 @@ const CreateAnnouncementDialogForm = () => {
           <DialogTitle>Want to add a new announcement?</DialogTitle>
           <DialogDescription>Enter the right information</DialogDescription>
         </DialogHeader>
-        <AutoForm
-          onSubmit={(v: z.infer<typeof insertAnnouncementSchema>) => {
-            // Add the current user's ID as the author
-            const announcementData = {
-              ...v,
-              author: pb.authStore.model?.id || '',
-            };
-            announcementMutation.mutate(announcementData);
+        <form
+          className="grid grid-cols-4 gap-2.5"
+          onSubmit={(e) => {
+            e.preventDefault();
+            e.stopPropagation();
+            form.handleSubmit();
           }}
-          schema={new ZodProvider(insertAnnouncementSchema)}
-          withSubmit
-        />
+        >
+          <form.AppForm>
+            <CreateAnnouncementForm form={form} />
+            <form.SubmitButton className="col-span-full">
+              Create Announcement
+            </form.SubmitButton>
+          </form.AppForm>
+        </form>
       </DialogContent>
     </Dialog>
   );

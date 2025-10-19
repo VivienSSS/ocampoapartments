@@ -1,4 +1,4 @@
-import { useMutation, useQuery } from '@tanstack/react-query';
+import { useMutation, useQueries, useQuery } from '@tanstack/react-query';
 import {
   useNavigate,
   useRouteContext,
@@ -12,13 +12,15 @@ import {
   DialogHeader,
   DialogTitle,
 } from '@/components/ui/dialog';
+import { useAppForm } from '@/components/ui/form';
 import {
+  listApartmentUnitsQuery,
   updateApartmentUnitMutation,
   viewApartmentUnitQuery,
 } from '@/pocketbase/queries/apartmentUnits';
+import { listPropertiesQuery } from '@/pocketbase/queries/properties';
 import { updateApartmentUnitSchema } from '@/pocketbase/schemas/apartmentUnits';
-import { AutoForm } from '@/components/ui/autoform';
-import { ZodProvider } from '@autoform/zod';
+import { EditApartmentForm } from './form';
 
 const EditApartmentDialogForm = () => {
   const navigate = useNavigate({ from: '/dashboard/apartments' });
@@ -29,13 +31,41 @@ const EditApartmentDialogForm = () => {
     updateApartmentUnitMutation(searchQuery.id ?? ''),
   );
 
-  const { data: apt, isLoading } = useQuery(
+  const [{ data: apt }, { data: properties }] = useQueries(
     {
-      ...viewApartmentUnitQuery(searchQuery.id ?? ''),
-      enabled: !!searchQuery.id && searchQuery.edit,
+      queries: [
+        {
+          ...viewApartmentUnitQuery(searchQuery.id ?? ''),
+          enabled: !!searchQuery.id && searchQuery.edit,
+        },
+        {
+          ...listPropertiesQuery(1, 500),
+          enabled: !!searchQuery.id && searchQuery.edit,
+        },
+      ],
     },
     queryClient,
   );
+
+  const form = useAppForm({
+    defaultValues: {
+      unitLetter: apt?.unitLetter ?? '',
+      property: apt?.property ?? undefined,
+    } as z.infer<typeof updateApartmentUnitSchema>,
+    validators: { onChange: updateApartmentUnitSchema },
+    onSubmit: async ({ value }) =>
+      mutation.mutateAsync(value, {
+        onSuccess: () => {
+          queryClient.invalidateQueries(
+            listApartmentUnitsQuery(searchQuery.page, searchQuery.perPage),
+          );
+          navigate({
+            to: '/dashboard/apartments',
+            search: { edit: undefined, id: undefined },
+          });
+        },
+      }),
+  });
 
   return (
     <Dialog
@@ -52,14 +82,23 @@ const EditApartmentDialogForm = () => {
           <DialogTitle>Edit Apartment Unit</DialogTitle>
           <DialogDescription>Update information</DialogDescription>
         </DialogHeader>
-        {!isLoading && <AutoForm
-          onSubmit={(value: z.infer<typeof updateApartmentUnitSchema>) => mutation.mutate(value, {
-            onSuccess: () => {
-              navigate({ to: '/dashboard/apartments', search: { new: undefined } })
-            }
-          })}
-          defaultValues={apt}
-          schema={new ZodProvider(updateApartmentUnitSchema)} withSubmit />}
+        <form
+          onSubmit={(e) => {
+            e.preventDefault();
+            e.stopPropagation();
+            form.handleSubmit();
+          }}
+        >
+          <form.AppForm>
+            <EditApartmentForm
+              form={form}
+              properties={properties?.items ?? []}
+            />
+            <div className="mt-6">
+              <form.SubmitButton>Update Unit</form.SubmitButton>
+            </div>
+          </form.AppForm>
+        </form>
       </DialogContent>
     </Dialog>
   );

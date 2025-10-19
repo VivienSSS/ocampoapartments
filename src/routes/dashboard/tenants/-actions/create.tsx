@@ -12,6 +12,7 @@ import {
   DialogHeader,
   DialogTitle,
 } from '@/components/ui/dialog';
+import { useAppForm } from '@/components/ui/form';
 import {
   createTenantMutation,
   listTenantsQuery,
@@ -19,8 +20,6 @@ import {
 import { listUserQuery } from '@/pocketbase/queries/users';
 import { insertTenantSchema } from '@/pocketbase/schemas/tenants';
 import { CreateTenantForm } from './form';
-import { AutoForm } from '@/components/ui/autoform';
-import { ZodProvider } from '@autoform/zod';
 
 const CreateTenantDialogForm = () => {
   const navigate = useNavigate({ from: '/dashboard/tenants' });
@@ -36,6 +35,22 @@ const CreateTenantDialogForm = () => {
     queryClient,
   );
 
+  const form = useAppForm({
+    defaultValues: {} as z.infer<typeof insertTenantSchema>,
+    validators: {
+      onChange: insertTenantSchema,
+    },
+    onSubmit: async ({ value }) =>
+      tenantMutation.mutateAsync(value, {
+        onSuccess: () => {
+          queryClient.invalidateQueries(
+            listTenantsQuery(searchParams.page, searchParams.perPage),
+          );
+          navigate({ search: { new: undefined } });
+        },
+      }),
+  });
+
   return (
     <Dialog
       open={searchParams.new}
@@ -46,13 +61,21 @@ const CreateTenantDialogForm = () => {
           <DialogTitle>Want to add a new tenant?</DialogTitle>
           <DialogDescription>Enter the right information</DialogDescription>
         </DialogHeader>
-        <AutoForm schema={new ZodProvider(insertTenantSchema)} onSubmit={(value) => {
-          tenantMutation.mutate(value, {
-            onSuccess: () => {
-              navigate({ search: { new: undefined } })
-            }
-          })
-        }} withSubmit />
+        <form
+          className="grid grid-cols-4 gap-2.5"
+          onSubmit={(e) => {
+            e.preventDefault();
+            e.stopPropagation();
+            form.handleSubmit();
+          }}
+        >
+          <form.AppForm>
+            <CreateTenantForm form={form} users={users?.items ?? []} />
+            <form.SubmitButton className="col-span-full mt-2">
+              Create Tenant
+            </form.SubmitButton>
+          </form.AppForm>
+        </form>
       </DialogContent>
     </Dialog>
   );

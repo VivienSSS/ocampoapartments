@@ -12,14 +12,14 @@ import {
   DialogHeader,
   DialogTitle,
 } from '@/components/ui/dialog';
+import { useAppForm } from '@/components/ui/form';
 import {
   listBillsQuery,
   updateBillMutation,
   viewBillQuery,
 } from '@/pocketbase/queries/bills';
 import { updateBillSchema } from '@/pocketbase/schemas/bills';
-import { AutoForm } from '@/components/ui/autoform';
-import { ZodProvider } from '@autoform/zod';
+import { EditBillingForm } from './form';
 
 const EditBillingDialogForm = () => {
   const navigate = useNavigate({ from: '/dashboard/billing' });
@@ -36,6 +36,27 @@ const EditBillingDialogForm = () => {
     queryClient,
   );
 
+  const form = useAppForm({
+    defaultValues: {
+      status: bill?.status ?? '',
+    } as z.infer<typeof updateBillSchema>,
+    validators: {
+      onChange: updateBillSchema,
+    },
+    onSubmit: async ({ value }) =>
+      billMutation.mutateAsync(value, {
+        onSuccess: () => {
+          queryClient.invalidateQueries(
+            listBillsQuery(searchQuery.page, searchQuery.perPage),
+          );
+          navigate({
+            to: '/dashboard/billing',
+            search: { edit: undefined, id: undefined },
+          });
+        },
+      }),
+  });
+
   return (
     <Dialog
       open={!!searchQuery.edit && !!searchQuery.id}
@@ -51,7 +72,20 @@ const EditBillingDialogForm = () => {
           <DialogTitle>Edit Bill</DialogTitle>
           <DialogDescription>Update billing information</DialogDescription>
         </DialogHeader>
-        <AutoForm schema={new ZodProvider(updateBillSchema)} />
+        <form
+          onSubmit={(e) => {
+            e.preventDefault();
+            e.stopPropagation();
+            form.handleSubmit();
+          }}
+        >
+          <form.AppForm>
+            <EditBillingForm form={form} />
+            <div className="mt-6">
+              <form.SubmitButton>Update Bill</form.SubmitButton>
+            </div>
+          </form.AppForm>
+        </form>
       </DialogContent>
     </Dialog>
   );

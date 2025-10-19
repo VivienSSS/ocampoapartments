@@ -12,15 +12,15 @@ import {
   DialogHeader,
   DialogTitle,
 } from '@/components/ui/dialog';
+import { useAppForm } from '@/components/ui/form';
 import {
   listTenantsQuery,
   updateTenantMutation,
   viewTenantQuery,
 } from '@/pocketbase/queries/tenants';
 import { listUserQuery } from '@/pocketbase/queries/users';
-import { updateTenantSchema } from '@/pocketbase/schemas/tenants';
-import { AutoForm } from '@/components/ui/autoform';
-import { ZodProvider } from '@autoform/zod';
+import type { updateTenantSchema } from '@/pocketbase/schemas/tenants';
+import { EditApartmentForm } from './form';
 
 const EditTenantDialogForm = () => {
   const navigate = useNavigate({ from: '/dashboard/tenants' });
@@ -46,6 +46,29 @@ const EditTenantDialogForm = () => {
     queryClient,
   );
 
+  const form = useAppForm({
+    defaultValues: {
+      phoneNumber: tenant?.phoneNumber ?? '',
+      facebookName: tenant?.facebookName ?? '',
+      user: tenant?.user ?? undefined,
+    } as z.infer<typeof updateTenantSchema>,
+    // validators: {
+    //   onChange: updateTenantSchema,
+    // },
+    onSubmit: async ({ value }) =>
+      tenantMutation.mutateAsync(value, {
+        onSuccess: () => {
+          queryClient.invalidateQueries(
+            listTenantsQuery(searchQuery.page, searchQuery.perPage),
+          );
+          queryClient.invalidateQueries(viewTenantQuery(searchQuery.id ?? ''));
+          navigate({
+            search: { edit: undefined, id: undefined },
+          });
+        },
+      }),
+  });
+
   return (
     <Dialog
       open={!!searchQuery.edit && !!searchQuery.id}
@@ -60,11 +83,19 @@ const EditTenantDialogForm = () => {
           <DialogTitle>Edit Existing Tenant</DialogTitle>
           <DialogDescription>Enter the right information</DialogDescription>
         </DialogHeader>
-        <AutoForm
-          schema={new ZodProvider(updateTenantSchema)}
-          values={tenant}
-          withSubmit
-        />
+        <form
+          className="grid grid-cols-4 gap-2.5"
+          onSubmit={(e) => {
+            e.preventDefault();
+            e.stopPropagation();
+            form.handleSubmit();
+          }}
+        >
+          <form.AppForm>
+            <EditApartmentForm form={form} users={users?.items || []} />
+            <form.SubmitButton className='col-span-full mt-2'>Update Tenant</form.SubmitButton>
+          </form.AppForm>
+        </form>
       </DialogContent>
     </Dialog>
   );

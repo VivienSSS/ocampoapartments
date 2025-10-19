@@ -68,7 +68,7 @@ export function SidebarRight({
       <SidebarHeader className="border-sidebar-border h-16 border-b">
         <NavUser user={data.user} />
       </SidebarHeader>
-      <SidebarContent className=' no-scrollbar'>
+      <SidebarContent>
         <DatePicker />
         <SidebarSeparator className="mx-0" />
         {/* <Calendars calendars={data.calendars} /> */}

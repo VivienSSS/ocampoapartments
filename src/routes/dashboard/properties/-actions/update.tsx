@@ -12,13 +12,14 @@ import {
   DialogHeader,
   DialogTitle,
 } from '@/components/ui/dialog';
+import { useAppForm } from '@/components/ui/form';
 import {
+  listPropertiesQuery,
   updatePropertyMutation,
   viewPropertiesQuery,
 } from '@/pocketbase/queries/properties';
-import { insertPropertySchema, updatePropertySchema } from '@/pocketbase/schemas/properties';
-import { AutoForm } from '@/components/ui/autoform';
-import { ZodProvider } from '@autoform/zod';
+import { updatePropertySchema } from '@/pocketbase/schemas/properties';
+import { EditPropertyForm } from './form';
 
 const EditPropertyDialogForm = () => {
   const navigate = useNavigate({ from: '/dashboard/properties' });
@@ -28,13 +29,35 @@ const EditPropertyDialogForm = () => {
   );
   const { queryClient } = useRouteContext({ from: '/dashboard/properties/' });
 
-  const { data: property, isLoading } = useQuery(
+  const { data: property } = useQuery(
     {
       ...viewPropertiesQuery(searchQuery.id ?? ''),
-      enabled: !!searchQuery.id && searchQuery.edit,
+      enabled: !!searchQuery.id && searchQuery.delete,
     },
     queryClient,
   );
+
+  const form = useAppForm({
+    defaultValues: {
+      address: property?.address ?? '',
+      branch: property?.branch ?? '',
+    } as z.infer<typeof updatePropertySchema>,
+    validators: {
+      onChange: updatePropertySchema,
+    },
+    onSubmit: async ({ value }) =>
+      propertyMutation.mutateAsync(value, {
+        onSuccess: () => {
+          queryClient.invalidateQueries(
+            listPropertiesQuery(searchQuery.page, searchQuery.perPage),
+          );
+          navigate({
+            to: '/dashboard/properties',
+            search: { edit: undefined, id: undefined },
+          });
+        },
+      }),
+  });
 
   return (
     <Dialog
@@ -51,14 +74,19 @@ const EditPropertyDialogForm = () => {
           <DialogTitle>Edit Existing Property</DialogTitle>
           <DialogDescription>Enter the right information</DialogDescription>
         </DialogHeader>
-        {!isLoading && <AutoForm
-          onSubmit={(value: z.infer<typeof updatePropertySchema>) => propertyMutation.mutate(value, {
-            onSuccess: () => {
-              navigate({ to: '/dashboard/properties', search: { edit: undefined, id: undefined } })
-            }
-          })}
-          defaultValues={property}
-          schema={new ZodProvider(updatePropertySchema)} withSubmit />}
+        <form
+          className="grid grid-cols-4 gap-2.5"
+          onSubmit={(e) => {
+            e.preventDefault();
+            e.stopPropagation();
+            form.handleSubmit();
+          }}
+        >
+          <form.AppForm>
+            <EditPropertyForm form={form} />
+            <form.SubmitButton className='mt-3 col-span-full'>Update Property</form.SubmitButton>
+          </form.AppForm>
+        </form>
       </DialogContent>
     </Dialog>
   );
