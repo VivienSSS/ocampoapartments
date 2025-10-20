@@ -11,6 +11,8 @@ import EditMaintenanceDialogForm from './-actions/update';
 import LoadingComponent from './-loading';
 import { columns } from './-table';
 import { ChevronLeft, ChevronRight, Plus, Edit, Trash } from 'lucide-react';
+import { pb } from '@/pocketbase';
+import { UsersRoleOptions } from '@/pocketbase/types';
 
 export const Route = createFileRoute('/dashboard/maintenances/')({
   component: RouteComponent,
@@ -71,19 +73,23 @@ function RouteComponent() {
       <section>
         <DataTable columns={columns} data={maintenanceRequests} />
       </section>
-      <div className="flex justify-end py-2.5">
-        <div className="flex gap-2">
-          <Button className=''
-            onClick={() =>
-              navigate({ search: (prev) => ({ ...prev, new: true }) })
-            }
-          >
-            <Plus /> Add
-          </Button>
+      {pb.authStore.record?.role !== UsersRoleOptions['Building Admin'] && (
+        <div className="flex justify-end py-2.5">
+          <div className="flex gap-2">
+            <Button className=''
+              onClick={() =>
+                navigate({ search: (prev) => ({ ...prev, new: true }) })
+              }
+            >
+              <Plus /> Add
+            </Button>
+          </div>
         </div>
-      </div>
+      )}
       <section>
-        <CreateMaintenanceDialogForm />
+        {pb.authStore.record?.role !== UsersRoleOptions['Building Admin'] && (
+          <CreateMaintenanceDialogForm />
+        )}
         <DeleteMaintenanceDialogForm />
         <EditMaintenanceDialogForm />
       </section>

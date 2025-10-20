@@ -142,12 +142,22 @@ function RouteComponent() {
 
       <div className="pt-16" />
       {/* Hero Section */}
-      <section className="py-20 px-4 text-center bg-gradient-to-b from-background to-muted">
-        <h1 className="text-4xl font-bold mb-6">Welcome to Ocampo Apartments</h1>
-        <p className="text-xl text-muted-foreground mb-8 max-w-2xl mx-auto">
-          Your comfortable living space and lifetime apartment.
-        </p>
-        <Button variant="outline" size="lg">Contact Us</Button>
+      <section className="relative py-20 px-4 text-center bg-cover bg-center bg-no-repeat" style={{ backgroundImage: 'url("sample.jpg")' }}>
+        {/* Optional overlay for better text readability */}
+        <div className="absolute inset-0 bg-black/40"></div>
+        <div className="relative z-10">
+          <h1 className="text-4xl font-bold mb-6 text-white">Welcome to Ocampo Apartments</h1>
+          <p className="text-xl text-gray-200 mb-8 max-w-2xl mx-auto">
+            Your comfortable living space and lifetime apartment.
+          </p>
+          <Button
+            variant="outline"
+            size="lg"
+            onClick={() => scrollTo('contact')}
+          >
+            Contact Us
+          </Button>
+        </div>
       </section>
 
       {/* Available Units text section (moved from hero as plain text) */}

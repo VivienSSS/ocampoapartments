@@ -72,19 +72,16 @@ export const CreateBillingForm = withForm({
             <field.DateField className="col-span-full" label="Due Date" />
           )}
         </form.AppField>
+
+        <label className="block text-lg font-medium text-foreground mb-2">
+          Bill Items
+        </label>
         <form.AppField name="items" mode="array">
           {(field) => (
             <>
-              {field.state.value?.map((item, index) => (
-                <CreateBillingItemForm
-                  key={`${item.description}-${item.amount}`}
-                  form={form}
-                  fields={`items[${index}]`}
-                />
-              ))}
               <Button
                 type='button'
-                className='bg-emerald-500'
+                className='bg-emerald-500 mb-4 col-span-full'
                 onClick={() =>
                   field.pushValue({
                     chargeType: BillItemsChargeTypeOptions.Electricity,
@@ -95,6 +92,13 @@ export const CreateBillingForm = withForm({
               >
                 <BadgePlus /> Add Item
               </Button>
+              {field.state.value?.map((item, index) => (
+                <CreateBillingItemForm
+                  key={`${item.description}-${item.amount}`}
+                  form={form}
+                  fields={`items[${index}]`}
+                />
+              ))}
             </>
           )}
         </form.AppField>
