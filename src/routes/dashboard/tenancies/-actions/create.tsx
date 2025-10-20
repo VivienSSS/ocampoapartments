@@ -1,4 +1,4 @@
-import { useMutation, useQueries, useQuery } from '@tanstack/react-query';
+import { useMutation, useQueries } from '@tanstack/react-query';
 import {
   useNavigate,
   useRouteContext,
@@ -68,6 +68,10 @@ const CreateTenancyDialogForm = () => {
           onSuccess: () => {
             queryClient.invalidateQueries(
               listTenanciesQuery(search.page, search.perPage),
+            );
+            // Invalidate apartment units to refresh availability status
+            queryClient.invalidateQueries(
+              listApartmentUnitsQuery(1, 500),
             );
             navigate({ to: '/dashboard/tenancies', search: { new: undefined } });
           },

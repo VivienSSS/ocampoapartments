@@ -68,6 +68,10 @@ const EditTenancyDialogForm = () => {
           queryClient.invalidateQueries(
             listTenanciesQuery(searchQuery.page, searchQuery.perPage),
           );
+          // Invalidate apartment units to refresh availability status
+          queryClient.invalidateQueries(
+            listApartmentUnitsQuery(1, 500),
+          );
           navigate({
             to: '/dashboard/tenancies',
             search: { edit: undefined, id: undefined },

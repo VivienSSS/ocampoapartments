@@ -1,4 +1,4 @@
-import { useMutation, useQueries, useQuery } from '@tanstack/react-query';
+import { useMutation, useQueries } from '@tanstack/react-query';
 import {
   useNavigate,
   useRouteContext,
@@ -18,9 +18,8 @@ import {
   updateTenantMutation,
   viewTenantQuery,
 } from '@/pocketbase/queries/tenants';
-import { listUserQuery } from '@/pocketbase/queries/users';
 import type { updateTenantSchema } from '@/pocketbase/schemas/tenants';
-import { EditApartmentForm } from './form';
+import { EditTenantForm } from './form';
 
 const EditTenantDialogForm = () => {
   const navigate = useNavigate({ from: '/dashboard/tenants' });
@@ -30,13 +29,9 @@ const EditTenantDialogForm = () => {
   );
   const { queryClient } = useRouteContext({ from: '/dashboard/tenants/' });
 
-  const [{ data: users }, { data: tenant }] = useQueries(
+  const [{ data: tenant }] = useQueries(
     {
       queries: [
-        {
-          ...listUserQuery(1, 500),
-          enabled: searchQuery.edit && !!searchQuery.id,
-        },
         {
           ...viewTenantQuery(searchQuery.id ?? ''),
           enabled: searchQuery.edit && !!searchQuery.id,
@@ -92,7 +87,7 @@ const EditTenantDialogForm = () => {
           }}
         >
           <form.AppForm>
-            <EditApartmentForm form={form} users={users?.items || []} />
+            <EditTenantForm form={form} />
             <form.SubmitButton className='col-span-full mt-2'>Update Tenant</form.SubmitButton>
           </form.AppForm>
         </form>

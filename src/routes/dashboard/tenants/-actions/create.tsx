@@ -1,4 +1,4 @@
-import { useMutation, useQuery } from '@tanstack/react-query';
+import { useMutation } from '@tanstack/react-query';
 import {
   useNavigate,
   useRouteContext,
@@ -17,7 +17,6 @@ import {
   createTenantMutation,
   listTenantsQuery,
 } from '@/pocketbase/queries/tenants';
-import { listUserQuery } from '@/pocketbase/queries/users';
 import { insertTenantSchema } from '@/pocketbase/schemas/tenants';
 import { CreateTenantForm } from './form';
 
@@ -27,19 +26,9 @@ const CreateTenantDialogForm = () => {
   const { queryClient } = useRouteContext({ from: '/dashboard/tenants/' });
 
   const tenantMutation = useMutation(createTenantMutation);
-  const { data: users } = useQuery(
-    {
-      ...listUserQuery(1, 500),
-      enabled: searchParams.new,
-    },
-    queryClient,
-  );
 
   const form = useAppForm({
     defaultValues: {} as z.infer<typeof insertTenantSchema>,
-    validators: {
-      onChange: insertTenantSchema,
-    },
     onSubmit: async ({ value }) =>
       tenantMutation.mutateAsync(value, {
         onSuccess: () => {
@@ -70,7 +59,7 @@ const CreateTenantDialogForm = () => {
           }}
         >
           <form.AppForm>
-            <CreateTenantForm form={form} users={users?.items ?? []} />
+            <CreateTenantForm form={form} />
             <form.SubmitButton className="col-span-full mt-2">
               Create Tenant
             </form.SubmitButton>

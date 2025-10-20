@@ -21,6 +21,7 @@ export const apartmentUnitSchema = z.object({
     order: 1
   })),
   unitLetter: z.string().min(1).max(1).check(fieldConfig({ order: 3 })),
+  isAvailable: z.boolean().optional().default(true),
   created: z.date().optional(),
   updated: z.date().optional(),
 });

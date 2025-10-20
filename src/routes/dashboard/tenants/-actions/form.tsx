@@ -4,27 +4,43 @@ import {
   insertTenantSchema,
   type updateTenantSchema,
 } from '@/pocketbase/schemas/tenants';
-import type { UsersRecord } from '@/pocketbase/types';
+import type { UsersResponse } from '@/pocketbase/types';
+import { Collections } from '@/pocketbase/types';
+import { pb } from '@/pocketbase';
+import { AsyncSelect } from '@/components/ui/async-select';
 
 export const CreateTenantForm = withForm({
   defaultValues: {} as z.infer<typeof insertTenantSchema>,
-  validators: {
-    onChange: insertTenantSchema,
-  },
-  props: {} as { users: UsersRecord[] },
-  render: ({ form, users }) => {
+  props: {} as {},
+  render: ({ form }) => {
     return (
       <>
         <form.AppField name="user">
           {(field) => (
-            <field.SelectField
-              className="col-span-full"
-              options={users.map((value) => ({
-                label: value.contactEmail,
-                value: value.id,
-              }))}
-              label="User's Email"
-            />
+            <div className="col-span-full">
+              <label className="block text-sm font-medium text-foreground mb-2">
+                User's Email
+              </label>
+              <AsyncSelect<UsersResponse>
+                className="w-full"
+                fetcher={async (query) => (await pb.collection(Collections.Users).getList<UsersResponse>(1, 10, {
+                  filter: query ? `contactEmail ~ '%${query}%' || firstName ~ '%${query}%' || lastName ~ '%${query}%'` : '',
+                  requestKey: null
+                })).items}
+                getOptionValue={(option) => option.id}
+                getDisplayValue={(option) => option.contactEmail}
+                renderOption={(option) => (
+                  <div className="flex flex-col">
+                    <span>{option.contactEmail}</span>
+                    <span className="text-sm text-muted-foreground">{`${option.firstName} ${option.lastName}`}</span>
+                  </div>
+                )}
+                value={field.state.value || ''}
+                onChange={field.handleChange}
+                label="User's Email"
+                placeholder="Search users by email or name..."
+              />
+            </div>
           )}
         </form.AppField>
         <form.AppField name="phoneNumber">
@@ -46,22 +62,37 @@ export const CreateTenantForm = withForm({
   },
 });
 
-export const EditApartmentForm = withForm({
+export const EditTenantForm = withForm({
   defaultValues: {} as z.infer<typeof updateTenantSchema>,
-
-  props: {} as { users: UsersRecord[] },
-  render: ({ form, users }) => (
+  props: {} as {},
+  render: ({ form }) => (
     <>
       <form.AppField name="user">
         {(field) => (
-          <field.SelectField
-            className="col-span-full"
-            options={users.map((value) => ({
-              label: value.contactEmail,
-              value: value.id,
-            }))}
-            label="User's Email"
-          />
+          <div className="col-span-full">
+            <label className="block text-sm font-medium text-foreground mb-2">
+              User's Email
+            </label>
+            <AsyncSelect<UsersResponse>
+              className="w-full"
+              fetcher={async (query) => (await pb.collection(Collections.Users).getList<UsersResponse>(1, 10, {
+                filter: query ? `contactEmail ~ '%${query}%' || firstName ~ '%${query}%' || lastName ~ '%${query}%'` : '',
+                requestKey: null
+              })).items}
+              getOptionValue={(option) => option.id}
+              getDisplayValue={(option) => option.contactEmail}
+              renderOption={(option) => (
+                <div className="flex flex-col">
+                  <span>{option.contactEmail}</span>
+                  <span className="text-sm text-muted-foreground">{`${option.firstName} ${option.lastName}`}</span>
+                </div>
+              )}
+              value={field.state.value || ''}
+              onChange={field.handleChange}
+              label="User's Email"
+              placeholder="Search users by email or name..."
+            />
+          </div>
         )}
       </form.AppField>
       <form.AppField name="phoneNumber">

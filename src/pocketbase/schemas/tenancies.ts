@@ -29,10 +29,12 @@ export const tenanciesSchema = z.object({
       fieldData: () => {
         const { data } = useSuspenseQuery(listApartmentUnitsQuery(1, 100))
 
-        return data?.items.map(row => ({
-          label: `${(row.expand as any)?.property?.branch || 'Unknown Property'} - Floor ${row.floorNumber} - Unit ${row.unitLetter}`,
-          value: row.id
-        }))
+        return data?.items
+          .filter(row => row.isAvailable) // Only show available units
+          .map(row => ({
+            label: `${(row.expand as any)?.property?.branch || 'Unknown Property'} - Floor ${row.floorNumber} - Unit ${row.unitLetter}`,
+            value: row.id
+          }))
       }
     },
     order: 2

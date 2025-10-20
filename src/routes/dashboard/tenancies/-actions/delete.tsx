@@ -19,6 +19,7 @@ import {
   inTenanciesQuery,
   listTenanciesQuery
 } from '@/pocketbase/queries/tenancies';
+import { listApartmentUnitsQuery } from '@/pocketbase/queries/apartmentUnits';
 
 const DeleteTenancyDialogForm = () => {
   const searchQuery = useSearch({ from: '/dashboard/tenancies/' });
@@ -67,6 +68,10 @@ const DeleteTenancyDialogForm = () => {
                       searchQuery.page,
                       searchQuery.perPage,
                     ),
+                  );
+                  // Invalidate apartment units to refresh availability status
+                  queryClient.invalidateQueries(
+                    listApartmentUnitsQuery(1, 500),
                   );
                   navigate({
                     search: (prev) => ({

@@ -25,14 +25,6 @@ export const CreatePropertyForm = withForm({
   defaultValues: {} as z.infer<typeof insertPropertySchema>,
   render: ({ form }) => (
     <>
-      <form.AppField name="address">
-        {(field) => (
-          <field.TextAreaField
-            className="col-span-full"
-            placeholder="Your address"
-          />
-        )}
-      </form.AppField>
       <form.AppField name="branch">
         {(field) => (
           <field.SelectField
@@ -41,7 +33,15 @@ export const CreatePropertyForm = withForm({
               value: key,
             }))}
             className="col-span-full"
-            placeholder="Branch Type"
+            label="Branch"
+          />
+        )}
+      </form.AppField>
+      <form.AppField name="address">
+        {(field) => (
+          <field.TextAreaField
+            className="col-span-full"
+            label="Address"
           />
         )}
       </form.AppField>
@@ -54,14 +54,6 @@ export const EditPropertyForm = withForm({
   render: ({ form }) => (
     <>
 
-      <form.AppField name="address">
-        {(field) => (
-          <field.TextAreaField
-            className="col-span-full"
-            placeholder="Your address"
-          />
-        )}
-      </form.AppField>
       <form.AppField name="branch">
         {(field) => (
           <field.SelectField
@@ -70,7 +62,16 @@ export const EditPropertyForm = withForm({
               value: key,
             }))}
             className="col-span-full"
-            placeholder="Branch Type"
+            label="Branch"
+          />
+        )}
+      </form.AppField>
+
+      <form.AppField name="address">
+        {(field) => (
+          <field.TextAreaField
+            className="col-span-full"
+            label="Address"
           />
         )}
       </form.AppField>

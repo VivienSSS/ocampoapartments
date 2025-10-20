@@ -1,7 +1,6 @@
-import { useSuspenseQuery } from '@tanstack/react-query';
 import type z from 'zod';
 import { Button } from '@/components/ui/button';
-import { Card, CardContent } from '@/components/ui/card';
+import { Card, CardAction, CardContent, CardHeader } from '@/components/ui/card';
 import { withFieldGroup, withForm } from '@/components/ui/form';
 import { pb } from '@/pocketbase';
 import type { insertBillItemsSchema } from '@/pocketbase/schemas/billItems';
@@ -11,7 +10,8 @@ import {
   BillsStatusOptions,
   Collections,
 } from '@/pocketbase/types';
-import { listTenanciesQuery } from '@/pocketbase/queries/tenancies';
+import type { TenanciesResponse } from '@/pocketbase/queries/tenancies';
+import { AsyncSelect } from '@/components/ui/async-select';
 import { BadgePlus } from 'lucide-react';
 
 export const CreateBillingForm = withForm({
@@ -22,21 +22,37 @@ export const CreateBillingForm = withForm({
   //   onChange: insertBillSchema,
   // },
   render: ({ form }) => {
-    const { data: tenancies } = useSuspenseQuery(listTenanciesQuery(1, 100));
-
     return (
       <>
         <form.AppField name="tenancy">
           {(field) => (
-            <field.SelectField
-              className="col-span-full"
-              options={tenancies.items.map((value) => ({
-                label: `${value.expand.tenant.expand.user.firstName} ${value.expand.tenant.expand.user.lastName}`,
-                value: value.id,
-              }))}
-              label="Tenancies"
-              placeholder="id"
-            />
+            <div className="col-span-full">
+              <label className="block text-sm font-medium text-foreground mb-2">
+                Tenant
+              </label>
+              <AsyncSelect<TenanciesResponse>
+                className='w-full'
+                fetcher={async (query) => (await pb.collection(Collections.Tenancies).getList<TenanciesResponse>(1, 10, {
+                  filter: query ? `tenant.user.firstName ~ '%${query}%' || tenant.user.lastName ~ '%${query}%'` : '',
+                  expand: 'tenant.user,unit.property',
+                  requestKey: null
+                })).items}
+                getOptionValue={(option) => option.id}
+                getDisplayValue={(option) => `${option.expand.tenant.expand.user.firstName} ${option.expand.tenant.expand.user.lastName}`}
+                renderOption={(option) => (
+                  <div>
+                    <div className="font-medium">{`${option.expand.tenant.expand.user.firstName} ${option.expand.tenant.expand.user.lastName}`}</div>
+                    <div className="text-sm text-muted-foreground">
+                      Unit {option.expand.unit.unitLetter} - {option.expand.unit.expand.property.branch}
+                    </div>
+                  </div>
+                )}
+                value={field.state.value || ''}
+                onChange={field.handleChange}
+                label="Tenancies"
+                placeholder="Search tenants..."
+              />
+            </div>
           )}
         </form.AppField>
         <form.AppField name="status">

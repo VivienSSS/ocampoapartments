@@ -35,34 +35,39 @@ function RouteComponent() {
       <section className="flex items-center justify-between py-2.5">
         <h1 className="text-2xl font-bold">Billing</h1>
         <div className='flex gap-2.5'>
-          <Button
-            disabled={searchQuery.selected.length > 1}
-            onClick={() =>
-              navigate({
-                search: (prev) => ({
-                  ...prev,
-                  id: searchQuery.selected[0],
-                  edit: true,
-                }),
-              })
-            }
-          >
-            <Edit /> Edit
-          </Button>
-          <Button
-            variant="destructive"
-            disabled={!(searchQuery.id ?? searchQuery.selected)}
-            onClick={() =>
-              navigate({
-                search: (prev) => ({
-                  ...prev,
-                  delete: true,
-                }),
-              })
-            }
-          >
-            <Trash /> Delete
-          </Button>
+
+          {pb.authStore.record?.role !== UsersRoleOptions.Tenant && (
+            <>
+              <Button
+                disabled={searchQuery.selected.length > 1}
+                onClick={() =>
+                  navigate({
+                    search: (prev) => ({
+                      ...prev,
+                      id: searchQuery.selected[0],
+                      edit: true,
+                    }),
+                  })
+                }
+              >
+                <Edit /> Edit
+              </Button>
+              <Button
+                variant="destructive"
+                disabled={!(searchQuery.id ?? searchQuery.selected)}
+                onClick={() =>
+                  navigate({
+                    search: (prev) => ({
+                      ...prev,
+                      delete: true,
+                    }),
+                  })
+                }
+              >
+                <Trash /> Delete
+              </Button>
+            </>
+          )}
           <Button disabled={searchQuery.page === 1} onClick={() => navigate({ search: (prev) => ({ ...prev, page: searchQuery.page - 1 }) })}>
             <ChevronLeft />
           </Button>
@@ -76,23 +81,29 @@ function RouteComponent() {
       </section>
       <div className="flex justify-end py-2.5">
         <div className="flex gap-2">
-          {pb.authStore.record?.role !== UsersRoleOptions.Tenant && (
-            <Button className=''
-              onClick={() =>
+          <Button className=''
+            onClick={() => {
+              if (pb.authStore.record?.role === UsersRoleOptions.Tenant) {
+                navigate({ to: "/dashboard/payments", search: { new: true } })
+              } else {
                 navigate({ search: (prev) => ({ ...prev, new: true }) })
               }
-            >
-              <Plus /> Add
-            </Button>
-          )}
+            }
+            }
+          >
+            <Plus /> Add
+          </Button>
         </div>
       </div>
       <section>
         {pb.authStore.record?.role !== UsersRoleOptions.Tenant && (
-          <CreateBillingDialogForm />
+          <>
+            <CreateBillingDialogForm />
+            <DeleteBillingDialogForm />
+            <EditBillingDialogForm />
+          </>
         )}
-        <DeleteBillingDialogForm />
-        <EditBillingDialogForm />
+
       </section>
     </article>
   );

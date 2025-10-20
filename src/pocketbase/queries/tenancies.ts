@@ -42,8 +42,15 @@ export const createTenancyMutation = mutationOptions<
   ClientResponseError,
   z.infer<typeof insertTenanciesSchema>
 >({
-  mutationFn: async (value) =>
-    pb.collection(Collections.Tenancies).create(value, { expand: 'tenant.user,unit.property', }),
+  mutationFn: async (value) => {
+    // Create the tenancy
+    const tenancy = await pb.collection(Collections.Tenancies).create<TenanciesResponse>(value, { expand: 'tenant.user,unit.property', });
+
+    // Update the apartment unit to mark it as unavailable
+    await pb.collection(Collections.ApartmentUnits).update(value.unit, { isAvailable: false });
+
+    return tenancy;
+  },
   onSuccess: (value) =>
     toast.success(`Successfully create`, {
       description: `Tenancy created: ${value.id}`,
@@ -60,8 +67,22 @@ export const updateTenancyMutation = (id: string) =>
     ClientResponseError,
     z.infer<typeof updateTenanciesSchema>
   >({
-    mutationFn: async (value) =>
-      pb.collection(Collections.Tenancies).update(id, value, { expand: 'tenant.user,unit.property', }),
+    mutationFn: async (value) => {
+      // If the unit is being changed, we need to handle unit availability
+      if (value.unit) {
+        // Get the current tenancy to see if unit changed
+        const currentTenancy = await pb.collection(Collections.Tenancies).getOne(id);
+
+        if (currentTenancy.unit !== value.unit) {
+          // Mark the old unit as available
+          await pb.collection(Collections.ApartmentUnits).update(currentTenancy.unit, { isAvailable: true });
+          // Mark the new unit as unavailable
+          await pb.collection(Collections.ApartmentUnits).update(value.unit, { isAvailable: false });
+        }
+      }
+
+      return pb.collection(Collections.Tenancies).update<TenanciesResponse>(id, value, { expand: 'tenant.user,unit.property', });
+    },
     onSuccess: (value) =>
       toast.success(`Changes saved`, {
         description: `Tenancy ${value.id} has been updated`,
@@ -74,7 +95,16 @@ export const updateTenancyMutation = (id: string) =>
 
 export const deleteTenancyMutation = (id: string) =>
   mutationOptions({
-    mutationFn: async () => pb.collection(Collections.Tenancies).delete(id),
+    mutationFn: async () => {
+      // Get the tenancy details first to know which unit to mark as available
+      const tenancy = await pb.collection(Collections.Tenancies).getOne(id);
+
+      // Delete the tenancy
+      await pb.collection(Collections.Tenancies).delete(id);
+
+      // Mark the unit as available again
+      await pb.collection(Collections.ApartmentUnits).update(tenancy.unit, { isAvailable: true });
+    },
     onSuccess: () =>
       toast.success(`Deleted sucessfully`, {
         description: `Tenancy ${id} has been deleted succesfully`,
@@ -96,10 +126,21 @@ export const inTenanciesQuery = (selected: string[]) => queryOptions({
 export const batchDeleteTenancyMutation = (selected: string[]) =>
   mutationOptions({
     mutationFn: async () => {
+      // Get all tenancy details first to know which units to mark as available
+      const tenancies = await pb
+        .collection(Collections.Tenancies)
+        .getFullList({ filter: selected.map((id) => `id='${id}'`).join("||"), requestKey: null });
+
       const batch = pb.createBatch();
 
+      // Delete all tenancies
       for (const id of selected) {
         batch.collection(Collections.Tenancies).delete(id);
+      }
+
+      // Mark all associated units as available again
+      for (const tenancy of tenancies) {
+        batch.collection(Collections.ApartmentUnits).update(tenancy.unit, { isAvailable: true });
       }
 
       return await batch.send({ requestKey: null });
