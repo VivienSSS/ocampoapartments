@@ -263,11 +263,11 @@ function RouteComponent() {
       </section> */}
       <section
         id="contact"
-        className="w-full bg-[#18181B] text-white py-16 px-8 flex flex-col md:flex-row justify-between items-start mt-16"
+        className="w-full bg-sidebar-primary text-sidebar-primary-foreground py-16 px-8 flex flex-col md:flex-row justify-between items-start mt-16"
       >
         <div className="flex-1 min-w-[220px] mb-8 md:mb-0">
-          <div className="font-bold text-2xl mb-2">Ocampo's Apartment</div>
-          <div className="mb-4 text-[#F3F4F6]">
+          <div className="font-bold text-2xl mb-2 text-sidebar-primary-foreground">Ocampo's Apartment</div>
+          <div className="mb-4 text-sidebar-primary-foreground">
             Humble comfort embraced. <br />
             Experience the warmth of simple, cozy living in our thoughtfully <br />
             designed apartment spaces — where comfort, convenience, and  <br />
@@ -277,22 +277,22 @@ function RouteComponent() {
         <div className="flex-1 min-w-[220px] mb-8 md:mb-0">
           <div className="font-bold mb-4">Contact Info</div>
           <div className="flex items-center gap-2 mb-2">
-            <Phone className="w-5 h-5" stroke="#F3F4F6" />
+            <Phone className="w-5 h-5 text-sidebar-primary-foreground" />
             (+63) 9176564268
           </div>
           <div className="flex items-center gap-2 mb-2">
-            <Mail className="w-5 h-5" stroke="#F3F4F6" />
+            <Mail className="w-5 h-5 text-sidebar-primary-foreground" />
             arlene.ocampo@gmail.com
           </div>
           <div className="flex items-center gap-2 mb-2">
-            <MapPinHouse className='w-5 h-5' />
+            <MapPinHouse className="w-5 h-5 text-sidebar-primary-foreground" />
             406 Marine Road Veterans Village <br />
             Brgy. Holy Spirit, Quezon City<br />
             Metro Manila, Philippines
           </div>
         </div>
       </section>
-      <footer className="w-full bg-[#18181B] text-[#F3F4F6] py-6 px-8 border-t border-[#23272F]">
+      <footer className="w-full bg-background text-foreground py-6 px-8 border-t border-border">
         <div className="max-w-7xl mx-auto flex flex-col md:flex-row justify-between items-center">
           <div className="mb-2 md:mb-0">
             &copy; 2025 Ocampo's Apartment. All rights reserved.
@@ -300,7 +300,7 @@ function RouteComponent() {
           <div className="flex gap-6">
             <Dialog>
               <DialogTrigger asChild>
-                <button className="text-[#F3F4F6] hover:underline text-sm cursor-pointer">
+                <button className="text-foreground hover:underline text-sm cursor-pointer">
                   Privacy Policy
                 </button>
               </DialogTrigger>
@@ -411,7 +411,7 @@ function RouteComponent() {
 
             <Dialog>
               <DialogTrigger asChild>
-                <button className="text-[#F3F4F6] hover:underline text-sm cursor-pointer">
+                <button className="text-foreground hover:underline text-sm cursor-pointer">
                   Terms of Service
                 </button>
               </DialogTrigger>
@@ -431,6 +431,74 @@ function RouteComponent() {
                     </p>
                     <p className="text-sm leading-6">
                       The enclosed information within the website is prohibited to be published, replicated, presented, sold, distributed, or used in any manner without the permission of the establishment. Any action taken upon the information is at the user or viewer's risk.
+                    </p>
+                  </div>
+                </div>
+              </DialogContent>
+            </Dialog>
+
+            <Dialog>
+              <DialogTrigger asChild>
+                <button className="text-foreground hover:underline text-sm cursor-pointer">
+                  FAQs
+                </button>
+              </DialogTrigger>
+              <DialogContent className="max-w-4xl max-h-[80vh] overflow-y-auto">
+                <DialogHeader>
+                  <DialogTitle className="scroll-m-20 text-2xl font-semibold tracking-tight">
+                    FAQs
+                  </DialogTitle>
+                  <DialogDescription className="text-muted-foreground text-sm">
+                    Frequently Asked Questions
+                  </DialogDescription>
+                </DialogHeader>
+                <div className="space-y-4 text-sm leading-6">
+                  <div>
+                    <h4 className="font-semibold mb-1">What is the application process?</h4>
+                    <p>
+                      Our application process is simple and straightforward. First, schedule a tour to view the available units by contacting the landlord through the given cellphone number or e-mail. Once you've selected your preferred apartment, complete the application form given by the landlord, submit the required documents, and pay the application fee. We typically process applications within 28-48 hours.
+                    </p>
+                  </div>
+
+                  <div>
+                    <h4 className="font-semibold mb-1">What documents do i need to apply?</h4>
+                    <p>
+                      You'll need to provide a valid government-issued ID, proof of income (pay stubs, employment letter, or tax returns), and rental history references.
+                    </p>
+                  </div>
+
+                  <div>
+                    <h4 className="font-semibold mb-1">What lease terms do you offer?</h4>
+                    <p>
+                      We offer flexible lease terms to accommodate your needs, including 6-month and 12-month.
+                    </p>
+                  </div>
+
+                  <div>
+                    <h4 className="font-semibold mb-1">Are pets allowed?</h4>
+                    <p>
+                      Yes, we are a pet-friendly community! We welcome both cats and dogs with some breed and size restrictions. For small pets, a maximum of five is allowed, while only one large pet is permitted. There is no additional charge for pets.
+                    </p>
+                  </div>
+
+                  <div>
+                    <h4 className="font-semibold mb-1">How do I submit a maintenance request?</h4>
+                    <p>
+                      Maintenance requests can be submitted through your online tenant account. Once a request is filed, the building administrator will review it and schedule the necessary repairs or inspections. Tenants will be notified of the progress and completion status through the same platform.
+                    </p>
+                  </div>
+
+                  <div>
+                    <h4 className="font-semibold mb-1">Is parking available?</h4>
+                    <p>
+                      Yes, we provide both covered and uncovered parking spaces; however, only motorcycles are allowed, as there are no designated areas for four-wheeled vehicles. Each unit is provided with at least one assigned parking slot, and additional spaces may be rented on a monthly basis.
+                    </p>
+                  </div>
+
+                  <div>
+                    <h4 className="font-semibold mb-1">Is there a curfew for tenants?</h4>
+                    <p>
+                      No, there is no curfew for tenants going inside or outside the building. Tenants are provided with their own keys to the apartment gate, allowing them to go out and return at any time, even late at night. However, to maintain a peaceful environment, parties, loud gatherings, and karaoke sessions are only allowed until 10:00 PM to avoid disturbing other tenants.
                     </p>
                   </div>
                 </div>

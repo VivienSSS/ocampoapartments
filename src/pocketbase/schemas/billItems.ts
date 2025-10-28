@@ -1,15 +1,12 @@
 import z from 'zod';
 import { BillItemsChargeTypeOptions } from '../types';
-import { fieldConfig } from '@autoform/zod';
-import type { FieldTypes } from '@/components/ui/autoform';
-import type React from 'react';
 
 export const billItemsSchema = z.object({
-  amount: z.number().nonnegative().optional().check(fieldConfig({ label: "Amount", description: "Amount to charge", order: 2 })),
+  amount: z.number().nonnegative().optional(),
   bill: z.string(),
-  chargeType: z.enum(BillItemsChargeTypeOptions).check(fieldConfig({ order: 1 })),
+  chargeType: z.enum(BillItemsChargeTypeOptions),
   created: z.date().optional(),
-  description: z.string().check(fieldConfig<React.ReactNode, FieldTypes>({ order: 3, fieldType: 'textarea' })),
+  description: z.string(),
   id: z.string(),
   updated: z.date().optional(),
 });

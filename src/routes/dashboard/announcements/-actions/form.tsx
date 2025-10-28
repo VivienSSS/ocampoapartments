@@ -20,7 +20,7 @@ export const AnnouncementForm = withForm({
         </form.AppField>
         <form.AppField name="message">
           {(field) => (
-            <field.TextAreaField className="col-span-full" label="Message" />
+            <field.TextAreaField className="col-span-full mt-4" label="Message" />
           )}
         </form.AppField>
       </>
