@@ -67,11 +67,11 @@ export const createBillMutation = mutationOptions<
     return billRecord;
   },
   onSuccess: (value) =>
-    toast.success(`Successfully create`, {
+    toast.success(`Successfully Created`, {
       description: `Bill created for tenancy: ${value.tenancy}`,
     }),
   onError: (err) =>
-    toast.error(`An Error occured when creating a bill`, {
+    toast.error(`An error occured when creating a bill`, {
       description: err.message,
     }),
 });
@@ -87,11 +87,11 @@ export const updateBillMutation = (id: string) =>
         expand: 'tenancy.tenant.user,tenancy.tenant.unit',
       }),
     onSuccess: (value) =>
-      toast.success(`Changes saved`, {
+      toast.success(`Changes Saved`, {
         description: `Bill ${value.id} has been updated`,
       }),
     onError: (err) =>
-      toast.error(`An Error occured when updating the bill ${id}`, {
+      toast.error(`An error occured when updating the bill ${id}`, {
         description: err.message,
       }),
   });
@@ -100,11 +100,11 @@ export const deleteBillMutation = (id: string) =>
   mutationOptions({
     mutationFn: async () => pb.collection(Collections.Bills).delete(id),
     onSuccess: () =>
-      toast.success(`Deleted sucessfully`, {
+      toast.success(`Deleted Sucessfully`, {
         description: `Bill ${id} has been deleted succesfully`,
       }),
     onError: (err) =>
-      toast.error(`An Error occured when deleting the bill ${id}`, {
+      toast.error(`An error occured when deleting the bill ${id}`, {
         description: err.message,
       }),
   });
@@ -121,7 +121,7 @@ export const batchDeleteBillMutation = (selected: string[]) =>
       return await batch.send({ requestKey: null });
     },
     onSuccess: () =>
-      toast.success(`Deleted successfully`, {
+      toast.success(`Deleted Successfully`, {
         description: `Bills ${selected.join(', ')} have been deleted successfully`,
       }),
     onError: (err) =>

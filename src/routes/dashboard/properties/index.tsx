@@ -10,7 +10,7 @@ import DeletePropertyDialogForm from './-actions/delete';
 import EditPropertyDialogForm from './-actions/update';
 import LoadingComponent from './-loading';
 import { columns } from './-table';
-import { ChevronLeft, ChevronRight, Plus, Edit, Trash } from 'lucide-react';
+import { ChevronLeft, ChevronRight, Plus, Edit } from 'lucide-react';
 
 export const Route = createFileRoute('/dashboard/properties/')({
   component: RouteComponent,
@@ -47,20 +47,7 @@ function RouteComponent() {
           >
             <Edit /> Edit
           </Button>
-          <Button
-            variant="destructive"
-            disabled={!(searchQuery.id ?? searchQuery.selected)}
-            onClick={() =>
-              navigate({
-                search: (prev) => ({
-                  ...prev,
-                  delete: true,
-                }),
-              })
-            }
-          >
-            <Trash /> Delete
-          </Button>
+          {/* Delete button hidden for properties section */}
           <Button
             disabled={searchQuery.page === 1}
             onClick={() =>

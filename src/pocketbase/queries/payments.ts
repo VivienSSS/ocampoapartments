@@ -49,11 +49,11 @@ export const createPaymentMutation = mutationOptions<
       expand: 'bill,tenant',
     }),
   onSuccess: (value) =>
-    toast.success(`Successfully create`, {
+    toast.success(`Successfully Created`, {
       description: `Payment recorded: ${value.transactionId}`,
     }),
   onError: (err) =>
-    toast.error(`An Error occured when creating a payment`, {
+    toast.error(`An error occured when creating a payment`, {
       description: err.message,
     }),
 });
@@ -69,11 +69,11 @@ export const updatePaymentMutation = (id: string) =>
         expand: 'bill,tenant',
       }),
     onSuccess: (value) =>
-      toast.success(`Changes saved`, {
+      toast.success(`Changes Saved`, {
         description: `Payment ${value.transactionId} has been updated`,
       }),
     onError: (err) =>
-      toast.error(`An Error occured when updating the payment ${id}`, {
+      toast.error(`An error occured when updating the payment ${id}`, {
         description: err.message,
       }),
   });
@@ -82,11 +82,11 @@ export const deletePaymentMutation = (id: string) =>
   mutationOptions({
     mutationFn: async () => pb.collection(Collections.Payments).delete(id),
     onSuccess: () =>
-      toast.success(`Deleted sucessfully`, {
+      toast.success(`Deleted Sucessfully`, {
         description: `Payment ${id} has been deleted succesfully`,
       }),
     onError: (err) =>
-      toast.error(`An Error occured when deleting the payment ${id}`, {
+      toast.error(`An error occured when deleting the payment ${id}`, {
         description: err.message,
       }),
   });

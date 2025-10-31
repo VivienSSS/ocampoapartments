@@ -52,7 +52,7 @@ export const createTenancyMutation = mutationOptions<
     return tenancy;
   },
   onSuccess: (value) =>
-    toast.success(`Successfully create`, {
+    toast.success(`Successfully Created`, {
       description: `Tenancy created: ${value.id}`,
     }),
   onError: (err) =>
@@ -84,11 +84,11 @@ export const updateTenancyMutation = (id: string) =>
       return pb.collection(Collections.Tenancies).update<TenanciesResponse>(id, value, { expand: 'tenant.user,unit.property', });
     },
     onSuccess: (value) =>
-      toast.success(`Changes saved`, {
+      toast.success(`Changes Saved`, {
         description: `Tenancy ${value.id} has been updated`,
       }),
     onError: (err) =>
-      toast.error(`An Error occured when updating the tenancy ${id}`, {
+      toast.error(`An error occured when updating the tenancy ${id}`, {
         description: err.message,
       }),
   });
@@ -106,11 +106,11 @@ export const deleteTenancyMutation = (id: string) =>
       await pb.collection(Collections.ApartmentUnits).update(tenancy.unit, { isAvailable: true });
     },
     onSuccess: () =>
-      toast.success(`Deleted sucessfully`, {
+      toast.success(`Deleted Sucessfully`, {
         description: `Tenancy ${id} has been deleted succesfully`,
       }),
     onError: (err) =>
-      toast.error(`An Error occured when deleting the tenancy ${id}`, {
+      toast.error(`An error occured when deleting the tenancy ${id}`, {
         description: err.message,
       }),
   });
@@ -146,7 +146,7 @@ export const batchDeleteTenancyMutation = (selected: string[]) =>
       return await batch.send({ requestKey: null });
     },
     onSuccess: () =>
-      toast.success(`Deleted successfully`, {
+      toast.success(`Deleted Successfully`, {
         description: `Tenancies ${selected.join(', ')} have been deleted successfully`,
       }),
     onError: (err) =>

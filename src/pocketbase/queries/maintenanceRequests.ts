@@ -56,11 +56,11 @@ export const createMaintenanceRequestMutation = mutationOptions<
         expand: 'tenant.user,unit,worker',
       }),
   onSuccess: (value) =>
-    toast.success(`Successfully create`, {
-      description: `Maintenance request created: ${value.id}`,
+    toast.success(`Successfully Created`, {
+      description: `Maintenance Request created: ${value.id}`,
     }),
   onError: (err) =>
-    toast.error(`An Error occured when creating a maintenance request`, {
+    toast.error(`An error occured when creating a maintenance request`, {
       description: err.message,
     }),
 });
@@ -78,12 +78,12 @@ export const updateMaintenanceRequestMutation = (id: string) =>
         )
         .update(id, value, { expand: 'tenant.user,unit,worker' }),
     onSuccess: (value) =>
-      toast.success(`Changes saved`, {
-        description: `Maintenance request ${value.id} has been updated`,
+      toast.success(`Changes Saved`, {
+        description: `Maintenance Request ${value.id} has been updated`,
       }),
     onError: (err) =>
       toast.error(
-        `An Error occured when updating the maintenance request ${id}`,
+        `An error occured when updating the maintenance request ${id}`,
         {
           description: err.message,
         },
@@ -95,12 +95,12 @@ export const deleteMaintenanceRequestMutation = (id: string) =>
     mutationFn: async () =>
       pb.collection(Collections.MaintenanceRequests).delete(id),
     onSuccess: () =>
-      toast.success(`Deleted sucessfully`, {
-        description: `Maintenance request ${id} has been deleted succesfully`,
+      toast.success(`Deleted Sucessfully`, {
+        description: `Maintenance Request ${id} has been deleted succesfully`,
       }),
     onError: (err) =>
       toast.error(
-        `An Error occured when deleting the maintenance request ${id}`,
+        `An error occured when deleting the maintenance request ${id}`,
         {
           description: err.message,
         },
@@ -127,11 +127,11 @@ export const batchDeleteMaintenanceRequestMutation = (selected: string[]) =>
       return await batch.send({ requestKey: null });
     },
     onSuccess: () =>
-      toast.success(`Deleted successfully`, {
-        description: `Maintenance requests ${selected.join(', ')} have been deleted successfully`,
+      toast.success(`Deleted Successfully`, {
+        description: `Maintenance Requests ${selected.join(', ')} have been deleted successfully`,
       }),
     onError: (err) =>
       toast.error(`An error occurred when deleting the maintenance requests`, {
-        description: `Maintenance requests: ${selected.join(', ')}\n${err.message}`,
+        description: `Maintenance Requests: ${selected.join(', ')}\n${err.message}`,
       }),
   });

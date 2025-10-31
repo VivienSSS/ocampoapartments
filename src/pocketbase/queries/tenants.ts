@@ -42,7 +42,7 @@ export const getCurrentTenantQuery = (userId: string) =>
         expand: 'user',
       });
       if (result.length === 0) {
-        throw new Error('Tenant not found for current user');
+        throw new Error('Tenant not found for the current user');
       }
       return result[0];
     },
@@ -71,11 +71,11 @@ export const createTenantMutation = mutationOptions<
       expand: 'user',
     }),
   onSuccess: (value) =>
-    toast.success(`Successfully created`, {
+    toast.success(`Successfully Created`, {
       description: `Tenant created: ${value.expand.user.firstName} ${value.expand.user.lastName}`,
     }),
   onError: (err) =>
-    toast.error(`An Error occured when creating a tenant`, {
+    toast.error(`An error occured when creating a tenant`, {
       description: err.message,
     }),
 });
@@ -91,11 +91,11 @@ export const updateTenantMutation = (id: string) =>
         expand: 'user',
       }),
     onSuccess: (value) =>
-      toast.success(`Changes saved`, {
+      toast.success(`Changes Saved`, {
         description: `Tenant ${value.expand.user.firstName} ${value.expand.user.lastName} has been updated`,
       }),
     onError: (err) =>
-      toast.error(`An Error occured when updating the tenant ${id}`, {
+      toast.error(`An error occured when updating the tenant ${id}`, {
         description: err.message,
       }),
   });
@@ -104,11 +104,11 @@ export const deleteTenantMutation = (id: string) =>
   mutationOptions({
     mutationFn: async () => pb.collection(Collections.Tenants).delete(id),
     onSuccess: () =>
-      toast.success(`Deleted sucessfully`, {
+      toast.success(`Deleted Sucessfully`, {
         description: `Tenant ${id} has been deleted succesfully`,
       }),
     onError: (err) =>
-      toast.error(`An Error occured when deleting the tenant ${id}`, {
+      toast.error(`An error occured when deleting the tenant ${id}`, {
         description: err.message,
       }),
   });
@@ -125,7 +125,7 @@ export const batchDeleteTenantMutation = (selected: string[]) =>
       return await batch.send({ requestKey: null });
     },
     onSuccess: () =>
-      toast.success(`Deleted successfully`, {
+      toast.success(`Deleted Successfully`, {
         description: `Tenants ${selected.join(', ')} have been deleted successfully`,
       }),
     onError: (err) =>

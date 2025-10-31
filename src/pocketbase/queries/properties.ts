@@ -41,11 +41,11 @@ export const createPropertyMutation = mutationOptions<
   mutationFn: async (value) =>
     pb.collection(Collections.Properties).create(value),
   onSuccess: (value) =>
-    toast.success(`Successfully create`, {
+    toast.success(`Successfully Created`, {
       description: `New property added to the system: ${value.address}`,
     }),
   onError: (err) =>
-    toast.error(`An Error occured when creating a property`, {
+    toast.error(`An error occured when creating the property`, {
       description: err.message,
     }),
 });
@@ -59,11 +59,11 @@ export const updatePropertyMutation = (id: string) =>
     mutationFn: async (value) =>
       pb.collection(Collections.Properties).update(id, value),
     onSuccess: (value) =>
-      toast.success(`Changes saved`, {
+      toast.success(`Changes Saved`, {
         description: `Property ${value.address} has been updated`,
       }),
     onError: (err) =>
-      toast.error(`An Error occured when updating the property ${id}`, {
+      toast.error(`An error occured when updating the property ${id}`, {
         description: err.message,
       }),
   });
@@ -72,11 +72,11 @@ export const deletePropertyMutation = (id: string) =>
   mutationOptions({
     mutationFn: async () => pb.collection(Collections.Properties).delete(id),
     onSuccess: () =>
-      toast.success(`Deleted sucessfully`, {
+      toast.success(`Deleted Sucessfully`, {
         description: `Property ${id} has been deleted succesfully`,
       }),
     onError: (err) =>
-      toast.error(`An Error occured when deleting the property ${id}`, {
+      toast.error(`An error occured when deleting the property ${id}`, {
         description: err.message,
       }),
   });
@@ -93,7 +93,7 @@ export const batchDeletePropertyMutation = (selected: string[]) =>
       return await batch.send({ requestKey: null });
     },
     onSuccess: () =>
-      toast.success(`Deleted successfully`, {
+      toast.success(`Deleted Successfully`, {
         description: `Properties ${selected.join(', ')} have been deleted successfully`,
       }),
     onError: (err) =>

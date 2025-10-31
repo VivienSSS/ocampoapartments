@@ -56,11 +56,11 @@ export const createAnnouncementMutation = mutationOptions<
       .collection(Collections.Announcements)
       .create<AnnouncementsResponse>(value, { expand: 'author', requestKey: null }),
   onSuccess: (value) =>
-    toast.success(`Successfully create`, {
+    toast.success(`Successfully Created`, {
       description: `Announcement created: ${value.title}`,
     }),
   onError: (err) =>
-    toast.error(`An Error occured when creating an announcement`, {
+    toast.error(`An error occured when creating the announcement`, {
       description: err.message,
     }),
 });
@@ -76,11 +76,11 @@ export const updateAnnouncementMutation = (id: string) =>
         .collection(Collections.Announcements)
         .update<AnnouncementsResponse>(id, value, { expand: 'author' }),
     onSuccess: (value) =>
-      toast.success(`Changes saved`, {
+      toast.success(`Changes Saved`, {
         description: `Announcement ${value.title} has been updated`,
       }),
     onError: (err) =>
-      toast.error(`An Error occured when updating the announcement ${id}`, {
+      toast.error(`An error occured when updating the announcement ${id}`, {
         description: err.message,
       }),
   });
@@ -89,11 +89,11 @@ export const deleteAnnouncementMutation = (id: string) =>
   mutationOptions({
     mutationFn: async () => pb.collection(Collections.Announcements).delete(id),
     onSuccess: () =>
-      toast.success(`Deleted sucessfully`, {
+      toast.success(`Deleted Sucessfully`, {
         description: `Announcement ${id} has been deleted succesfully`,
       }),
     onError: (err) =>
-      toast.error(`An Error occured when deleting the announcement ${id}`, {
+      toast.error(`An error occured when deleting the announcement ${id}`, {
         description: err.message,
       }),
   });
@@ -110,7 +110,7 @@ export const batchDeleteAnnouncementMutation = (selected: string[]) =>
       return await batch.send({ requestKey: null });
     },
     onSuccess: () =>
-      toast.success(`Deleted successfully`, {
+      toast.success(`Deleted Successfully`, {
         description: `Announcements ${selected.join(', ')} have been deleted successfully`,
       }),
     onError: (err) =>

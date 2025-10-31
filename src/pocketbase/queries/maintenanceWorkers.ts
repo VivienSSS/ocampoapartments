@@ -39,11 +39,11 @@ export const createMaintenanceWorkerMutation = mutationOptions<
   mutationFn: async (value) =>
     pb.collection(Collections.MaintenanceWorkers).create(value),
   onSuccess: (value) =>
-    toast.success(`Successfully create`, {
-      description: `Maintenance worker ${value.name} added`,
+    toast.success(`Successfully Created`, {
+      description: `Maintenance Worker ${value.name} added`,
     }),
   onError: (err) =>
-    toast.error(`An Error occured when creating a maintenance worker`, {
+    toast.error(`An error occured when creating a maintenance worker`, {
       description: err.message,
     }),
 });
@@ -57,12 +57,12 @@ export const updateMaintenanceWorkerMutation = (id: string) =>
     mutationFn: async (value) =>
       pb.collection(Collections.MaintenanceWorkers).update(id, value),
     onSuccess: (value) =>
-      toast.success(`Changes saved`, {
-        description: `Maintenance worker ${value.name} has been updated`,
+      toast.success(`Changes Saved`, {
+        description: `Maintenance Worker ${value.name} has been updated`,
       }),
     onError: (err) =>
       toast.error(
-        `An Error occured when updating the maintenance worker ${id}`,
+        `An error occured when updating the maintenance worker ${id}`,
         {
           description: err.message,
         },
@@ -74,12 +74,12 @@ export const deleteMaintenanceWorkerMutation = (id: string) =>
     mutationFn: async () =>
       pb.collection(Collections.MaintenanceWorkers).delete(id),
     onSuccess: () =>
-      toast.success(`Deleted sucessfully`, {
-        description: `Maintenance worker ${id} has been deleted succesfully`,
+      toast.success(`Deleted Sucessfully`, {
+        description: `Maintenance Worker ${id} has been deleted succesfully`,
       }),
     onError: (err) =>
       toast.error(
-        `An Error occured when deleting the maintenance worker ${id}`,
+        `An error occured when deleting the maintenance worker ${id}`,
         {
           description: err.message,
         },
@@ -98,11 +98,11 @@ export const batchDeleteMaintenanceWorkerMutation = (selected: string[]) =>
       return await batch.send({ requestKey: null });
     },
     onSuccess: () =>
-      toast.success(`Deleted successfully`, {
-        description: `Maintenance workers ${selected.join(', ')} have been deleted successfully`,
+      toast.success(`Deleted Successfully`, {
+        description: `Maintenance Workers ${selected.join(', ')} have been deleted successfully`,
       }),
     onError: (err) =>
       toast.error(`An error occurred when deleting the maintenance workers`, {
-        description: `Maintenance workers: ${selected.join(', ')}\n${err.message}`,
+        description: `Maintenance Workers: ${selected.join(', ')}\n${err.message}`,
       }),
   });

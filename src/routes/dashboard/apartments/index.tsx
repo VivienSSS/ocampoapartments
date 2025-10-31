@@ -48,6 +48,7 @@ function RouteComponent() {
             <Edit /> Edit
           </Button>
           <Button
+            className="hidden"
             variant="destructive"
             disabled={!(searchQuery.id ?? searchQuery.selected)}
             onClick={() =>

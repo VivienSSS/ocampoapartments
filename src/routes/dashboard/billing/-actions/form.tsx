@@ -12,7 +12,7 @@ import {
 } from '@/pocketbase/types';
 import type { TenanciesResponse } from '@/pocketbase/queries/tenancies';
 import { AsyncSelect } from '@/components/ui/async-select';
-import { BadgePlus } from 'lucide-react';
+import { BadgePlus, Trash } from 'lucide-react';
 
 export const CreateBillingForm = withForm({
   defaultValues: {
@@ -94,9 +94,10 @@ export const CreateBillingForm = withForm({
               </Button>
               {field.state.value?.map((item, index) => (
                 <CreateBillingItemForm
-                  key={`${item.description}-${item.amount}`}
+                  key={`${item.description}-${item.amount}-${index}`}
                   form={form}
                   fields={`items[${index}]`}
+                  onDelete={() => field.removeValue(index)}
                 />
               ))}
             </>
@@ -110,9 +111,17 @@ export const CreateBillingForm = withForm({
 
 export const CreateBillingItemForm = withFieldGroup({
   defaultValues: {} as z.infer<typeof insertBillItemsSchema>,
-  render: ({ group }) => {
+  props: { onDelete: () => { } },
+  render: ({ group, onDelete }) => {
     return (
       <Card className="col-span-full">
+        <CardHeader>
+          <CardAction onClick={onDelete}>
+            <Button variant={'outline'} size={'icon'}>
+              <Trash />
+            </Button>
+          </CardAction>
+        </CardHeader>
         <CardContent className="grid grid-cols-1 gap-5">
           <group.AppField name="chargeType">
             {(field) => (
