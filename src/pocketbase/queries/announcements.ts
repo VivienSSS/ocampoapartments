@@ -11,6 +11,7 @@ import {
   type AnnouncementsResponse as AnnouncementsClientResponse,
   Collections,
   type UsersRecord,
+  type RecentAnnouncementsChartViewResponse,
 } from '../types';
 
 export type AnnouncementsResponse = AnnouncementsClientResponse<{
@@ -117,4 +118,16 @@ export const batchDeleteAnnouncementMutation = (selected: string[]) =>
       toast.error(`An error occurred when deleting the announcements`, {
         description: `Announcements: ${selected.join(', ')}\n${err.message}`,
       }),
+  });
+
+// ChartView Queries
+export const recentAnnouncementsChartViewQuery = () =>
+  queryOptions({
+    queryKey: [Collections.RecentAnnouncementsChartView],
+    queryFn: () =>
+      pb
+        .collection<RecentAnnouncementsChartViewResponse>(
+          Collections.RecentAnnouncementsChartView
+        )
+        .getFullList({ requestKey: null }),
   });

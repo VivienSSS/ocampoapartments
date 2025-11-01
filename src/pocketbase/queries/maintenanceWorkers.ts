@@ -7,7 +7,11 @@ import type {
   insertMaintenanceWorkerSchema,
   updateMaintenanceWorkerSchema,
 } from '../schemas/maintenanceWorkers';
-import { Collections, type MaintenanceWorkersResponse } from '../types';
+import {
+  Collections,
+  type MaintenanceWorkersResponse,
+  type WorkerPerformanceChartViewResponse,
+} from '../types';
 
 export const listMaintenanceWorkersQuery = (page: number, perPage: number) =>
   queryOptions({
@@ -106,3 +110,16 @@ export const batchDeleteMaintenanceWorkerMutation = (selected: string[]) =>
         description: `Maintenance Workers: ${selected.join(', ')}\n${err.message}`,
       }),
   });
+
+// ChartView Queries
+export const workerPerformanceChartViewQuery = () =>
+  queryOptions({
+    queryKey: [Collections.WorkerPerformanceChartView],
+    queryFn: () =>
+      pb
+        .collection<WorkerPerformanceChartViewResponse>(
+          Collections.WorkerPerformanceChartView
+        )
+        .getFullList({ requestKey: null }),
+  });
+

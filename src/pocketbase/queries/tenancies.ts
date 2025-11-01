@@ -10,6 +10,8 @@ import type {
 import {
   Collections,
   type TenanciesResponse as TenanciesClientResponse,
+  type ActiveTenanciesChartViewResponse,
+  type TenancyHealthChartViewResponse,
 } from '../types';
 import type { ApartmentUnitsResponse } from './apartmentUnits';
 import type { TenantsResponse } from './tenants';
@@ -154,3 +156,27 @@ export const batchDeleteTenancyMutation = (selected: string[]) =>
         description: `Tenancies: ${selected.join(', ')}\n${err.message}`,
       }),
   });
+
+// ChartView Queries
+export const activeTenanciesChartViewQuery = () =>
+  queryOptions({
+    queryKey: [Collections.ActiveTenanciesChartView],
+    queryFn: () =>
+      pb
+        .collection<ActiveTenanciesChartViewResponse>(
+          Collections.ActiveTenanciesChartView
+        )
+        .getFullList({ requestKey: null }),
+  });
+
+export const tenancyHealthChartViewQuery = () =>
+  queryOptions({
+    queryKey: [Collections.TenancyHealthChartView],
+    queryFn: () =>
+      pb
+        .collection<TenancyHealthChartViewResponse>(
+          Collections.TenancyHealthChartView
+        )
+        .getFullList({ requestKey: null }),
+  });
+

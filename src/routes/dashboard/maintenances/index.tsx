@@ -13,6 +13,7 @@ import { columns } from './-table';
 import { ChevronLeft, ChevronRight, Plus, Edit, Trash } from 'lucide-react';
 import { pb } from '@/pocketbase';
 import { UsersRoleOptions } from '@/pocketbase/types';
+import { MaintenanceOperationStats, MaintenanceOverviewChart, WorkerPerformanceChart } from '@/components/ui/charts';
 
 export const Route = createFileRoute('/dashboard/maintenances/')({
   component: RouteComponent,
@@ -30,8 +31,22 @@ function RouteComponent() {
   const searchQuery = Route.useSearch();
   const maintenanceRequests = Route.useLoaderData();
   return (
-    <article>
-      <section className="flex items-center justify-between py-2.5">
+    <article className="space-y-4 grid grid-cols-12">
+      {/* Analytics Section */}
+      <section className="space-y-4 col-span-full grid grid-cols-12">
+        <h2 className="col-span-full scroll-m-20 border-b pb-2 text-2xl font-semibold tracking-tight">
+          Maintenance Analytics
+        </h2>
+        <div className="col-span-full grid grid-cols-1 gap-4 lg:grid-cols-4">
+          <MaintenanceOperationStats />
+        </div>
+        <div className="col-span-full">
+          <MaintenanceOverviewChart />
+        </div>
+      </section>
+
+      {/* Controls Section */}
+      <section className="col-span-full flex items-center justify-between py-2.5">
         <h1 className="text-2xl font-bold">Maintenance Requests</h1>
         <div className='flex gap-2.5'>
           <Button
@@ -70,11 +85,12 @@ function RouteComponent() {
           </Button>
         </div>
       </section>
-      <section>
+      {/* DataTable Section */}
+      <section className='col-span-full'>
         <DataTable columns={columns} data={maintenanceRequests} />
       </section>
       {pb.authStore.record?.role !== UsersRoleOptions['Building Admin'] && (
-        <div className="flex justify-end py-2.5">
+        <div className="col-span-full flex justify-end py-2.5">
           <div className="flex gap-2">
             <Button className=''
               onClick={() =>

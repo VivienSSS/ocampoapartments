@@ -7,7 +7,16 @@ import type {
   insertPropertySchema,
   updatePropertySchema,
 } from '../schemas/properties';
-import { Collections, type PropertiesResponse } from '../types';
+import {
+  Collections,
+  type PropertiesResponse,
+  type PropertyHealthDashboardChartViewResponse,
+  type PropertySummaryChartViewResponse,
+  type RevenuePerPropertyChartViewResponse,
+  type UnitInventoryChartViewResponse,
+  type UnitPriceChartViewResponse,
+  type TenantsPerPropertyChartViewResponse,
+} from '../types';
 
 export const listPropertiesQuery = (page: number, perPage: number) =>
   queryOptions({
@@ -101,3 +110,71 @@ export const batchDeletePropertyMutation = (selected: string[]) =>
         description: `Properties: ${selected.join(', ')}\n${err.message}`,
       }),
   });
+
+// ChartView Queries
+export const propertyHealthDashboardChartViewQuery = () =>
+  queryOptions({
+    queryKey: [Collections.PropertyHealthDashboardChartView],
+    queryFn: () =>
+      pb
+        .collection<PropertyHealthDashboardChartViewResponse>(
+          Collections.PropertyHealthDashboardChartView
+        )
+        .getFullList({ requestKey: null }),
+  });
+
+export const propertySummaryChartViewQuery = () =>
+  queryOptions({
+    queryKey: [Collections.PropertySummaryChartView],
+    queryFn: () =>
+      pb
+        .collection<PropertySummaryChartViewResponse>(
+          Collections.PropertySummaryChartView
+        )
+        .getFullList({ requestKey: null }),
+  });
+
+export const revenuePerPropertyChartViewQuery = () =>
+  queryOptions({
+    queryKey: [Collections.RevenuePerPropertyChartView],
+    queryFn: () =>
+      pb
+        .collection<RevenuePerPropertyChartViewResponse>(
+          Collections.RevenuePerPropertyChartView
+        )
+        .getFullList({ requestKey: null }),
+  });
+
+export const unitInventoryChartViewQuery = () =>
+  queryOptions({
+    queryKey: [Collections.UnitInventoryChartView],
+    queryFn: () =>
+      pb
+        .collection<UnitInventoryChartViewResponse>(
+          Collections.UnitInventoryChartView
+        )
+        .getFullList({ requestKey: null }),
+  });
+
+export const unitPriceChartViewQuery = () =>
+  queryOptions({
+    queryKey: [Collections.UnitPriceChartView],
+    queryFn: () =>
+      pb
+        .collection<UnitPriceChartViewResponse>(
+          Collections.UnitPriceChartView
+        )
+        .getFullList({ requestKey: null }),
+  });
+
+export const tenantsPerPropertyChartViewQuery = () =>
+  queryOptions({
+    queryKey: [Collections.TenantsPerPropertyChartView],
+    queryFn: () =>
+      pb
+        .collection<TenantsPerPropertyChartViewResponse>(
+          Collections.TenantsPerPropertyChartView
+        )
+        .getFullList({ requestKey: null }),
+  });
+

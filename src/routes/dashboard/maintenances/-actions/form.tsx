@@ -63,10 +63,39 @@ export const CreateMaintenanceForm = withForm({
               </label>
               <AsyncSelect<ApartmentUnitsResponse>
                 className='w-full'
-                fetcher={async (query) => (await pb.collection(Collections.ApartmentUnits).getList<ApartmentUnitsResponse>(1, 10, { filter: query ? `unitLetter ~ '%${query}%' || floorNumber ~ '%${query}%' || property.branch ~ '%${query}%'` : '', expand: 'property', requestKey: null })).items}
+                fetcher={async (query) => {
+                  const units = (await pb.collection(Collections.ApartmentUnits).getList<ApartmentUnitsResponse>(1, 10, { filter: query ? `unitLetter ~ '%${query}%' || floorNumber ~ '%${query}%' || property.branch ~ '%${query}%'` : '', expand: 'property', requestKey: null })).items;
+
+                  // Fetch tenant info for each unit through tenancies
+                  for (const unit of units) {
+                    try {
+                      const tenancies = await pb.collection(Collections.Tenancies).getFullList<any>({
+                        filter: `unit = '${unit.id}'`,
+                        expand: 'tenant',
+                        requestKey: null
+                      });
+                      if (tenancies.length > 0 && (tenancies[0] as any).expand?.tenant) {
+                        (unit as any).tenantName = (tenancies[0] as any).expand.tenant.facebookName;
+                      }
+                    } catch {
+                      // If no tenancy found, continue without tenant name
+                    }
+                  }
+
+                  return units;
+                }}
                 getOptionValue={(option) => option.id}
                 getDisplayValue={(option) => `Unit ${option.unitLetter} - Floor ${option.floorNumber} - ${option.expand.property.branch}`}
-                renderOption={(option) => <div>{`Unit ${option.unitLetter} - Floor ${option.floorNumber} - ${option.expand.property.branch}`}</div>}
+                renderOption={(option) => (
+                  <div>
+                    <div>{`Unit ${option.unitLetter} - Floor ${option.floorNumber} - ${option.expand.property.branch}`}</div>
+                    {(option as any).tenantName && (
+                      <div className="text-sm text-muted-foreground">
+                        {(option as any).tenantName}
+                      </div>
+                    )}
+                  </div>
+                )}
                 value={field.state.value || ''}
                 onChange={field.handleChange}
                 label="Unit"

@@ -33,6 +33,11 @@ const showNav = () => {
     case UsersRoleOptions.Administrator:
       return [
         {
+          title: 'Dashboard',
+          url: '/dashboard',
+          icon: Command,
+        },
+        {
           title: 'Announcements',
           url: '/dashboard/announcements',
           icon: Megaphone,
@@ -146,6 +151,11 @@ const showNav = () => {
       ];
     case UsersRoleOptions.Tenant:
       return [
+        {
+          title: 'Overview',
+          url: '/dashboard/tenant-overview',
+          icon: Command,
+        },
         {
           title: 'Announcements',
           url: '/dashboard/announcements',

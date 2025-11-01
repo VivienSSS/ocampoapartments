@@ -11,6 +11,9 @@ import {
   type BillsRecord,
   Collections,
   type PaymentsResponse as PaymentsClientResponse,
+  type PorfolioStatCardKpiViewResponse,
+  type MonthlyRevenueTrendStatCardKpiViewResponse,
+  type PaymentMethodsDistributionChartViewResponse,
 } from '../types';
 import type { TenantsResponse } from './tenants';
 
@@ -90,3 +93,38 @@ export const deletePaymentMutation = (id: string) =>
         description: err.message,
       }),
   });
+
+// StatCard KPI & ChartView Queries
+export const porfolioStatCardKpiViewQuery = () =>
+  queryOptions({
+    queryKey: [Collections.PorfolioStatCardKpiView],
+    queryFn: () =>
+      pb
+        .collection<PorfolioStatCardKpiViewResponse>(
+          Collections.PorfolioStatCardKpiView
+        )
+        .getFullList({ requestKey: null }),
+  });
+
+export const monthlyRevenueTrendStatCardKpiViewQuery = () =>
+  queryOptions({
+    queryKey: [Collections.MonthlyRevenueTrendStatCardKpiView],
+    queryFn: () =>
+      pb
+        .collection<MonthlyRevenueTrendStatCardKpiViewResponse>(
+          Collections.MonthlyRevenueTrendStatCardKpiView
+        )
+        .getFullList({ requestKey: null }),
+  });
+
+export const paymentMethodsDistributionChartViewQuery = () =>
+  queryOptions({
+    queryKey: [Collections.PaymentMethodsDistributionChartView],
+    queryFn: () =>
+      pb
+        .collection<PaymentMethodsDistributionChartViewResponse>(
+          Collections.PaymentMethodsDistributionChartView
+        )
+        .getFullList({ requestKey: null }),
+  });
+

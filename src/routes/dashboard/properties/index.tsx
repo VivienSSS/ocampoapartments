@@ -11,6 +11,7 @@ import EditPropertyDialogForm from './-actions/update';
 import LoadingComponent from './-loading';
 import { columns } from './-table';
 import { ChevronLeft, ChevronRight, Plus, Edit } from 'lucide-react';
+import { PropertyHealthChart, RevenuePerPropertyChart, UnitInventoryChart } from '@/components/ui/charts';
 
 export const Route = createFileRoute('/dashboard/properties/')({
   component: RouteComponent,
@@ -29,7 +30,20 @@ function RouteComponent() {
   const properties = Route.useLoaderData();
 
   return (
-    <article>
+    <article className="space-y-4">
+      {/* Charts Section */}
+      <section className="space-y-4">
+        <h2 className="scroll-m-20 border-b pb-2 text-2xl font-semibold tracking-tight">
+          Property Analytics
+        </h2>
+        <div className="grid grid-cols-1 gap-4 lg:grid-cols-2">
+          <PropertyHealthChart />
+          <RevenuePerPropertyChart />
+        </div>
+        <UnitInventoryChart />
+      </section>
+
+      {/* Controls Section */}
       <section className="flex items-center justify-between py-2.5">
         <h1 className="text-2xl font-bold">Properties</h1>
         <div className='flex gap-2.5'>
@@ -85,6 +99,8 @@ function RouteComponent() {
           </Button>
         </div>
       </div>
+
+      {/* Forms Section */}
       <section>
         <CreatePropertyDialogForm />
         <DeletePropertyDialogForm />

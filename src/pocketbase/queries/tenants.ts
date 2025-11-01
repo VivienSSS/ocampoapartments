@@ -11,6 +11,8 @@ import {
   Collections,
   type TenantsResponse as TenantsClientResponse,
   type UsersRecord,
+  type TenantFinancialOverviewChartViewResponse,
+  type OutstandingReceivablesChartViewResponse,
 } from '../types';
 
 export type TenantsResponse = TenantsClientResponse<{ user: UsersRecord }>;
@@ -133,3 +135,27 @@ export const batchDeleteTenantMutation = (selected: string[]) =>
         description: `Tenants: ${selected.join(', ')}\n${err.message}`,
       }),
   });
+
+// ChartView Queries
+export const tenantFinancialOverviewChartViewQuery = () =>
+  queryOptions({
+    queryKey: [Collections.TenantFinancialOverviewChartView],
+    queryFn: () =>
+      pb
+        .collection<TenantFinancialOverviewChartViewResponse>(
+          Collections.TenantFinancialOverviewChartView
+        )
+        .getFullList({ requestKey: null }),
+  });
+
+export const outstandingReceivablesChartViewQuery = () =>
+  queryOptions({
+    queryKey: [Collections.OutstandingReceivablesChartView],
+    queryFn: () =>
+      pb
+        .collection<OutstandingReceivablesChartViewResponse>(
+          Collections.OutstandingReceivablesChartView
+        )
+        .getFullList({ requestKey: null }),
+  });
+

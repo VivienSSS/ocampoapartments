@@ -9,6 +9,7 @@ import LoadingComponent from './-loading';
 import { columns } from './-table';
 import { Button } from '@/components/ui/button';
 import { ChevronLeft, ChevronRight, Plus } from 'lucide-react';
+import { PaymentMethodsDistributionChart } from '@/components/ui/charts';
 
 export const Route = createFileRoute('/dashboard/payments/')({
   component: RouteComponent,
@@ -26,7 +27,16 @@ function RouteComponent() {
   const searchQuery = Route.useSearch();
   const payments = Route.useLoaderData();
   return (
-    <article>
+    <article className="space-y-4">
+      {/* Charts Section */}
+      <section className="space-y-4">
+        <h2 className="scroll-m-20 border-b pb-2 text-2xl font-semibold tracking-tight">
+          Payment Analytics
+        </h2>
+        <PaymentMethodsDistributionChart />
+      </section>
+
+      {/* Controls Section */}
       <section className="flex items-center justify-between py-2.5">
         <h1 className="text-2xl font-bold">Payments</h1>
         <div className='flex gap-2.5'>
@@ -66,6 +76,8 @@ function RouteComponent() {
           </Button>
         </div>
       </div>
+
+      {/* Forms Section */}
       <section>
         <CreatePaymentDialogForm />
       </section>

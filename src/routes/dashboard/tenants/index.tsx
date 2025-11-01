@@ -14,6 +14,7 @@ import { TenantProfile } from './-profile';
 import { pb } from '@/pocketbase';
 import { UsersRoleOptions } from '@/pocketbase/types';
 import { ChevronLeft, ChevronRight, Plus, Edit, Trash } from 'lucide-react';
+import { ActiveTenanciesChart, OutstandingReceivablesChart } from '@/components/ui/charts';
 
 export const Route = createFileRoute('/dashboard/tenants/')({
   component: RouteComponent,
@@ -84,7 +85,19 @@ function RouteComponent() {
   }
 
   return (
-    <article>
+    <article className="space-y-4">
+      {/* Charts Section */}
+      <section className="space-y-4">
+        <h2 className="scroll-m-20 border-b pb-2 text-2xl font-semibold tracking-tight">
+          Tenant Analytics
+        </h2>
+        <div className="grid grid-cols-1 gap-4 lg:grid-cols-2">
+          <ActiveTenanciesChart />
+          <OutstandingReceivablesChart />
+        </div>
+      </section>
+
+      {/* Controls Section */}
       <section className="flex items-center justify-between py-2.5">
         <h1 className="text-2xl font-bold">Tenants</h1>
         <div className='flex gap-2.5'>
@@ -153,6 +166,8 @@ function RouteComponent() {
           </Button>
         </div>
       </div>
+
+      {/* Forms Section */}
       <section>
         <CreateTenantDialogForm />
         <DeleteTenantDialogForm />

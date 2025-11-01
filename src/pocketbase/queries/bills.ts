@@ -6,6 +6,9 @@ import { pb } from '..';
 import type { insertBillSchema, updateBillSchema } from '../schemas/bills';
 import {
   type BillsResponse as BillsClientResponse,
+  type BillsByStatusChartViewResponse,
+  type BillItemAnalysisStatCardKpiViewResponse,
+  type FinancialStatCardKpiViewResponse,
   Collections,
 } from '../types';
 import type { TenanciesResponse } from './tenancies';
@@ -128,4 +131,38 @@ export const batchDeleteBillMutation = (selected: string[]) =>
       toast.error(`An error occurred when deleting the bills`, {
         description: `Bills: ${selected.join(', ')}\n${err.message}`,
       }),
+  });
+
+// StatCard KPI Queries
+export const billsByStatusChartViewQuery = () =>
+  queryOptions({
+    queryKey: [Collections.BillsByStatusChartView],
+    queryFn: () =>
+      pb
+        .collection<BillsByStatusChartViewResponse>(
+          Collections.BillsByStatusChartView
+        )
+        .getFullList({ requestKey: null }),
+  });
+
+export const billItemAnalysisStatCardKpiViewQuery = () =>
+  queryOptions({
+    queryKey: [Collections.BillItemAnalysisStatCardKpiView],
+    queryFn: () =>
+      pb
+        .collection<BillItemAnalysisStatCardKpiViewResponse>(
+          Collections.BillItemAnalysisStatCardKpiView
+        )
+        .getFullList({ requestKey: null }),
+  });
+
+export const financialStatCardKpiViewQuery = () =>
+  queryOptions({
+    queryKey: [Collections.FinancialStatCardKpiView],
+    queryFn: () =>
+      pb
+        .collection<FinancialStatCardKpiViewResponse>(
+          Collections.FinancialStatCardKpiView
+        )
+        .getFullList({ requestKey: null }),
   });

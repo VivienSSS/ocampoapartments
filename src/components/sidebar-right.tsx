@@ -1,8 +1,8 @@
 import { Bell, BellPlus } from 'lucide-react';
-import type * as React from 'react';
+import React from 'react';
 
-import { Calendars } from '@/components/calendars';
-import { DatePicker } from '@/components/date-picker';
+import { DatePicker, type DateDetails } from '@/components/date-picker';
+import { DateDetails as DateDetailsComponent } from '@/components/date-details';
 import { NavUser } from '@/components/nav-user';
 import {
   Sidebar,
@@ -21,8 +21,6 @@ import {
   ItemActions,
   ItemContent,
   ItemDescription,
-  ItemFooter,
-  ItemHeader,
   ItemMedia,
   ItemTitle,
 } from "@/components/ui/item"
@@ -59,18 +57,27 @@ const data = {
 export function SidebarRight({
   ...props
 }: React.ComponentProps<typeof Sidebar>) {
+  const [selectedDate, setSelectedDate] = React.useState<Date | undefined>();
+  const [dateDetails, setDateDetails] = React.useState<DateDetails>({ leaseEndDates: [], dueDates: [] });
+
+  const handleDateSelected = (date: Date | undefined, details: DateDetails) => {
+    setSelectedDate(date);
+    setDateDetails(details);
+  };
+
   return (
     <Sidebar
       collapsible="none"
-      className="sticky top-0 hidden h-svh border-1 lg:flex"
+      className="sticky top-0 hidden h-svh border-1 lg:flex w-[20%]"
       {...props}
     >
       <SidebarHeader className="border-sidebar-border h-16 border-b">
         <NavUser user={data.user} />
       </SidebarHeader>
       <SidebarContent>
-        <DatePicker />
+        <DatePicker onDateSelected={handleDateSelected} />
         <SidebarSeparator className="mx-0" />
+        <DateDetailsComponent dateDetails={dateDetails} selectedDate={selectedDate} />
         {/* <Calendars calendars={data.calendars} /> */}
       </SidebarContent>
       <SidebarFooter>

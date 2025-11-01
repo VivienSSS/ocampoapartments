@@ -11,7 +11,9 @@
 import { Route as rootRouteImport } from './routes/__root'
 import { Route as DashboardRouteRouteImport } from './routes/dashboard/route'
 import { Route as IndexRouteImport } from './routes/index'
+import { Route as DashboardIndexRouteImport } from './routes/dashboard/index'
 import { Route as DashboardTenantsIndexRouteImport } from './routes/dashboard/tenants/index'
+import { Route as DashboardTenantOverviewIndexRouteImport } from './routes/dashboard/tenant-overview/index'
 import { Route as DashboardTenanciesIndexRouteImport } from './routes/dashboard/tenancies/index'
 import { Route as DashboardPropertiesIndexRouteImport } from './routes/dashboard/properties/index'
 import { Route as DashboardPaymentsIndexRouteImport } from './routes/dashboard/payments/index'
@@ -31,11 +33,22 @@ const IndexRoute = IndexRouteImport.update({
   path: '/',
   getParentRoute: () => rootRouteImport,
 } as any)
+const DashboardIndexRoute = DashboardIndexRouteImport.update({
+  id: '/',
+  path: '/',
+  getParentRoute: () => DashboardRouteRoute,
+} as any)
 const DashboardTenantsIndexRoute = DashboardTenantsIndexRouteImport.update({
   id: '/tenants/',
   path: '/tenants/',
   getParentRoute: () => DashboardRouteRoute,
 } as any)
+const DashboardTenantOverviewIndexRoute =
+  DashboardTenantOverviewIndexRouteImport.update({
+    id: '/tenant-overview/',
+    path: '/tenant-overview/',
+    getParentRoute: () => DashboardRouteRoute,
+  } as any)
 const DashboardTenanciesIndexRoute = DashboardTenanciesIndexRouteImport.update({
   id: '/tenancies/',
   path: '/tenancies/',
@@ -85,6 +98,7 @@ const DashboardAnnouncementsIndexRoute =
 export interface FileRoutesByFullPath {
   '/': typeof IndexRoute
   '/dashboard': typeof DashboardRouteRouteWithChildren
+  '/dashboard/': typeof DashboardIndexRoute
   '/dashboard/announcements': typeof DashboardAnnouncementsIndexRoute
   '/dashboard/apartments': typeof DashboardApartmentsIndexRoute
   '/dashboard/billing': typeof DashboardBillingIndexRoute
@@ -93,11 +107,12 @@ export interface FileRoutesByFullPath {
   '/dashboard/payments': typeof DashboardPaymentsIndexRoute
   '/dashboard/properties': typeof DashboardPropertiesIndexRoute
   '/dashboard/tenancies': typeof DashboardTenanciesIndexRoute
+  '/dashboard/tenant-overview': typeof DashboardTenantOverviewIndexRoute
   '/dashboard/tenants': typeof DashboardTenantsIndexRoute
 }
 export interface FileRoutesByTo {
   '/': typeof IndexRoute
-  '/dashboard': typeof DashboardRouteRouteWithChildren
+  '/dashboard': typeof DashboardIndexRoute
   '/dashboard/announcements': typeof DashboardAnnouncementsIndexRoute
   '/dashboard/apartments': typeof DashboardApartmentsIndexRoute
   '/dashboard/billing': typeof DashboardBillingIndexRoute
@@ -106,12 +121,14 @@ export interface FileRoutesByTo {
   '/dashboard/payments': typeof DashboardPaymentsIndexRoute
   '/dashboard/properties': typeof DashboardPropertiesIndexRoute
   '/dashboard/tenancies': typeof DashboardTenanciesIndexRoute
+  '/dashboard/tenant-overview': typeof DashboardTenantOverviewIndexRoute
   '/dashboard/tenants': typeof DashboardTenantsIndexRoute
 }
 export interface FileRoutesById {
   __root__: typeof rootRouteImport
   '/': typeof IndexRoute
   '/dashboard': typeof DashboardRouteRouteWithChildren
+  '/dashboard/': typeof DashboardIndexRoute
   '/dashboard/announcements/': typeof DashboardAnnouncementsIndexRoute
   '/dashboard/apartments/': typeof DashboardApartmentsIndexRoute
   '/dashboard/billing/': typeof DashboardBillingIndexRoute
@@ -120,6 +137,7 @@ export interface FileRoutesById {
   '/dashboard/payments/': typeof DashboardPaymentsIndexRoute
   '/dashboard/properties/': typeof DashboardPropertiesIndexRoute
   '/dashboard/tenancies/': typeof DashboardTenanciesIndexRoute
+  '/dashboard/tenant-overview/': typeof DashboardTenantOverviewIndexRoute
   '/dashboard/tenants/': typeof DashboardTenantsIndexRoute
 }
 export interface FileRouteTypes {
@@ -127,6 +145,7 @@ export interface FileRouteTypes {
   fullPaths:
     | '/'
     | '/dashboard'
+    | '/dashboard/'
     | '/dashboard/announcements'
     | '/dashboard/apartments'
     | '/dashboard/billing'
@@ -135,6 +154,7 @@ export interface FileRouteTypes {
     | '/dashboard/payments'
     | '/dashboard/properties'
     | '/dashboard/tenancies'
+    | '/dashboard/tenant-overview'
     | '/dashboard/tenants'
   fileRoutesByTo: FileRoutesByTo
   to:
@@ -148,11 +168,13 @@ export interface FileRouteTypes {
     | '/dashboard/payments'
     | '/dashboard/properties'
     | '/dashboard/tenancies'
+    | '/dashboard/tenant-overview'
     | '/dashboard/tenants'
   id:
     | '__root__'
     | '/'
     | '/dashboard'
+    | '/dashboard/'
     | '/dashboard/announcements/'
     | '/dashboard/apartments/'
     | '/dashboard/billing/'
@@ -161,6 +183,7 @@ export interface FileRouteTypes {
     | '/dashboard/payments/'
     | '/dashboard/properties/'
     | '/dashboard/tenancies/'
+    | '/dashboard/tenant-overview/'
     | '/dashboard/tenants/'
   fileRoutesById: FileRoutesById
 }
@@ -185,11 +208,25 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof IndexRouteImport
       parentRoute: typeof rootRouteImport
     }
+    '/dashboard/': {
+      id: '/dashboard/'
+      path: '/'
+      fullPath: '/dashboard/'
+      preLoaderRoute: typeof DashboardIndexRouteImport
+      parentRoute: typeof DashboardRouteRoute
+    }
     '/dashboard/tenants/': {
       id: '/dashboard/tenants/'
       path: '/tenants'
       fullPath: '/dashboard/tenants'
       preLoaderRoute: typeof DashboardTenantsIndexRouteImport
+      parentRoute: typeof DashboardRouteRoute
+    }
+    '/dashboard/tenant-overview/': {
+      id: '/dashboard/tenant-overview/'
+      path: '/tenant-overview'
+      fullPath: '/dashboard/tenant-overview'
+      preLoaderRoute: typeof DashboardTenantOverviewIndexRouteImport
       parentRoute: typeof DashboardRouteRoute
     }
     '/dashboard/tenancies/': {
@@ -252,6 +289,7 @@ declare module '@tanstack/react-router' {
 }
 
 interface DashboardRouteRouteChildren {
+  DashboardIndexRoute: typeof DashboardIndexRoute
   DashboardAnnouncementsIndexRoute: typeof DashboardAnnouncementsIndexRoute
   DashboardApartmentsIndexRoute: typeof DashboardApartmentsIndexRoute
   DashboardBillingIndexRoute: typeof DashboardBillingIndexRoute
@@ -260,10 +298,12 @@ interface DashboardRouteRouteChildren {
   DashboardPaymentsIndexRoute: typeof DashboardPaymentsIndexRoute
   DashboardPropertiesIndexRoute: typeof DashboardPropertiesIndexRoute
   DashboardTenanciesIndexRoute: typeof DashboardTenanciesIndexRoute
+  DashboardTenantOverviewIndexRoute: typeof DashboardTenantOverviewIndexRoute
   DashboardTenantsIndexRoute: typeof DashboardTenantsIndexRoute
 }
 
 const DashboardRouteRouteChildren: DashboardRouteRouteChildren = {
+  DashboardIndexRoute: DashboardIndexRoute,
   DashboardAnnouncementsIndexRoute: DashboardAnnouncementsIndexRoute,
   DashboardApartmentsIndexRoute: DashboardApartmentsIndexRoute,
   DashboardBillingIndexRoute: DashboardBillingIndexRoute,
@@ -272,6 +312,7 @@ const DashboardRouteRouteChildren: DashboardRouteRouteChildren = {
   DashboardPaymentsIndexRoute: DashboardPaymentsIndexRoute,
   DashboardPropertiesIndexRoute: DashboardPropertiesIndexRoute,
   DashboardTenanciesIndexRoute: DashboardTenanciesIndexRoute,
+  DashboardTenantOverviewIndexRoute: DashboardTenantOverviewIndexRoute,
   DashboardTenantsIndexRoute: DashboardTenantsIndexRoute,
 }
 

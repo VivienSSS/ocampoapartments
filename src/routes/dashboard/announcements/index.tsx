@@ -1,6 +1,5 @@
 import { createFileRoute } from '@tanstack/react-router';
 import { zodValidator } from '@tanstack/zod-adapter';
-import z from 'zod';
 import { Button } from '@/components/ui/button';
 import DataTable from '@/components/ui/kibo-ui/table/data-table';
 import { searchParams } from '@/lib/utils';
@@ -12,6 +11,7 @@ import EditAnnouncementDialogForm from './-actions/update';
 import LoadingComponent from './-loading';
 import { columns } from './-table';
 import { ChevronLeft, ChevronRight, Plus, Edit, Trash } from 'lucide-react';
+import { RecentAnnouncementsChart } from '@/components/ui/charts';
 
 export const Route = createFileRoute('/dashboard/announcements/')({
   component: RouteComponent,
@@ -29,7 +29,15 @@ function RouteComponent() {
   const searchQuery = Route.useSearch();
   const announcements = Route.useLoaderData();
   return (
-    <article>
+    <article className="space-y-4">
+      {/* Analytics Section */}
+      <section className="space-y-4">
+        <div className="grid grid-cols-1 gap-4">
+          <RecentAnnouncementsChart />
+        </div>
+      </section>
+
+      {/* Controls Section */}
       <section className="flex items-center justify-between py-2.5">
         <h1 className="text-2xl font-bold">Announcements</h1>
         <div className='flex gap-2.5'>
@@ -69,6 +77,7 @@ function RouteComponent() {
           </Button>
         </div>
       </section>
+      {/* DataTable Section */}
       <section>
         <DataTable columns={columns} data={announcements} />
       </section>

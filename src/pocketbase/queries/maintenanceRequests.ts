@@ -11,6 +11,10 @@ import {
   Collections,
   type MaintenanceRequestsResponse as MaintenanceRequestsClientResponse,
   type MaintenanceWorkersRecord,
+  type MaintenanceOperationStatCardKpiViewResponse,
+  type MaintenanceRequestOverviewStatCardKpiViewResponse,
+  type MaintenanceRequestStatusStatCardKpiViewResponse,
+  type HighPriorityUnresolvedRequestsStatCardKpiViewResponse,
 } from '../types';
 import type { ApartmentUnitsResponse } from './apartmentUnits';
 import type { TenantsResponse } from './tenants';
@@ -135,3 +139,49 @@ export const batchDeleteMaintenanceRequestMutation = (selected: string[]) =>
         description: `Maintenance Requests: ${selected.join(', ')}\n${err.message}`,
       }),
   });
+
+// StatCard KPI Queries
+export const maintenanceOperationStatCardKpiViewQuery = () =>
+  queryOptions({
+    queryKey: [Collections.MaintenanceOperationStatCardKpiView],
+    queryFn: () =>
+      pb
+        .collection<MaintenanceOperationStatCardKpiViewResponse>(
+          Collections.MaintenanceOperationStatCardKpiView
+        )
+        .getFullList({ requestKey: null }),
+  });
+
+export const maintenanceRequestOverviewStatCardKpiViewQuery = () =>
+  queryOptions({
+    queryKey: [Collections.MaintenanceRequestOverviewStatCardKpiView],
+    queryFn: () =>
+      pb
+        .collection<MaintenanceRequestOverviewStatCardKpiViewResponse>(
+          Collections.MaintenanceRequestOverviewStatCardKpiView
+        )
+        .getFullList({ requestKey: null }),
+  });
+
+export const maintenanceRequestStatusStatCardKpiViewQuery = () =>
+  queryOptions({
+    queryKey: [Collections.MaintenanceRequestStatusStatCardKpiView],
+    queryFn: () =>
+      pb
+        .collection<MaintenanceRequestStatusStatCardKpiViewResponse>(
+          Collections.MaintenanceRequestStatusStatCardKpiView
+        )
+        .getFullList({ requestKey: null }),
+  });
+
+export const highPriorityUnresolvedRequestsStatCardKpiViewQuery = () =>
+  queryOptions({
+    queryKey: [Collections.HighPriorityUnresolvedRequestsStatCardKpiView],
+    queryFn: () =>
+      pb
+        .collection<HighPriorityUnresolvedRequestsStatCardKpiViewResponse>(
+          Collections.HighPriorityUnresolvedRequestsStatCardKpiView
+        )
+        .getFullList({ requestKey: null }),
+  });
+
