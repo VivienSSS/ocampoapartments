@@ -2,6 +2,12 @@ import { createFileRoute } from '@tanstack/react-router';
 import { zodValidator } from '@tanstack/zod-adapter';
 import { Button } from '@/components/ui/button';
 import DataTable from '@/components/ui/kibo-ui/table/data-table';
+import {
+  DropdownMenu,
+  DropdownMenuContent,
+  DropdownMenuItem,
+  DropdownMenuTrigger,
+} from '@/components/ui/dropdown-menu';
 import { searchParams } from '@/lib/utils';
 import { listAnnouncementsQuery } from '@/pocketbase/queries/announcements';
 import { announcementSchema } from '@/pocketbase/schemas/announcements';
@@ -10,7 +16,7 @@ import DeleteAnnouncementDialogForm from './-actions/delete';
 import EditAnnouncementDialogForm from './-actions/update';
 import LoadingComponent from './-loading';
 import { columns } from './-table';
-import { ChevronLeft, ChevronRight, Plus, Edit, Trash } from 'lucide-react';
+import { ChevronLeft, ChevronRight, Plus, Edit, Trash, ArrowUpDown } from 'lucide-react';
 import { RecentAnnouncementsChart } from '@/components/ui/charts';
 
 export const Route = createFileRoute('/dashboard/announcements/')({
@@ -18,10 +24,14 @@ export const Route = createFileRoute('/dashboard/announcements/')({
   pendingComponent: LoadingComponent,
   validateSearch: zodValidator(searchParams(announcementSchema.keyof())),
   beforeLoad: ({ search }) => ({ search }),
-  loader: ({ context }) =>
-    context.queryClient.fetchQuery(
-      listAnnouncementsQuery(context.search.page, context.search.perPage),
-    ),
+  loader: ({ context }) => {
+    const sortString = context.search.sort
+      ? context.search.sort.map((s) => `${s.order === '-' ? '-' : ''}${s.field}`).join(',')
+      : undefined;
+    return context.queryClient.fetchQuery(
+      listAnnouncementsQuery(context.search.page, context.search.perPage, sortString),
+    );
+  },
 });
 
 function RouteComponent() {
@@ -30,13 +40,6 @@ function RouteComponent() {
   const announcements = Route.useLoaderData();
   return (
     <article className="space-y-4">
-      {/* Analytics Section */}
-      <section className="space-y-4">
-        <div className="grid grid-cols-1 gap-4">
-          <RecentAnnouncementsChart />
-        </div>
-      </section>
-
       {/* Controls Section */}
       <section className="flex items-center justify-between py-2.5">
         <h1 className="text-2xl font-bold">Announcements</h1>
@@ -75,6 +78,27 @@ function RouteComponent() {
           <Button disabled={searchQuery.page >= announcements.totalPages} onClick={() => navigate({ search: (prev) => ({ ...prev, page: searchQuery.page + 1 }) })}>
             <ChevronRight />
           </Button>
+          <DropdownMenu>
+            <DropdownMenuTrigger asChild>
+              <Button>
+                <ArrowUpDown /> Sort
+              </Button>
+            </DropdownMenuTrigger>
+            <DropdownMenuContent>
+              <DropdownMenuItem onClick={() => navigate({ search: (prev) => ({ ...prev, sort: [{ field: 'title', order: '+' }] }) })}>
+                Title (A to Z)
+              </DropdownMenuItem>
+              <DropdownMenuItem onClick={() => navigate({ search: (prev) => ({ ...prev, sort: [{ field: 'title', order: '-' }] }) })}>
+                Title (Z to A)
+              </DropdownMenuItem>
+              <DropdownMenuItem onClick={() => navigate({ search: (prev) => ({ ...prev, sort: [{ field: 'created', order: '-' }] }) })}>
+                Newest to Oldest
+              </DropdownMenuItem>
+              <DropdownMenuItem onClick={() => navigate({ search: (prev) => ({ ...prev, sort: [{ field: 'created', order: '+' }] }) })}>
+                Oldest to Newest
+              </DropdownMenuItem>
+            </DropdownMenuContent>
+          </DropdownMenu>
         </div>
       </section>
       {/* DataTable Section */}

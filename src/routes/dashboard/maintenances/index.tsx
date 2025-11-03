@@ -32,19 +32,6 @@ function RouteComponent() {
   const maintenanceRequests = Route.useLoaderData();
   return (
     <article className="space-y-4 grid grid-cols-12">
-      {/* Analytics Section */}
-      <section className="space-y-4 col-span-full grid grid-cols-12">
-        <h2 className="col-span-full scroll-m-20 border-b pb-2 text-2xl font-semibold tracking-tight">
-          Maintenance Analytics
-        </h2>
-        <div className="col-span-full grid grid-cols-1 gap-4 lg:grid-cols-4">
-          <MaintenanceOperationStats />
-        </div>
-        <div className="col-span-full">
-          <MaintenanceOverviewChart />
-        </div>
-      </section>
-
       {/* Controls Section */}
       <section className="col-span-full flex items-center justify-between py-2.5">
         <h1 className="text-2xl font-bold">Maintenance Requests</h1>

@@ -2,6 +2,12 @@ import { createFileRoute } from '@tanstack/react-router';
 import { zodValidator } from '@tanstack/zod-adapter';
 import { Button } from '@/components/ui/button';
 import DataTable from '@/components/ui/kibo-ui/table/data-table';
+import {
+  DropdownMenu,
+  DropdownMenuContent,
+  DropdownMenuItem,
+  DropdownMenuTrigger,
+} from '@/components/ui/dropdown-menu';
 import { searchParams } from '@/lib/utils';
 import { listApartmentUnitsQuery } from '@/pocketbase/queries/apartmentUnits';
 import { apartmentUnitSchema } from '@/pocketbase/schemas/apartmentUnits';
@@ -10,17 +16,21 @@ import DeleteApartmentDialogForm from './-actions/delete';
 import EditApartmentDialogForm from './-actions/update';
 import LoadingComponent from './-loading';
 import { columns } from './-table';
-import { ChevronLeft, ChevronRight, Plus, Edit, Trash } from 'lucide-react';
+import { ChevronLeft, ChevronRight, Plus, Edit, Trash, ArrowUpDown } from 'lucide-react';
 
 export const Route = createFileRoute('/dashboard/apartments/')({
   component: RouteComponent,
   pendingComponent: LoadingComponent,
   validateSearch: zodValidator(searchParams(apartmentUnitSchema.keyof())),
   beforeLoad: ({ search }) => ({ search }),
-  loader: ({ context }) =>
-    context.queryClient.fetchQuery(
-      listApartmentUnitsQuery(context.search.page, context.search.perPage),
-    ),
+  loader: ({ context }) => {
+    const sortString = context.search.sort
+      ? context.search.sort.map((s) => `${s.order === '-' ? '-' : ''}${s.field}`).join(',')
+      : undefined;
+    return context.queryClient.fetchQuery(
+      listApartmentUnitsQuery(context.search.page, context.search.perPage, sortString),
+    );
+  },
 });
 
 function RouteComponent() {
@@ -82,6 +92,27 @@ function RouteComponent() {
           >
             <ChevronRight />
           </Button>
+          <DropdownMenu>
+            <DropdownMenuTrigger asChild>
+              <Button>
+                <ArrowUpDown /> Sort
+              </Button>
+            </DropdownMenuTrigger>
+            <DropdownMenuContent>
+              <DropdownMenuItem onClick={() => navigate({ search: (prev) => ({ ...prev, sort: [{ field: 'unitLetter', order: '+' }] }) })}>
+                Unit Letter (A to Z)
+              </DropdownMenuItem>
+              <DropdownMenuItem onClick={() => navigate({ search: (prev) => ({ ...prev, sort: [{ field: 'unitLetter', order: '-' }] }) })}>
+                Unit Letter (Z to A)
+              </DropdownMenuItem>
+              <DropdownMenuItem onClick={() => navigate({ search: (prev) => ({ ...prev, sort: [{ field: 'created', order: '-' }] }) })}>
+                Newest to Oldest
+              </DropdownMenuItem>
+              <DropdownMenuItem onClick={() => navigate({ search: (prev) => ({ ...prev, sort: [{ field: 'created', order: '+' }] }) })}>
+                Oldest to Newest
+              </DropdownMenuItem>
+            </DropdownMenuContent>
+          </DropdownMenu>
         </div>
       </section>
       <section>

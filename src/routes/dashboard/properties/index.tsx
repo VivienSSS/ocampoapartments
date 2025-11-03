@@ -31,18 +31,6 @@ function RouteComponent() {
 
   return (
     <article className="space-y-4">
-      {/* Charts Section */}
-      <section className="space-y-4">
-        <h2 className="scroll-m-20 border-b pb-2 text-2xl font-semibold tracking-tight">
-          Property Analytics
-        </h2>
-        <div className="grid grid-cols-1 gap-4 lg:grid-cols-2">
-          <PropertyHealthChart />
-          <RevenuePerPropertyChart />
-        </div>
-        <UnitInventoryChart />
-      </section>
-
       {/* Controls Section */}
       <section className="flex items-center justify-between py-2.5">
         <h1 className="text-2xl font-bold">Properties</h1>

@@ -17,14 +17,15 @@ export type ApartmentUnitsResponse = ApartmentUnitsClientResponse<{
   property: PropertiesRecord;
 }>;
 
-export const listApartmentUnitsQuery = (page: number, perPage: number) =>
+export const listApartmentUnitsQuery = (page: number, perPage: number, sort?: string) =>
   queryOptions({
-    queryKey: [Collections.ApartmentUnits, page, perPage],
+    queryKey: [Collections.ApartmentUnits, page, perPage, sort],
     queryFn: () =>
       pb
         .collection<ApartmentUnitsResponse>(Collections.ApartmentUnits)
         .getList(page, perPage, {
           expand: 'property',
+          sort,
         }),
   });
 

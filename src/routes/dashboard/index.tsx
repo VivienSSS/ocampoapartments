@@ -19,20 +19,7 @@ function RouteComponent() {
 
             {/* Portfolio Overview */}
             <section>
-                <h2 className="scroll-m-20 border-b pb-2 text-2xl font-semibold tracking-tight first:mt-0 mb-4">
-                    Portfolio Overview
-                </h2>
                 <PortfolioOverviewStats />
-            </section>
-
-            {/* Revenue Trends */}
-            <section>
-                <h2 className="scroll-m-20 border-b pb-2 text-2xl font-semibold tracking-tight first:mt-0 mb-4">
-                    Revenue Trends
-                </h2>
-                <div className="grid grid-cols-1 lg:grid-cols-2 gap-4">
-                    <MonthlyRevenueTrendChart />
-                </div>
             </section>
         </div>
     );

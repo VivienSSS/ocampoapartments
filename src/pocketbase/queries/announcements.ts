@@ -18,13 +18,13 @@ export type AnnouncementsResponse = AnnouncementsClientResponse<{
   author: UsersRecord;
 }>;
 
-export const listAnnouncementsQuery = (page: number, perPage: number) =>
+export const listAnnouncementsQuery = (page: number, perPage: number, sort?: string) =>
   queryOptions({
-    queryKey: [Collections.Announcements, page, perPage],
+    queryKey: [Collections.Announcements, page, perPage, sort],
     queryFn: () =>
       pb
         .collection<AnnouncementsResponse>(Collections.Announcements)
-        .getList(page, perPage, { expand: 'author', requestKey: null }),
+        .getList(page, perPage, { expand: 'author', sort, requestKey: null }),
   });
 
 export const inAnnouncementsQuery = (selected: string[]) => queryOptions({
