@@ -1,6 +1,12 @@
 import { createFileRoute } from '@tanstack/react-router';
 import { zodValidator } from '@tanstack/zod-adapter';
 import DataTable from '@/components/ui/kibo-ui/table/data-table';
+import {
+  DropdownMenu,
+  DropdownMenuContent,
+  DropdownMenuItem,
+  DropdownMenuTrigger,
+} from '@/components/ui/dropdown-menu';
 import { searchParams } from '@/lib/utils';
 import { listPaymentsQuery } from '@/pocketbase/queries/payments';
 import { paymentSchema } from '@/pocketbase/schemas/payments';
@@ -8,7 +14,7 @@ import CreatePaymentDialogForm from './-actions/create';
 import LoadingComponent from './-loading';
 import { columns } from './-table';
 import { Button } from '@/components/ui/button';
-import { ChevronLeft, ChevronRight, Plus } from 'lucide-react';
+import { ChevronLeft, ChevronRight, Plus, ArrowUpDown } from 'lucide-react';
 import { PaymentMethodsDistributionChart } from '@/components/ui/charts';
 
 export const Route = createFileRoute('/dashboard/payments/')({
@@ -16,10 +22,14 @@ export const Route = createFileRoute('/dashboard/payments/')({
   pendingComponent: LoadingComponent,
   validateSearch: zodValidator(searchParams(paymentSchema.keyof())),
   beforeLoad: ({ search }) => ({ search }),
-  loader: ({ context }) =>
-    context.queryClient.fetchQuery(
-      listPaymentsQuery(context.search.page, context.search.perPage),
-    ),
+  loader: ({ context }) => {
+    const sortString = context.search.sort
+      ? context.search.sort.map((s) => `${s.order === '-' ? '-' : ''}${s.field}`).join(',')
+      : undefined;
+    return context.queryClient.fetchQuery(
+      listPaymentsQuery(context.search.page, context.search.perPage, sortString),
+    );
+  },
 });
 
 function RouteComponent() {
@@ -60,6 +70,27 @@ function RouteComponent() {
           >
             <ChevronRight />
           </Button>
+          <DropdownMenu>
+            <DropdownMenuTrigger asChild>
+              <Button>
+                <ArrowUpDown /> Sort
+              </Button>
+            </DropdownMenuTrigger>
+            <DropdownMenuContent>
+              <DropdownMenuItem onClick={() => navigate({ search: (prev) => ({ ...prev, sort: [{ field: 'paymentDate', order: '+' }] }) })}>
+                Payment Date (Earliest First)
+              </DropdownMenuItem>
+              <DropdownMenuItem onClick={() => navigate({ search: (prev) => ({ ...prev, sort: [{ field: 'paymentDate', order: '-' }] }) })}>
+                Payment Date (Latest First)
+              </DropdownMenuItem>
+              <DropdownMenuItem onClick={() => navigate({ search: (prev) => ({ ...prev, sort: [{ field: 'amountPaid', order: '+' }] }) })}>
+                Amount (Low to High)
+              </DropdownMenuItem>
+              <DropdownMenuItem onClick={() => navigate({ search: (prev) => ({ ...prev, sort: [{ field: 'amountPaid', order: '-' }] }) })}>
+                Amount (High to Low)
+              </DropdownMenuItem>
+            </DropdownMenuContent>
+          </DropdownMenu>
         </div>
       </section>
       <section>

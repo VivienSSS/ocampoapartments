@@ -25,15 +25,16 @@ export type MaintenanceRequestsResponse = MaintenanceRequestsClientResponse<{
   worker: MaintenanceWorkersRecord;
 }>;
 
-export const listMaintenanceRequestsQuery = (page: number, perPage: number) =>
+export const listMaintenanceRequestsQuery = (page: number, perPage: number, sort?: string) =>
   queryOptions({
-    queryKey: [Collections.MaintenanceRequests, page, perPage],
+    queryKey: [Collections.MaintenanceRequests, page, perPage, sort],
     queryFn: () =>
       pb
         .collection(Collections.MaintenanceRequests)
         .getList<MaintenanceRequestsResponse>(page, perPage, {
           expand: 'tenant.user,unit,worker',
           fields: '*,description:excerpt(25,true)',
+          sort,
         }),
   });
 

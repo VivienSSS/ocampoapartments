@@ -13,11 +13,11 @@ import {
   type WorkerPerformanceChartViewResponse,
 } from '../types';
 
-export const listMaintenanceWorkersQuery = (page: number, perPage: number) =>
+export const listMaintenanceWorkersQuery = (page: number, perPage: number, sort?: string) =>
   queryOptions({
-    queryKey: [Collections.MaintenanceWorkers, page, perPage],
+    queryKey: [Collections.MaintenanceWorkers, page, perPage, sort],
     queryFn: () =>
-      pb.collection(Collections.MaintenanceWorkers).getList(page, perPage),
+      pb.collection(Collections.MaintenanceWorkers).getList(page, perPage, { sort }),
   });
 
 export const viewMaintenanceWorkerQuery = (id: string) =>

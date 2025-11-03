@@ -2,6 +2,12 @@ import { createFileRoute } from '@tanstack/react-router';
 import { zodValidator } from '@tanstack/zod-adapter';
 import { Button } from '@/components/ui/button';
 import DataTable from '@/components/ui/kibo-ui/table/data-table';
+import {
+  DropdownMenu,
+  DropdownMenuContent,
+  DropdownMenuItem,
+  DropdownMenuTrigger,
+} from '@/components/ui/dropdown-menu';
 import { searchParams } from '@/lib/utils';
 import { listBillsQuery } from '@/pocketbase/queries/bills';
 import { billSchema } from '@/pocketbase/schemas/bills';
@@ -12,7 +18,7 @@ import DeleteBillingDialogForm from './-actions/delete';
 import EditBillingDialogForm from './-actions/update';
 import LoadingComponent from './-loading';
 import { columns } from './-table';
-import { ChevronLeft, ChevronRight, Plus, Edit, Trash } from 'lucide-react';
+import { ChevronLeft, ChevronRight, Plus, Edit, Trash, ArrowUpDown } from 'lucide-react';
 import { BillsByStatusChart, BillItemAnalysisChart, FinancialOverviewChart } from '@/components/ui/charts';
 
 export const Route = createFileRoute('/dashboard/billing/')({
@@ -21,9 +27,12 @@ export const Route = createFileRoute('/dashboard/billing/')({
   validateSearch: zodValidator(searchParams(billSchema.keyof())),
   beforeLoad: ({ search }) => ({ search }),
   loader: async ({ context }) => {
+    const sortString = context.search.sort
+      ? context.search.sort.map((s) => `${s.order === '-' ? '-' : ''}${s.field}`).join(',')
+      : undefined;
 
     const bills = await context.queryClient.fetchQuery(
-      listBillsQuery(context.search.page, context.search.perPage),
+      listBillsQuery(context.search.page, context.search.perPage, sortString),
     );
 
     // get analytics data by using fetchQuery
@@ -94,6 +103,27 @@ function RouteComponent() {
           <Button disabled={searchQuery.page >= bills.totalPages} onClick={() => navigate({ search: (prev) => ({ ...prev, page: searchQuery.page + 1 }) })}>
             <ChevronRight />
           </Button>
+          <DropdownMenu>
+            <DropdownMenuTrigger asChild>
+              <Button>
+                <ArrowUpDown /> Sort
+              </Button>
+            </DropdownMenuTrigger>
+            <DropdownMenuContent>
+              <DropdownMenuItem onClick={() => navigate({ search: (prev) => ({ ...prev, sort: [{ field: 'dueDate', order: '+' }] }) })}>
+                Due Date (Earliest First)
+              </DropdownMenuItem>
+              <DropdownMenuItem onClick={() => navigate({ search: (prev) => ({ ...prev, sort: [{ field: 'dueDate', order: '-' }] }) })}>
+                Due Date (Latest First)
+              </DropdownMenuItem>
+              <DropdownMenuItem onClick={() => navigate({ search: (prev) => ({ ...prev, sort: [{ field: 'created', order: '-' }] }) })}>
+                Newest to Oldest
+              </DropdownMenuItem>
+              <DropdownMenuItem onClick={() => navigate({ search: (prev) => ({ ...prev, sort: [{ field: 'created', order: '+' }] }) })}>
+                Oldest to Newest
+              </DropdownMenuItem>
+            </DropdownMenuContent>
+          </DropdownMenu>
         </div>
       </section>
       <section>

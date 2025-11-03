@@ -22,14 +22,15 @@ export type PaymentsResponse = PaymentsClientResponse<{
   tenant: TenantsResponse;
 }>;
 
-export const listPaymentsQuery = (page: number, perPage: number) =>
+export const listPaymentsQuery = (page: number, perPage: number, sort?: string) =>
   queryOptions({
-    queryKey: [Collections.Payments, page, perPage],
+    queryKey: [Collections.Payments, page, perPage, sort],
     queryFn: () =>
       pb
         .collection<PaymentsResponse>(Collections.Payments)
         .getList(page, perPage, {
           expand: 'bill,tenant.user',
+          sort,
         }),
   });
 

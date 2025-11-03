@@ -21,14 +21,15 @@ export type TenanciesResponse = TenanciesClientResponse<{
   unit: ApartmentUnitsResponse;
 }>;
 
-export const listTenanciesQuery = (page: number, perPage: number) =>
+export const listTenanciesQuery = (page: number, perPage: number, sort?: string) =>
   queryOptions({
-    queryKey: [Collections.Tenancies, page, perPage],
+    queryKey: [Collections.Tenancies, page, perPage, sort],
     queryFn: () =>
       pb
         .collection(Collections.Tenancies)
         .getList<TenanciesResponse>(page, perPage, {
           expand: 'tenant.user,unit.property',
+          sort,
         }),
   });
 

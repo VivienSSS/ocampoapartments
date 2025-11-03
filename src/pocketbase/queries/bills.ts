@@ -17,12 +17,13 @@ export type BillsResponse = BillsClientResponse<{
   tenancy: TenanciesResponse;
 }>;
 
-export const listBillsQuery = (page: number, perPage: number) =>
+export const listBillsQuery = (page: number, perPage: number, sort?: string) =>
   queryOptions({
-    queryKey: [Collections.Bills, page, perPage],
+    queryKey: [Collections.Bills, page, perPage, sort],
     queryFn: () =>
       pb.collection<BillsResponse>(Collections.Bills).getList(page, perPage, {
         expand: 'tenancy.tenant.user,tenancy.tenant.unit',
+        sort,
       }),
   });
 

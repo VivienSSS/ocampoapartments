@@ -2,6 +2,12 @@ import { createFileRoute } from '@tanstack/react-router';
 import { zodValidator } from '@tanstack/zod-adapter';
 import { Button } from '@/components/ui/button';
 import DataTable from '@/components/ui/kibo-ui/table/data-table';
+import {
+  DropdownMenu,
+  DropdownMenuContent,
+  DropdownMenuItem,
+  DropdownMenuTrigger,
+} from '@/components/ui/dropdown-menu';
 import { searchParams } from '@/lib/utils';
 import { listMaintenanceRequestsQuery } from '@/pocketbase/queries/maintenanceRequests';
 import { maintenanceRequestSchema } from '@/pocketbase/schemas/maintenanceRequests';
@@ -10,7 +16,7 @@ import DeleteMaintenanceDialogForm from './-actions/delete';
 import EditMaintenanceDialogForm from './-actions/update';
 import LoadingComponent from './-loading';
 import { columns } from './-table';
-import { ChevronLeft, ChevronRight, Plus, Edit, Trash } from 'lucide-react';
+import { ChevronLeft, ChevronRight, Plus, Edit, Trash, ArrowUpDown } from 'lucide-react';
 import { pb } from '@/pocketbase';
 import { UsersRoleOptions } from '@/pocketbase/types';
 import { MaintenanceOperationStats, MaintenanceOverviewChart, WorkerPerformanceChart } from '@/components/ui/charts';
@@ -20,10 +26,14 @@ export const Route = createFileRoute('/dashboard/maintenances/')({
   pendingComponent: LoadingComponent,
   validateSearch: zodValidator(searchParams(maintenanceRequestSchema.keyof())),
   beforeLoad: ({ search }) => ({ search }),
-  loader: ({ context }) =>
-    context.queryClient.fetchQuery(
-      listMaintenanceRequestsQuery(context.search.page, context.search.perPage),
-    ),
+  loader: ({ context }) => {
+    const sortString = context.search.sort
+      ? context.search.sort.map((s) => `${s.order === '-' ? '-' : ''}${s.field}`).join(',')
+      : undefined;
+    return context.queryClient.fetchQuery(
+      listMaintenanceRequestsQuery(context.search.page, context.search.perPage, sortString),
+    );
+  },
 });
 
 function RouteComponent() {
@@ -70,6 +80,27 @@ function RouteComponent() {
           <Button disabled={searchQuery.page >= maintenanceRequests.totalPages} onClick={() => navigate({ search: (prev) => ({ ...prev, page: searchQuery.page + 1 }) })}>
             <ChevronRight />
           </Button>
+          <DropdownMenu>
+            <DropdownMenuTrigger asChild>
+              <Button>
+                <ArrowUpDown /> Sort
+              </Button>
+            </DropdownMenuTrigger>
+            <DropdownMenuContent>
+              <DropdownMenuItem onClick={() => navigate({ search: (prev) => ({ ...prev, sort: [{ field: 'submittedDate', order: '+' }] }) })}>
+                Submitted Date (Earliest First)
+              </DropdownMenuItem>
+              <DropdownMenuItem onClick={() => navigate({ search: (prev) => ({ ...prev, sort: [{ field: 'submittedDate', order: '-' }] }) })}>
+                Submitted Date (Latest First)
+              </DropdownMenuItem>
+              <DropdownMenuItem onClick={() => navigate({ search: (prev) => ({ ...prev, sort: [{ field: 'urgency', order: '+' }] }) })}>
+                Urgency (Low to High)
+              </DropdownMenuItem>
+              <DropdownMenuItem onClick={() => navigate({ search: (prev) => ({ ...prev, sort: [{ field: 'urgency', order: '-' }] }) })}>
+                Urgency (High to Low)
+              </DropdownMenuItem>
+            </DropdownMenuContent>
+          </DropdownMenu>
         </div>
       </section>
       {/* DataTable Section */}

@@ -18,10 +18,10 @@ import {
   type TenantsPerPropertyChartViewResponse,
 } from '../types';
 
-export const listPropertiesQuery = (page: number, perPage: number) =>
+export const listPropertiesQuery = (page: number, perPage: number, sort?: string) =>
   queryOptions({
-    queryKey: [Collections.Properties, page, perPage],
-    queryFn: () => pb.collection(Collections.Properties).getList(page, perPage),
+    queryKey: [Collections.Properties, page, perPage, sort],
+    queryFn: () => pb.collection(Collections.Properties).getList(page, perPage, { sort }),
   });
 
 export const viewPropertiesQuery = (id: string) =>

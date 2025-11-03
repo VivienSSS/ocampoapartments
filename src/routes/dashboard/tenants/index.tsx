@@ -2,6 +2,12 @@ import { createFileRoute } from '@tanstack/react-router';
 import { zodValidator } from '@tanstack/zod-adapter';
 import { Button } from '@/components/ui/button';
 import DataTable from '@/components/ui/kibo-ui/table/data-table';
+import {
+  DropdownMenu,
+  DropdownMenuContent,
+  DropdownMenuItem,
+  DropdownMenuTrigger,
+} from '@/components/ui/dropdown-menu';
 import { searchParams } from '@/lib/utils';
 import { listTenantsQuery, getCurrentTenantQuery } from '@/pocketbase/queries/tenants';
 import { tenantSchema } from '@/pocketbase/schemas/tenants';
@@ -13,7 +19,7 @@ import { columns } from './-table';
 import { TenantProfile } from './-profile';
 import { pb } from '@/pocketbase';
 import { UsersRoleOptions } from '@/pocketbase/types';
-import { ChevronLeft, ChevronRight, Plus, Edit, Trash } from 'lucide-react';
+import { ChevronLeft, ChevronRight, Plus, Edit, Trash, ArrowUpDown } from 'lucide-react';
 import { ActiveTenanciesChart, OutstandingReceivablesChart } from '@/components/ui/charts';
 
 export const Route = createFileRoute('/dashboard/tenants/')({
@@ -32,8 +38,11 @@ export const Route = createFileRoute('/dashboard/tenants/')({
       }
     } else {
       // For administrators, get all tenants
+      const sortString = context.search.sort
+        ? context.search.sort.map((s) => `${s.order === '-' ? '-' : ''}${s.field}`).join(',')
+        : undefined;
       return context.queryClient.fetchQuery(
-        listTenantsQuery(context.search.page, context.search.perPage),
+        listTenantsQuery(context.search.page, context.search.perPage, sortString),
       );
     }
     return null;
@@ -86,17 +95,6 @@ function RouteComponent() {
 
   return (
     <article className="space-y-4">
-      {/* Charts Section */}
-      <section className="space-y-4">
-        <h2 className="scroll-m-20 border-b pb-2 text-2xl font-semibold tracking-tight">
-          Tenant Analytics
-        </h2>
-        <div className="grid grid-cols-1 gap-4 lg:grid-cols-2">
-          <ActiveTenanciesChart />
-          <OutstandingReceivablesChart />
-        </div>
-      </section>
-
       {/* Controls Section */}
       <section className="flex items-center justify-between py-2.5">
         <h1 className="text-2xl font-bold">Tenants</h1>
@@ -149,6 +147,27 @@ function RouteComponent() {
           >
             <ChevronRight />
           </Button>
+          <DropdownMenu>
+            <DropdownMenuTrigger asChild>
+              <Button>
+                <ArrowUpDown /> Sort
+              </Button>
+            </DropdownMenuTrigger>
+            <DropdownMenuContent>
+              <DropdownMenuItem onClick={() => navigate({ search: (prev) => ({ ...prev, sort: [{ field: 'facebookName', order: '+' }] }) })}>
+                Name (A to Z)
+              </DropdownMenuItem>
+              <DropdownMenuItem onClick={() => navigate({ search: (prev) => ({ ...prev, sort: [{ field: 'facebookName', order: '-' }] }) })}>
+                Name (Z to A)
+              </DropdownMenuItem>
+              <DropdownMenuItem onClick={() => navigate({ search: (prev) => ({ ...prev, sort: [{ field: 'created', order: '-' }] }) })}>
+                Newest to Oldest
+              </DropdownMenuItem>
+              <DropdownMenuItem onClick={() => navigate({ search: (prev) => ({ ...prev, sort: [{ field: 'created', order: '+' }] }) })}>
+                Oldest to Newest
+              </DropdownMenuItem>
+            </DropdownMenuContent>
+          </DropdownMenu>
         </div>
       </section>
       <section>

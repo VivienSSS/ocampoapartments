@@ -17,13 +17,13 @@ import {
 
 export type TenantsResponse = TenantsClientResponse<{ user: UsersRecord }>;
 
-export const listTenantsQuery = (page: number, perPage: number) =>
+export const listTenantsQuery = (page: number, perPage: number, sort?: string) =>
   queryOptions({
-    queryKey: [Collections.Tenants, page, perPage],
+    queryKey: [Collections.Tenants, page, perPage, sort],
     queryFn: () =>
       pb
         .collection(Collections.Tenants)
-        .getList<TenantsResponse>(page, perPage, { expand: 'user' }),
+        .getList<TenantsResponse>(page, perPage, { expand: 'user', sort }),
   });
 
 export const viewTenantQuery = (id: string) =>
