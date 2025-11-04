@@ -33,7 +33,7 @@ export function LoginForm({
       const result = await loginMutation.mutateAsync(value);
 
       if (!result.record.isActive) {
-        toast.error('This accound is inactive', { description: 'please contact the administrator for more details' })
+        toast.error('This account is inactive', { description: 'please contact the administrator for more details' })
       } else[
         navigate({ to: '/dashboard/announcements' }) //for success
       ]

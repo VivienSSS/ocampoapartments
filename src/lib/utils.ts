@@ -14,6 +14,7 @@ export function searchParams(resourceFields: z.ZodEnum) {
     new: z.boolean().optional(),
     edit: z.boolean().optional(),
     delete: z.boolean().optional(),
+    deactivate: z.boolean().optional(),
     selected: z.string().array().default([]),
     sort: z
       .array(z.object({ field: resourceFields, order: z.enum(['-', '+']) }))

@@ -12,15 +12,14 @@ import { searchParams } from '@/lib/utils';
 import { listTenantsQuery, getCurrentTenantQuery } from '@/pocketbase/queries/tenants';
 import { tenantSchema } from '@/pocketbase/schemas/tenants';
 import CreateTenantDialogForm from './-actions/create';
-import DeleteTenantDialogForm from './-actions/delete';
+import DeactivateTenantDialogForm from './-actions/deactivate';
 import EditTenantDialogForm from './-actions/update';
 import LoadingComponent from './-loading';
 import { columns } from './-table';
 import { TenantProfile } from './-profile';
 import { pb } from '@/pocketbase';
 import { UsersRoleOptions } from '@/pocketbase/types';
-import { ChevronLeft, ChevronRight, Plus, Edit, Trash, ArrowUpDown } from 'lucide-react';
-import { ActiveTenanciesChart, OutstandingReceivablesChart } from '@/components/ui/charts';
+import { ChevronLeft, ChevronRight, Plus, Edit, Power, ArrowUpDown } from 'lucide-react';
 
 export const Route = createFileRoute('/dashboard/tenants/')({
   component: RouteComponent,
@@ -115,17 +114,17 @@ function RouteComponent() {
           </Button>
           <Button
             variant="destructive"
-            disabled={!(searchQuery.id ?? searchQuery.selected.length > 0)}
+            disabled={searchQuery.selected.length !== 1}
             onClick={() =>
               navigate({
                 search: (prev) => ({
                   ...prev,
-                  delete: true,
+                  deactivate: true,
                 }),
               })
             }
           >
-            <Trash /> Delete
+            <Power /> Deactivate
           </Button>
           <Button
             disabled={searchQuery.page === 1}
@@ -189,7 +188,7 @@ function RouteComponent() {
       {/* Forms Section */}
       <section>
         <CreateTenantDialogForm />
-        <DeleteTenantDialogForm />
+        <DeactivateTenantDialogForm />
         <EditTenantDialogForm />
       </section>
     </article>

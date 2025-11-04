@@ -136,6 +136,28 @@ export const batchDeleteTenantMutation = (selected: string[]) =>
       }),
   });
 
+export const deactivateTenantMutation = (id: string) =>
+  mutationOptions({
+    mutationFn: async () => {
+      const tenant = await pb.collection(Collections.Tenants).getOne<TenantsResponse>(id, {
+        expand: 'user',
+      });
+
+      // Deactivate the associated user
+      await pb.collection('users').update(tenant.user, { isActive: false });
+
+      return tenant;
+    },
+    onSuccess: (value) =>
+      toast.success(`Deactivated Successfully`, {
+        description: `Tenant ${value.expand.user.firstName} ${value.expand.user.lastName} has been deactivated`,
+      }),
+    onError: (err) =>
+      toast.error(`An error occurred when deactivating the tenant`, {
+        description: err.message,
+      }),
+  });
+
 // ChartView Queries
 export const tenantFinancialOverviewChartViewQuery = () =>
   queryOptions({
