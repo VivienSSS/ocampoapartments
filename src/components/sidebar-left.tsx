@@ -156,16 +156,16 @@ const showNav = () => {
           url: '/dashboard/tenant-overview',
           icon: Command,
         },
-        {
-          title: 'Announcements',
-          url: '/dashboard/announcements',
-          icon: Megaphone,
-        },
-        {
-          title: 'Billing',
-          url: '/dashboard/billing',
-          icon: ReceiptText,
-        },
+        // {
+        //   title: 'Announcements',
+        //   url: '/dashboard/announcements',
+        //   icon: Megaphone,
+        // },
+        // {
+        //   title: 'Billing',
+        //   url: '/dashboard/billing',
+        //   icon: ReceiptText,
+        // },
         {
           title: 'Maintenance Requests',
           url: '/dashboard/maintenances',

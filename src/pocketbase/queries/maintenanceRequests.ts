@@ -25,9 +25,9 @@ export type MaintenanceRequestsResponse = MaintenanceRequestsClientResponse<{
   worker: MaintenanceWorkersRecord;
 }>;
 
-export const listMaintenanceRequestsQuery = (page: number, perPage: number, sort?: string) =>
+export const listMaintenanceRequestsQuery = (page: number, perPage: number, sort?: string, tenantFilter?: string) =>
   queryOptions({
-    queryKey: [Collections.MaintenanceRequests, page, perPage, sort],
+    queryKey: [Collections.MaintenanceRequests, page, perPage, sort, tenantFilter],
     queryFn: () =>
       pb
         .collection(Collections.MaintenanceRequests)
@@ -35,6 +35,7 @@ export const listMaintenanceRequestsQuery = (page: number, perPage: number, sort
           expand: 'tenant.user,unit,worker',
           fields: '*,description:excerpt(25,true)',
           sort,
+          filter: tenantFilter,
         }),
   });
 

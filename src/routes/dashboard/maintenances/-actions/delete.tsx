@@ -19,11 +19,17 @@ import {
   inMaintenanceRequestsQuery,
   listMaintenanceRequestsQuery,
 } from '@/pocketbase/queries/maintenanceRequests';
+import { pb } from '@/pocketbase';
+import { UsersRoleOptions } from '@/pocketbase/types';
 
 const DeleteMaintenanceDialog = () => {
   const navigate = useNavigate({ from: '/dashboard/maintenances' });
   const searchQuery = useSearch({ from: '/dashboard/maintenances/' });
   const { queryClient } = useRouteContext({ from: '/dashboard/maintenances/' });
+
+  const userRole = pb.authStore.record?.role;
+  const userId = pb.authStore.record?.id;
+  const isTenant = userRole === UsersRoleOptions.Tenant;
 
   const { data: reqs } = useQuery(
     {
@@ -62,10 +68,18 @@ const DeleteMaintenanceDialog = () => {
             onClick={() =>
               deleteMutation.mutate(undefined, {
                 onSuccess: () => {
+                  // Determine tenant filter if user is a tenant
+                  let tenantFilter: string | undefined;
+                  if (isTenant && userId) {
+                    tenantFilter = `tenant.user = '${userId}'`;
+                  }
+
                   queryClient.invalidateQueries(
                     listMaintenanceRequestsQuery(
                       searchQuery.page,
                       searchQuery.perPage,
+                      undefined,
+                      tenantFilter
                     ),
                   );
                   navigate({

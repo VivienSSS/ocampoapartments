@@ -59,7 +59,7 @@ export const CreatePaymentForm = withForm({
               <AsyncSelect<BillsResponse>
                 className='w-full'
                 fetcher={async (query) => (await pb.collection(Collections.Bills).getList<BillsResponse>(1, 10, {
-                  filter: query ? `tenancy.tenant.user.firstName ~ '%${query}%' || tenancy.tenant.user.lastName ~ '%${query}%'` : '',
+                  filter: query ? `(tenancy.tenant.user.firstName ~ '%${query}%' || tenancy.tenant.user.lastName ~ '%${query}%') && status != 'Paid'` : `status != 'Paid'`,
                   expand: 'tenancy.tenant.user,tenancy.unit.property',
                   requestKey: null
                 })).items}
@@ -192,7 +192,7 @@ export const EditPaymentForm = withForm({
               <AsyncSelect<BillsResponse>
                 className='w-full'
                 fetcher={async (query) => (await pb.collection(Collections.Bills).getList<BillsResponse>(1, 10, {
-                  filter: query ? `tenancy.tenant.user.firstName ~ '%${query}%' || tenancy.tenant.user.lastName ~ '%${query}%'` : '',
+                  filter: query ? `(tenancy.tenant.user.firstName ~ '%${query}%' || tenancy.tenant.user.lastName ~ '%${query}%') && status != 'Paid'` : `status != 'Paid'`,
                   expand: 'tenancy.tenant.user,tenancy.unit.property',
                   requestKey: null
                 })).items}

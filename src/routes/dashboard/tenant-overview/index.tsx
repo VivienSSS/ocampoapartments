@@ -1,5 +1,6 @@
 import { createFileRoute } from '@tanstack/react-router';
 import { useSuspenseQuery } from '@tanstack/react-query';
+import { useState } from 'react';
 import {
     Card,
     CardContent,
@@ -45,6 +46,21 @@ export const Route = createFileRoute('/dashboard/tenant-overview/')({
 
 function RouteComponent() {
     const { announcements, bills } = Route.useLoaderData() as TenantOverviewData;
+    const [announcementPage, setAnnouncementPage] = useState(1);
+
+    const ANNOUNCEMENTS_PER_PAGE = 3;
+    const totalAnnouncementPages = Math.ceil((announcements.items?.length ?? 0) / ANNOUNCEMENTS_PER_PAGE);
+    const startIndex = (announcementPage - 1) * ANNOUNCEMENTS_PER_PAGE;
+    const endIndex = startIndex + ANNOUNCEMENTS_PER_PAGE;
+    const paginatedAnnouncements = announcements.items?.slice(startIndex, endIndex) ?? [];
+
+    const handlePrevAnnouncements = () => {
+        setAnnouncementPage(prev => Math.max(prev - 1, 1));
+    };
+
+    const handleNextAnnouncements = () => {
+        setAnnouncementPage(prev => Math.min(prev + 1, totalAnnouncementPages));
+    };
 
     return (
         <div className="space-y-6">
@@ -70,24 +86,47 @@ function RouteComponent() {
                     </CardHeader>
                     <CardContent className="space-y-4">
                         {announcements.items && announcements.items.length > 0 ? (
-                            <div className="space-y-3">
-                                {announcements.items.slice(0, 3).map((announcement: AnnouncementsResponse) => (
-                                    <div
-                                        key={announcement.id}
-                                        className="border-l-2 border-l-primary pl-4 py-2"
-                                    >
-                                        <h3 className="font-semibold leading-tight text-sm">
-                                            {announcement.title}
-                                        </h3>
-                                        <p className="text-muted-foreground text-xs mt-1 line-clamp-2">
-                                            {announcement.message}
-                                        </p>
-                                        <p className="text-xs text-muted-foreground mt-2">
-                                            {new Date(announcement.created).toLocaleDateString()}
-                                        </p>
+                            <>
+                                <div className="space-y-3">
+                                    {paginatedAnnouncements.map((announcement: AnnouncementsResponse) => (
+                                        <div
+                                            key={announcement.id}
+                                            className="border-l-2 border-l-primary pl-4 py-2"
+                                        >
+                                            <h3 className="font-semibold leading-tight text-sm">
+                                                {announcement.title}
+                                            </h3>
+                                            <p className="text-muted-foreground text-xs mt-1 line-clamp-2">
+                                                {announcement.message}
+                                            </p>
+                                            <p className="text-xs text-muted-foreground mt-2">
+                                                {new Date(announcement.created).toLocaleDateString()}
+                                            </p>
+                                        </div>
+                                    ))}
+                                </div>
+                                {totalAnnouncementPages > 1 && (
+                                    <div className="flex items-center justify-between gap-2 pt-4 border-t">
+                                        <button
+                                            onClick={handlePrevAnnouncements}
+                                            disabled={announcementPage === 1}
+                                            className="px-3 py-2 text-sm font-medium rounded-md border border-input bg-background hover:bg-accent hover:text-accent-foreground disabled:opacity-50 disabled:cursor-not-allowed transition-colors"
+                                        >
+                                            Previous
+                                        </button>
+                                        <span className="text-sm text-muted-foreground">
+                                            Page {announcementPage} of {totalAnnouncementPages}
+                                        </span>
+                                        <button
+                                            onClick={handleNextAnnouncements}
+                                            disabled={announcementPage === totalAnnouncementPages}
+                                            className="px-3 py-2 text-sm font-medium rounded-md border border-input bg-background hover:bg-accent hover:text-accent-foreground disabled:opacity-50 disabled:cursor-not-allowed transition-colors"
+                                        >
+                                            Next
+                                        </button>
                                     </div>
-                                ))}
-                            </div>
+                                )}
+                            </>
                         ) : (
                             <p className="text-muted-foreground text-sm">
                                 No announcements at the moment.
@@ -99,7 +138,7 @@ function RouteComponent() {
                 {/* Billing Card */}
                 <Card>
                     <CardHeader>
-                        <CardTitle>Billing Overview</CardTitle>
+                        <CardTitle>Payment History</CardTitle>
                         <CardDescription>
                             Outstanding and recent bills
                         </CardDescription>
@@ -107,7 +146,7 @@ function RouteComponent() {
                     <CardContent className="space-y-4">
                         {bills.items && bills.items.length > 0 ? (
                             <div className="space-y-4">
-                                {bills.items.slice(0, 5).map((bill: BillsResponse) => {
+                                {bills.items.filter((bill: BillsResponse) => bill.status !== 'Paid').slice(0, 5).map((bill: BillsResponse) => {
                                     const tenantName = bill.expand?.tenancy?.expand?.tenant?.expand?.user
                                         ? `${bill.expand.tenancy.expand.tenant.expand.user.firstName} ${bill.expand.tenancy.expand.tenant.expand.user.lastName}`
                                         : 'N/A';

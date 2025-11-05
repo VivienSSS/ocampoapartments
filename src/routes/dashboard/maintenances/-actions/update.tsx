@@ -20,11 +20,17 @@ import {
 } from '@/pocketbase/queries/maintenanceRequests';
 import { updateMaintenanceRequestSchema } from '@/pocketbase/schemas/maintenanceRequests';
 import { EditMaintenanceForm } from './form';
+import { pb } from '@/pocketbase';
+import { UsersRoleOptions } from '@/pocketbase/types';
 
 const EditMaintenanceDialogForm = () => {
   const navigate = useNavigate({ from: '/dashboard/maintenances' });
   const searchQuery = useSearch({ from: '/dashboard/maintenances/' });
   const { queryClient } = useRouteContext({ from: '/dashboard/maintenances/' });
+
+  const userRole = pb.authStore.record?.role;
+  const userId = pb.authStore.record?.id;
+  const isTenant = userRole === UsersRoleOptions.Tenant;
 
   const currentId = searchQuery.id ?? searchQuery.selected[0];
   const mutation = useMutation(
@@ -48,8 +54,14 @@ const EditMaintenanceDialogForm = () => {
     onSubmit: async ({ value }) =>
       mutation.mutateAsync(value, {
         onSuccess: () => {
+          // Determine tenant filter if user is a tenant
+          let tenantFilter: string | undefined;
+          if (isTenant && userId) {
+            tenantFilter = `tenant.user = '${userId}'`;
+          }
+
           queryClient.invalidateQueries(
-            listMaintenanceRequestsQuery(searchQuery.page, searchQuery.perPage),
+            listMaintenanceRequestsQuery(searchQuery.page, searchQuery.perPage, undefined, tenantFilter),
           );
           navigate({
             to: '/dashboard/maintenances',

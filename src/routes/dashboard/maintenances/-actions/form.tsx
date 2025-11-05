@@ -9,6 +9,7 @@ import {
   Collections,
   MaintenanceRequestsStatusOptions,
   MaintenanceRequestsUrgencyOptions,
+  UsersRoleOptions,
 } from '@/pocketbase/types';
 import { AsyncSelect } from '@/components/ui/async-select';
 import type { TenantsResponse } from '@/pocketbase/queries/tenants';
@@ -21,40 +22,46 @@ export const CreateMaintenanceForm = withForm({
     onChange: insertMaintenanceRequestSchema,
   },
   render: ({ form }) => {
+    const userRole = pb.authStore.record?.role;
+    const isTenant = userRole === UsersRoleOptions.Tenant;
+    const userId = pb.authStore.record?.id;
+
     return (
       <>
-        <form.AppField name="tenant">
-          {(field) => (
-            <div className="col-span-full">
-              <label className="block text-sm font-medium text-foreground mb-2">
-                Tenant
-              </label>
-              <AsyncSelect<TenantsResponse>
-                className="w-full"
-                fetcher={async (query) => (await pb.collection(Collections.Tenants).getList<TenantsResponse>(1, 10, {
-                  filter: query ? `facebookName ~ '%${query}%' || user.firstName ~ '%${query}%' || user.lastName ~ '%${query}%'` : '',
-                  expand: 'user',
-                  requestKey: null
-                })).items}
-                getOptionValue={(option) => option.id}
-                getDisplayValue={(option) => option.facebookName}
-                renderOption={(option) => (
-                  <div>
-                    <div className="font-medium">{option.facebookName}</div>
-                    {option.expand?.user && (
-                      <div className="text-sm text-muted-foreground">
-                        {option.expand.user.contactEmail}
-                      </div>
-                    )}
-                  </div>
-                )}
-                value={field.state.value || ''}
-                onChange={field.handleChange}
-                label="Tenant"
-              />
-            </div>
-          )}
-        </form.AppField>
+        {!isTenant && (
+          <form.AppField name="tenant">
+            {(field) => (
+              <div className="col-span-full">
+                <label className="block text-sm font-medium text-foreground mb-2">
+                  Tenant
+                </label>
+                <AsyncSelect<TenantsResponse>
+                  className="w-full"
+                  fetcher={async (query) => (await pb.collection(Collections.Tenants).getList<TenantsResponse>(1, 10, {
+                    filter: query ? `facebookName ~ '%${query}%' || user.firstName ~ '%${query}%' || user.lastName ~ '%${query}%'` : '',
+                    expand: 'user',
+                    requestKey: null
+                  })).items}
+                  getOptionValue={(option) => option.id}
+                  getDisplayValue={(option) => option.facebookName}
+                  renderOption={(option) => (
+                    <div>
+                      <div className="font-medium">{option.facebookName}</div>
+                      {option.expand?.user && (
+                        <div className="text-sm text-muted-foreground">
+                          {option.expand.user.contactEmail}
+                        </div>
+                      )}
+                    </div>
+                  )}
+                  value={field.state.value || ''}
+                  onChange={field.handleChange}
+                  label="Tenant"
+                />
+              </div>
+            )}
+          </form.AppField>
+        )}
         <form.AppField name="unit">
           {(field) => (
             <div className="col-span-full">
@@ -64,7 +71,40 @@ export const CreateMaintenanceForm = withForm({
               <AsyncSelect<ApartmentUnitsResponse>
                 className='w-full'
                 fetcher={async (query) => {
-                  const units = (await pb.collection(Collections.ApartmentUnits).getList<ApartmentUnitsResponse>(1, 10, { filter: query ? `unitLetter ~ '%${query}%' || floorNumber ~ '%${query}%' || property.branch ~ '%${query}%'` : '', expand: 'property', requestKey: null })).items;
+                  let units: ApartmentUnitsResponse[] = [];
+
+                  // For tenants, only show their own units
+                  if (isTenant && userId) {
+                    // Get all tenancies for this tenant
+                    const tenancies = await pb.collection(Collections.Tenancies).getFullList<any>({
+                      filter: `tenant.user = '${userId}'`,
+                      expand: 'unit.property',
+                      requestKey: null
+                    });
+
+                    // Extract units from tenancies
+                    units = tenancies
+                      .map((tenancy: any) => tenancy.expand?.unit)
+                      .filter((unit: any) => {
+                        if (!unit) return false;
+                        if (!query) return true;
+                        const queryLower = query.toLowerCase();
+                        return (
+                          unit.unitLetter?.toLowerCase().includes(queryLower) ||
+                          unit.floorNumber?.toString().includes(query) ||
+                          unit.expand?.property?.branch?.toLowerCase().includes(queryLower)
+                        );
+                      });
+                  } else {
+                    // For admins, show all units with query filter
+                    let filterCondition = query ? `unitLetter ~ '%${query}%' || floorNumber ~ '%${query}%' || property.branch ~ '%${query}%'` : '';
+
+                    units = (await pb.collection(Collections.ApartmentUnits).getList<ApartmentUnitsResponse>(1, 100, {
+                      filter: filterCondition,
+                      expand: 'property',
+                      requestKey: null
+                    })).items;
+                  }
 
                   // Fetch tenant info for each unit through tenancies
                   for (const unit of units) {

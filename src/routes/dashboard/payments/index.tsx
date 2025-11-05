@@ -13,9 +13,12 @@ import { paymentSchema } from '@/pocketbase/schemas/payments';
 import CreatePaymentDialogForm from './-actions/create';
 import LoadingComponent from './-loading';
 import { columns } from './-table';
+import { PaymentCards } from './-cards';
 import { Button } from '@/components/ui/button';
 import { ChevronLeft, ChevronRight, Plus, ArrowUpDown } from 'lucide-react';
 import { PaymentMethodsDistributionChart } from '@/components/ui/charts';
+import { pb } from '@/pocketbase';
+import { UsersRoleOptions } from '@/pocketbase/types';
 
 export const Route = createFileRoute('/dashboard/payments/')({
   component: RouteComponent,
@@ -23,11 +26,15 @@ export const Route = createFileRoute('/dashboard/payments/')({
   validateSearch: zodValidator(searchParams(paymentSchema.keyof())),
   beforeLoad: ({ search }) => ({ search }),
   loader: ({ context }) => {
+    const userRole = pb.authStore.record?.role;
+    const isTenant = userRole === UsersRoleOptions.Tenant;
+    // Use perPage of 3 for tenants, otherwise use the search value
+    const perPage = isTenant ? 3 : context.search.perPage;
     const sortString = context.search.sort
       ? context.search.sort.map((s) => `${s.order === '-' ? '-' : ''}${s.field}`).join(',')
       : undefined;
     return context.queryClient.fetchQuery(
-      listPaymentsQuery(context.search.page, context.search.perPage, sortString),
+      listPaymentsQuery(context.search.page, perPage, sortString),
     );
   },
 });
@@ -36,15 +43,20 @@ function RouteComponent() {
   const navigate = Route.useNavigate();
   const searchQuery = Route.useSearch();
   const payments = Route.useLoaderData();
+  const userRole = pb.authStore.record?.role;
+  const isTenant = userRole === UsersRoleOptions.Tenant;
+
   return (
     <article className="space-y-4">
-      {/* Charts Section */}
-      <section className="space-y-4">
-        <h2 className="scroll-m-20 border-b pb-2 text-2xl font-semibold tracking-tight">
-          Payment Analytics
-        </h2>
-        <PaymentMethodsDistributionChart />
-      </section>
+      {/* Charts Section - Hidden for Tenants */}
+      {!isTenant && (
+        <section className="space-y-4">
+          <h2 className="scroll-m-20 border-b pb-2 text-2xl font-semibold tracking-tight">
+            Payment Analytics
+          </h2>
+          <PaymentMethodsDistributionChart />
+        </section>
+      )}
 
       {/* Controls Section */}
       <section className="flex items-center justify-between py-2.5">
@@ -94,7 +106,11 @@ function RouteComponent() {
         </div>
       </section>
       <section>
-        <DataTable columns={columns} data={payments} />
+        {isTenant ? (
+          <PaymentCards data={payments.items} />
+        ) : (
+          <DataTable columns={columns} data={payments} />
+        )}
       </section>
       <div className="flex justify-end py-2.5">
         <div className="flex gap-2">

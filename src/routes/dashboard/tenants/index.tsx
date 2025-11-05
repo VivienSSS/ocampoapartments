@@ -19,7 +19,7 @@ import { columns } from './-table';
 import { TenantProfile } from './-profile';
 import { pb } from '@/pocketbase';
 import { UsersRoleOptions } from '@/pocketbase/types';
-import { ChevronLeft, ChevronRight, Plus, Edit, Power, ArrowUpDown } from 'lucide-react';
+import { ChevronLeft, ChevronRight, Plus, Edit, ShieldX, ArrowUpDown } from 'lucide-react';
 
 export const Route = createFileRoute('/dashboard/tenants/')({
   component: RouteComponent,
@@ -124,7 +124,7 @@ function RouteComponent() {
               })
             }
           >
-            <Power /> Deactivate
+            <ShieldX /> Deactivate
           </Button>
           <Button
             disabled={searchQuery.page === 1}

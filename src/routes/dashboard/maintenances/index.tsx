@@ -19,7 +19,6 @@ import { columns } from './-table';
 import { ChevronLeft, ChevronRight, Plus, Edit, Trash, ArrowUpDown } from 'lucide-react';
 import { pb } from '@/pocketbase';
 import { UsersRoleOptions } from '@/pocketbase/types';
-import { MaintenanceOperationStats, MaintenanceOverviewChart, WorkerPerformanceChart } from '@/components/ui/charts';
 
 export const Route = createFileRoute('/dashboard/maintenances/')({
   component: RouteComponent,
@@ -30,8 +29,18 @@ export const Route = createFileRoute('/dashboard/maintenances/')({
     const sortString = context.search.sort
       ? context.search.sort.map((s) => `${s.order === '-' ? '-' : ''}${s.field}`).join(',')
       : undefined;
+
+    // Filter maintenance requests by tenant if user is a tenant
+    let tenantFilter: string | undefined;
+    const userRole = pb.authStore.record?.role;
+    if (userRole === UsersRoleOptions.Tenant) {
+      const userId = pb.authStore.record?.id;
+      // Get tenant records for this user
+      tenantFilter = `tenant.user = '${userId}'`;
+    }
+
     return context.queryClient.fetchQuery(
-      listMaintenanceRequestsQuery(context.search.page, context.search.perPage, sortString),
+      listMaintenanceRequestsQuery(context.search.page, context.search.perPage, sortString, tenantFilter),
     );
   },
 });

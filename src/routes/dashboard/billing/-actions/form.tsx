@@ -59,10 +59,12 @@ export const CreateBillingForm = withForm({
           {(field) => (
             <field.SelectField
               className="col-span-full"
-              options={Object.keys(BillsStatusOptions).map((value) => ({
-                label: value,
-                value: value,
-              }))}
+              options={Object.keys(BillsStatusOptions)
+                .filter((value) => value !== 'Paid')
+                .map((value) => ({
+                  label: value,
+                  value: value,
+                }))}
               label="Status"
             />
           )}
