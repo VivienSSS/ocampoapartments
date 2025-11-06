@@ -4,6 +4,7 @@ import { Calendar } from '@/components/ui/calendar';
 import { SidebarGroup, SidebarGroupContent } from '@/components/ui/sidebar';
 import { pb } from '@/pocketbase';
 import type { BillsResponse } from '@/pocketbase/queries/bills';
+import type { MaintenanceRequestsResponse } from '@/pocketbase/queries/maintenanceRequests';
 
 export interface LeaseEndDateDetail {
   tenantName: string;
@@ -28,9 +29,25 @@ export interface DueDateDetail {
   tenantLastName?: string;
 }
 
+export interface MaintenanceRequestDetail {
+  id: string;
+  description: string;
+  status: string;
+  urgency: string;
+  submittedDate: string;
+  tenantFirstName: string;
+  tenantLastName: string;
+  unitLetter: string;
+  floorNumber: number;
+  address: string;
+  workerName: string;
+  completedDate?: string;
+}
+
 export interface DateDetails {
   leaseEndDates: LeaseEndDateDetail[];
   dueDates: DueDateDetail[];
+  maintenanceRequests: MaintenanceRequestDetail[];
 }
 
 export function DatePicker({ onDateSelected }: { onDateSelected?: (date: Date | undefined, details: DateDetails) => void }) {
@@ -64,6 +81,17 @@ export function DatePicker({ onDateSelected }: { onDateSelected?: (date: Date | 
           }
         });
 
+        // Fetch maintenance request submitted dates
+        const maintenanceRequests = await pb.collection('maintenance_requests').getFullList({
+          fields: 'submittedDate',
+        });
+        maintenanceRequests.forEach((request: any) => {
+          if (request.submittedDate) {
+            const dateStr = format(new Date(request.submittedDate), 'yyyy-MM-dd');
+            dates.add(dateStr);
+          }
+        });
+
         setImportantDates(dates);
       } catch (error) {
         console.error('Failed to fetch important dates:', error);
@@ -82,6 +110,7 @@ export function DatePicker({ onDateSelected }: { onDateSelected?: (date: Date | 
         try {
           const leaseEndDates: LeaseEndDateDetail[] = [];
           const dueDates: DueDateDetail[] = [];
+          const maintenanceRequests: MaintenanceRequestDetail[] = [];
 
           // Fetch bill due dates for this date
           const bills = await pb.collection('bills').getFullList<BillsResponse>({
@@ -144,16 +173,45 @@ export function DatePicker({ onDateSelected }: { onDateSelected?: (date: Date | 
             }
           });
 
-          const dateDetails = { leaseEndDates, dueDates };
+          // Fetch maintenance requests for this date
+          const requests = await pb.collection('maintenance_requests').getFullList<MaintenanceRequestsResponse>({
+            expand: 'tenant.user,unit.property,worker',
+          });
+          requests.forEach((request: any) => {
+            if (request.submittedDate && format(new Date(request.submittedDate), 'yyyy-MM-dd') === dateStr) {
+              const tenantFirstName = request.expand?.tenant?.expand?.user?.firstName || '';
+              const tenantLastName = request.expand?.tenant?.expand?.user?.lastName || '';
+              const unitLetter = request.expand?.unit?.unitLetter || '';
+              const floorNumber = request.expand?.unit?.floorNumber || 0;
+              const address = request.expand?.unit?.expand?.property?.branch || '';
+              const workerName = request.expand?.worker?.name || 'Unassigned';
+              maintenanceRequests.push({
+                id: request.id,
+                description: request.description,
+                status: request.status || 'Pending',
+                urgency: request.urgency,
+                submittedDate: request.submittedDate,
+                tenantFirstName,
+                tenantLastName,
+                unitLetter,
+                floorNumber,
+                address,
+                workerName,
+                completedDate: request.completedDate,
+              });
+            }
+          });
+
+          const dateDetails = { leaseEndDates, dueDates, maintenanceRequests };
           onDateSelected?.(date, dateDetails);
         } catch (error) {
           console.error('Failed to fetch date details:', error);
-          onDateSelected?.(date, { leaseEndDates: [], dueDates: [] });
+          onDateSelected?.(date, { leaseEndDates: [], dueDates: [], maintenanceRequests: [] });
         }
       };
       fetchDateDetails();
     } else {
-      onDateSelected?.(undefined, { leaseEndDates: [], dueDates: [] });
+      onDateSelected?.(undefined, { leaseEndDates: [], dueDates: [], maintenanceRequests: [] });
     }
   };
 

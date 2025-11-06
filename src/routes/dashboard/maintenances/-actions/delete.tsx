@@ -77,7 +77,7 @@ const DeleteMaintenanceDialog = () => {
                   queryClient.invalidateQueries(
                     listMaintenanceRequestsQuery(
                       searchQuery.page,
-                      searchQuery.perPage,
+                      3,
                       undefined,
                       tenantFilter
                     ),

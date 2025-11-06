@@ -1,4 +1,4 @@
-import { createFileRoute } from '@tanstack/react-router';
+import { createFileRoute, redirect } from '@tanstack/react-router';
 import { zodValidator } from '@tanstack/zod-adapter';
 import { Button } from '@/components/ui/button';
 import DataTable from '@/components/ui/kibo-ui/table/data-table';
@@ -17,13 +17,24 @@ import EditAnnouncementDialogForm from './-actions/update';
 import LoadingComponent from './-loading';
 import { columns } from './-table';
 import { ChevronLeft, ChevronRight, Plus, Edit, Trash, ArrowUpDown } from 'lucide-react';
-import { RecentAnnouncementsChart } from '@/components/ui/charts';
+import { UsersRoleOptions } from '@/pocketbase/types';
 
 export const Route = createFileRoute('/dashboard/announcements/')({
   component: RouteComponent,
   pendingComponent: LoadingComponent,
   validateSearch: zodValidator(searchParams(announcementSchema.keyof())),
-  beforeLoad: ({ search }) => ({ search }),
+  beforeLoad: ({ search, context }) => {
+
+    if (context.user.role !== UsersRoleOptions.Administrator) {
+
+      if (context.user.role === UsersRoleOptions.Tenant) {
+        throw redirect({ to: "/dashboard/tenant-overview" })
+      }
+
+    }
+
+    return { search }
+  },
   loader: ({ context }) => {
     const sortString = context.search.sort
       ? context.search.sort.map((s) => `${s.order === '-' ? '-' : ''}${s.field}`).join(',')

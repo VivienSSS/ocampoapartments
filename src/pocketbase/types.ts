@@ -55,8 +55,8 @@ export type HTMLString = string
 
 type ExpandType<T> = unknown extends T
 	? T extends unknown
-		? { expand?: unknown }
-		: { expand: T }
+	? { expand?: unknown }
+	: { expand: T }
 	: { expand: T }
 
 // System fields
@@ -257,8 +257,8 @@ export type HighPriorityUnresolvedRequestsStatCardKpiViewRecord<TdaysOpen = unkn
 	phoneNumber?: number
 	priorityLabel?: null | TpriorityLabel
 	property: HTMLString
-	status: HighPriorityUnresolvedRequestsStatCardKpiViewStatusOptions
-	submittedDate: IsoDateString
+	status?: HighPriorityUnresolvedRequestsStatCardKpiViewStatusOptions
+	submittedDate?: IsoDateString
 	tenantId?: RecordIdString
 	unitLetter: string
 	urgency: HighPriorityUnresolvedRequestsStatCardKpiViewUrgencyOptions
@@ -291,7 +291,7 @@ export type MaintenanceRequestOverviewStatCardKpiViewRecord<TassignmentRate = un
 	avgCompletionDays?: null | TavgCompletionDays
 	id: string
 	requestCount?: number
-	status: MaintenanceRequestOverviewStatCardKpiViewStatusOptions
+	status?: MaintenanceRequestOverviewStatCardKpiViewStatusOptions
 	urgency: MaintenanceRequestOverviewStatCardKpiViewUrgencyOptions
 }
 
@@ -304,7 +304,7 @@ export type MaintenanceRequestStatusStatCardKpiViewRecord<TavgResolutionDays = u
 	avgResolutionDays?: null | TavgResolutionDays
 	id: string
 	pendingCount?: number
-	status: MaintenanceRequestStatusStatCardKpiViewStatusOptions
+	status?: MaintenanceRequestStatusStatCardKpiViewStatusOptions
 	totalRequests?: number
 }
 
@@ -324,9 +324,8 @@ export type MaintenanceRequestsRecord = {
 	created: IsoAutoDateString
 	description: HTMLString
 	id: string
-	progressImage?: FileNameString[]
-	status: MaintenanceRequestsStatusOptions
-	submittedDate: IsoDateString
+	status?: MaintenanceRequestsStatusOptions
+	submittedDate?: IsoDateString
 	tenant: RecordIdString
 	unit: RecordIdString
 	updated: IsoAutoDateString
@@ -702,13 +701,13 @@ export type CollectionResponses = {
 
 type ProcessCreateAndUpdateFields<T> = Omit<{
 	// Omit AutoDate fields
-	[K in keyof T as Extract<T[K], IsoAutoDateString> extends never ? K : never]: 
-		// Convert FileNameString to File
-		T[K] extends infer U ? 
-			U extends (FileNameString | FileNameString[]) ? 
-				U extends any[] ? File[] : File 
-			: U
-		: never
+	[K in keyof T as Extract<T[K], IsoAutoDateString> extends never ? K : never]:
+	// Convert FileNameString to File
+	T[K] extends infer U ?
+	U extends (FileNameString | FileNameString[]) ?
+	U extends any[] ? File[] : File
+	: U
+	: never
 }, 'id'>
 
 // Create type for Auth collections
@@ -746,14 +745,14 @@ export type UpdateBase<T> = Partial<
 // Get the correct create type for any collection
 export type Create<T extends keyof CollectionResponses> =
 	CollectionResponses[T] extends AuthSystemFields
-		? CreateAuth<CollectionRecords[T]>
-		: CreateBase<CollectionRecords[T]>
+	? CreateAuth<CollectionRecords[T]>
+	: CreateBase<CollectionRecords[T]>
 
 // Get the correct update type for any collection
 export type Update<T extends keyof CollectionResponses> =
 	CollectionResponses[T] extends AuthSystemFields
-		? UpdateAuth<CollectionRecords[T]>
-		: UpdateBase<CollectionRecords[T]>
+	? UpdateAuth<CollectionRecords[T]>
+	: UpdateBase<CollectionRecords[T]>
 
 // Type for usage with type asserted PocketBase instance
 // https://github.com/pocketbase/js-sdk#specify-typescript-definitions

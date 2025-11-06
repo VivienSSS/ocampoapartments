@@ -5,7 +5,7 @@ import {
   type updateTenantSchema,
 } from '@/pocketbase/schemas/tenants';
 import type { UsersResponse } from '@/pocketbase/types';
-import { Collections } from '@/pocketbase/types';
+import { Collections, UsersRoleOptions } from '@/pocketbase/types';
 import { pb } from '@/pocketbase';
 import { AsyncSelect } from '@/components/ui/async-select';
 
@@ -24,7 +24,7 @@ export const CreateTenantForm = withForm({
               <AsyncSelect<UsersResponse>
                 className="w-full"
                 fetcher={async (query) => (await pb.collection(Collections.Users).getList<UsersResponse>(1, 10, {
-                  filter: query ? `contactEmail ~ '%${query}%' || firstName ~ '%${query}%' || lastName ~ '%${query}%'` : '',
+                  filter: `role = '${UsersRoleOptions.Tenant}'${query ? ` && (contactEmail ~ '%${query}%' || firstName ~ '%${query}%' || lastName ~ '%${query}%')` : ''}`,
                   requestKey: null
                 })).items}
                 getOptionValue={(option) => option.id}
@@ -76,7 +76,7 @@ export const EditTenantForm = withForm({
             <AsyncSelect<UsersResponse>
               className="w-full"
               fetcher={async (query) => (await pb.collection(Collections.Users).getList<UsersResponse>(1, 10, {
-                filter: query ? `contactEmail ~ '%${query}%' || firstName ~ '%${query}%' || lastName ~ '%${query}%'` : '',
+                filter: `role = '${UsersRoleOptions.Tenant}'${query ? ` && (contactEmail ~ '%${query}%' || firstName ~ '%${query}%' || lastName ~ '%${query}%')` : ''}`,
                 requestKey: null
               })).items}
               getOptionValue={(option) => option.id}

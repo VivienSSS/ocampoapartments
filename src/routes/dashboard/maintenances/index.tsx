@@ -1,7 +1,6 @@
-import { createFileRoute } from '@tanstack/react-router';
+import { createFileRoute, redirect } from '@tanstack/react-router';
 import { zodValidator } from '@tanstack/zod-adapter';
 import { Button } from '@/components/ui/button';
-import DataTable from '@/components/ui/kibo-ui/table/data-table';
 import {
   DropdownMenu,
   DropdownMenuContent,
@@ -15,7 +14,7 @@ import CreateMaintenanceDialogForm from './-actions/create';
 import DeleteMaintenanceDialogForm from './-actions/delete';
 import EditMaintenanceDialogForm from './-actions/update';
 import LoadingComponent from './-loading';
-import { columns } from './-table';
+import { MaintenanceRequestCards } from './-cards';
 import { ChevronLeft, ChevronRight, Plus, Edit, Trash, ArrowUpDown } from 'lucide-react';
 import { pb } from '@/pocketbase';
 import { UsersRoleOptions } from '@/pocketbase/types';
@@ -24,7 +23,14 @@ export const Route = createFileRoute('/dashboard/maintenances/')({
   component: RouteComponent,
   pendingComponent: LoadingComponent,
   validateSearch: zodValidator(searchParams(maintenanceRequestSchema.keyof())),
-  beforeLoad: ({ search }) => ({ search }),
+  beforeLoad: ({ search, context }) => {
+
+    if (context.user.role !== UsersRoleOptions.Administrator && context.user.role !== UsersRoleOptions.Tenant && context.user.role !== UsersRoleOptions['Building Admin']) {
+      throw redirect({ to: "/dashboard" })
+    }
+
+    return { search }
+  },
   loader: ({ context }) => {
     const sortString = context.search.sort
       ? context.search.sort.map((s) => `${s.order === '-' ? '-' : ''}${s.field}`).join(',')
@@ -40,7 +46,7 @@ export const Route = createFileRoute('/dashboard/maintenances/')({
     }
 
     return context.queryClient.fetchQuery(
-      listMaintenanceRequestsQuery(context.search.page, context.search.perPage, sortString, tenantFilter),
+      listMaintenanceRequestsQuery(context.search.page, 3, sortString, tenantFilter),
     );
   },
 });
@@ -49,40 +55,47 @@ function RouteComponent() {
   const navigate = Route.useNavigate();
   const searchQuery = Route.useSearch();
   const maintenanceRequests = Route.useLoaderData();
+  const userRole = pb.authStore.record?.role;
+  const isTenant = userRole === UsersRoleOptions.Tenant;
+
   return (
     <article className="space-y-4 grid grid-cols-12">
       {/* Controls Section */}
       <section className="col-span-full flex items-center justify-between py-2.5">
         <h1 className="text-2xl font-bold">Maintenance Requests</h1>
         <div className='flex gap-2.5'>
-          <Button
-            disabled={searchQuery.selected.length > 1}
-            onClick={() =>
-              navigate({
-                search: (prev) => ({
-                  ...prev,
-                  id: searchQuery.selected[0],
-                  edit: true,
-                }),
-              })
-            }
-          >
-            <Edit /> Edit
-          </Button>
-          <Button
-            variant="destructive"
-            disabled={!(searchQuery.id ?? searchQuery.selected?.length > 0)}
-            onClick={() =>
-              navigate({
-                search: (prev) => ({
-                  ...prev,
-                  delete: true,
-                }),
-              })
-            }
-          >
-            <Trash /> Delete
-          </Button>
+          {!isTenant && (
+            <Button
+              disabled={searchQuery.selected.length > 1}
+              onClick={() =>
+                navigate({
+                  search: (prev) => ({
+                    ...prev,
+                    id: searchQuery.selected[0],
+                    edit: true,
+                  }),
+                })
+              }
+            >
+              <Edit /> Edit
+            </Button>
+          )}
+          {!isTenant && (
+            <Button
+              variant="destructive"
+              disabled={!(searchQuery.id ?? searchQuery.selected?.length > 0)}
+              onClick={() =>
+                navigate({
+                  search: (prev) => ({
+                    ...prev,
+                    delete: true,
+                  }),
+                })
+              }
+            >
+              <Trash /> Delete
+            </Button>
+          )}
           <Button disabled={searchQuery.page === 1} onClick={() => navigate({ search: (prev) => ({ ...prev, page: searchQuery.page - 1 }) })}>
             <ChevronLeft />
           </Button>
@@ -114,7 +127,7 @@ function RouteComponent() {
       </section>
       {/* DataTable Section */}
       <section className='col-span-full'>
-        <DataTable columns={columns} data={maintenanceRequests} />
+        <MaintenanceRequestCards data={maintenanceRequests.items} />
       </section>
       {pb.authStore.record?.role !== UsersRoleOptions['Building Admin'] && (
         <div className="col-span-full flex justify-end py-2.5">
@@ -130,9 +143,9 @@ function RouteComponent() {
         </div>
       )}
       <section>
-        {pb.authStore.record?.role !== UsersRoleOptions['Building Admin'] && (
-          <CreateMaintenanceDialogForm />
-        )}
+        {/* {pb.authStore.record?.role !== UsersRoleOptions['Building Admin'] && ( */}
+        <CreateMaintenanceDialogForm />
+        {/* )} */}
         <DeleteMaintenanceDialogForm />
         <EditMaintenanceDialogForm />
       </section>

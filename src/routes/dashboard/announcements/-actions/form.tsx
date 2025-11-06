@@ -8,7 +8,7 @@ export const AnnouncementForm = withForm({
           {(field) => (
             <field.TextField
               hidden
-              className="col-span-full"
+              className="col-span-full space-y-2"
               placeholder="Author"
             />
           )}

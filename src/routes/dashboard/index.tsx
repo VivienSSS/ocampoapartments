@@ -1,8 +1,18 @@
-import { createFileRoute } from '@tanstack/react-router';
-import { PortfolioOverviewStats, MonthlyRevenueTrendChart } from '@/components/ui/charts';
+import { createFileRoute, redirect } from '@tanstack/react-router';
+import { PortfolioOverviewStats } from '@/components/ui/charts';
+import { UsersRoleOptions } from '@/pocketbase/types';
 
 export const Route = createFileRoute('/dashboard/')({
     component: RouteComponent,
+    beforeLoad: ({ context }) => {
+        if (context.user.role !== UsersRoleOptions.Administrator) {
+
+            if (context.user.role === UsersRoleOptions.Tenant) {
+                throw redirect({ to: "/dashboard/tenant-overview" })
+            }
+
+        }
+    }
 });
 
 function RouteComponent() {

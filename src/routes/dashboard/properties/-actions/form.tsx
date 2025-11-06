@@ -32,7 +32,7 @@ export const CreatePropertyForm = withForm({
               label: key,
               value: key,
             }))}
-            className="col-span-full"
+            className="col-span-full space-y-2"
             label="Branch"
           />
         )}
@@ -40,7 +40,7 @@ export const CreatePropertyForm = withForm({
       <form.AppField name="address">
         {(field) => (
           <field.TextAreaField
-            className="col-span-full"
+            className="col-span-full space-y-2"
             label="Address"
           />
         )}
@@ -61,7 +61,7 @@ export const EditPropertyForm = withForm({
               label: key,
               value: key,
             }))}
-            className="col-span-full"
+            className="col-span-full space-y-2"
             label="Branch"
           />
         )}
@@ -70,7 +70,7 @@ export const EditPropertyForm = withForm({
       <form.AppField name="address">
         {(field) => (
           <field.TextAreaField
-            className="col-span-full"
+            className="col-span-full space-y-2"
             label="Address"
           />
         )}

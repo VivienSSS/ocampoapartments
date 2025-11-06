@@ -83,61 +83,19 @@ const showNav = () => {
           icon: Hammer,
         },
 
-
-
+      ];
+    case UsersRoleOptions['Building Admin']:
+      return [
+        {
+          title: 'Overview',
+          url: '/dashboard/bldg-admin-overview',
+          icon: Command,
+        },
         // {
         //   title: 'Announcements',
         //   url: '/dashboard/announcements',
         //   icon: Megaphone,
         // },
-        // {
-        //   title: 'Apartment Units',
-        //   url: '/dashboard/apartments',
-        //   icon: Hotel,
-        // },
-        // {
-        //   title: 'Billing',
-        //   url: '/dashboard/billing',
-        //   icon: ReceiptText,
-        // },
-        // {
-        //   title: 'Requests',
-        //   url: '/dashboard/maintenances',
-        //   icon: Hammer,
-        // },
-        // {
-        //   title: 'Maintenance Workers',
-        //   url: '/dashboard/maintenanceworkers',
-        //   icon: ShieldUser,
-        // },
-        // {
-        //   title: 'Payments',
-        //   url: '/dashboard/payments',
-        //   icon: HandCoins,
-        // },
-        // {
-        //   title: 'Properties',
-        //   url: '/dashboard/properties',
-        //   icon: MapPinHouse,
-        // },
-        // {
-        //   title: 'Tenants',
-        //   url: '/dashboard/tenants',
-        //   icon: BookUser,
-        // },
-        // {
-        //   title: 'Tenancies',
-        //   url: '/dashboard/tenancies',
-        //   icon: House,
-        // },
-      ];
-    case UsersRoleOptions['Building Admin']:
-      return [
-        {
-          title: 'Announcements',
-          url: '/dashboard/announcements',
-          icon: Megaphone,
-        },
         {
           title: 'Requests',
           url: '/dashboard/maintenances',
@@ -156,16 +114,6 @@ const showNav = () => {
           url: '/dashboard/tenant-overview',
           icon: Command,
         },
-        // {
-        //   title: 'Announcements',
-        //   url: '/dashboard/announcements',
-        //   icon: Megaphone,
-        // },
-        // {
-        //   title: 'Billing',
-        //   url: '/dashboard/billing',
-        //   icon: ReceiptText,
-        // },
         {
           title: 'Maintenance Requests',
           url: '/dashboard/maintenances',

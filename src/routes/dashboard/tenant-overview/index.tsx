@@ -1,4 +1,4 @@
-import { createFileRoute } from '@tanstack/react-router';
+import { createFileRoute, redirect } from '@tanstack/react-router';
 import { useSuspenseQuery } from '@tanstack/react-query';
 import { useState } from 'react';
 import {
@@ -13,7 +13,7 @@ import { listBillsQuery } from '@/pocketbase/queries/bills';
 import type { AnnouncementsResponse } from '@/pocketbase/queries/announcements';
 import type { BillsResponse } from '@/pocketbase/queries/bills';
 import { pb } from '@/pocketbase';
-import { Collections } from '@/pocketbase/types';
+import { Collections, UsersRoleOptions } from '@/pocketbase/types';
 
 interface TenantOverviewData {
     announcements: {
@@ -34,7 +34,13 @@ interface TenantOverviewData {
 
 export const Route = createFileRoute('/dashboard/tenant-overview/')({
     component: RouteComponent,
-    beforeLoad: ({ context }) => ({ context }),
+    beforeLoad: ({ context }) => {
+        // Only tenants can access this page
+        if (pb.authStore.record?.role !== UsersRoleOptions.Tenant) {
+            throw redirect({ to: '/dashboard' });
+        }
+        return { context };
+    },
     loader: async ({ context }) => {
         const [announcements, bills] = await Promise.all([
             context.queryClient.fetchQuery(listAnnouncementsQuery(1, 5)),

@@ -64,8 +64,6 @@ export function FinancialOverviewChart() {
     const chartData = [
         {
             name: 'Financial Summary',
-            total_paid: record.total_paid || 0,
-            total_outstanding: record.total_outstanding || 0,
             total_bill_amount: record.total_bill_amount || 0,
         },
     ];
@@ -108,23 +106,11 @@ export function FinancialOverviewChart() {
                         </ResponsiveContainer>
                     </ChartContainer>
                     {/* Key Metrics */}
-                    <div className="grid grid-cols-2 gap-2 sm:grid-cols-4">
+                    <div className="grid grid-cols-2 gap-2">
                         <div className="rounded-lg border p-2">
                             <p className="text-muted-foreground text-xs font-medium">Total Billed</p>
                             <p className="text-sm font-semibold">
                                 ₱{record.total_bill_amount?.toLocaleString() || '0'}
-                            </p>
-                        </div>
-                        <div className="rounded-lg border p-2">
-                            <p className="text-muted-foreground text-xs font-medium">Total Paid</p>
-                            <p className="text-sm font-semibold">
-                                ₱{record.total_paid?.toLocaleString() || '0'}
-                            </p>
-                        </div>
-                        <div className="rounded-lg border p-2">
-                            <p className="text-muted-foreground text-xs font-medium">Outstanding</p>
-                            <p className="text-sm font-semibold">
-                                ₱{record.total_outstanding?.toLocaleString() || '0'}
                             </p>
                         </div>
                         <div className="rounded-lg border p-2">

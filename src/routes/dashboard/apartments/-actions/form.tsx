@@ -74,6 +74,14 @@ export const CreateApartmentForm = withForm({
             />
           )}
         </form.AppField>
+        <form.AppField name="isAvailable">
+          {(field) => (
+            <field.CheckBoxField
+              className="col-span-full"
+              label="Available"
+            />
+          )}
+        </form.AppField>
       </>
     );
   },
@@ -132,6 +140,14 @@ export const EditApartmentForm = withForm({
               value: value.id,
             }))}
             label="Property"
+          />
+        )}
+      </form.AppField>
+      <form.AppField name="isAvailable">
+        {(field) => (
+          <field.CheckBoxField
+            className="col-span-full mt-2"
+            label="Available"
           />
         )}
       </form.AppField>

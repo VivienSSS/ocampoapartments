@@ -7,11 +7,40 @@ import { format } from 'date-fns';
 import { Accordion, AccordionItem, AccordionTrigger, AccordionContent } from '@/components/ui/accordion';
 import { FieldGroup, FieldSet, Field, FieldContent } from '@/components/ui/field';
 import type { DateDetails } from '@/components/date-picker';
+import { Badge } from '@/components/ui/badge';
 
 export function DateDetails({ dateDetails, selectedDate }: { dateDetails: DateDetails; selectedDate: Date | undefined }) {
-    if (!selectedDate || (dateDetails.leaseEndDates.length === 0 && dateDetails.dueDates.length === 0)) {
+    if (!selectedDate || (dateDetails.leaseEndDates.length === 0 && dateDetails.dueDates.length === 0 && dateDetails.maintenanceRequests.length === 0)) {
         return null;
     }
+
+    const getUrgencyColor = (urgency: string) => {
+        switch (urgency?.toLowerCase()) {
+            case 'critical':
+                return 'destructive';
+            case 'high':
+                return 'secondary';
+            case 'medium':
+                return 'default';
+            case 'low':
+                return 'outline';
+            default:
+                return 'default';
+        }
+    };
+
+    const getStatusColor = (status: string) => {
+        switch (status?.toLowerCase()) {
+            case 'completed':
+                return 'default';
+            case 'in-progress':
+                return 'secondary';
+            case 'pending':
+                return 'outline';
+            default:
+                return 'default';
+        }
+    };
 
     return (
         <SidebarGroup className="py-0">
@@ -84,6 +113,72 @@ export function DateDetails({ dateDetails, selectedDate }: { dateDetails: DateDe
                                                                 <p className="text-xs font-medium text-muted-foreground">Due Date</p>
                                                                 <p className="text-sm">{format(new Date(due.dueDate), 'PPP')}</p>
                                                             </div>
+                                                        </div>
+                                                    </FieldContent>
+                                                </Field>
+                                            </FieldGroup>
+                                        </FieldSet>
+                                    </AccordionContent>
+                                </AccordionItem>
+                            ))}
+                        </>
+                    )}
+                    {dateDetails.maintenanceRequests.length > 0 && (
+                        <>
+                            {dateDetails.maintenanceRequests.map((request, index) => (
+                                <AccordionItem key={`maintenance-${index}`} value={`maintenance-${index}`} className="border-b">
+                                    <AccordionTrigger className="py-2 text-sm hover:no-underline">
+                                        <span className="text-sidebar-foreground flex items-center gap-2">
+                                            <span className="text-muted-foreground">Maintenance</span>
+                                            <Badge variant={getUrgencyColor(request.urgency)} className="text-xs">
+                                                {request.urgency}
+                                            </Badge>
+                                        </span>
+                                    </AccordionTrigger>
+                                    <AccordionContent className="pb-4">
+                                        <FieldSet className="gap-3">
+                                            <FieldGroup>
+                                                <Field orientation="vertical">
+                                                    <FieldContent>
+                                                        <div className="space-y-2">
+                                                            <div>
+                                                                <p className="text-xs font-medium text-muted-foreground">Tenant Name</p>
+                                                                <p className="text-sm">{`${request.tenantFirstName} ${request.tenantLastName}`}</p>
+                                                            </div>
+                                                            <div>
+                                                                <p className="text-xs font-medium text-muted-foreground">Unit</p>
+                                                                <p className="text-sm">{`Floor ${request.floorNumber}, Unit ${request.unitLetter}`}</p>
+                                                            </div>
+                                                            <div>
+                                                                <p className="text-xs font-medium text-muted-foreground">Address</p>
+                                                                <p className="text-sm">{request.address || 'N/A'}</p>
+                                                            </div>
+                                                            <div>
+                                                                <p className="text-xs font-medium text-muted-foreground">Description</p>
+                                                                <p className="text-sm line-clamp-2">{request.description}</p>
+                                                            </div>
+                                                            <div>
+                                                                <p className="text-xs font-medium text-muted-foreground">Status</p>
+                                                                <div className="flex items-center gap-1">
+                                                                    <Badge variant={getStatusColor(request.status)} className="text-xs">
+                                                                        {request.status}
+                                                                    </Badge>
+                                                                </div>
+                                                            </div>
+                                                            <div>
+                                                                <p className="text-xs font-medium text-muted-foreground">Assigned Worker</p>
+                                                                <p className="text-sm">{request.workerName}</p>
+                                                            </div>
+                                                            <div>
+                                                                <p className="text-xs font-medium text-muted-foreground">Submitted Date</p>
+                                                                <p className="text-sm">{format(new Date(request.submittedDate), 'PPP')}</p>
+                                                            </div>
+                                                            {request.completedDate && (
+                                                                <div>
+                                                                    <p className="text-xs font-medium text-muted-foreground">Completed Date</p>
+                                                                    <p className="text-sm">{format(new Date(request.completedDate), 'PPP')}</p>
+                                                                </div>
+                                                            )}
                                                         </div>
                                                     </FieldContent>
                                                 </Field>

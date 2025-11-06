@@ -1,4 +1,4 @@
-import { useMutation } from '@tanstack/react-query';
+import { useMutation, useQuery } from '@tanstack/react-query';
 import {
   useNavigate,
   useRouteContext,
@@ -20,7 +20,8 @@ import {
 import { insertMaintenanceRequestSchema } from '@/pocketbase/schemas/maintenanceRequests';
 import { CreateMaintenanceForm } from './form';
 import { pb } from '@/pocketbase';
-import { UsersRoleOptions } from '@/pocketbase/types';
+import { UsersRoleOptions, Collections } from '@/pocketbase/types';
+import type { TenantsResponse } from '@/pocketbase/queries/tenants';
 
 const CreateMaintenanceDialogForm = () => {
   const navigate = useNavigate({ from: '/dashboard/maintenances' });
@@ -31,17 +32,36 @@ const CreateMaintenanceDialogForm = () => {
   const userId = pb.authStore.record?.id;
   const isTenant = userRole === UsersRoleOptions.Tenant;
 
+  // Fetch tenant ID if user is a tenant
+  const { data: tenantData } = useQuery({
+    queryKey: ['currentTenant', userId],
+    queryFn: async () => {
+      if (!isTenant || !userId) return null;
+      const tenants = await pb.collection(Collections.Tenants).getFullList<TenantsResponse>({
+        filter: `user = '${userId}'`,
+        requestKey: null,
+      });
+      return tenants.length > 0 ? tenants[0] : null;
+    },
+    enabled: isTenant && !!userId,
+    staleTime: 1000 * 60 * 5, // 5 minutes
+    gcTime: 1000 * 60 * 30, // 30 minutes
+  });
+
   const maintenanceMutation = useMutation(createMaintenanceRequestMutation);
 
   const form = useAppForm({
     defaultValues: {
-      status: 'pending',
+      status: 'Pending',
+      ...(isTenant && tenantData ? { tenant: tenantData.id } : {}),
     } as unknown as z.infer<typeof insertMaintenanceRequestSchema>,
-    validators: {
-      onChange: insertMaintenanceRequestSchema,
-    },
-    onSubmit: async ({ value }) =>
-      maintenanceMutation.mutateAsync(value, {
+    // validators: {
+    //   onChange: insertMaintenanceRequestSchema,
+    // },
+    onSubmit: async ({ value }) => {
+      // For tenants, ensure tenant field is set
+      const submitValue = isTenant && tenantData ? { ...value, tenant: tenantData.id } : value;
+      return maintenanceMutation.mutateAsync(submitValue, {
         onSuccess: () => {
           // Determine tenant filter if user is a tenant
           let tenantFilter: string | undefined;
@@ -52,17 +72,19 @@ const CreateMaintenanceDialogForm = () => {
           queryClient.invalidateQueries(
             listMaintenanceRequestsQuery(
               searchParams.page,
-              searchParams.perPage,
+              3,
               undefined,
               tenantFilter
             ),
           );
+
           navigate({
             to: '/dashboard/maintenances',
             search: { new: undefined },
           });
         },
-      }),
+      });
+    },
   });
 
   return (

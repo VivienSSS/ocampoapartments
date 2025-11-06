@@ -1,4 +1,4 @@
-import { createFileRoute } from '@tanstack/react-router';
+import { createFileRoute, redirect } from '@tanstack/react-router';
 import { zodValidator } from '@tanstack/zod-adapter';
 import { Button } from '@/components/ui/button';
 import DataTable from '@/components/ui/kibo-ui/table/data-table';
@@ -25,7 +25,18 @@ export const Route = createFileRoute('/dashboard/billing/')({
   component: RouteComponent,
   pendingComponent: LoadingComponent,
   validateSearch: zodValidator(searchParams(billSchema.keyof())),
-  beforeLoad: ({ search }) => ({ search }),
+  beforeLoad: ({ search, context }) => {
+
+    if (context.user.role !== UsersRoleOptions.Administrator) {
+
+      if (context.user.role === UsersRoleOptions.Tenant) {
+        throw redirect({ to: "/dashboard/tenant-overview" })
+      }
+
+    }
+
+    return { search }
+  },
   loader: async ({ context }) => {
     const sortString = context.search.sort
       ? context.search.sort.map((s) => `${s.order === '-' ? '-' : ''}${s.field}`).join(',')

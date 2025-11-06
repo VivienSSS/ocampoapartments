@@ -18,9 +18,9 @@ import type { MaintenanceWorkersResponse } from '@/pocketbase/types';
 
 export const CreateMaintenanceForm = withForm({
   defaultValues: {} as z.infer<typeof insertMaintenanceRequestSchema>,
-  validators: {
-    onChange: insertMaintenanceRequestSchema,
-  },
+  // validators: {
+  //   onChange: insertMaintenanceRequestSchema,
+  // },
   render: ({ form }) => {
     const userRole = pb.authStore.record?.role;
     const isTenant = userRole === UsersRoleOptions.Tenant;
@@ -75,16 +75,22 @@ export const CreateMaintenanceForm = withForm({
 
                   // For tenants, only show their own units
                   if (isTenant && userId) {
-                    // Get all tenancies for this tenant
+                    // Get all tenancies for this tenant with tenant info expanded
                     const tenancies = await pb.collection(Collections.Tenancies).getFullList<any>({
                       filter: `tenant.user = '${userId}'`,
-                      expand: 'unit.property',
+                      expand: 'unit.property,tenant',
                       requestKey: null
                     });
 
-                    // Extract units from tenancies
+                    // Extract units from tenancies and enrich with tenant info
                     units = tenancies
-                      .map((tenancy: any) => tenancy.expand?.unit)
+                      .map((tenancy: any) => {
+                        const unit = tenancy.expand?.unit;
+                        if (unit && tenancy.expand?.tenant) {
+                          (unit as any).tenantName = tenancy.expand.tenant.facebookName;
+                        }
+                        return unit;
+                      })
                       .filter((unit: any) => {
                         if (!unit) return false;
                         if (!query) return true;
@@ -96,30 +102,41 @@ export const CreateMaintenanceForm = withForm({
                         );
                       });
                   } else {
-                    // For admins, show all units with query filter
+                    // For admins, show all units with query filter and include tenant info
                     let filterCondition = query ? `unitLetter ~ '%${query}%' || floorNumber ~ '%${query}%' || property.branch ~ '%${query}%'` : '';
 
-                    units = (await pb.collection(Collections.ApartmentUnits).getList<ApartmentUnitsResponse>(1, 100, {
+                    const unitsData = (await pb.collection(Collections.ApartmentUnits).getList<ApartmentUnitsResponse>(1, 100, {
                       filter: filterCondition,
                       expand: 'property',
                       requestKey: null
                     })).items;
-                  }
 
-                  // Fetch tenant info for each unit through tenancies
-                  for (const unit of units) {
-                    try {
+                    // Fetch all tenancies for these units in a single request
+                    if (unitsData.length > 0) {
                       const tenancies = await pb.collection(Collections.Tenancies).getFullList<any>({
-                        filter: `unit = '${unit.id}'`,
+                        filter: unitsData.map(item => `unit.id = '${item.id}'`).join(' || '),
                         expand: 'tenant',
                         requestKey: null
                       });
-                      if (tenancies.length > 0 && (tenancies[0] as any).expand?.tenant) {
-                        (unit as any).tenantName = (tenancies[0] as any).expand.tenant.facebookName;
-                      }
-                    } catch {
-                      // If no tenancy found, continue without tenant name
+
+                      // Create a map for quick lookup
+                      const tenancyMap = new Map();
+                      tenancies.forEach((tenancy: any) => {
+                        if (tenancy.unit && tenancy.expand?.tenant) {
+                          tenancyMap.set(tenancy.unit, tenancy.expand.tenant.facebookName);
+                        }
+                      });
+
+                      // Enrich units with tenant info
+                      unitsData.forEach(unit => {
+                        const tenantName = tenancyMap.get(unit.id);
+                        if (tenantName) {
+                          (unit as any).tenantName = tenantName;
+                        }
+                      });
                     }
+
+                    units = unitsData;
                   }
 
                   return units;
@@ -154,7 +171,7 @@ export const CreateMaintenanceForm = withForm({
             />
           )}
         </form.AppField>
-        <form.AppField name="status">
+        {/* <form.AppField name="status">
           {(field) => (
             <field.SelectField
               className="col-span-full"
@@ -193,7 +210,7 @@ export const CreateMaintenanceForm = withForm({
               />
             </div>
           )}
-        </form.AppField>
+        </form.AppField> */}
         <form.AppField name="description">
           {(field) => (
             <field.TextAreaField
@@ -223,7 +240,47 @@ export const EditMaintenanceForm = withForm({
     onChange: updateMaintenanceRequestSchema,
   },
   render: ({ form }) => (
-    <>
+    <div className="space-y-4">
+      <form.AppField name="status">
+        {(field) => (
+          <field.SelectField
+            className="col-span-full"
+            options={Object.keys(MaintenanceRequestsStatusOptions).map(
+              (value) => ({ label: value, value: value }),
+            )}
+            label='Status'
+          />
+        )}
+      </form.AppField>
+      <form.AppField name="worker">
+        {(field) => (
+          <div className="col-span-full">
+            <label className="block text-sm font-medium text-foreground mb-2">
+              Worker
+            </label>
+            <AsyncSelect<MaintenanceWorkersResponse>
+              className="w-full"
+              fetcher={async (query) => (await pb.collection(Collections.MaintenanceWorkers).getList<MaintenanceWorkersResponse>(1, 10, {
+                filter: query ? `name ~ '%${query}%' || contactDetails ~ '%${query}%'` : '',
+                requestKey: null
+              })).items}
+              getOptionValue={(option) => option.id}
+              getDisplayValue={(option) => option.name}
+              renderOption={(option) => (
+                <div>
+                  <div className="font-medium">{option.name}</div>
+                  <div className="text-sm text-muted-foreground">
+                    {option.contactDetails}
+                  </div>
+                </div>
+              )}
+              value={field.state.value || ''}
+              onChange={field.handleChange}
+              label="Worker"
+            />
+          </div>
+        )}
+      </form.AppField>
       <form.AppField name="completedDate">
         {(field) => (
           <field.DateField
@@ -233,6 +290,6 @@ export const EditMaintenanceForm = withForm({
           />
         )}
       </form.AppField>
-    </>
+    </div>
   ),
 });

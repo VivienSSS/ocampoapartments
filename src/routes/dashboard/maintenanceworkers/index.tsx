@@ -1,4 +1,4 @@
-import { createFileRoute } from '@tanstack/react-router';
+import { createFileRoute, redirect } from '@tanstack/react-router';
 import { zodValidator } from '@tanstack/zod-adapter';
 import DataTable from '@/components/ui/kibo-ui/table/data-table';
 import { ChevronLeft, ChevronRight, Plus, Edit, Trash, ArrowUpDown } from 'lucide-react';
@@ -18,6 +18,7 @@ import {
 import CreateWorkerDialogForm from './-actions/create';
 import EditWorkerDialogForm from './-actions/update';
 import DeleteWorkerDialogForm from './-actions/delete';
+import { UsersRoleOptions } from '@/pocketbase/types';
 
 export const Route = createFileRoute('/dashboard/maintenanceworkers/')({
   component: RouteComponent,
@@ -25,7 +26,18 @@ export const Route = createFileRoute('/dashboard/maintenanceworkers/')({
   validateSearch: zodValidator(
     searchParams(maintenanceWorkerSchema.keyof())
   ),
-  beforeLoad: ({ search }) => ({ search }),
+  beforeLoad: ({ search, context }) => {
+
+    if (context.user.role !== UsersRoleOptions.Administrator) {
+
+      if (context.user.role === UsersRoleOptions.Tenant) {
+        throw redirect({ to: "/dashboard/tenant-overview" })
+      }
+
+    }
+
+    return { search }
+  },
   loader: ({ context }) => {
     const sortString = context.search.sort
       ? context.search.sort.map((s) => `${s.order === '-' ? '-' : ''}${s.field}`).join(',')

@@ -1,4 +1,5 @@
 import { useMutation, useQueries, useQuery } from '@tanstack/react-query';
+import { useEffect } from 'react';
 import {
   useNavigate,
   useRouteContext,
@@ -49,10 +50,13 @@ const EditApartmentDialogForm = () => {
 
   const form = useAppForm({
     defaultValues: {
-      unitLetter: apt?.unitLetter ?? '',
-      property: apt?.property ?? undefined,
+      unitLetter: '',
+      property: undefined,
+      floorNumber: undefined,
+      capacity: undefined,
+      price: undefined,
+      isAvailable: true,
     } as z.infer<typeof updateApartmentUnitSchema>,
-    validators: { onChange: updateApartmentUnitSchema },
     onSubmit: async ({ value }) =>
       mutation.mutateAsync(value, {
         onSuccess: () => {
@@ -66,6 +70,18 @@ const EditApartmentDialogForm = () => {
         },
       }),
   });
+
+  // Update form values when data loads
+  useEffect(() => {
+    if (apt) {
+      form.setFieldValue('unitLetter', apt.unitLetter ?? '');
+      form.setFieldValue('property', apt.property ?? undefined);
+      form.setFieldValue('floorNumber', apt.floorNumber ?? undefined);
+      form.setFieldValue('capacity', apt.capacity ?? undefined);
+      form.setFieldValue('price', apt.price ?? undefined);
+      form.setFieldValue('isAvailable', apt.isAvailable ?? true);
+    }
+  }, [apt, form]);
 
   return (
     <Dialog

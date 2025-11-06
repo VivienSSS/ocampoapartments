@@ -61,7 +61,7 @@ const CreateApartmentDialogForm = () => {
           <DialogDescription>Enter the right information</DialogDescription>
         </DialogHeader>
         <form
-          className="grid grid-cols-4 gap-2.5"
+          className="grid grid-cols-4 gap-6"
           onSubmit={(e) => {
             e.preventDefault();
             e.stopPropagation();

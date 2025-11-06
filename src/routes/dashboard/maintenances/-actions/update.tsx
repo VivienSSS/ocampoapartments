@@ -61,7 +61,7 @@ const EditMaintenanceDialogForm = () => {
           }
 
           queryClient.invalidateQueries(
-            listMaintenanceRequestsQuery(searchQuery.page, searchQuery.perPage, undefined, tenantFilter),
+            listMaintenanceRequestsQuery(searchQuery.page, 3, undefined, tenantFilter),
           );
           navigate({
             to: '/dashboard/maintenances',

@@ -58,7 +58,7 @@ export function SidebarRight({
   ...props
 }: React.ComponentProps<typeof Sidebar>) {
   const [selectedDate, setSelectedDate] = React.useState<Date | undefined>();
-  const [dateDetails, setDateDetails] = React.useState<DateDetails>({ leaseEndDates: [], dueDates: [] });
+  const [dateDetails, setDateDetails] = React.useState<DateDetails>({ leaseEndDates: [], dueDates: [], maintenanceRequests: [] });
 
   const handleDateSelected = (date: Date | undefined, details: DateDetails) => {
     setSelectedDate(date);
