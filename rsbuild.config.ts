@@ -20,6 +20,11 @@ export default defineConfig({
       ],
     },
   },
+  output: {
+    distPath: {
+      root: ".output/dist"
+    }
+  },
   server: {
     proxy: {
       '/api': 'http://localhost:8090',

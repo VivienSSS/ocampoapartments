@@ -6,7 +6,7 @@ import {
 } from '@/pocketbase/queries/maintenanceRequests';
 import { pb } from '@/pocketbase';
 import { UsersRoleOptions } from '@/pocketbase/types';
-import { MaintenanceStatsSection } from './stats-section';
+import { MaintenanceStatsSection } from './-stats-section';
 
 interface BldgAdminOverviewData {
     statusStats: any;

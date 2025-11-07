@@ -21,3 +21,4 @@ pb_data
 Dockerfile
 justfile
 README.md
+.output

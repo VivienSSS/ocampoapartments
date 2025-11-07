@@ -21,6 +21,10 @@ dev-frontend:
 dev:
   @bun concurrently 'just dev-go' 'just dev-frontend' -n 'pocketbase,rsbuild'
 
+build:
+  @bun rsbuild build --mode production
+  @CGO_ENABLED=0 GOOS=linux go build -o .output/server ./main.go
+
 docker-build:
   @if docker manifest inspect ${REGISTRY_URL}/{{APP_NAME}}:{{APP_VERSION}} > /dev/null 2>&1; then \
     echo "Error: Image ${REGISTRY_URL}/{{APP_NAME}}:{{APP_VERSION}} already exists" 1>&2; \
