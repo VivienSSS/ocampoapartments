@@ -211,16 +211,16 @@ function RouteComponent() {
         </p>
       </section>
       {/* Locations / Maps Section */}
-      <section id="maps" className="py-16 px-4 bg-background">
+      {/* <section id="maps" className="py-16 px-4 bg-background">
         <div className="max-w-6xl mx-auto">
           <div className="text-center mb-8">
             <h2 className="text-3xl font-bold">Our Locations</h2>
             <p className="text-muted-foreground mt-2">Find us and nearby points of interest on the map.</p>
-          </div>
+          </div> */}
 
-          <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
-            {/* Map 1 */}
-            <Card className="overflow-hidden">
+      {/* <div className="grid grid-cols-1 md:grid-cols-2 gap-6"> */}
+      {/* Map 1 */}
+      {/* <Card className="overflow-hidden">
               <CardHeader>
                 <CardTitle>Ocampo Apartments (Quezon City)</CardTitle>
                 <CardDescription>406 Marine Rd, Quezon City, Metro Manila</CardDescription>
@@ -237,10 +237,10 @@ function RouteComponent() {
                   />
                 </div>
               </CardContent>
-            </Card>
+            </Card> */}
 
-            {/* Map 2 */}
-            <Card className="overflow-hidden">
+      {/* Map 2 */}
+      {/* <Card className="overflow-hidden">
               <CardHeader>
                 <CardTitle>San Roque, Lubao (Pampanga)</CardTitle>
                 <CardDescription>San Roque Dau, Lubao, Pampanga</CardDescription>
@@ -260,7 +260,7 @@ function RouteComponent() {
             </Card>
           </div>
         </div>
-      </section>
+      </section> */}
       <section
         id="contact"
         className="w-full bg-sidebar-primary text-sidebar-primary-foreground py-16 px-8 flex flex-col md:flex-row justify-between items-start mt-16"

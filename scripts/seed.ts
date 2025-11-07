@@ -31,7 +31,7 @@ if (!ADMIN_EMAIL || !ADMIN_PASSWORD) {
   process.exit(1);
 }
 
-const pb = new PocketBase('http://127.0.0.1:8090');
+const pb = new PocketBase('https://ocampoapartments.live/');
 
 async function seedProperties(count: number = 2) {
   console.log('Seeding properties...');
