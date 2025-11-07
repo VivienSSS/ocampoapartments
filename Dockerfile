@@ -13,7 +13,7 @@ COPY . .
 
 RUN CGO_ENABLED=0 GOOS=linux go build -o /app/server ./main.go
 
-FROM oven/bun:canary-alpine AS frontend-build
+FROM oven/bun:1 AS frontend-build
 
 WORKDIR /app
 
