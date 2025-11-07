@@ -29,7 +29,7 @@ FROM alpine_base AS runtime
 
 WORKDIR /app/
 
-COPY --from=frontend-build /app/dist ./dist
+COPY --from=frontend-build /app/.output/dist ./dist
 
 COPY --from=golang-build /app/server .
 
