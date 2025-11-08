@@ -78,11 +78,11 @@ export function LoginForm({
               </div> */}
         <form.AppField name="email">
           {(field) => (
-            <field.TextField className="col-span-full" type="email" placeholder="abc@email.com" />
+            <field.TextField className="col-span-full" type="email" placeholder="abc@email.com" label="Email" />
           )}
         </form.AppField>
         <form.AppField name="password">
-          {(field) => <field.TextField className="col-span-full" type="password" placeholder="*******" />}
+          {(field) => <field.TextField className="col-span-full" type="password" placeholder="***********" label="Password" />}
         </form.AppField>
         <form.SubmitButton className="col-span-full">
           Login
