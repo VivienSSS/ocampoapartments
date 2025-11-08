@@ -5,6 +5,7 @@ import { PropertiesBranchOptions } from '../types';
 export const propertySchema = z.object({
   address: z
     .string()
+    .nonempty('Address is required')
     .check(
       fieldConfig({
         label: 'Building Address',
@@ -12,7 +13,7 @@ export const propertySchema = z.object({
       }),
     ),
   branch: z
-    .enum(PropertiesBranchOptions)
+    .enum(PropertiesBranchOptions, { message: 'Please select a valid branch' })
     .check(
       fieldConfig({
         label: 'Building Branch',

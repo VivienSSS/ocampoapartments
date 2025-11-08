@@ -7,14 +7,20 @@ import {
 export const maintenanceRequestSchema = z.object({
   completedDate: z.date().optional(),
   created: z.date().optional(),
-  description: z.string(),
+  description: z.string().nonempty('Description is required'),
   id: z.string(),
-  status: z.enum(MaintenanceRequestsStatusOptions).optional(),
+  status: z
+    .enum(MaintenanceRequestsStatusOptions, {
+      message: 'Please select a valid status',
+    })
+    .optional(),
   submittedDate: z.date().optional(),
-  tenant: z.string(),
-  unit: z.string(),
+  tenant: z.string().nonempty('Tenant is required'),
+  unit: z.string().nonempty('Unit is required'),
   updated: z.date().optional(),
-  urgency: z.enum(MaintenanceRequestsUrgencyOptions),
+  urgency: z.enum(MaintenanceRequestsUrgencyOptions, {
+    message: 'Please select a valid urgency level',
+  }),
   worker: z.string().optional(),
 });
 

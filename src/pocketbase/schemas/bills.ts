@@ -5,10 +5,15 @@ import { insertBillItemsSchema } from './billItems';
 
 export const billSchema = z.object({
   created: z.date().optional(),
-  dueDate: z.date().check(fieldConfig({ label: 'Due Date' })),
+  dueDate: z.date({ message: 'Due date is required' }),
   id: z.string(),
-  status: z.enum(BillsStatusOptions).check(fieldConfig({ label: 'Status' })),
-  tenancy: z.string().check(fieldConfig({ label: 'Tenant' })),
+  status: z
+    .enum(BillsStatusOptions, { message: 'Please select a valid status' })
+    .check(fieldConfig({ label: 'Status' })),
+  tenancy: z
+    .string()
+    .nonempty('Tenancy is required')
+    .check(fieldConfig({ label: 'Tenant' })),
   updated: z.date().optional(),
 });
 
