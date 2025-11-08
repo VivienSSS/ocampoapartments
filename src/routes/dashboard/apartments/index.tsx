@@ -123,6 +123,12 @@ function RouteComponent() {
               <DropdownMenuItem onClick={() => navigate({ search: (prev) => ({ ...prev, sort: [{ field: 'created', order: '+' }] }) })}>
                 Oldest to Newest
               </DropdownMenuItem>
+              <DropdownMenuItem onClick={() => navigate({ search: (prev) => ({ ...prev, sort: [{ field: 'isAvailable', order: '-' }] }) })}>
+                Available First
+              </DropdownMenuItem>
+              <DropdownMenuItem onClick={() => navigate({ search: (prev) => ({ ...prev, sort: [{ field: 'isAvailable', order: '+' }] }) })}>
+                Unavailable First
+              </DropdownMenuItem>
             </DropdownMenuContent>
           </DropdownMenu>
         </div>

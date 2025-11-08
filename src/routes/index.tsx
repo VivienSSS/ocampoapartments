@@ -318,7 +318,7 @@ function RouteComponent() {
                     <h3 className="scroll-m-20 text-lg font-semibold tracking-tight mb-2">
                       Introduction
                     </h3>
-                    <p className="text-sm leading-6">
+                    <p className="text-sm leading-6 text-justify">
                       Ocampo's Apartment ("we," "our," or "us") is committed to protecting your privacy. This policy explains what information we collect from tenants and prospects, why we collect it, and how it's used in our apartment management system. The privacy policy adheres to the Data Privacy Act of 2012 and other related laws of the Philippines.
                     </p>
                   </div>
@@ -327,7 +327,7 @@ function RouteComponent() {
                     <h3 className="scroll-m-20 text-lg font-semibold tracking-tight mb-2">
                       What We Collect
                     </h3>
-                    <p className="text-sm leading-6 mb-3">
+                    <p className="text-sm leading-6 mb-3 text-justify">
                       To provide our services, we collect the following personal information:
                     </p>
                     <ul className="my-4 ml-6 list-disc text-sm [&>li]:mt-1">
@@ -337,7 +337,7 @@ function RouteComponent() {
                       <li>Facebook account – used only for login or ID verification; and</li>
                       <li>Payment details – such as GCash or other payment references used to track rent payments</li>
                     </ul>
-                    <p className="text-sm leading-6">
+                    <p className="text-sm leading-6 text-justify">
                       We only collect what is necessary to operate the service and manage tenant relationships. You as the user are responsible for the data you submit and you are to ensure the submitted data is correct, complete, and updated.
                     </p>
                   </div>
@@ -346,7 +346,7 @@ function RouteComponent() {
                     <h3 className="scroll-m-20 text-lg font-semibold tracking-tight mb-2">
                       How We Use Your Information
                     </h3>
-                    <p className="text-sm leading-6 mb-3">
+                    <p className="text-sm leading-6 mb-3 text-justify">
                       Your information is used to:
                     </p>
                     <ul className="my-4 ml-6 list-disc text-sm [&>li]:mt-1">
@@ -355,7 +355,7 @@ function RouteComponent() {
                       <li>Verify your identity (including optional Facebook login)</li>
                       <li>Process and confirm rent payments (e.g., through GCash or similar platforms)</li>
                     </ul>
-                    <p className="text-sm leading-6">
+                    <p className="text-sm leading-6 text-justify">
                       We do not sell your data or use it for marketing or third-party advertising.
                     </p>
                   </div>
@@ -364,7 +364,7 @@ function RouteComponent() {
                     <h3 className="scroll-m-20 text-lg font-semibold tracking-tight mb-2">
                       Who Has Access
                     </h3>
-                    <p className="text-sm leading-6 mb-3">
+                    <p className="text-sm leading-6 mb-3 text-justify">
                       We are prohibited to share your data to third parties, your data will only be accessed by or shared to:
                     </p>
                     <ul className="my-4 ml-6 list-disc text-sm [&>li]:mt-1">
@@ -372,7 +372,7 @@ function RouteComponent() {
                       <li>System administrators and developers responsible for maintaining the platform</li>
                       <li>Trusted service providers (e.g., hosting or SMS/email services) under strict confidentiality</li>
                     </ul>
-                    <p className="text-sm leading-6">
+                    <p className="text-sm leading-6 text-justify">
                       The service will only use the personal data for the purposes disclosed in this Privacy Policy and not for any ill purpose.
                     </p>
                   </div>
@@ -381,7 +381,7 @@ function RouteComponent() {
                     <h3 className="scroll-m-20 text-lg font-semibold tracking-tight mb-2">
                       Data Security
                     </h3>
-                    <p className="text-sm leading-6 mb-3">
+                    <p className="text-sm leading-6 mb-3 text-justify">
                       We take appropriate measures to protect your data, including secure access controls, and safe storage of payment records. The implemented are the following:
                     </p>
                     <ul className="my-4 ml-6 list-disc text-sm [&>li]:mt-1">
@@ -401,7 +401,7 @@ function RouteComponent() {
                   </div>
 
                   <div className="border-t pt-3">
-                    <p className="text-sm leading-6 font-medium">
+                    <p className="text-sm leading-6 font-medium text-justify">
                       By using this service, you agree to the terms of this Privacy Policy.
                     </p>
                   </div>
@@ -426,10 +426,10 @@ function RouteComponent() {
                 </DialogHeader>
                 <div className="space-y-4">
                   <div>
-                    <p className="text-sm leading-6 mb-3">
+                    <p className="text-sm leading-6 mb-3 text-justify">
                       The data kept in this website is solely for general information purposes and belongs to Ocampo's Apartment. In using the website, you are to agree to complying with the Privacy Policy and other relevant laws.
                     </p>
-                    <p className="text-sm leading-6">
+                    <p className="text-sm leading-6 text-justify">
                       The enclosed information within the website is prohibited to be published, replicated, presented, sold, distributed, or used in any manner without the permission of the establishment. Any action taken upon the information is at the user or viewer's risk.
                     </p>
                   </div>
@@ -455,49 +455,49 @@ function RouteComponent() {
                 <div className="space-y-4 text-sm leading-6">
                   <div>
                     <h4 className="font-semibold mb-1">What is the application process?</h4>
-                    <p>
+                    <p className="text-justify">
                       Our application process is simple and straightforward. First, schedule a tour to view the available units by contacting the landlord through the given cellphone number or e-mail. Once you've selected your preferred apartment, complete the application form given by the landlord, submit the required documents, and pay the application fee. We typically process applications within 28-48 hours.
                     </p>
                   </div>
 
                   <div>
                     <h4 className="font-semibold mb-1">What documents do i need to apply?</h4>
-                    <p>
+                    <p className="text-justify">
                       You'll need to provide a valid government-issued ID, proof of income (pay stubs, employment letter, or tax returns), and rental history references.
                     </p>
                   </div>
 
                   <div>
                     <h4 className="font-semibold mb-1">What lease terms do you offer?</h4>
-                    <p>
+                    <p className="text-justify">
                       We offer flexible lease terms to accommodate your needs, including 6-month and 12-month.
                     </p>
                   </div>
 
                   <div>
                     <h4 className="font-semibold mb-1">Are pets allowed?</h4>
-                    <p>
+                    <p className="text-justify">
                       Yes, we are a pet-friendly community! We welcome both cats and dogs with some breed and size restrictions. For small pets, a maximum of five is allowed, while only one large pet is permitted. There is no additional charge for pets.
                     </p>
                   </div>
 
                   <div>
                     <h4 className="font-semibold mb-1">How do I submit a maintenance request?</h4>
-                    <p>
+                    <p className="text-justify">
                       Maintenance requests can be submitted through your online tenant account. Once a request is filed, the building administrator will review it and schedule the necessary repairs or inspections. Tenants will be notified of the progress and completion status through the same platform.
                     </p>
                   </div>
 
                   <div>
                     <h4 className="font-semibold mb-1">Is parking available?</h4>
-                    <p>
+                    <p className="text-justify">
                       Yes, we provide both covered and uncovered parking spaces; however, only motorcycles are allowed, as there are no designated areas for four-wheeled vehicles. Each unit is provided with at least one assigned parking slot, and additional spaces may be rented on a monthly basis.
                     </p>
                   </div>
 
                   <div>
                     <h4 className="font-semibold mb-1">Is there a curfew for tenants?</h4>
-                    <p>
+                    <p className="text-justify">
                       No, there is no curfew for tenants going inside or outside the building. Tenants are provided with their own keys to the apartment gate, allowing them to go out and return at any time, even late at night. However, to maintain a peaceful environment, parties, loud gatherings, and karaoke sessions are only allowed until 10:00 PM to avoid disturbing other tenants.
                     </p>
                   </div>
