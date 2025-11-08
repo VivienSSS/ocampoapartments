@@ -20,6 +20,9 @@ export const CreateTenantForm = withForm({
         <form.AppField name="user">
           {(field) => (
             <field.RelationField<UsersResponse>
+              label="Tenant User"
+              tooltip="Select the user associated with this tenant"
+              description="Only users with the 'Tenant' role will be displayed"
               pocketbase={pocketbase}
               collectionName={Collections.Users}
               relationshipName="user"
@@ -32,6 +35,8 @@ export const CreateTenantForm = withForm({
         <form.AppField name="phoneNumber">
           {(field) => (
             <field.TextField
+              tooltip="Enter the tenant's phone number"
+              description="Include country code if applicable"
               className="col-span-full"
               label="Phone Number"
               type="number"
@@ -40,7 +45,12 @@ export const CreateTenantForm = withForm({
         </form.AppField>
         <form.AppField name="facebookName">
           {(field) => (
-            <field.TextField className="col-span-full" label="FaceBook Name" />
+            <field.TextField
+              className="col-span-full"
+              label="FaceBook Name"
+              tooltip="Enter the tenant's Facebook name"
+              description="This will be displayed on the tenant's profile"
+            />
           )}
         </form.AppField>
       </>
@@ -58,6 +68,9 @@ export const EditTenantForm = withForm({
         <form.AppField name="user">
           {(field) => (
             <field.RelationField<UsersResponse>
+              label="Tenant User"
+              tooltip="Select the user associated with this tenant"
+              description="Only users with the 'Tenant' role will be displayed"
               pocketbase={pocketbase}
               collectionName={Collections.Users}
               relationshipName="user"
@@ -70,7 +83,8 @@ export const EditTenantForm = withForm({
         <form.AppField name="phoneNumber">
           {(field) => (
             <field.TextField
-              className="col-span-full"
+              tooltip="Enter the tenant's phone number"
+              description="Include country code if applicable"
               label="Phone Number"
               type="number"
             />
@@ -78,7 +92,12 @@ export const EditTenantForm = withForm({
         </form.AppField>
         <form.AppField name="facebookName">
           {(field) => (
-            <field.TextField className="col-span-full" label="FaceBook Name" />
+            <field.TextField
+              className="col-span-full"
+              label="FaceBook Name"
+              tooltip="Enter the tenant's Facebook name"
+              description="This will be displayed on the tenant's profile"
+            />
           )}
         </form.AppField>
       </>
