@@ -54,7 +54,8 @@ const DeleteAnnouncementDialogForm = () => {
       <AlertDialogContent>
         <AlertDialogHeader>
           <AlertDialogTitle>
-            Are you sure to delete {ann?.map((record) => `\`${record.title}\``).join(',')}
+            Are you sure to delete{' '}
+            {ann?.map((record) => `\`${record.title}\``).join(',')}
           </AlertDialogTitle>
           <AlertDialogDescription>
             This action cannot be undone
@@ -76,7 +77,7 @@ const DeleteAnnouncementDialogForm = () => {
                     search: (prev) => ({
                       ...prev,
                       delete: undefined,
-                      selected: []
+                      selected: [],
                     }),
                   });
                 },

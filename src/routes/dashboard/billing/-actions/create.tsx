@@ -14,7 +14,7 @@ import {
 } from '@/components/ui/dialog';
 import { useAppForm } from '@/components/ui/form';
 import { createBillMutation, listBillsQuery } from '@/pocketbase/queries/bills';
-import { insertBillSchema } from '@/pocketbase/schemas/bills';
+import type { insertBillSchema } from '@/pocketbase/schemas/bills';
 import { CreateBillingForm } from './form';
 
 const CreateBillingDialogForm = () => {
@@ -62,7 +62,9 @@ const CreateBillingDialogForm = () => {
         >
           <form.AppForm>
             <CreateBillingForm form={form} />
-            <form.SubmitButton className='col-span-full'>Create Billing</form.SubmitButton>
+            <form.SubmitButton className="col-span-full">
+              Create Billing
+            </form.SubmitButton>
           </form.AppForm>
         </form>
       </DialogContent>

@@ -50,7 +50,13 @@ const DeleteTenantDialogForm = () => {
       <AlertDialogContent>
         <AlertDialogHeader>
           <AlertDialogTitle>
-            Are you sure to delete {tenants?.map((record) => `\`${record.expand.user.firstName} ${record.expand.user.lastName}\``).join(',')}
+            Are you sure to delete{' '}
+            {tenants
+              ?.map(
+                (record) =>
+                  `\`${record.expand.user.firstName} ${record.expand.user.lastName}\``,
+              )
+              .join(',')}
           </AlertDialogTitle>
           <AlertDialogDescription>
             This action cannot be undone
@@ -69,7 +75,7 @@ const DeleteTenantDialogForm = () => {
                     search: (prev) => ({
                       ...prev,
                       delete: undefined,
-                      selected: []
+                      selected: [],
                     }),
                   });
                 },

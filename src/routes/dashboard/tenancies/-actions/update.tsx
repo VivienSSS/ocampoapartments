@@ -13,15 +13,15 @@ import {
   DialogTitle,
 } from '@/components/ui/dialog';
 import { useAppForm } from '@/components/ui/form';
+import { listApartmentUnitsQuery } from '@/pocketbase/queries/apartmentUnits';
 import {
   listTenanciesQuery,
   updateTenancyMutation,
   viewTenancyQuery,
 } from '@/pocketbase/queries/tenancies';
+import { listTenantsQuery } from '@/pocketbase/queries/tenants';
 import { updateTenanciesSchema } from '@/pocketbase/schemas/tenancies';
 import { EditTenancyForm } from './form';
-import { listTenantsQuery } from '@/pocketbase/queries/tenants';
-import { listApartmentUnitsQuery } from '@/pocketbase/queries/apartmentUnits';
 
 const EditTenancyDialogForm = () => {
   const navigate = useNavigate({ from: '/dashboard/tenancies' });
@@ -30,25 +30,26 @@ const EditTenancyDialogForm = () => {
 
   const mutation = useMutation(updateTenancyMutation(searchQuery.id ?? ''));
 
-  const [{ data: tenants }, { data: apartmentUnits }, { data: tenancy }] = useQueries(
-    {
-      queries: [
-        {
-          ...listTenantsQuery(1, 500),
-          enabled: !!searchQuery.id && searchQuery.edit
-        },
-        {
-          ...listApartmentUnitsQuery(1, 500),
-          enabled: !!searchQuery.id && searchQuery.edit
-        },
-        {
-          ...viewTenancyQuery(searchQuery.id ?? ''),
-          enabled: !!searchQuery.id && searchQuery.edit,
-        },
-      ],
-    },
-    queryClient,
-  );
+  const [{ data: tenants }, { data: apartmentUnits }, { data: tenancy }] =
+    useQueries(
+      {
+        queries: [
+          {
+            ...listTenantsQuery(1, 500),
+            enabled: !!searchQuery.id && searchQuery.edit,
+          },
+          {
+            ...listApartmentUnitsQuery(1, 500),
+            enabled: !!searchQuery.id && searchQuery.edit,
+          },
+          {
+            ...viewTenancyQuery(searchQuery.id ?? ''),
+            enabled: !!searchQuery.id && searchQuery.edit,
+          },
+        ],
+      },
+      queryClient,
+    );
 
   const form = useAppForm({
     defaultValues: {
@@ -69,9 +70,7 @@ const EditTenancyDialogForm = () => {
             listTenanciesQuery(searchQuery.page, searchQuery.perPage),
           );
           // Invalidate apartment units to refresh availability status
-          queryClient.invalidateQueries(
-            listApartmentUnitsQuery(1, 500),
-          );
+          queryClient.invalidateQueries(listApartmentUnitsQuery(1, 500));
           navigate({
             to: '/dashboard/tenancies',
             search: { edit: undefined, id: undefined },
@@ -104,8 +103,14 @@ const EditTenancyDialogForm = () => {
           }}
         >
           <form.AppForm>
-            <EditTenancyForm form={form} tenants={tenants?.items ?? []} apartmentUnits={apartmentUnits?.items ?? []} />
-            <form.SubmitButton className='col-span-full mt-2'>Update Tenancy</form.SubmitButton>
+            <EditTenancyForm
+              form={form}
+              tenants={tenants?.items ?? []}
+              apartmentUnits={apartmentUnits?.items ?? []}
+            />
+            <form.SubmitButton className="col-span-full mt-2">
+              Update Tenancy
+            </form.SubmitButton>
           </form.AppForm>
         </form>
       </DialogContent>

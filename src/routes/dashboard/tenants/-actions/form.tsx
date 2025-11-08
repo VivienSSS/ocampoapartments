@@ -1,13 +1,13 @@
 import type z from 'zod';
+import { AsyncSelect } from '@/components/ui/async-select';
 import { withForm } from '@/components/ui/form';
-import {
+import { pb } from '@/pocketbase';
+import type {
   insertTenantSchema,
-  type updateTenantSchema,
+  updateTenantSchema,
 } from '@/pocketbase/schemas/tenants';
 import type { UsersResponse } from '@/pocketbase/types';
 import { Collections, UsersRoleOptions } from '@/pocketbase/types';
-import { pb } from '@/pocketbase';
-import { AsyncSelect } from '@/components/ui/async-select';
 
 export const CreateTenantForm = withForm({
   defaultValues: {} as z.infer<typeof insertTenantSchema>,
@@ -23,10 +23,16 @@ export const CreateTenantForm = withForm({
               </label>
               <AsyncSelect<UsersResponse>
                 className="w-full"
-                fetcher={async (query) => (await pb.collection(Collections.Users).getList<UsersResponse>(1, 10, {
-                  filter: `role = '${UsersRoleOptions.Tenant}'${query ? ` && (contactEmail ~ '%${query}%' || firstName ~ '%${query}%' || lastName ~ '%${query}%')` : ''}`,
-                  requestKey: null
-                })).items}
+                fetcher={async (query) =>
+                  (
+                    await pb
+                      .collection(Collections.Users)
+                      .getList<UsersResponse>(1, 10, {
+                        filter: `role = '${UsersRoleOptions.Tenant}'${query ? ` && (contactEmail ~ '%${query}%' || firstName ~ '%${query}%' || lastName ~ '%${query}%')` : ''}`,
+                        requestKey: null,
+                      })
+                  ).items
+                }
                 getOptionValue={(option) => option.id}
                 getDisplayValue={(option) => option.contactEmail}
                 renderOption={(option) => (
@@ -75,10 +81,16 @@ export const EditTenantForm = withForm({
             </label>
             <AsyncSelect<UsersResponse>
               className="w-full"
-              fetcher={async (query) => (await pb.collection(Collections.Users).getList<UsersResponse>(1, 10, {
-                filter: `role = '${UsersRoleOptions.Tenant}'${query ? ` && (contactEmail ~ '%${query}%' || firstName ~ '%${query}%' || lastName ~ '%${query}%')` : ''}`,
-                requestKey: null
-              })).items}
+              fetcher={async (query) =>
+                (
+                  await pb
+                    .collection(Collections.Users)
+                    .getList<UsersResponse>(1, 10, {
+                      filter: `role = '${UsersRoleOptions.Tenant}'${query ? ` && (contactEmail ~ '%${query}%' || firstName ~ '%${query}%' || lastName ~ '%${query}%')` : ''}`,
+                      requestKey: null,
+                    })
+                ).items
+              }
               getOptionValue={(option) => option.id}
               getDisplayValue={(option) => option.contactEmail}
               renderOption={(option) => (

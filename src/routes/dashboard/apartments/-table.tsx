@@ -2,9 +2,9 @@ import { useNavigate, useSearch } from '@tanstack/react-router';
 import type { ColumnDef } from '@tanstack/react-table';
 import { format } from 'date-fns';
 import { MoreHorizontal } from 'lucide-react';
-import { Checkbox } from '@/components/ui/checkbox';
 import { Badge } from '@/components/ui/badge';
 import { Button } from '@/components/ui/button';
+import { Checkbox } from '@/components/ui/checkbox';
 import {
   DropdownMenu,
   DropdownMenuContent,
@@ -31,7 +31,9 @@ export const columns: ColumnDef<ApartmentUnitsResponse>[] = [
               navigate({
                 search: (prev) => ({
                   ...prev,
-                  selected: table.getRowModel().rows.map((row) => row.original.id),
+                  selected: table
+                    .getRowModel()
+                    .rows.map((row) => row.original.id),
                 }),
               });
             } else {
@@ -146,6 +148,4 @@ export const columns: ColumnDef<ApartmentUnitsResponse>[] = [
     ),
     cell: ({ row }) => format(new Date(row.getValue('updated')), 'PPP'),
   },
-
 ];
-

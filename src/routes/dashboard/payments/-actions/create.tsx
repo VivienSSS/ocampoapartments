@@ -17,7 +17,7 @@ import {
   createPaymentMutation,
   listPaymentsQuery,
 } from '@/pocketbase/queries/payments';
-import { insertPaymentSchema } from '@/pocketbase/schemas/payments';
+import type { insertPaymentSchema } from '@/pocketbase/schemas/payments';
 import { CreatePaymentForm } from './form';
 
 const CreatePaymentDialogForm = () => {

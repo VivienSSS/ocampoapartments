@@ -1,14 +1,14 @@
-import React from "react";
-import { Button } from "@/components/ui/button";
-import { TrashIcon } from "lucide-react";
-import type { ArrayElementWrapperProps } from "@autoform/react";
-import { Item, ItemActions, ItemContent, ItemSeparator } from "../../item";
-import { Card, CardContent, CardHeader, CardTitle } from "../../card";
+import type { ArrayElementWrapperProps } from '@autoform/react';
+import { TrashIcon } from 'lucide-react';
+import type React from 'react';
+import { Button } from '@/components/ui/button';
+import { Card, CardContent, CardHeader, CardTitle } from '../../card';
+import { Item, ItemActions, ItemContent, ItemSeparator } from '../../item';
 
 export const ArrayElementWrapper: React.FC<ArrayElementWrapperProps> = ({
   children,
   onRemove,
-  index
+  index,
 }) => {
   return (
     <Card>

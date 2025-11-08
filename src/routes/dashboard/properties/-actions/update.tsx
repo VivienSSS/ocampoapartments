@@ -84,7 +84,9 @@ const EditPropertyDialogForm = () => {
         >
           <form.AppForm>
             <EditPropertyForm form={form} />
-            <form.SubmitButton className='mt-3 col-span-full'>Update Property</form.SubmitButton>
+            <form.SubmitButton className="mt-3 col-span-full">
+              Update Property
+            </form.SubmitButton>
           </form.AppForm>
         </form>
       </DialogContent>

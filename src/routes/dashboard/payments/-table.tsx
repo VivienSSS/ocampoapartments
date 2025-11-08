@@ -6,33 +6,43 @@ import { useState } from 'react';
 import { Badge } from '@/components/ui/badge';
 import { Button } from '@/components/ui/button';
 import {
+  Dialog,
+  DialogContent,
+  DialogDescription,
+  DialogHeader,
+  DialogTitle,
+  DialogTrigger,
+} from '@/components/ui/dialog';
+import {
   DropdownMenu,
   DropdownMenuContent,
   DropdownMenuItem,
   DropdownMenuTrigger,
 } from '@/components/ui/dropdown-menu';
 import { TableColumnHeader } from '@/components/ui/kibo-ui/table';
-import type { PaymentsResponse } from '@/pocketbase/queries/payments';
 import {
   Tooltip,
   TooltipContent,
   TooltipTrigger,
-} from "@/components/ui/tooltip"
+} from '@/components/ui/tooltip';
 import { pb } from '@/pocketbase';
-import { Dialog, DialogContent, DialogDescription, DialogHeader, DialogTitle, DialogTrigger } from '@/components/ui/dialog';
-
+import type { PaymentsResponse } from '@/pocketbase/queries/payments';
 
 export const columns: ColumnDef<PaymentsResponse>[] = [
   {
     accessorKey: 'bill',
     enableSorting: false,
-    header: ({ column }) => <TableColumnHeader column={column} title="Bill Status" />,
-    cell: ({ row }) => <Tooltip>
-      <TooltipTrigger>{row.original.expand.bill.status}</TooltipTrigger>
-      <TooltipContent>
-        Due Date - {format(row.original.expand.bill.dueDate, 'PPP')}
-      </TooltipContent>
-    </Tooltip>
+    header: ({ column }) => (
+      <TableColumnHeader column={column} title="Bill Status" />
+    ),
+    cell: ({ row }) => (
+      <Tooltip>
+        <TooltipTrigger>{row.original.expand.bill.status}</TooltipTrigger>
+        <TooltipContent>
+          Due Date - {format(row.original.expand.bill.dueDate, 'PPP')}
+        </TooltipContent>
+      </Tooltip>
+    ),
   },
   {
     accessorKey: 'tenant',
@@ -98,47 +108,52 @@ export const columns: ColumnDef<PaymentsResponse>[] = [
       const handleZoomIn = () => setZoom((prev) => Math.min(prev + 25, 200));
       const handleZoomOut = () => setZoom((prev) => Math.max(prev - 25, 50));
 
-      return <Dialog>
-        <DialogTrigger asChild>
-          <Button variant="outline">View Proof</Button>
-        </DialogTrigger>
-        <DialogContent>
-          <DialogHeader>
-            <DialogTitle>Proof of Payment</DialogTitle>
-            <DialogDescription>{row.original.screenshot}</DialogDescription>
-          </DialogHeader>
-          <div className='flex flex-col gap-3'>
-            <div className='flex gap-2 justify-center'>
-              <Button
-                variant="ghost"
-                size="sm"
-                onClick={handleZoomOut}
-                disabled={zoom <= 50}
-              >
-                <ZoomOut className='w-4 h-4' />
-              </Button>
-              <span className='text-sm font-medium px-3 py-1 bg-muted rounded'>
-                {zoom}%
-              </span>
-              <Button
-                variant="ghost"
-                size="sm"
-                onClick={handleZoomIn}
-                disabled={zoom >= 200}
-              >
-                <ZoomIn className='w-4 h-4' />
-              </Button>
+      return (
+        <Dialog>
+          <DialogTrigger asChild>
+            <Button variant="outline">View Proof</Button>
+          </DialogTrigger>
+          <DialogContent>
+            <DialogHeader>
+              <DialogTitle>Proof of Payment</DialogTitle>
+              <DialogDescription>{row.original.screenshot}</DialogDescription>
+            </DialogHeader>
+            <div className="flex flex-col gap-3">
+              <div className="flex gap-2 justify-center">
+                <Button
+                  variant="ghost"
+                  size="sm"
+                  onClick={handleZoomOut}
+                  disabled={zoom <= 50}
+                >
+                  <ZoomOut className="w-4 h-4" />
+                </Button>
+                <span className="text-sm font-medium px-3 py-1 bg-muted rounded">
+                  {zoom}%
+                </span>
+                <Button
+                  variant="ghost"
+                  size="sm"
+                  onClick={handleZoomIn}
+                  disabled={zoom >= 200}
+                >
+                  <ZoomIn className="w-4 h-4" />
+                </Button>
+              </div>
+              <div className="flex justify-center overflow-auto max-h-[70vh]">
+                <img
+                  className="rounded-md"
+                  style={{
+                    transform: `scale(${zoom / 100})`,
+                    maxHeight: '70vh',
+                  }}
+                  src={pb.files.getURL(row.original, row.original.screenshot)}
+                />
+              </div>
             </div>
-            <div className='flex justify-center overflow-auto max-h-[70vh]'>
-              <img
-                className='rounded-md'
-                style={{ transform: `scale(${zoom / 100})`, maxHeight: '70vh' }}
-                src={pb.files.getURL(row.original, row.original.screenshot)}
-              />
-            </div>
-          </div>
-        </DialogContent>
-      </Dialog>
+          </DialogContent>
+        </Dialog>
+      );
     },
   },
   {

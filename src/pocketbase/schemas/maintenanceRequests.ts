@@ -18,13 +18,12 @@ export const maintenanceRequestSchema = z.object({
   worker: z.string().optional(),
 });
 
-export const insertMaintenanceRequestSchema = maintenanceRequestSchema
-  .omit({
-    id: true,
-    created: true,
-    updated: true,
-    // progressImage: true,
-  })
+export const insertMaintenanceRequestSchema = maintenanceRequestSchema.omit({
+  id: true,
+  created: true,
+  updated: true,
+  // progressImage: true,
+});
 // .extend({
 //   progressImage: z.array(z.file()),
 // });

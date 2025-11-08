@@ -30,9 +30,10 @@ export const Route = createFileRoute('/dashboard')({
   beforeLoad: () => {
     if (!pb.authStore.isValid) throw redirect({ to: '/' }); // for fail
 
-    return { user: pb.authStore.record as unknown as UsersRecord }
+    return { user: pb.authStore.record as unknown as UsersRecord };
   },
-  loader: async () => pb.collection('maintenance_requests').getFullList({ requestKey: null })
+  loader: async () =>
+    pb.collection('maintenance_requests').getFullList({ requestKey: null }),
 });
 
 function RouteComponent() {
@@ -44,8 +45,7 @@ function RouteComponent() {
     })
     .map((match, index, array) => {
       const isLast = index === array.length - 1;
-      const rawSegment =
-        match.pathname.split('/').filter(Boolean).pop() ?? '';
+      const rawSegment = match.pathname.split('/').filter(Boolean).pop() ?? '';
 
       const titleMap: Record<string, string> = {
         // prettier display names for path segments that are single-word ids
@@ -53,7 +53,11 @@ function RouteComponent() {
       };
 
       const title =
-        (titleMap[rawSegment] ?? rawSegment.replace(/-/g, ' ').replace(/\b\w/g, (l) => l.toUpperCase())) || '';
+        (titleMap[rawSegment] ??
+          rawSegment
+            .replace(/-/g, ' ')
+            .replace(/\b\w/g, (l) => l.toUpperCase())) ||
+        '';
 
       return (
         <React.Fragment key={match.id}>

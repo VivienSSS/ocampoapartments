@@ -50,7 +50,8 @@ const DeleteBillingDialogForm = () => {
       <AlertDialogContent>
         <AlertDialogHeader>
           <AlertDialogTitle>
-            Are you sure to delete {bills?.map((record) => `\`${record.id}\``).join(',')}
+            Are you sure to delete{' '}
+            {bills?.map((record) => `\`${record.id}\``).join(',')}
           </AlertDialogTitle>
           <AlertDialogDescription>
             This action cannot be undone
@@ -69,7 +70,7 @@ const DeleteBillingDialogForm = () => {
                     search: (prev) => ({
                       ...prev,
                       delete: undefined,
-                      selected: []
+                      selected: [],
                     }),
                   });
                 },

@@ -1,16 +1,16 @@
 import { useSuspenseQueries } from '@tanstack/react-query';
-import type z from 'zod';
 import { format } from 'date-fns';
+import type z from 'zod';
+import { AsyncSelect } from '@/components/ui/async-select';
 import { withForm } from '@/components/ui/form';
 import { pb } from '@/pocketbase';
+import type { BillsResponse } from '@/pocketbase/queries/bills';
+import type { TenantsResponse } from '@/pocketbase/queries/tenants';
 import {
-  insertPaymentSchema,
+  type insertPaymentSchema,
   updatePaymentSchema,
 } from '@/pocketbase/schemas/payments';
 import { Collections, PaymentsPaymentMethodOptions } from '@/pocketbase/types';
-import { AsyncSelect } from '@/components/ui/async-select';
-import type { TenantsResponse } from '@/pocketbase/queries/tenants';
-import type { BillsResponse } from '@/pocketbase/queries/bills';
 
 export const CreatePaymentForm = withForm({
   defaultValues: {} as z.infer<typeof insertPaymentSchema>,
@@ -25,17 +25,31 @@ export const CreatePaymentForm = withForm({
                 Tenant
               </label>
               <AsyncSelect<TenantsResponse>
-                className='w-full'
-                fetcher={async (query) => (await pb.collection(Collections.Tenants).getList<TenantsResponse>(1, 10, {
-                  filter: query ? `user.firstName ~ '%${query}%' || user.lastName ~ '%${query}%' || user.contactEmail ~ '%${query}%'` : '',
-                  expand: 'user',
-                  requestKey: null
-                })).items}
+                className="w-full"
+                fetcher={async (query) =>
+                  (
+                    await pb
+                      .collection(Collections.Tenants)
+                      .getList<TenantsResponse>(1, 10, {
+                        filter: query
+                          ? `user.firstName ~ '%${query}%' || user.lastName ~ '%${query}%' || user.contactEmail ~ '%${query}%'`
+                          : '',
+                        expand: 'user',
+                        requestKey: null,
+                      })
+                  ).items
+                }
                 getOptionValue={(option) => option.id}
-                getDisplayValue={(option) => `${option.expand?.user?.firstName || ''} ${option.expand?.user?.lastName || ''}`.trim() || option.id}
+                getDisplayValue={(option) =>
+                  `${option.expand?.user?.firstName || ''} ${option.expand?.user?.lastName || ''}`.trim() ||
+                  option.id
+                }
                 renderOption={(option) => (
                   <div>
-                    <div className="font-medium">{`${option.expand?.user?.firstName || ''} ${option.expand?.user?.lastName || ''}`.trim() || option.id}</div>
+                    <div className="font-medium">
+                      {`${option.expand?.user?.firstName || ''} ${option.expand?.user?.lastName || ''}`.trim() ||
+                        option.id}
+                    </div>
                     {option.expand?.user?.contactEmail && (
                       <div className="text-sm text-muted-foreground">
                         {option.expand.user.contactEmail}
@@ -57,24 +71,40 @@ export const CreatePaymentForm = withForm({
                 Bill
               </label>
               <AsyncSelect<BillsResponse>
-                className='w-full'
-                fetcher={async (query) => (await pb.collection(Collections.Bills).getList<BillsResponse>(1, 10, {
-                  filter: query ? `(tenancy.tenant.user.firstName ~ '%${query}%' || tenancy.tenant.user.lastName ~ '%${query}%') && status != 'Paid'` : `status != 'Paid'`,
-                  expand: 'tenancy.tenant.user,tenancy.unit.property',
-                  requestKey: null
-                })).items}
+                className="w-full"
+                fetcher={async (query) =>
+                  (
+                    await pb
+                      .collection(Collections.Bills)
+                      .getList<BillsResponse>(1, 10, {
+                        filter: query
+                          ? `(tenancy.tenant.user.firstName ~ '%${query}%' || tenancy.tenant.user.lastName ~ '%${query}%') && status != 'Paid'`
+                          : `status != 'Paid'`,
+                        expand: 'tenancy.tenant.user,tenancy.unit.property',
+                        requestKey: null,
+                      })
+                  ).items
+                }
                 getOptionValue={(option) => option.id}
                 getDisplayValue={(option) => {
                   const date = format(new Date(option.dueDate), 'PPP');
-                  const firstName = option.expand?.tenancy?.expand?.tenant?.expand?.user?.firstName || '';
-                  const lastName = option.expand?.tenancy?.expand?.tenant?.expand?.user?.lastName || '';
+                  const firstName =
+                    option.expand?.tenancy?.expand?.tenant?.expand?.user
+                      ?.firstName || '';
+                  const lastName =
+                    option.expand?.tenancy?.expand?.tenant?.expand?.user
+                      ?.lastName || '';
                   const fullName = `${firstName} ${lastName}`.trim();
                   return `${date} - ${fullName}` || option.id;
                 }}
                 renderOption={(option) => {
                   const date = format(new Date(option.dueDate), 'PPP');
-                  const firstName = option.expand?.tenancy?.expand?.tenant?.expand?.user?.firstName || '';
-                  const lastName = option.expand?.tenancy?.expand?.tenant?.expand?.user?.lastName || '';
+                  const firstName =
+                    option.expand?.tenancy?.expand?.tenant?.expand?.user
+                      ?.firstName || '';
+                  const lastName =
+                    option.expand?.tenancy?.expand?.tenant?.expand?.user
+                      ?.lastName || '';
                   const fullName = `${firstName} ${lastName}`.trim();
                   return (
                     <div>
@@ -114,10 +144,7 @@ export const CreatePaymentForm = withForm({
         </form.AppField>
         <form.AppField name="paymentDate">
           {(field) => (
-            <field.DateField
-              className="col-span-full"
-              label="Payment Date"
-            />
+            <field.DateField className="col-span-full" label="Payment Date" />
           )}
         </form.AppField>
         <form.AppField name="transactionId">
@@ -125,7 +152,7 @@ export const CreatePaymentForm = withForm({
             <field.TextField
               className="col-span-full"
               label="Transaction ID and Proof of Payment"
-              placeholder='ex. 12345678910'
+              placeholder="ex. 12345678910"
             />
           )}
         </form.AppField>
@@ -157,17 +184,31 @@ export const EditPaymentForm = withForm({
                 Tenant
               </label>
               <AsyncSelect<TenantsResponse>
-                className='w-full'
-                fetcher={async (query) => (await pb.collection(Collections.Tenants).getList<TenantsResponse>(1, 10, {
-                  filter: query ? `user.firstName ~ '%${query}%' || user.lastName ~ '%${query}%' || user.contactEmail ~ '%${query}%'` : '',
-                  expand: 'user',
-                  requestKey: null
-                })).items}
+                className="w-full"
+                fetcher={async (query) =>
+                  (
+                    await pb
+                      .collection(Collections.Tenants)
+                      .getList<TenantsResponse>(1, 10, {
+                        filter: query
+                          ? `user.firstName ~ '%${query}%' || user.lastName ~ '%${query}%' || user.contactEmail ~ '%${query}%'`
+                          : '',
+                        expand: 'user',
+                        requestKey: null,
+                      })
+                  ).items
+                }
                 getOptionValue={(option) => option.id}
-                getDisplayValue={(option) => `${option.expand?.user?.firstName || ''} ${option.expand?.user?.lastName || ''}`.trim() || option.id}
+                getDisplayValue={(option) =>
+                  `${option.expand?.user?.firstName || ''} ${option.expand?.user?.lastName || ''}`.trim() ||
+                  option.id
+                }
                 renderOption={(option) => (
                   <div>
-                    <div className="font-medium">{`${option.expand?.user?.firstName || ''} ${option.expand?.user?.lastName || ''}`.trim() || option.id}</div>
+                    <div className="font-medium">
+                      {`${option.expand?.user?.firstName || ''} ${option.expand?.user?.lastName || ''}`.trim() ||
+                        option.id}
+                    </div>
                     {option.expand?.user?.contactEmail && (
                       <div className="text-sm text-muted-foreground">
                         {option.expand.user.contactEmail}
@@ -190,24 +231,40 @@ export const EditPaymentForm = withForm({
                 Bill
               </label>
               <AsyncSelect<BillsResponse>
-                className='w-full'
-                fetcher={async (query) => (await pb.collection(Collections.Bills).getList<BillsResponse>(1, 10, {
-                  filter: query ? `(tenancy.tenant.user.firstName ~ '%${query}%' || tenancy.tenant.user.lastName ~ '%${query}%') && status != 'Paid'` : `status != 'Paid'`,
-                  expand: 'tenancy.tenant.user,tenancy.unit.property',
-                  requestKey: null
-                })).items}
+                className="w-full"
+                fetcher={async (query) =>
+                  (
+                    await pb
+                      .collection(Collections.Bills)
+                      .getList<BillsResponse>(1, 10, {
+                        filter: query
+                          ? `(tenancy.tenant.user.firstName ~ '%${query}%' || tenancy.tenant.user.lastName ~ '%${query}%') && status != 'Paid'`
+                          : `status != 'Paid'`,
+                        expand: 'tenancy.tenant.user,tenancy.unit.property',
+                        requestKey: null,
+                      })
+                  ).items
+                }
                 getOptionValue={(option) => option.id}
                 getDisplayValue={(option) => {
                   const date = format(new Date(option.dueDate), 'PPP');
-                  const firstName = option.expand?.tenancy?.expand?.tenant?.expand?.user?.firstName || '';
-                  const lastName = option.expand?.tenancy?.expand?.tenant?.expand?.user?.lastName || '';
+                  const firstName =
+                    option.expand?.tenancy?.expand?.tenant?.expand?.user
+                      ?.firstName || '';
+                  const lastName =
+                    option.expand?.tenancy?.expand?.tenant?.expand?.user
+                      ?.lastName || '';
                   const fullName = `${firstName} ${lastName}`.trim();
                   return `${date} - ${fullName}` || option.id;
                 }}
                 renderOption={(option) => {
                   const date = format(new Date(option.dueDate), 'PPP');
-                  const firstName = option.expand?.tenancy?.expand?.tenant?.expand?.user?.firstName || '';
-                  const lastName = option.expand?.tenancy?.expand?.tenant?.expand?.user?.lastName || '';
+                  const firstName =
+                    option.expand?.tenancy?.expand?.tenant?.expand?.user
+                      ?.firstName || '';
+                  const lastName =
+                    option.expand?.tenancy?.expand?.tenant?.expand?.user
+                      ?.lastName || '';
                   const fullName = `${firstName} ${lastName}`.trim();
                   return (
                     <div>

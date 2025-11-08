@@ -14,12 +14,12 @@ import {
   AlertDialogHeader,
   AlertDialogTitle,
 } from '@/components/ui/alert-dialog';
+import { pb } from '@/pocketbase';
 import {
   batchDeleteMaintenanceRequestMutation,
   inMaintenanceRequestsQuery,
   listMaintenanceRequestsQuery,
 } from '@/pocketbase/queries/maintenanceRequests';
-import { pb } from '@/pocketbase';
 import { UsersRoleOptions } from '@/pocketbase/types';
 
 const DeleteMaintenanceDialog = () => {
@@ -56,7 +56,8 @@ const DeleteMaintenanceDialog = () => {
       <AlertDialogContent>
         <AlertDialogHeader>
           <AlertDialogTitle>
-            Are you sure to delete {reqs?.map((record) => `\`${record.description}\``).join(',')}
+            Are you sure to delete{' '}
+            {reqs?.map((record) => `\`${record.description}\``).join(',')}
           </AlertDialogTitle>
           <AlertDialogDescription>
             This action cannot be undone
@@ -79,14 +80,14 @@ const DeleteMaintenanceDialog = () => {
                       searchQuery.page,
                       3,
                       undefined,
-                      tenantFilter
+                      tenantFilter,
                     ),
                   );
                   navigate({
                     search: (prev) => ({
                       ...prev,
                       delete: undefined,
-                      selected: []
+                      selected: [],
                     }),
                   });
                 },

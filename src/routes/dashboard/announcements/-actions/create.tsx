@@ -5,14 +5,8 @@ import {
   useSearch,
 } from '@tanstack/react-router';
 import type z from 'zod';
-import {
-  Dialog,
-  DialogContent,
-  DialogDescription,
-  DialogHeader,
-  DialogTitle,
-} from '@/components/ui/dialog';
-import { useAppForm } from '@/components/ui/form';
+import { useAppForm } from '@/components/ui/forms';
+import FormDialog from '@/components/ui/forms/utils/dialog';
 import { pb } from '@/pocketbase';
 import {
   createAnnouncementMutation,
@@ -20,7 +14,6 @@ import {
 } from '@/pocketbase/queries/announcements';
 import { insertAnnouncementSchema } from '@/pocketbase/schemas/announcements';
 import { AnnouncementForm } from './form';
-import FormDialog from '@/components/ui/form-dialog';
 
 const CreateAnnouncementDialogForm = () => {
   const navigate = useNavigate({ from: '/dashboard/announcements' });
@@ -33,47 +26,57 @@ const CreateAnnouncementDialogForm = () => {
 
   const form = useAppForm({
     defaultValues: {
-      title: '',
+      author: '',
       message: '',
-      author: pb.authStore.record?.id,
+      title: '',
     } as z.infer<typeof insertAnnouncementSchema>,
+    validators: {
+      onSubmit: insertAnnouncementSchema,
+    },
     onSubmit: async ({ value }) =>
-      announcementMutation.mutateAsync(value, {
-        onSuccess: () => {
-          queryClient.invalidateQueries(
-            listAnnouncementsQuery(searchParams.page, searchParams.perPage),
-          );
-          navigate({
-            to: '/dashboard/announcements',
-            search: { new: undefined },
-          });
+      announcementMutation.mutateAsync(
+        { ...value, author: pb.authStore.record?.id || '' },
+        {
+          onSuccess: () => {
+            queryClient.invalidateQueries(
+              listAnnouncementsQuery(searchParams.page, searchParams.perPage),
+            );
+            navigate({
+              to: '/dashboard/announcements',
+              search: { new: undefined },
+            });
+          },
         },
-      }),
+      ),
   });
 
   return (
-    <FormDialog
-      open={searchParams.new}
-      onOpenChange={() =>
-        navigate({
-          to: '/dashboard/announcements',
-          search: { new: undefined },
-        })
-      }
-      onSubmit={(e) => {
-        form.handleSubmit()
-      }}
-      title={"Want to add a new announcement?"}
-      description={"Enter the right information"}
-      className='grid grid-cols-4 gap-5'
-    >
+    <form>
       <form.AppForm>
-        <AnnouncementForm form={form as any} />
-        <form.SubmitButton className="col-span-full">
-          Create Announcement
-        </form.SubmitButton>
+        <FormDialog
+          open={searchParams.new}
+          onOpenChange={() =>
+            navigate({
+              to: '/dashboard/announcements',
+              search: { new: undefined },
+            })
+          }
+          title={'Want to add a new announcement?'}
+          description={'Enter the right information'}
+          onClear={(e) => {
+            e.preventDefault();
+            form.reset();
+          }}
+          onSubmit={(e) => {
+            e.preventDefault();
+            e.stopPropagation();
+            form.handleSubmit();
+          }}
+        >
+          <AnnouncementForm form={form} />
+        </FormDialog>
       </form.AppForm>
-    </FormDialog>
+    </form>
   );
 };
 

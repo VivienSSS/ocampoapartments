@@ -19,7 +19,7 @@ import {
   listTenanciesQuery,
 } from '@/pocketbase/queries/tenancies';
 import { listTenantsQuery } from '@/pocketbase/queries/tenants';
-import { insertTenanciesSchema } from '@/pocketbase/schemas/tenancies';
+import type { insertTenanciesSchema } from '@/pocketbase/schemas/tenancies';
 import { CreateTenancyForm, LeaseContract } from './form';
 
 const CreateTenancyDialogForm = () => {
@@ -33,19 +33,21 @@ const CreateTenancyDialogForm = () => {
     queries: [
       {
         ...listTenantsQuery(1, 500),
-        enabled: search.new
+        enabled: search.new,
       },
       {
         ...listApartmentUnitsQuery(1, 500),
-        enabled: search.new
+        enabled: search.new,
       },
     ],
   });
 
   const form = useAppForm({
-    defaultValues: {} as Omit<z.infer<typeof insertTenanciesSchema>, 'leaseStartDate' | 'leaseEndDate'> & { leaseContract: LeaseContract },
+    defaultValues: {} as Omit<
+      z.infer<typeof insertTenanciesSchema>,
+      'leaseStartDate' | 'leaseEndDate'
+    > & { leaseContract: LeaseContract },
     onSubmit: async ({ value }) => {
-
       const now = new Date();
       let leaseEndDate: Date;
 
@@ -70,14 +72,14 @@ const CreateTenancyDialogForm = () => {
               listTenanciesQuery(search.page, search.perPage),
             );
             // Invalidate apartment units to refresh availability status
-            queryClient.invalidateQueries(
-              listApartmentUnitsQuery(1, 500),
-            );
-            navigate({ to: '/dashboard/tenancies', search: { new: undefined } });
+            queryClient.invalidateQueries(listApartmentUnitsQuery(1, 500));
+            navigate({
+              to: '/dashboard/tenancies',
+              search: { new: undefined },
+            });
           },
-        }
+        },
       );
-
     },
   });
 

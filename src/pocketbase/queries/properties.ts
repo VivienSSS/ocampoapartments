@@ -13,15 +13,20 @@ import {
   type PropertyHealthDashboardChartViewResponse,
   type PropertySummaryChartViewResponse,
   type RevenuePerPropertyChartViewResponse,
+  type TenantsPerPropertyChartViewResponse,
   type UnitInventoryChartViewResponse,
   type UnitPriceChartViewResponse,
-  type TenantsPerPropertyChartViewResponse,
 } from '../types';
 
-export const listPropertiesQuery = (page: number, perPage: number, sort?: string) =>
+export const listPropertiesQuery = (
+  page: number,
+  perPage: number,
+  sort?: string,
+) =>
   queryOptions({
     queryKey: [Collections.Properties, page, perPage, sort],
-    queryFn: () => pb.collection(Collections.Properties).getList(page, perPage, { sort }),
+    queryFn: () =>
+      pb.collection(Collections.Properties).getList(page, perPage, { sort }),
   });
 
 export const viewPropertiesQuery = (id: string) =>
@@ -34,12 +39,10 @@ export const inPropertiesQuery = (selected: string[]) =>
   queryOptions({
     queryKey: [Collections.Properties, selected],
     queryFn: () =>
-      pb
-        .collection<PropertiesResponse>(Collections.Properties)
-        .getFullList({
-          filter: selected.map((id) => `id='${id}'`).join('||'),
-          requestKey: null,
-        }),
+      pb.collection<PropertiesResponse>(Collections.Properties).getFullList({
+        filter: selected.map((id) => `id='${id}'`).join('||'),
+        requestKey: null,
+      }),
   });
 
 export const createPropertyMutation = mutationOptions<
@@ -118,7 +121,7 @@ export const propertyHealthDashboardChartViewQuery = () =>
     queryFn: () =>
       pb
         .collection<PropertyHealthDashboardChartViewResponse>(
-          Collections.PropertyHealthDashboardChartView
+          Collections.PropertyHealthDashboardChartView,
         )
         .getFullList({ requestKey: null }),
   });
@@ -129,7 +132,7 @@ export const propertySummaryChartViewQuery = () =>
     queryFn: () =>
       pb
         .collection<PropertySummaryChartViewResponse>(
-          Collections.PropertySummaryChartView
+          Collections.PropertySummaryChartView,
         )
         .getFullList({ requestKey: null }),
   });
@@ -140,7 +143,7 @@ export const revenuePerPropertyChartViewQuery = () =>
     queryFn: () =>
       pb
         .collection<RevenuePerPropertyChartViewResponse>(
-          Collections.RevenuePerPropertyChartView
+          Collections.RevenuePerPropertyChartView,
         )
         .getFullList({ requestKey: null }),
   });
@@ -151,7 +154,7 @@ export const unitInventoryChartViewQuery = () =>
     queryFn: () =>
       pb
         .collection<UnitInventoryChartViewResponse>(
-          Collections.UnitInventoryChartView
+          Collections.UnitInventoryChartView,
         )
         .getFullList({ requestKey: null }),
   });
@@ -161,9 +164,7 @@ export const unitPriceChartViewQuery = () =>
     queryKey: [Collections.UnitPriceChartView],
     queryFn: () =>
       pb
-        .collection<UnitPriceChartViewResponse>(
-          Collections.UnitPriceChartView
-        )
+        .collection<UnitPriceChartViewResponse>(Collections.UnitPriceChartView)
         .getFullList({ requestKey: null }),
   });
 
@@ -173,8 +174,7 @@ export const tenantsPerPropertyChartViewQuery = () =>
     queryFn: () =>
       pb
         .collection<TenantsPerPropertyChartViewResponse>(
-          Collections.TenantsPerPropertyChartView
+          Collections.TenantsPerPropertyChartView,
         )
         .getFullList({ requestKey: null }),
   });
-

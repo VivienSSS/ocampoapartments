@@ -1,30 +1,37 @@
-import { withForm } from '@/components/ui/form';
+import { withForm } from '@/components/ui/forms';
+import { insertAnnouncementSchema } from '@/pocketbase/schemas/announcements';
+import { Feather } from 'lucide-react';
+import type z from 'zod';
 
 export const AnnouncementForm = withForm({
+  defaultValues: {} as z.infer<typeof insertAnnouncementSchema>,
+  validators: {
+    onSubmit: insertAnnouncementSchema,
+  },
   render: ({ form }) => {
     return (
       <>
-        <form.AppField name="author">
-          {(field) => (
-            <field.TextField
-              hidden
-              className="col-span-full space-y-2"
-              placeholder="Author"
-            />
-          )}
-        </form.AppField>
         <form.AppField name="title">
           {(field) => (
-            <field.TextField className="col-span-full" label="Title" />
+            <field.TextField
+              className="col-span-full"
+              label="Title"
+              tooltip="Enter the title of the announcement"
+              description="This will be shown as the heading of the announcement"
+              tooltipSide="right"
+              iconAddonStart={<Feather />}
+            />
           )}
         </form.AppField>
         <form.AppField name="message">
           {(field) => (
-            <field.TextAreaField className="col-span-full mt-4" label="Message" />
+            <field.TextareaField
+              className="col-span-full mt-4"
+              label="Message"
+            />
           )}
         </form.AppField>
       </>
     );
   },
 });
-

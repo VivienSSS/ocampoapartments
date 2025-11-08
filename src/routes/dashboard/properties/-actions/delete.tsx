@@ -50,7 +50,8 @@ const DeletePropertyDialogForm = () => {
       <AlertDialogContent>
         <AlertDialogHeader>
           <AlertDialogTitle>
-            Are you sure to delete {properties?.map((record) => `\`${record.address}\``).join(',')}
+            Are you sure to delete{' '}
+            {properties?.map((record) => `\`${record.address}\``).join(',')}
           </AlertDialogTitle>
           <AlertDialogDescription>
             This action cannot be undone
@@ -69,7 +70,7 @@ const DeletePropertyDialogForm = () => {
                     search: (prev) => ({
                       ...prev,
                       delete: undefined,
-                      selected: []
+                      selected: [],
                     }),
                   });
                 },

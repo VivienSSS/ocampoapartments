@@ -36,9 +36,9 @@
   --sidebar-accent-foreground: #242424;
   --sidebar-border: #d9d9d9;
   --sidebar-ring: #9c5c5c;
-  --font-sans: 'Inter Variable', sans-serif;
-  --font-serif: 'Lora Variable', serif;
-  --font-mono: 'Fira Code Variable', monospace;
+  --font-sans: "Inter Variable", sans-serif;
+  --font-serif: "Lora Variable", serif;
+  --font-mono: "Fira Code Variable", monospace;
   --radius: 0.5rem;
   --shadow-x: 0;
   --shadow-y: 0.125rem;
@@ -48,11 +48,21 @@
   --shadow-color: #5c5c5c;
   --shadow-2xs: 0 0.125rem 0.25rem 0 hsl(0 0% 36.0784% / 0.05);
   --shadow-xs: 0 0.125rem 0.25rem 0 hsl(0 0% 36.0784% / 0.05);
-  --shadow-sm: 0 0.125rem 0.25rem 0 hsl(0 0% 36.0784% / 0.10), 0 1px 2px -1px hsl(0 0% 36.0784% / 0.10);
-  --shadow: 0 0.125rem 0.25rem 0 hsl(0 0% 36.0784% / 0.10), 0 1px 2px -1px hsl(0 0% 36.0784% / 0.10);
-  --shadow-md: 0 0.125rem 0.25rem 0 hsl(0 0% 36.0784% / 0.10), 0 2px 4px -1px hsl(0 0% 36.0784% / 0.10);
-  --shadow-lg: 0 0.125rem 0.25rem 0 hsl(0 0% 36.0784% / 0.10), 0 4px 6px -1px hsl(0 0% 36.0784% / 0.10);
-  --shadow-xl: 0 0.125rem 0.25rem 0 hsl(0 0% 36.0784% / 0.10), 0 8px 10px -1px hsl(0 0% 36.0784% / 0.10);
+  --shadow-sm:
+    0 0.125rem 0.25rem 0 hsl(0 0% 36.0784% / 0.1), 0 1px 2px -1px
+    hsl(0 0% 36.0784% / 0.1);
+  --shadow:
+    0 0.125rem 0.25rem 0 hsl(0 0% 36.0784% / 0.1), 0 1px 2px -1px
+    hsl(0 0% 36.0784% / 0.1);
+  --shadow-md:
+    0 0.125rem 0.25rem 0 hsl(0 0% 36.0784% / 0.1), 0 2px 4px -1px
+    hsl(0 0% 36.0784% / 0.1);
+  --shadow-lg:
+    0 0.125rem 0.25rem 0 hsl(0 0% 36.0784% / 0.1), 0 4px 6px -1px
+    hsl(0 0% 36.0784% / 0.1);
+  --shadow-xl:
+    0 0.125rem 0.25rem 0 hsl(0 0% 36.0784% / 0.1), 0 8px 10px -1px
+    hsl(0 0% 36.0784% / 0.1);
   --shadow-2xl: 0 0.125rem 0.25rem 0 hsl(0 0% 36.0784% / 0.25);
   --tracking-normal: 0em;
   --spacing: 0.25rem;
@@ -91,9 +101,9 @@
   --sidebar-accent-foreground: #f0f0f0;
   --sidebar-border: #424242;
   --sidebar-ring: #b06c6c;
-  --font-sans: 'Inter Variable', sans-serif;
-  --font-serif: 'Lora Variable', serif;
-  --font-mono: 'Fira Code Variable', monospace;
+  --font-sans: "Inter Variable", sans-serif;
+  --font-serif: "Lora Variable", serif;
+  --font-mono: "Fira Code Variable", monospace;
   --radius: 0.5rem;
   --shadow-x: 0;
   --shadow-y: 0.125rem;
@@ -101,14 +111,24 @@
   --shadow-spread: 0;
   --shadow-opacity: 0.4;
   --shadow-color: #0d0d0d;
-  --shadow-2xs: 0 0.125rem 0.25rem 0 hsl(0 0% 5.0980% / 0.20);
-  --shadow-xs: 0 0.125rem 0.25rem 0 hsl(0 0% 5.0980% / 0.20);
-  --shadow-sm: 0 0.125rem 0.25rem 0 hsl(0 0% 5.0980% / 0.40), 0 1px 2px -1px hsl(0 0% 5.0980% / 0.40);
-  --shadow: 0 0.125rem 0.25rem 0 hsl(0 0% 5.0980% / 0.40), 0 1px 2px -1px hsl(0 0% 5.0980% / 0.40);
-  --shadow-md: 0 0.125rem 0.25rem 0 hsl(0 0% 5.0980% / 0.40), 0 2px 4px -1px hsl(0 0% 5.0980% / 0.40);
-  --shadow-lg: 0 0.125rem 0.25rem 0 hsl(0 0% 5.0980% / 0.40), 0 4px 6px -1px hsl(0 0% 5.0980% / 0.40);
-  --shadow-xl: 0 0.125rem 0.25rem 0 hsl(0 0% 5.0980% / 0.40), 0 8px 10px -1px hsl(0 0% 5.0980% / 0.40);
-  --shadow-2xl: 0 0.125rem 0.25rem 0 hsl(0 0% 5.0980% / 1.00);
+  --shadow-2xs: 0 0.125rem 0.25rem 0 hsl(0 0% 5.0980% / 0.2);
+  --shadow-xs: 0 0.125rem 0.25rem 0 hsl(0 0% 5.0980% / 0.2);
+  --shadow-sm:
+    0 0.125rem 0.25rem 0 hsl(0 0% 5.0980% / 0.4), 0 1px 2px -1px
+    hsl(0 0% 5.0980% / 0.4);
+  --shadow:
+    0 0.125rem 0.25rem 0 hsl(0 0% 5.0980% / 0.4), 0 1px 2px -1px
+    hsl(0 0% 5.0980% / 0.4);
+  --shadow-md:
+    0 0.125rem 0.25rem 0 hsl(0 0% 5.0980% / 0.4), 0 2px 4px -1px
+    hsl(0 0% 5.0980% / 0.4);
+  --shadow-lg:
+    0 0.125rem 0.25rem 0 hsl(0 0% 5.0980% / 0.4), 0 4px 6px -1px
+    hsl(0 0% 5.0980% / 0.4);
+  --shadow-xl:
+    0 0.125rem 0.25rem 0 hsl(0 0% 5.0980% / 0.4), 0 8px 10px -1px
+    hsl(0 0% 5.0980% / 0.4);
+  --shadow-2xl: 0 0.125rem 0.25rem 0 hsl(0 0% 5.0980% / 1);
 }
 
 @theme inline {
@@ -179,7 +199,6 @@ body {
 }
 
 @layer utilities {
-
   /* Chrome, Safari and Opera */
   .no-scrollbar::-webkit-scrollbar {
     display: none;

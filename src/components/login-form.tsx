@@ -1,27 +1,27 @@
-import { cn } from "@/lib/utils"
-import { Button } from "@/components/ui/button"
+import { useMutation } from '@tanstack/react-query';
+import { useNavigate } from '@tanstack/react-router';
+import { toast } from 'sonner';
+import type z from 'zod';
+import { Button } from '@/components/ui/button';
 import {
   Card,
   CardContent,
   CardDescription,
   CardHeader,
   CardTitle,
-} from "@/components/ui/card"
-import { Input } from "@/components/ui/input"
-import { Label } from "@/components/ui/label"
-import { useAppForm } from "./ui/form"
-import type z from "zod"
-import { loginUserSchema } from "@/pocketbase/schemas/users"
-import { useMutation } from "@tanstack/react-query"
-import { loginUserMutation } from "@/pocketbase/queries/users"
-import { useNavigate } from "@tanstack/react-router"
-import { toast } from "sonner"
+} from '@/components/ui/card';
+import { Input } from '@/components/ui/input';
+import { Label } from '@/components/ui/label';
+import { cn } from '@/lib/utils';
+import { loginUserMutation } from '@/pocketbase/queries/users';
+import { loginUserSchema } from '@/pocketbase/schemas/users';
+import { useAppForm } from './ui/form';
 
 export function LoginForm({
   className,
   ...props
-}: React.ComponentProps<"div">) {
-  const navigate = useNavigate({ from: "/login" });
+}: React.ComponentProps<'div'>) {
+  const navigate = useNavigate({ from: '/login' });
   const loginMutation = useMutation(loginUserMutation);
 
   const form = useAppForm({
@@ -33,21 +33,23 @@ export function LoginForm({
       const result = await loginMutation.mutateAsync(value);
 
       if (!result.record.isActive) {
-        toast.error('This account is inactive', { description: 'please contact the administrator for more details' })
-      } else[
-        navigate({ to: '/dashboard/announcements' }) //for success
-      ]
+        toast.error('This account is inactive', {
+          description: 'please contact the administrator for more details',
+        });
+      } else
+        [
+          navigate({ to: '/dashboard/announcements' }), //for success
+        ];
     },
   });
-
 
   return (
     <form
       className="grid grid-cols-4 gap-5"
       onSubmit={(e) => {
-        e.preventDefault()
-        e.stopPropagation()
-        form.handleSubmit()
+        e.preventDefault();
+        e.stopPropagation();
+        form.handleSubmit();
       }}
     >
       <form.AppForm>
@@ -78,15 +80,25 @@ export function LoginForm({
               </div> */}
         <form.AppField name="email">
           {(field) => (
-            <field.TextField className="col-span-full" type="email" placeholder="abc@email.com" label="Email" />
+            <field.TextField
+              className="col-span-full"
+              type="email"
+              placeholder="abc@email.com"
+              label="Email"
+            />
           )}
         </form.AppField>
         <form.AppField name="password">
-          {(field) => <field.TextField className="col-span-full" type="password" placeholder="***********" label="Password" />}
+          {(field) => (
+            <field.TextField
+              className="col-span-full"
+              type="password"
+              placeholder="***********"
+              label="Password"
+            />
+          )}
         </form.AppField>
-        <form.SubmitButton className="col-span-full">
-          Login
-        </form.SubmitButton>
+        <form.SubmitButton className="col-span-full">Login</form.SubmitButton>
         {/* <div className="text-center text-sm col-span-full">
                 Don&apos;t have an account?{" "}
                 <a href="#" className="underline underline-offset-4">
@@ -95,5 +107,5 @@ export function LoginForm({
               </div> */}
       </form.AppForm>
     </form>
-  )
+  );
 }

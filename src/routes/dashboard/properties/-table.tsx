@@ -2,9 +2,9 @@ import { useNavigate, useSearch } from '@tanstack/react-router';
 import type { ColumnDef } from '@tanstack/react-table';
 import { format } from 'date-fns';
 import { MoreHorizontal } from 'lucide-react';
-import { Checkbox } from '@/components/ui/checkbox';
 import { Badge } from '@/components/ui/badge';
 import { Button } from '@/components/ui/button';
+import { Checkbox } from '@/components/ui/checkbox';
 import {
   DropdownMenu,
   DropdownMenuContent,
@@ -31,7 +31,9 @@ export const columns: ColumnDef<PropertiesResponse>[] = [
               navigate({
                 search: (prev) => ({
                   ...prev,
-                  selected: table.getRowModel().rows.map((row) => row.original.id),
+                  selected: table
+                    .getRowModel()
+                    .rows.map((row) => row.original.id),
                 }),
               });
             } else {
@@ -68,7 +70,7 @@ export const columns: ColumnDef<PropertiesResponse>[] = [
                   search: (prev) => ({
                     ...prev,
                     selected: searchQuery.selected.filter(
-                      (id: string) => id !== row.original.id
+                      (id: string) => id !== row.original.id,
                     ),
                   }),
                 });
@@ -85,7 +87,9 @@ export const columns: ColumnDef<PropertiesResponse>[] = [
     header: ({ column }) => (
       <TableColumnHeader column={column} title="Branch" />
     ),
-    cell: ({ row }) => <Badge className='bg-[#928c6f]'>{row.getValue('branch')}</Badge>,
+    cell: ({ row }) => (
+      <Badge className="bg-[#928c6f]">{row.getValue('branch')}</Badge>
+    ),
   },
   {
     accessorKey: 'address',
@@ -93,9 +97,7 @@ export const columns: ColumnDef<PropertiesResponse>[] = [
     header: ({ column }) => (
       <TableColumnHeader column={column} title="Address" />
     ),
-    cell: ({ row }) => (
-      <div>{row.getValue('address')}</div>
-    ),
+    cell: ({ row }) => <div>{row.getValue('address')}</div>,
   },
   {
     accessorKey: 'created',
@@ -113,5 +115,4 @@ export const columns: ColumnDef<PropertiesResponse>[] = [
     ),
     cell: ({ row }) => format(new Date(row.getValue('updated')), 'PPP'),
   },
-
 ];

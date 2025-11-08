@@ -2,8 +2,8 @@ import { useNavigate, useSearch } from '@tanstack/react-router';
 import type { ColumnDef } from '@tanstack/react-table';
 import { format } from 'date-fns';
 import { MoreHorizontal } from 'lucide-react';
-import { Checkbox } from '@/components/ui/checkbox';
 import { Button } from '@/components/ui/button';
+import { Checkbox } from '@/components/ui/checkbox';
 import {
   DropdownMenu,
   DropdownMenuContent,
@@ -18,32 +18,38 @@ export const columns: ColumnDef<AnnouncementsResponse>[] = [
     id: 'select',
     header: ({ table }) => {
       const navigate = useNavigate({ from: '/dashboard/announcements' });
-      const searchQuery = useSearch({ from: '/dashboard/announcements/' })
-      return <Checkbox
-        checked={searchQuery.selected.length === table.getRowModel().rows.map(row => row.original.id).length}
-        onCheckedChange={(checked) => {
-          if (checked) {
-            navigate({
-              search: (prev) => ({
-                ...prev,
-                selected: table.getRowModel().rows.map(row => row.original.id),
-              }),
-            })
-          } else {
-            navigate({
-              search: (prev) => ({
-                ...prev,
-                selected: []
-              }),
-            })
+      const searchQuery = useSearch({ from: '/dashboard/announcements/' });
+      return (
+        <Checkbox
+          checked={
+            searchQuery.selected.length ===
+            table.getRowModel().rows.map((row) => row.original.id).length
           }
-        }
-        }
-      />
+          onCheckedChange={(checked) => {
+            if (checked) {
+              navigate({
+                search: (prev) => ({
+                  ...prev,
+                  selected: table
+                    .getRowModel()
+                    .rows.map((row) => row.original.id),
+                }),
+              });
+            } else {
+              navigate({
+                search: (prev) => ({
+                  ...prev,
+                  selected: [],
+                }),
+              });
+            }
+          }}
+        />
+      );
     },
     cell: ({ row }) => {
       const navigate = useNavigate({ from: '/dashboard/announcements' });
-      const searchQuery = useSearch({ from: '/dashboard/announcements/' })
+      const searchQuery = useSearch({ from: '/dashboard/announcements/' });
 
       return (
         <div className="flex justify-center">
@@ -51,23 +57,24 @@ export const columns: ColumnDef<AnnouncementsResponse>[] = [
             checked={searchQuery.selected?.includes(row.original.id)}
             onCheckedChange={(checked) => {
               if (checked) {
-                searchQuery.selected.push(row.original.id)
+                searchQuery.selected.push(row.original.id);
                 navigate({
                   search: (prev) => ({
                     ...prev,
                     selected: searchQuery.selected,
                   }),
-                })
+                });
               } else {
                 navigate({
                   search: (prev) => ({
                     ...prev,
-                    selected: searchQuery.selected.filter((id: string) => id !== row.original.id),
+                    selected: searchQuery.selected.filter(
+                      (id: string) => id !== row.original.id,
+                    ),
                   }),
-                })
+                });
               }
-            }
-            }
+            }}
           />
         </div>
       );
@@ -113,4 +120,3 @@ export const columns: ColumnDef<AnnouncementsResponse>[] = [
     cell: ({ row }) => format(new Date(row.getValue('updated')), 'PPP'),
   },
 ];
-

@@ -17,7 +17,7 @@ import {
   createMaintenanceWorkerMutation,
   listMaintenanceWorkersQuery,
 } from '@/pocketbase/queries/maintenanceWorkers';
-import { insertMaintenanceWorkerSchema } from '@/pocketbase/schemas/maintenanceWorkers';
+import type { insertMaintenanceWorkerSchema } from '@/pocketbase/schemas/maintenanceWorkers';
 import { CreateWorkersForm } from './form';
 
 const CreateWorkerDialogForm = () => {
@@ -27,7 +27,9 @@ const CreateWorkerDialogForm = () => {
     from: '/dashboard/maintenanceworkers/',
   });
 
-  const maintenanceWorkerMutation = useMutation(createMaintenanceWorkerMutation);
+  const maintenanceWorkerMutation = useMutation(
+    createMaintenanceWorkerMutation,
+  );
 
   const form = useAppForm({
     defaultValues: {
@@ -39,7 +41,10 @@ const CreateWorkerDialogForm = () => {
       maintenanceWorkerMutation.mutateAsync(value, {
         onSuccess: () => {
           queryClient.invalidateQueries(
-            listMaintenanceWorkersQuery(searchParams.page, searchParams.perPage),
+            listMaintenanceWorkersQuery(
+              searchParams.page,
+              searchParams.perPage,
+            ),
           );
           navigate({
             to: '/dashboard/maintenanceworkers',

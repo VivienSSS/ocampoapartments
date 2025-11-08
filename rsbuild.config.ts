@@ -22,8 +22,8 @@ export default defineConfig({
   },
   output: {
     distPath: {
-      root: ".output/dist"
-    }
+      root: '.output/dist',
+    },
   },
   server: {
     proxy: {

@@ -1,46 +1,56 @@
 import { createFileRoute, redirect } from '@tanstack/react-router';
 import { zodValidator } from '@tanstack/zod-adapter';
+import {
+  ArrowUpDown,
+  ChevronLeft,
+  ChevronRight,
+  Edit,
+  Plus,
+  Trash,
+} from 'lucide-react';
 import { Button } from '@/components/ui/button';
-import DataTable from '@/components/ui/kibo-ui/table/data-table';
 import {
   DropdownMenu,
   DropdownMenuContent,
   DropdownMenuItem,
   DropdownMenuTrigger,
 } from '@/components/ui/dropdown-menu';
+import DataTable from '@/components/ui/kibo-ui/table/data-table';
 import { searchParams } from '@/lib/utils';
 import { listTenanciesQuery } from '@/pocketbase/queries/tenancies';
 import { tenanciesSchema } from '@/pocketbase/schemas/tenancies';
+import { UsersRoleOptions } from '@/pocketbase/types';
 import CreateTenantDialogForm from './-actions/create';
 import DeleteTenancyDialogForm from './-actions/delete';
 import EditTenancyDialogForm from './-actions/update';
 import LoadingComponent from './-loading';
 import { columns } from './-table';
-import { ChevronLeft, ChevronRight, Plus, Edit, Trash, ArrowUpDown } from 'lucide-react';
-import { UsersRoleOptions } from '@/pocketbase/types';
 
 export const Route = createFileRoute('/dashboard/tenancies/')({
   component: RouteComponent,
   pendingComponent: LoadingComponent,
   validateSearch: zodValidator(searchParams(tenanciesSchema.keyof())),
   beforeLoad: ({ search, context }) => {
-
     if (context.user.role !== UsersRoleOptions.Administrator) {
-
       if (context.user.role === UsersRoleOptions.Tenant) {
-        throw redirect({ to: "/dashboard/tenant-overview" })
+        throw redirect({ to: '/dashboard/tenant-overview' });
       }
-
     }
 
-    return { search }
+    return { search };
   },
   loader: ({ context }) => {
     const sortString = context.search.sort
-      ? context.search.sort.map((s) => `${s.order === '-' ? '-' : ''}${s.field}`).join(',')
+      ? context.search.sort
+          .map((s) => `${s.order === '-' ? '-' : ''}${s.field}`)
+          .join(',')
       : undefined;
     return context.queryClient.fetchQuery(
-      listTenanciesQuery(context.search.page, context.search.perPage, sortString),
+      listTenanciesQuery(
+        context.search.page,
+        context.search.perPage,
+        sortString,
+      ),
     );
   },
 });
@@ -54,7 +64,7 @@ function RouteComponent() {
     <article>
       <section className="flex items-center justify-between py-2.5">
         <h1 className="text-2xl font-bold">Tenancies</h1>
-        <div className='flex gap-2.5'>
+        <div className="flex gap-2.5">
           <Button
             disabled={searchQuery.selected?.length > 1}
             onClick={() =>
@@ -83,10 +93,24 @@ function RouteComponent() {
           >
             <Trash /> Delete
           </Button>
-          <Button disabled={searchQuery.page === 1} onClick={() => navigate({ search: (prev) => ({ ...prev, page: searchQuery.page - 1 }) })}>
+          <Button
+            disabled={searchQuery.page === 1}
+            onClick={() =>
+              navigate({
+                search: (prev) => ({ ...prev, page: searchQuery.page - 1 }),
+              })
+            }
+          >
             <ChevronLeft />
           </Button>
-          <Button disabled={searchQuery.page >= tenancies.totalPages} onClick={() => navigate({ search: (prev) => ({ ...prev, page: searchQuery.page + 1 }) })}>
+          <Button
+            disabled={searchQuery.page >= tenancies.totalPages}
+            onClick={() =>
+              navigate({
+                search: (prev) => ({ ...prev, page: searchQuery.page + 1 }),
+              })
+            }
+          >
             <ChevronRight />
           </Button>
           <DropdownMenu>
@@ -96,16 +120,52 @@ function RouteComponent() {
               </Button>
             </DropdownMenuTrigger>
             <DropdownMenuContent>
-              <DropdownMenuItem onClick={() => navigate({ search: (prev) => ({ ...prev, sort: [{ field: 'leaseStartDate', order: '+' }] }) })}>
+              <DropdownMenuItem
+                onClick={() =>
+                  navigate({
+                    search: (prev) => ({
+                      ...prev,
+                      sort: [{ field: 'leaseStartDate', order: '+' }],
+                    }),
+                  })
+                }
+              >
                 Start Date (Oldest First)
               </DropdownMenuItem>
-              <DropdownMenuItem onClick={() => navigate({ search: (prev) => ({ ...prev, sort: [{ field: 'leaseStartDate', order: '-' }] }) })}>
+              <DropdownMenuItem
+                onClick={() =>
+                  navigate({
+                    search: (prev) => ({
+                      ...prev,
+                      sort: [{ field: 'leaseStartDate', order: '-' }],
+                    }),
+                  })
+                }
+              >
                 Start Date (Newest First)
               </DropdownMenuItem>
-              <DropdownMenuItem onClick={() => navigate({ search: (prev) => ({ ...prev, sort: [{ field: 'created', order: '-' }] }) })}>
+              <DropdownMenuItem
+                onClick={() =>
+                  navigate({
+                    search: (prev) => ({
+                      ...prev,
+                      sort: [{ field: 'created', order: '-' }],
+                    }),
+                  })
+                }
+              >
                 Newest to Oldest
               </DropdownMenuItem>
-              <DropdownMenuItem onClick={() => navigate({ search: (prev) => ({ ...prev, sort: [{ field: 'created', order: '+' }] }) })}>
+              <DropdownMenuItem
+                onClick={() =>
+                  navigate({
+                    search: (prev) => ({
+                      ...prev,
+                      sort: [{ field: 'created', order: '+' }],
+                    }),
+                  })
+                }
+              >
                 Oldest to Newest
               </DropdownMenuItem>
             </DropdownMenuContent>
@@ -117,7 +177,8 @@ function RouteComponent() {
       </section>
       <div className="flex justify-end py-2.5">
         <div className="flex gap-2">
-          <Button className=''
+          <Button
+            className=""
             onClick={() =>
               navigate({ search: (prev) => ({ ...prev, new: true }) })
             }

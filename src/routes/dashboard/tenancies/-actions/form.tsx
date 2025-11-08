@@ -1,14 +1,14 @@
 import type z from 'zod';
+import { AsyncSelect } from '@/components/ui/async-select';
 import { withForm } from '@/components/ui/form';
 import { pb } from '@/pocketbase';
 import type { ApartmentUnitsResponse } from '@/pocketbase/queries/apartmentUnits';
 import type { TenantsResponse } from '@/pocketbase/queries/tenants';
 import {
-  insertTenanciesSchema,
+  type insertTenanciesSchema,
   updateTenanciesSchema,
 } from '@/pocketbase/schemas/tenancies';
 import { Collections } from '@/pocketbase/types';
-import { AsyncSelect } from '@/components/ui/async-select';
 
 export enum LeaseContract {
   HalfYear = '6 Months',
@@ -16,7 +16,10 @@ export enum LeaseContract {
 }
 
 export const CreateTenancyForm = withForm({
-  defaultValues: {} as Omit<z.infer<typeof insertTenanciesSchema>, 'leaseStartDate' | 'leaseEndDate'> & { leaseContract: LeaseContract },
+  defaultValues: {} as Omit<
+    z.infer<typeof insertTenanciesSchema>,
+    'leaseStartDate' | 'leaseEndDate'
+  > & { leaseContract: LeaseContract },
   props: {} as {
     tenants: TenantsResponse[];
     apartmentUnits: ApartmentUnitsResponse[];
@@ -31,11 +34,25 @@ export const CreateTenancyForm = withForm({
                 Tenant
               </label>
               <AsyncSelect<TenantsResponse>
-                className='w-full'
-                fetcher={async (query) => (await pb.collection(Collections.Tenants).getList<TenantsResponse>(1, 10, { filter: `user.firstName ~ '%${query}%'`, expand: 'user', requestKey: null })).items}
+                className="w-full"
+                fetcher={async (query) =>
+                  (
+                    await pb
+                      .collection(Collections.Tenants)
+                      .getList<TenantsResponse>(1, 10, {
+                        filter: `user.firstName ~ '%${query}%'`,
+                        expand: 'user',
+                        requestKey: null,
+                      })
+                  ).items
+                }
                 getOptionValue={(option) => option.id}
-                getDisplayValue={(option) => `${option.expand.user.firstName} ${option.expand.user.lastName}`}
-                renderOption={(option) => <div>{`${option.expand.user.firstName} ${option.expand.user.lastName}`}</div>}
+                getDisplayValue={(option) =>
+                  `${option.expand.user.firstName} ${option.expand.user.lastName}`
+                }
+                renderOption={(option) => (
+                  <div>{`${option.expand.user.firstName} ${option.expand.user.lastName}`}</div>
+                )}
                 value={field.state.value || ''}
                 onChange={field.handleChange}
                 label="Tenants"
@@ -50,11 +67,25 @@ export const CreateTenancyForm = withForm({
                 Unit
               </label>
               <AsyncSelect<ApartmentUnitsResponse>
-                className='w-full'
-                fetcher={async (query) => (await pb.collection(Collections.ApartmentUnits).getList<ApartmentUnitsResponse>(1, 10, { filter: `(floorNumber ~ '%${query}%' || unitLetter ~ '%${query}%' || property.branch ~ '%${query}%') && isAvailable = true`, expand: 'property', requestKey: null })).items}
+                className="w-full"
+                fetcher={async (query) =>
+                  (
+                    await pb
+                      .collection(Collections.ApartmentUnits)
+                      .getList<ApartmentUnitsResponse>(1, 10, {
+                        filter: `(floorNumber ~ '%${query}%' || unitLetter ~ '%${query}%' || property.branch ~ '%${query}%') && isAvailable = true`,
+                        expand: 'property',
+                        requestKey: null,
+                      })
+                  ).items
+                }
                 getOptionValue={(option) => option.id}
-                getDisplayValue={(option) => `Unit ${option.unitLetter} - Floor ${option.floorNumber} - ${option.expand.property.branch}`}
-                renderOption={(option) => <div>{`Unit ${option.unitLetter} - Floor ${option.floorNumber} - ${option.expand.property.branch}`}</div>}
+                getDisplayValue={(option) =>
+                  `Unit ${option.unitLetter} - Floor ${option.floorNumber} - ${option.expand.property.branch}`
+                }
+                renderOption={(option) => (
+                  <div>{`Unit ${option.unitLetter} - Floor ${option.floorNumber} - ${option.expand.property.branch}`}</div>
+                )}
                 value={field.state.value || ''}
                 onChange={field.handleChange}
                 label="Unit"
@@ -66,12 +97,14 @@ export const CreateTenancyForm = withForm({
           {(field) => (
             <field.SelectField
               className="col-span-full"
-              options={Object.values(LeaseContract).map((obj) => ({ label: obj, value: obj }))}
+              options={Object.values(LeaseContract).map((obj) => ({
+                label: obj,
+                value: obj,
+              }))}
               label="Lease Contract"
             />
           )}
         </form.AppField>
-
       </>
     );
   },
@@ -96,11 +129,25 @@ export const EditTenancyForm = withForm({
                 Tenant
               </label>
               <AsyncSelect<TenantsResponse>
-                className='w-full'
-                fetcher={async (query) => (await pb.collection(Collections.Tenants).getList<TenantsResponse>(1, 10, { filter: `user.firstName ~ '%${query}%'`, expand: 'user', requestKey: null })).items}
+                className="w-full"
+                fetcher={async (query) =>
+                  (
+                    await pb
+                      .collection(Collections.Tenants)
+                      .getList<TenantsResponse>(1, 10, {
+                        filter: `user.firstName ~ '%${query}%'`,
+                        expand: 'user',
+                        requestKey: null,
+                      })
+                  ).items
+                }
                 getOptionValue={(option) => option.id}
-                getDisplayValue={(option) => `${option.expand.user.firstName} ${option.expand.user.lastName}`}
-                renderOption={(option) => <div>{`${option.expand.user.firstName} ${option.expand.user.lastName}`}</div>}
+                getDisplayValue={(option) =>
+                  `${option.expand.user.firstName} ${option.expand.user.lastName}`
+                }
+                renderOption={(option) => (
+                  <div>{`${option.expand.user.firstName} ${option.expand.user.lastName}`}</div>
+                )}
                 value={field.state.value || ''}
                 onChange={field.handleChange}
                 label="Tenants"
@@ -115,11 +162,25 @@ export const EditTenancyForm = withForm({
                 Unit
               </label>
               <AsyncSelect<ApartmentUnitsResponse>
-                className='w-full'
-                fetcher={async (query) => (await pb.collection(Collections.ApartmentUnits).getList<ApartmentUnitsResponse>(1, 10, { filter: `floorNumber ~ '%${query}%' || unitLetter ~ '%${query}%' || property.branch ~ '%${query}%'`, expand: 'property', requestKey: null })).items}
+                className="w-full"
+                fetcher={async (query) =>
+                  (
+                    await pb
+                      .collection(Collections.ApartmentUnits)
+                      .getList<ApartmentUnitsResponse>(1, 10, {
+                        filter: `floorNumber ~ '%${query}%' || unitLetter ~ '%${query}%' || property.branch ~ '%${query}%'`,
+                        expand: 'property',
+                        requestKey: null,
+                      })
+                  ).items
+                }
                 getOptionValue={(option) => option.id}
-                getDisplayValue={(option) => `Unit ${option.unitLetter} - Floor ${option.floorNumber} - ${option.expand.property.branch}`}
-                renderOption={(option) => <div>{`Unit ${option.unitLetter} - Floor ${option.floorNumber} - ${option.expand.property.branch}`}</div>}
+                getDisplayValue={(option) =>
+                  `Unit ${option.unitLetter} - Floor ${option.floorNumber} - ${option.expand.property.branch}`
+                }
+                renderOption={(option) => (
+                  <div>{`Unit ${option.unitLetter} - Floor ${option.floorNumber} - ${option.expand.property.branch}`}</div>
+                )}
                 value={field.state.value || ''}
                 onChange={field.handleChange}
                 label="Unit"

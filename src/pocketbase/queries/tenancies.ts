@@ -8,9 +8,9 @@ import type {
   updateTenanciesSchema,
 } from '../schemas/tenancies';
 import {
+  type ActiveTenanciesChartViewResponse,
   Collections,
   type TenanciesResponse as TenanciesClientResponse,
-  type ActiveTenanciesChartViewResponse,
   type TenancyHealthChartViewResponse,
 } from '../types';
 import type { ApartmentUnitsResponse } from './apartmentUnits';
@@ -21,7 +21,11 @@ export type TenanciesResponse = TenanciesClientResponse<{
   unit: ApartmentUnitsResponse;
 }>;
 
-export const listTenanciesQuery = (page: number, perPage: number, sort?: string) =>
+export const listTenanciesQuery = (
+  page: number,
+  perPage: number,
+  sort?: string,
+) =>
   queryOptions({
     queryKey: [Collections.Tenancies, page, perPage, sort],
     queryFn: () =>
@@ -37,7 +41,9 @@ export const viewTenancyQuery = (id: string) =>
   queryOptions({
     queryKey: [Collections.Tenancies, id],
     queryFn: () =>
-      pb.collection(Collections.Tenancies).getOne<TenanciesResponse>(id, { expand: 'tenant.user,unit.property', }),
+      pb
+        .collection(Collections.Tenancies)
+        .getOne<TenanciesResponse>(id, { expand: 'tenant.user,unit.property' }),
   });
 
 export const createTenancyMutation = mutationOptions<
@@ -47,10 +53,16 @@ export const createTenancyMutation = mutationOptions<
 >({
   mutationFn: async (value) => {
     // Create the tenancy
-    const tenancy = await pb.collection(Collections.Tenancies).create<TenanciesResponse>(value, { expand: 'tenant.user,unit.property', });
+    const tenancy = await pb
+      .collection(Collections.Tenancies)
+      .create<TenanciesResponse>(value, {
+        expand: 'tenant.user,unit.property',
+      });
 
     // Update the apartment unit to mark it as unavailable
-    await pb.collection(Collections.ApartmentUnits).update(value.unit, { isAvailable: false });
+    await pb
+      .collection(Collections.ApartmentUnits)
+      .update(value.unit, { isAvailable: false });
 
     return tenancy;
   },
@@ -74,17 +86,27 @@ export const updateTenancyMutation = (id: string) =>
       // If the unit is being changed, we need to handle unit availability
       if (value.unit) {
         // Get the current tenancy to see if unit changed
-        const currentTenancy = await pb.collection(Collections.Tenancies).getOne(id);
+        const currentTenancy = await pb
+          .collection(Collections.Tenancies)
+          .getOne(id);
 
         if (currentTenancy.unit !== value.unit) {
           // Mark the old unit as available
-          await pb.collection(Collections.ApartmentUnits).update(currentTenancy.unit, { isAvailable: true });
+          await pb
+            .collection(Collections.ApartmentUnits)
+            .update(currentTenancy.unit, { isAvailable: true });
           // Mark the new unit as unavailable
-          await pb.collection(Collections.ApartmentUnits).update(value.unit, { isAvailable: false });
+          await pb
+            .collection(Collections.ApartmentUnits)
+            .update(value.unit, { isAvailable: false });
         }
       }
 
-      return pb.collection(Collections.Tenancies).update<TenanciesResponse>(id, value, { expand: 'tenant.user,unit.property', });
+      return pb
+        .collection(Collections.Tenancies)
+        .update<TenanciesResponse>(id, value, {
+          expand: 'tenant.user,unit.property',
+        });
     },
     onSuccess: (value) =>
       toast.success(`Changes Saved`, {
@@ -106,7 +128,9 @@ export const deleteTenancyMutation = (id: string) =>
       await pb.collection(Collections.Tenancies).delete(id);
 
       // Mark the unit as available again
-      await pb.collection(Collections.ApartmentUnits).update(tenancy.unit, { isAvailable: true });
+      await pb
+        .collection(Collections.ApartmentUnits)
+        .update(tenancy.unit, { isAvailable: true });
     },
     onSuccess: () =>
       toast.success(`Deleted Sucessfully`, {
@@ -118,13 +142,18 @@ export const deleteTenancyMutation = (id: string) =>
       }),
   });
 
-export const inTenanciesQuery = (selected: string[]) => queryOptions({
-  queryKey: [Collections.Tenancies, selected],
-  queryFn: () =>
-    pb
-      .collection<TenanciesResponse>(Collections.Tenancies)
-      .getFullList({ filter: selected.map((id) => `id='${id}'`).join("||"), expand: 'tenant.user,unit.property', requestKey: null }),
-});
+export const inTenanciesQuery = (selected: string[]) =>
+  queryOptions({
+    queryKey: [Collections.Tenancies, selected],
+    queryFn: () =>
+      pb
+        .collection<TenanciesResponse>(Collections.Tenancies)
+        .getFullList({
+          filter: selected.map((id) => `id='${id}'`).join('||'),
+          expand: 'tenant.user,unit.property',
+          requestKey: null,
+        }),
+  });
 
 export const batchDeleteTenancyMutation = (selected: string[]) =>
   mutationOptions({
@@ -132,7 +161,10 @@ export const batchDeleteTenancyMutation = (selected: string[]) =>
       // Get all tenancy details first to know which units to mark as available
       const tenancies = await pb
         .collection(Collections.Tenancies)
-        .getFullList({ filter: selected.map((id) => `id='${id}'`).join("||"), requestKey: null });
+        .getFullList({
+          filter: selected.map((id) => `id='${id}'`).join('||'),
+          requestKey: null,
+        });
 
       const batch = pb.createBatch();
 
@@ -143,7 +175,9 @@ export const batchDeleteTenancyMutation = (selected: string[]) =>
 
       // Mark all associated units as available again
       for (const tenancy of tenancies) {
-        batch.collection(Collections.ApartmentUnits).update(tenancy.unit, { isAvailable: true });
+        batch
+          .collection(Collections.ApartmentUnits)
+          .update(tenancy.unit, { isAvailable: true });
       }
 
       return await batch.send({ requestKey: null });
@@ -165,7 +199,7 @@ export const activeTenanciesChartViewQuery = () =>
     queryFn: () =>
       pb
         .collection<ActiveTenanciesChartViewResponse>(
-          Collections.ActiveTenanciesChartView
+          Collections.ActiveTenanciesChartView,
         )
         .getFullList({ requestKey: null }),
   });
@@ -176,8 +210,7 @@ export const tenancyHealthChartViewQuery = () =>
     queryFn: () =>
       pb
         .collection<TenancyHealthChartViewResponse>(
-          Collections.TenancyHealthChartView
+          Collections.TenancyHealthChartView,
         )
         .getFullList({ requestKey: null }),
   });
-

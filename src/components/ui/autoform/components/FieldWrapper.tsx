@@ -1,9 +1,15 @@
-import React from "react";
-import { Label } from "@/components/ui/label";
-import type { FieldWrapperProps } from "@autoform/react";
-import { Field, FieldContent, FieldDescription, FieldError, FieldLabel } from "../../field";
+import type { FieldWrapperProps } from '@autoform/react';
+import type React from 'react';
+import { Label } from '@/components/ui/label';
+import {
+  Field,
+  FieldContent,
+  FieldDescription,
+  FieldError,
+  FieldLabel,
+} from '../../field';
 
-const DISABLED_LABELS = ["boolean", "object", "array"];
+const DISABLED_LABELS = ['boolean', 'object', 'array'];
 
 export const FieldWrapper: React.FC<FieldWrapperProps> = ({
   label,
@@ -16,7 +22,7 @@ export const FieldWrapper: React.FC<FieldWrapperProps> = ({
 
   return (
     <Field>
-      {field.fieldConfig?.description ?
+      {field.fieldConfig?.description ? (
         <FieldContent>
           {!isDisabled && (
             <FieldLabel htmlFor={id}>
@@ -28,7 +34,8 @@ export const FieldWrapper: React.FC<FieldWrapperProps> = ({
           <FieldDescription>{field.fieldConfig.description}</FieldDescription>
           <FieldError>{error}</FieldError>
         </FieldContent>
-        : <>
+      ) : (
+        <>
           {!isDisabled && (
             <FieldLabel htmlFor={id}>
               {label}
@@ -37,7 +44,8 @@ export const FieldWrapper: React.FC<FieldWrapperProps> = ({
           )}
           {children}
           <FieldError>{error}</FieldError>
-        </>}
+        </>
+      )}
     </Field>
   );
 };

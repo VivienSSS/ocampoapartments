@@ -13,15 +13,15 @@ import {
   DialogTitle,
 } from '@/components/ui/dialog';
 import { useAppForm } from '@/components/ui/form';
+import { pb } from '@/pocketbase';
 import {
   createMaintenanceRequestMutation,
   listMaintenanceRequestsQuery,
 } from '@/pocketbase/queries/maintenanceRequests';
-import { insertMaintenanceRequestSchema } from '@/pocketbase/schemas/maintenanceRequests';
-import { CreateMaintenanceForm } from './form';
-import { pb } from '@/pocketbase';
-import { UsersRoleOptions, Collections } from '@/pocketbase/types';
 import type { TenantsResponse } from '@/pocketbase/queries/tenants';
+import type { insertMaintenanceRequestSchema } from '@/pocketbase/schemas/maintenanceRequests';
+import { Collections, UsersRoleOptions } from '@/pocketbase/types';
+import { CreateMaintenanceForm } from './form';
 
 const CreateMaintenanceDialogForm = () => {
   const navigate = useNavigate({ from: '/dashboard/maintenances' });
@@ -37,10 +37,12 @@ const CreateMaintenanceDialogForm = () => {
     queryKey: ['currentTenant', userId],
     queryFn: async () => {
       if (!isTenant || !userId) return null;
-      const tenants = await pb.collection(Collections.Tenants).getFullList<TenantsResponse>({
-        filter: `user = '${userId}'`,
-        requestKey: null,
-      });
+      const tenants = await pb
+        .collection(Collections.Tenants)
+        .getFullList<TenantsResponse>({
+          filter: `user = '${userId}'`,
+          requestKey: null,
+        });
       return tenants.length > 0 ? tenants[0] : null;
     },
     enabled: isTenant && !!userId,
@@ -60,7 +62,8 @@ const CreateMaintenanceDialogForm = () => {
     // },
     onSubmit: async ({ value }) => {
       // For tenants, ensure tenant field is set
-      const submitValue = isTenant && tenantData ? { ...value, tenant: tenantData.id } : value;
+      const submitValue =
+        isTenant && tenantData ? { ...value, tenant: tenantData.id } : value;
       return maintenanceMutation.mutateAsync(submitValue, {
         onSuccess: () => {
           // Determine tenant filter if user is a tenant
@@ -74,7 +77,7 @@ const CreateMaintenanceDialogForm = () => {
               searchParams.page,
               3,
               undefined,
-              tenantFilter
+              tenantFilter,
             ),
           );
 

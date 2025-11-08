@@ -51,9 +51,7 @@ const DeleteApartmentDialogForm = () => {
         <AlertDialogHeader>
           <AlertDialogTitle>
             Are you sure to delete{' '}
-            {apt
-              ?.map((record) => `\`${record.unitLetter}\``)
-              .join(',')}
+            {apt?.map((record) => `\`${record.unitLetter}\``).join(',')}
           </AlertDialogTitle>
           <AlertDialogDescription>
             This action cannot be undone

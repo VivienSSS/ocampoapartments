@@ -2,7 +2,7 @@ import { useSuspenseQueries } from '@tanstack/react-query';
 import type z from 'zod';
 import { withForm } from '@/components/ui/form';
 import { pb } from '@/pocketbase';
-import {
+import type {
   insertMaintenanceWorkerSchema,
   updateMaintenanceWorkerSchema,
 } from '@/pocketbase/schemas/maintenanceWorkers';
@@ -24,20 +24,23 @@ export const CreateWorkersForm = withForm({
       <>
         <form.AppField name="name">
           {(field) => (
-            <field.TextField
-              className="col-span-full"
-              label="Name"
-            />
+            <field.TextField className="col-span-full" label="Name" />
           )}
         </form.AppField>
         <form.AppField name="contactDetails">
           {(field) => (
-            <field.TextAreaField className="col-span-full" label="Contact details" />
+            <field.TextAreaField
+              className="col-span-full"
+              label="Contact details"
+            />
           )}
         </form.AppField>
         <form.AppField name="isAvailable">
           {(field) => (
-            <field.CheckBoxField className="col-span-full" label="Is Available" />
+            <field.CheckBoxField
+              className="col-span-full"
+              label="Is Available"
+            />
           )}
         </form.AppField>
       </>
@@ -50,21 +53,22 @@ export const EditWorkersForm = withForm({
   render: ({ form }) => (
     <>
       <form.AppField name="name">
-        {(field) => (
-          <field.TextField
-            className="col-span-full"
-            label="Name"
-          />
-        )}
+        {(field) => <field.TextField className="col-span-full" label="Name" />}
       </form.AppField>
       <form.AppField name="contactDetails">
         {(field) => (
-          <field.TextAreaField className="col-span-full" label="Contact details" />
+          <field.TextAreaField
+            className="col-span-full"
+            label="Contact details"
+          />
         )}
       </form.AppField>
       <form.AppField name="isAvailable">
         {(field) => (
-          <field.CheckBoxField className="col-span-full mt-2" label="Is Available" />
+          <field.CheckBoxField
+            className="col-span-full mt-2"
+            label="Is Available"
+          />
         )}
       </form.AppField>
     </>

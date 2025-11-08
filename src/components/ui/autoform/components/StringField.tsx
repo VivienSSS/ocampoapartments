@@ -1,6 +1,6 @@
-import { Input } from "@/components/ui/input";
-import type { AutoFormFieldProps } from "@autoform/react";
-import React from "react";
+import type { AutoFormFieldProps } from '@autoform/react';
+import type React from 'react';
+import { Input } from '@/components/ui/input';
 
 export const StringField: React.FC<AutoFormFieldProps> = ({
   inputProps,
@@ -10,6 +10,6 @@ export const StringField: React.FC<AutoFormFieldProps> = ({
   const { key, ...props } = inputProps;
 
   return (
-    <Input id={id} className={error ? "border-destructive" : ""} {...props} />
+    <Input id={id} className={error ? 'border-destructive' : ''} {...props} />
   );
 };

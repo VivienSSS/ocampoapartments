@@ -1,5 +1,5 @@
-import * as React from 'react';
 import { format } from 'date-fns';
+import * as React from 'react';
 import { Calendar } from '@/components/ui/calendar';
 import { SidebarGroup, SidebarGroupContent } from '@/components/ui/sidebar';
 import { pb } from '@/pocketbase';
@@ -50,8 +50,14 @@ export interface DateDetails {
   maintenanceRequests: MaintenanceRequestDetail[];
 }
 
-export function DatePicker({ onDateSelected }: { onDateSelected?: (date: Date | undefined, details: DateDetails) => void }) {
-  const [importantDates, setImportantDates] = React.useState<Set<string>>(new Set());
+export function DatePicker({
+  onDateSelected,
+}: {
+  onDateSelected?: (date: Date | undefined, details: DateDetails) => void;
+}) {
+  const [importantDates, setImportantDates] = React.useState<Set<string>>(
+    new Set(),
+  );
   const [selected, setSelected] = React.useState<Date | undefined>();
 
   React.useEffect(() => {
@@ -76,18 +82,26 @@ export function DatePicker({ onDateSelected }: { onDateSelected?: (date: Date | 
         });
         tenancies.forEach((tenancy) => {
           if (tenancy.leaseEndDate) {
-            const dateStr = format(new Date(tenancy.leaseEndDate), 'yyyy-MM-dd');
+            const dateStr = format(
+              new Date(tenancy.leaseEndDate),
+              'yyyy-MM-dd',
+            );
             dates.add(dateStr);
           }
         });
 
         // Fetch maintenance request submitted dates
-        const maintenanceRequests = await pb.collection('maintenance_requests').getFullList({
-          fields: 'submittedDate',
-        });
+        const maintenanceRequests = await pb
+          .collection('maintenance_requests')
+          .getFullList({
+            fields: 'submittedDate',
+          });
         maintenanceRequests.forEach((request: any) => {
           if (request.submittedDate) {
-            const dateStr = format(new Date(request.submittedDate), 'yyyy-MM-dd');
+            const dateStr = format(
+              new Date(request.submittedDate),
+              'yyyy-MM-dd',
+            );
             dates.add(dateStr);
           }
         });
@@ -113,9 +127,11 @@ export function DatePicker({ onDateSelected }: { onDateSelected?: (date: Date | 
           const maintenanceRequests: MaintenanceRequestDetail[] = [];
 
           // Fetch bill due dates for this date
-          const bills = await pb.collection('bills').getFullList<BillsResponse>({
-            expand: 'tenancy.tenant.user',
-          });
+          const bills = await pb
+            .collection('bills')
+            .getFullList<BillsResponse>({
+              expand: 'tenancy.tenant.user',
+            });
 
           // Fetch all bill items to calculate totals
           const billItems = await pb.collection('bill_items').getFullList();
@@ -128,11 +144,21 @@ export function DatePicker({ onDateSelected }: { onDateSelected?: (date: Date | 
           });
 
           bills.forEach((bill) => {
-            if (bill.dueDate && format(new Date(bill.dueDate), 'yyyy-MM-dd') === dateStr) {
-              const tenantFirstName = bill.expand.tenancy.expand.tenant.expand.user.firstName || 'test';
-              const tenantLastName = bill.expand.tenancy.expand.tenant.expand.user.lastName || 'test';
+            if (
+              bill.dueDate &&
+              format(new Date(bill.dueDate), 'yyyy-MM-dd') === dateStr
+            ) {
+              const tenantFirstName =
+                bill.expand.tenancy.expand.tenant.expand.user.firstName ||
+                'test';
+              const tenantLastName =
+                bill.expand.tenancy.expand.tenant.expand.user.lastName ||
+                'test';
               const items = billItemsByBillId.get(bill.id) || [];
-              const totalAmount = items.reduce((sum: number, item: any) => sum + (item.amount || 0), 0);
+              const totalAmount = items.reduce(
+                (sum: number, item: any) => sum + (item.amount || 0),
+                0,
+              );
               dueDates.push({
                 status: bill.status || 'Due',
                 billId: bill.id,
@@ -150,12 +176,21 @@ export function DatePicker({ onDateSelected }: { onDateSelected?: (date: Date | 
             expand: 'tenant.user,unit.property',
           });
           tenancies.forEach((tenancy: any) => {
-            if (tenancy.leaseEndDate && format(new Date(tenancy.leaseEndDate), 'yyyy-MM-dd') === dateStr) {
-              const tenantFirstName = tenancy.expand?.tenant?.expand?.user?.firstName || '';
-              const tenantLastName = tenancy.expand?.tenant?.expand?.user?.lastName || '';
-              const tenantName = `${tenantFirstName} ${tenantLastName}`.trim() || 'Unknown Tenant';
-              const propertyAddress = tenancy.expand?.unit?.expand?.property?.address || '';
-              const branch = tenancy.expand?.unit?.expand?.property?.branch || '';
+            if (
+              tenancy.leaseEndDate &&
+              format(new Date(tenancy.leaseEndDate), 'yyyy-MM-dd') === dateStr
+            ) {
+              const tenantFirstName =
+                tenancy.expand?.tenant?.expand?.user?.firstName || '';
+              const tenantLastName =
+                tenancy.expand?.tenant?.expand?.user?.lastName || '';
+              const tenantName =
+                `${tenantFirstName} ${tenantLastName}`.trim() ||
+                'Unknown Tenant';
+              const propertyAddress =
+                tenancy.expand?.unit?.expand?.property?.address || '';
+              const branch =
+                tenancy.expand?.unit?.expand?.property?.branch || '';
               const floorNumber = tenancy.expand?.unit?.floorNumber;
               const unitLetter = tenancy.expand?.unit?.unitLetter || '';
               leaseEndDates.push({
@@ -174,16 +209,24 @@ export function DatePicker({ onDateSelected }: { onDateSelected?: (date: Date | 
           });
 
           // Fetch maintenance requests for this date
-          const requests = await pb.collection('maintenance_requests').getFullList<MaintenanceRequestsResponse>({
-            expand: 'tenant.user,unit.property,worker',
-          });
+          const requests = await pb
+            .collection('maintenance_requests')
+            .getFullList<MaintenanceRequestsResponse>({
+              expand: 'tenant.user,unit.property,worker',
+            });
           requests.forEach((request: any) => {
-            if (request.submittedDate && format(new Date(request.submittedDate), 'yyyy-MM-dd') === dateStr) {
-              const tenantFirstName = request.expand?.tenant?.expand?.user?.firstName || '';
-              const tenantLastName = request.expand?.tenant?.expand?.user?.lastName || '';
+            if (
+              request.submittedDate &&
+              format(new Date(request.submittedDate), 'yyyy-MM-dd') === dateStr
+            ) {
+              const tenantFirstName =
+                request.expand?.tenant?.expand?.user?.firstName || '';
+              const tenantLastName =
+                request.expand?.tenant?.expand?.user?.lastName || '';
               const unitLetter = request.expand?.unit?.unitLetter || '';
               const floorNumber = request.expand?.unit?.floorNumber || 0;
-              const address = request.expand?.unit?.expand?.property?.branch || '';
+              const address =
+                request.expand?.unit?.expand?.property?.branch || '';
               const workerName = request.expand?.worker?.name || 'Unassigned';
               maintenanceRequests.push({
                 id: request.id,
@@ -206,12 +249,20 @@ export function DatePicker({ onDateSelected }: { onDateSelected?: (date: Date | 
           onDateSelected?.(date, dateDetails);
         } catch (error) {
           console.error('Failed to fetch date details:', error);
-          onDateSelected?.(date, { leaseEndDates: [], dueDates: [], maintenanceRequests: [] });
+          onDateSelected?.(date, {
+            leaseEndDates: [],
+            dueDates: [],
+            maintenanceRequests: [],
+          });
         }
       };
       fetchDateDetails();
     } else {
-      onDateSelected?.(undefined, { leaseEndDates: [], dueDates: [], maintenanceRequests: [] });
+      onDateSelected?.(undefined, {
+        leaseEndDates: [],
+        dueDates: [],
+        maintenanceRequests: [],
+      });
     }
   };
 
@@ -224,7 +275,8 @@ export function DatePicker({ onDateSelected }: { onDateSelected?: (date: Date | 
             important: (date) => importantDates.has(format(date, 'yyyy-MM-dd')),
           }}
           modifiersClassNames={{
-            important: 'font-bold hover:bg-accent hover:rounded-md has-focus:ring-ring [&_button]:font-bold cursor-pointer',
+            important:
+              'font-bold hover:bg-accent hover:rounded-md has-focus:ring-ring [&_button]:font-bold cursor-pointer',
           }}
           selected={selected}
           onDayClick={handleDateClick}

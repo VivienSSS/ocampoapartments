@@ -2,9 +2,9 @@ import { useNavigate, useSearch } from '@tanstack/react-router';
 import type { ColumnDef } from '@tanstack/react-table';
 import { format } from 'date-fns';
 import { MoreHorizontal } from 'lucide-react';
-import { Checkbox } from '@/components/ui/checkbox';
 import { Badge } from '@/components/ui/badge';
 import { Button } from '@/components/ui/button';
+import { Checkbox } from '@/components/ui/checkbox';
 import {
   DropdownMenu,
   DropdownMenuContent,
@@ -31,7 +31,9 @@ export const columns: ColumnDef<TenantsResponse>[] = [
               navigate({
                 search: (prev) => ({
                   ...prev,
-                  selected: table.getRowModel().rows.map((row) => row.original.id),
+                  selected: table
+                    .getRowModel()
+                    .rows.map((row) => row.original.id),
                 }),
               });
             } else {
@@ -68,7 +70,7 @@ export const columns: ColumnDef<TenantsResponse>[] = [
                   search: (prev) => ({
                     ...prev,
                     selected: searchQuery.selected.filter(
-                      (id: string) => id !== row.original.id
+                      (id: string) => id !== row.original.id,
                     ),
                   }),
                 });
@@ -109,9 +111,13 @@ export const columns: ColumnDef<TenantsResponse>[] = [
   {
     accessorKey: 'status',
     enableSorting: false,
-    header: ({ column }) => <TableColumnHeader column={column} title="Status" />,
+    header: ({ column }) => (
+      <TableColumnHeader column={column} title="Status" />
+    ),
     cell: ({ row }) => (
-      <Badge variant={row.original.expand.user.isActive ? 'default' : 'secondary'}>
+      <Badge
+        variant={row.original.expand.user.isActive ? 'default' : 'secondary'}
+      >
         {row.original.expand.user.isActive ? 'Active' : 'Inactive'}
       </Badge>
     ),
@@ -132,5 +138,4 @@ export const columns: ColumnDef<TenantsResponse>[] = [
     ),
     cell: ({ row }) => format(new Date(row.getValue('updated')), 'PPP'),
   },
-
 ];

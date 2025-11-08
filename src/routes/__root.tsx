@@ -11,7 +11,7 @@ export const Route = createRootRouteWithContext<{ queryClient: QueryClient }>()(
 function RootComponent() {
   return (
     <React.Fragment>
-      <main className='bg-sidebar text-sidebar-foreground'>
+      <main className="bg-sidebar text-sidebar-foreground">
         <Outlet />
       </main>
     </React.Fragment>

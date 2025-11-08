@@ -14,12 +14,12 @@ import {
   AlertDialogHeader,
   AlertDialogTitle,
 } from '@/components/ui/alert-dialog';
+import { listApartmentUnitsQuery } from '@/pocketbase/queries/apartmentUnits';
 import {
   batchDeleteTenancyMutation,
   inTenanciesQuery,
-  listTenanciesQuery
+  listTenanciesQuery,
 } from '@/pocketbase/queries/tenancies';
-import { listApartmentUnitsQuery } from '@/pocketbase/queries/apartmentUnits';
 
 const DeleteTenancyDialogForm = () => {
   const searchQuery = useSearch({ from: '/dashboard/tenancies/' });
@@ -29,7 +29,7 @@ const DeleteTenancyDialogForm = () => {
   const { data: tenancies } = useQuery(
     {
       ...inTenanciesQuery(searchQuery.selected ?? []),
-      enabled: !!(searchQuery.selected?.length) && searchQuery.delete,
+      enabled: !!searchQuery.selected?.length && searchQuery.delete,
     },
     queryClient,
   );
@@ -41,7 +41,7 @@ const DeleteTenancyDialogForm = () => {
 
   return (
     <AlertDialog
-      open={!!searchQuery.delete && !!(searchQuery.selected?.length)}
+      open={!!searchQuery.delete && !!searchQuery.selected?.length}
       onOpenChange={() =>
         navigate({
           search: (prev) => ({ ...prev, delete: undefined }),
@@ -51,7 +51,13 @@ const DeleteTenancyDialogForm = () => {
       <AlertDialogContent>
         <AlertDialogHeader>
           <AlertDialogTitle>
-            Are you sure to delete {tenancies?.map((record) => `\`${record.expand.tenant.expand.user.firstName} ${record.expand.tenant.expand.user.lastName}\``).join(',')}
+            Are you sure to delete{' '}
+            {tenancies
+              ?.map(
+                (record) =>
+                  `\`${record.expand.tenant.expand.user.firstName} ${record.expand.tenant.expand.user.lastName}\``,
+              )
+              .join(',')}
           </AlertDialogTitle>
           <AlertDialogDescription>
             This action cannot be undone
@@ -64,10 +70,7 @@ const DeleteTenancyDialogForm = () => {
               deleteMutation.mutate(undefined, {
                 onSuccess: () => {
                   queryClient.invalidateQueries(
-                    listTenanciesQuery(
-                      searchQuery.page,
-                      searchQuery.perPage,
-                    ),
+                    listTenanciesQuery(searchQuery.page, searchQuery.perPage),
                   );
                   // Invalidate apartment units to refresh availability status
                   queryClient.invalidateQueries(
@@ -77,7 +80,7 @@ const DeleteTenancyDialogForm = () => {
                     search: (prev) => ({
                       ...prev,
                       delete: undefined,
-                      selected: []
+                      selected: [],
                     }),
                   });
                 },

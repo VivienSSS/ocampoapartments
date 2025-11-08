@@ -1,36 +1,38 @@
 import { createFileRoute, redirect } from '@tanstack/react-router';
 import { zodValidator } from '@tanstack/zod-adapter';
-import DataTable from '@/components/ui/kibo-ui/table/data-table';
+import { ArrowUpDown, ChevronLeft, ChevronRight, Plus } from 'lucide-react';
+import { Button } from '@/components/ui/button';
+import { PaymentMethodsDistributionChart } from '@/components/ui/charts';
 import {
   DropdownMenu,
   DropdownMenuContent,
   DropdownMenuItem,
   DropdownMenuTrigger,
 } from '@/components/ui/dropdown-menu';
+import DataTable from '@/components/ui/kibo-ui/table/data-table';
 import { searchParams } from '@/lib/utils';
+import { pb } from '@/pocketbase';
 import { listPaymentsQuery } from '@/pocketbase/queries/payments';
 import { paymentSchema } from '@/pocketbase/schemas/payments';
+import { UsersRoleOptions } from '@/pocketbase/types';
 import CreatePaymentDialogForm from './-actions/create';
+import { PaymentCards } from './-cards';
 import LoadingComponent from './-loading';
 import { columns } from './-table';
-import { PaymentCards } from './-cards';
-import { Button } from '@/components/ui/button';
-import { ChevronLeft, ChevronRight, Plus, ArrowUpDown } from 'lucide-react';
-import { PaymentMethodsDistributionChart } from '@/components/ui/charts';
-import { pb } from '@/pocketbase';
-import { UsersRoleOptions } from '@/pocketbase/types';
 
 export const Route = createFileRoute('/dashboard/payments/')({
   component: RouteComponent,
   pendingComponent: LoadingComponent,
   validateSearch: zodValidator(searchParams(paymentSchema.keyof())),
   beforeLoad: ({ search, context }) => {
-
-    if (context.user.role !== UsersRoleOptions.Administrator && context.user.role !== UsersRoleOptions.Tenant) {
-      throw redirect({ to: "/dashboard" })
+    if (
+      context.user.role !== UsersRoleOptions.Administrator &&
+      context.user.role !== UsersRoleOptions.Tenant
+    ) {
+      throw redirect({ to: '/dashboard' });
     }
 
-    return { search }
+    return { search };
   },
   loader: ({ context }) => {
     const userRole = pb.authStore.record?.role;
@@ -38,7 +40,9 @@ export const Route = createFileRoute('/dashboard/payments/')({
     // Use perPage of 3 for tenants, otherwise use the search value
     const perPage = isTenant ? 3 : context.search.perPage;
     const sortString = context.search.sort
-      ? context.search.sort.map((s) => `${s.order === '-' ? '-' : ''}${s.field}`).join(',')
+      ? context.search.sort
+          .map((s) => `${s.order === '-' ? '-' : ''}${s.field}`)
+          .join(',')
       : undefined;
     return context.queryClient.fetchQuery(
       listPaymentsQuery(context.search.page, perPage, sortString),
@@ -68,7 +72,7 @@ function RouteComponent() {
       {/* Controls Section */}
       <section className="flex items-center justify-between py-2.5">
         <h1 className="text-2xl font-bold">Payments</h1>
-        <div className='flex gap-2.5'>
+        <div className="flex gap-2.5">
           <Button
             disabled={searchQuery.page === 1}
             onClick={() =>
@@ -96,16 +100,52 @@ function RouteComponent() {
               </Button>
             </DropdownMenuTrigger>
             <DropdownMenuContent>
-              <DropdownMenuItem onClick={() => navigate({ search: (prev) => ({ ...prev, sort: [{ field: 'paymentDate', order: '+' }] }) })}>
+              <DropdownMenuItem
+                onClick={() =>
+                  navigate({
+                    search: (prev) => ({
+                      ...prev,
+                      sort: [{ field: 'paymentDate', order: '+' }],
+                    }),
+                  })
+                }
+              >
                 Payment Date (Earliest First)
               </DropdownMenuItem>
-              <DropdownMenuItem onClick={() => navigate({ search: (prev) => ({ ...prev, sort: [{ field: 'paymentDate', order: '-' }] }) })}>
+              <DropdownMenuItem
+                onClick={() =>
+                  navigate({
+                    search: (prev) => ({
+                      ...prev,
+                      sort: [{ field: 'paymentDate', order: '-' }],
+                    }),
+                  })
+                }
+              >
                 Payment Date (Latest First)
               </DropdownMenuItem>
-              <DropdownMenuItem onClick={() => navigate({ search: (prev) => ({ ...prev, sort: [{ field: 'amountPaid', order: '+' }] }) })}>
+              <DropdownMenuItem
+                onClick={() =>
+                  navigate({
+                    search: (prev) => ({
+                      ...prev,
+                      sort: [{ field: 'amountPaid', order: '+' }],
+                    }),
+                  })
+                }
+              >
                 Amount (Low to High)
               </DropdownMenuItem>
-              <DropdownMenuItem onClick={() => navigate({ search: (prev) => ({ ...prev, sort: [{ field: 'amountPaid', order: '-' }] }) })}>
+              <DropdownMenuItem
+                onClick={() =>
+                  navigate({
+                    search: (prev) => ({
+                      ...prev,
+                      sort: [{ field: 'amountPaid', order: '-' }],
+                    }),
+                  })
+                }
+              >
                 Amount (High to Low)
               </DropdownMenuItem>
             </DropdownMenuContent>

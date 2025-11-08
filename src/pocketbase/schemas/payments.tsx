@@ -7,7 +7,9 @@ export const paymentSchema = z.object({
   created: z.date().optional(),
   id: z.string(),
   paymentDate: z.date(),
-  paymentMethod: z.enum(PaymentsPaymentMethodOptions).default(PaymentsPaymentMethodOptions.GCash),
+  paymentMethod: z
+    .enum(PaymentsPaymentMethodOptions)
+    .default(PaymentsPaymentMethodOptions.GCash),
   screenshot: z.url(),
   tenant: z.string(),
   transactionId: z.string(),

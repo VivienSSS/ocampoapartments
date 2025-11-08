@@ -5,11 +5,11 @@ import type z from 'zod';
 import { pb } from '..';
 import type { insertBillSchema, updateBillSchema } from '../schemas/bills';
 import {
-  type BillsResponse as BillsClientResponse,
-  type BillsByStatusChartViewResponse,
   type BillItemAnalysisStatCardKpiViewResponse,
-  type FinancialStatCardKpiViewResponse,
+  type BillsByStatusChartViewResponse,
+  type BillsResponse as BillsClientResponse,
   Collections,
+  type FinancialStatCardKpiViewResponse,
 } from '../types';
 import type { TenanciesResponse } from './tenancies';
 
@@ -27,17 +27,16 @@ export const listBillsQuery = (page: number, perPage: number, sort?: string) =>
       }),
   });
 
-export const inBillsQuery = (selected: string[]) => queryOptions({
-  queryKey: [Collections.Bills, selected],
-  queryFn: () =>
-    pb
-      .collection<BillsResponse>(Collections.Bills)
-      .getFullList({
-        filter: selected.map((id) => `id='${id}'`).join("||"),
+export const inBillsQuery = (selected: string[]) =>
+  queryOptions({
+    queryKey: [Collections.Bills, selected],
+    queryFn: () =>
+      pb.collection<BillsResponse>(Collections.Bills).getFullList({
+        filter: selected.map((id) => `id='${id}'`).join('||'),
         expand: 'tenancy.tenant.user,tenancy.tenant.unit',
-        requestKey: null
+        requestKey: null,
       }),
-});
+  });
 
 export const viewBillQuery = (id: string) =>
   queryOptions({
@@ -141,7 +140,7 @@ export const billsByStatusChartViewQuery = () =>
     queryFn: () =>
       pb
         .collection<BillsByStatusChartViewResponse>(
-          Collections.BillsByStatusChartView
+          Collections.BillsByStatusChartView,
         )
         .getFullList({ requestKey: null }),
   });
@@ -152,7 +151,7 @@ export const billItemAnalysisStatCardKpiViewQuery = () =>
     queryFn: () =>
       pb
         .collection<BillItemAnalysisStatCardKpiViewResponse>(
-          Collections.BillItemAnalysisStatCardKpiView
+          Collections.BillItemAnalysisStatCardKpiView,
         )
         .getFullList({ requestKey: null }),
   });
@@ -163,7 +162,7 @@ export const financialStatCardKpiViewQuery = () =>
     queryFn: () =>
       pb
         .collection<FinancialStatCardKpiViewResponse>(
-          Collections.FinancialStatCardKpiView
+          Collections.FinancialStatCardKpiView,
         )
         .getFullList({ requestKey: null }),
   });

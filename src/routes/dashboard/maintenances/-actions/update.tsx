@@ -13,15 +13,15 @@ import {
   DialogTitle,
 } from '@/components/ui/dialog';
 import { useAppForm } from '@/components/ui/form';
+import { pb } from '@/pocketbase';
 import {
   listMaintenanceRequestsQuery,
   updateMaintenanceRequestMutation,
   viewMaintenanceRequestQuery,
 } from '@/pocketbase/queries/maintenanceRequests';
 import { updateMaintenanceRequestSchema } from '@/pocketbase/schemas/maintenanceRequests';
-import { EditMaintenanceForm } from './form';
-import { pb } from '@/pocketbase';
 import { UsersRoleOptions } from '@/pocketbase/types';
+import { EditMaintenanceForm } from './form';
 
 const EditMaintenanceDialogForm = () => {
   const navigate = useNavigate({ from: '/dashboard/maintenances' });
@@ -61,7 +61,12 @@ const EditMaintenanceDialogForm = () => {
           }
 
           queryClient.invalidateQueries(
-            listMaintenanceRequestsQuery(searchQuery.page, 3, undefined, tenantFilter),
+            listMaintenanceRequestsQuery(
+              searchQuery.page,
+              3,
+              undefined,
+              tenantFilter,
+            ),
           );
           navigate({
             to: '/dashboard/maintenances',
@@ -94,7 +99,9 @@ const EditMaintenanceDialogForm = () => {
         >
           <form.AppForm>
             <EditMaintenanceForm form={form} />
-            <form.SubmitButton className='mt-4'>Update Request</form.SubmitButton>
+            <form.SubmitButton className="mt-4">
+              Update Request
+            </form.SubmitButton>
           </form.AppForm>
         </form>
       </DialogContent>

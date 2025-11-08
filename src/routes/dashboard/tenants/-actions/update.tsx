@@ -88,7 +88,9 @@ const EditTenantDialogForm = () => {
         >
           <form.AppForm>
             <EditTenantForm form={form} />
-            <form.SubmitButton className='col-span-full mt-2'>Update Tenant</form.SubmitButton>
+            <form.SubmitButton className="col-span-full mt-2">
+              Update Tenant
+            </form.SubmitButton>
           </form.AppForm>
         </form>
       </DialogContent>

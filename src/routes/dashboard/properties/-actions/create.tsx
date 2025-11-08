@@ -59,7 +59,9 @@ const CreatePropertyDialogForm = () => {
         >
           <form.AppForm>
             <CreatePropertyForm form={form} />
-            <form.SubmitButton className='mt-3 col-span-full'>Create Property</form.SubmitButton>
+            <form.SubmitButton className="mt-3 col-span-full">
+              Create Property
+            </form.SubmitButton>
           </form.AppForm>
         </form>
       </DialogContent>

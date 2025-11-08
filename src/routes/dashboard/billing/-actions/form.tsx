@@ -1,18 +1,26 @@
+import { BadgePlus, Trash } from 'lucide-react';
 import type z from 'zod';
+import { AsyncSelect } from '@/components/ui/async-select';
 import { Button } from '@/components/ui/button';
-import { Card, CardAction, CardContent, CardHeader } from '@/components/ui/card';
+import {
+  Card,
+  CardAction,
+  CardContent,
+  CardHeader,
+} from '@/components/ui/card';
 import { withFieldGroup, withForm } from '@/components/ui/form';
 import { pb } from '@/pocketbase';
+import type { TenanciesResponse } from '@/pocketbase/queries/tenancies';
 import type { insertBillItemsSchema } from '@/pocketbase/schemas/billItems';
-import { insertBillSchema, updateBillSchema } from '@/pocketbase/schemas/bills';
+import {
+  type insertBillSchema,
+  updateBillSchema,
+} from '@/pocketbase/schemas/bills';
 import {
   BillItemsChargeTypeOptions,
   BillsStatusOptions,
   Collections,
 } from '@/pocketbase/types';
-import type { TenanciesResponse } from '@/pocketbase/queries/tenancies';
-import { AsyncSelect } from '@/components/ui/async-select';
-import { BadgePlus, Trash } from 'lucide-react';
 
 export const CreateBillingForm = withForm({
   defaultValues: {
@@ -31,19 +39,30 @@ export const CreateBillingForm = withForm({
                 Tenant
               </label>
               <AsyncSelect<TenanciesResponse>
-                className='w-full'
-                fetcher={async (query) => (await pb.collection(Collections.Tenancies).getList<TenanciesResponse>(1, 10, {
-                  filter: query ? `tenant.user.firstName ~ '%${query}%' || tenant.user.lastName ~ '%${query}%'` : '',
-                  expand: 'tenant.user,unit.property',
-                  requestKey: null
-                })).items}
+                className="w-full"
+                fetcher={async (query) =>
+                  (
+                    await pb
+                      .collection(Collections.Tenancies)
+                      .getList<TenanciesResponse>(1, 10, {
+                        filter: query
+                          ? `tenant.user.firstName ~ '%${query}%' || tenant.user.lastName ~ '%${query}%'`
+                          : '',
+                        expand: 'tenant.user,unit.property',
+                        requestKey: null,
+                      })
+                  ).items
+                }
                 getOptionValue={(option) => option.id}
-                getDisplayValue={(option) => `${option.expand.tenant.expand.user.firstName} ${option.expand.tenant.expand.user.lastName}`}
+                getDisplayValue={(option) =>
+                  `${option.expand.tenant.expand.user.firstName} ${option.expand.tenant.expand.user.lastName}`
+                }
                 renderOption={(option) => (
                   <div>
                     <div className="font-medium">{`${option.expand.tenant.expand.user.firstName} ${option.expand.tenant.expand.user.lastName}`}</div>
                     <div className="text-sm text-muted-foreground">
-                      Unit {option.expand.unit.unitLetter} - {option.expand.unit.expand.property.branch}
+                      Unit {option.expand.unit.unitLetter} -{' '}
+                      {option.expand.unit.expand.property.branch}
                     </div>
                   </div>
                 )}
@@ -82,8 +101,8 @@ export const CreateBillingForm = withForm({
           {(field) => (
             <>
               <Button
-                type='button'
-                className='bg-emerald-500 mb-4 col-span-full'
+                type="button"
+                className="bg-emerald-500 mb-4 col-span-full"
                 onClick={() =>
                   field.pushValue({
                     chargeType: BillItemsChargeTypeOptions.Electricity,
@@ -105,7 +124,6 @@ export const CreateBillingForm = withForm({
             </>
           )}
         </form.AppField>
-
       </>
     );
   },
@@ -113,7 +131,7 @@ export const CreateBillingForm = withForm({
 
 export const CreateBillingItemForm = withFieldGroup({
   defaultValues: {} as z.infer<typeof insertBillItemsSchema>,
-  props: { onDelete: () => { } },
+  props: { onDelete: () => {} },
   render: ({ group, onDelete }) => {
     return (
       <Card className="col-span-full">

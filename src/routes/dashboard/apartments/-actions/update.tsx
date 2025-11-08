@@ -1,10 +1,10 @@
 import { useMutation, useQueries, useQuery } from '@tanstack/react-query';
-import { useEffect } from 'react';
 import {
   useNavigate,
   useRouteContext,
   useSearch,
 } from '@tanstack/react-router';
+import { useEffect } from 'react';
 import type z from 'zod';
 import {
   Dialog,
@@ -20,7 +20,7 @@ import {
   viewApartmentUnitQuery,
 } from '@/pocketbase/queries/apartmentUnits';
 import { listPropertiesQuery } from '@/pocketbase/queries/properties';
-import { updateApartmentUnitSchema } from '@/pocketbase/schemas/apartmentUnits';
+import type { updateApartmentUnitSchema } from '@/pocketbase/schemas/apartmentUnits';
 import { EditApartmentForm } from './form';
 
 const EditApartmentDialogForm = () => {

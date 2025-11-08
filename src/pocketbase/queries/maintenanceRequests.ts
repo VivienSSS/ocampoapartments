@@ -9,12 +9,12 @@ import type {
 } from '../schemas/maintenanceRequests';
 import {
   Collections,
-  type MaintenanceRequestsResponse as MaintenanceRequestsClientResponse,
-  type MaintenanceWorkersRecord,
+  type HighPriorityUnresolvedRequestsStatCardKpiViewResponse,
   type MaintenanceOperationStatCardKpiViewResponse,
   type MaintenanceRequestOverviewStatCardKpiViewResponse,
   type MaintenanceRequestStatusStatCardKpiViewResponse,
-  type HighPriorityUnresolvedRequestsStatCardKpiViewResponse,
+  type MaintenanceRequestsResponse as MaintenanceRequestsClientResponse,
+  type MaintenanceWorkersRecord,
 } from '../types';
 import type { ApartmentUnitsResponse } from './apartmentUnits';
 import type { TenantsResponse } from './tenants';
@@ -25,9 +25,20 @@ export type MaintenanceRequestsResponse = MaintenanceRequestsClientResponse<{
   worker: MaintenanceWorkersRecord;
 }>;
 
-export const listMaintenanceRequestsQuery = (page: number, perPage: number, sort?: string, tenantFilter?: string) =>
+export const listMaintenanceRequestsQuery = (
+  page: number,
+  perPage: number,
+  sort?: string,
+  tenantFilter?: string,
+) =>
   queryOptions({
-    queryKey: [Collections.MaintenanceRequests, page, perPage, sort, tenantFilter],
+    queryKey: [
+      Collections.MaintenanceRequests,
+      page,
+      perPage,
+      sort,
+      tenantFilter,
+    ],
     queryFn: () =>
       pb
         .collection(Collections.MaintenanceRequests)
@@ -113,13 +124,19 @@ export const deleteMaintenanceRequestMutation = (id: string) =>
       ),
   });
 
-export const inMaintenanceRequestsQuery = (selected: string[]) => queryOptions({
-  queryKey: [Collections.MaintenanceRequests, selected],
-  queryFn: () =>
-    pb
-      .collection<MaintenanceRequestsResponse>(Collections.MaintenanceRequests)
-      .getFullList({ filter: selected.map((id) => `id='${id}'`).join("||"), requestKey: null }),
-});
+export const inMaintenanceRequestsQuery = (selected: string[]) =>
+  queryOptions({
+    queryKey: [Collections.MaintenanceRequests, selected],
+    queryFn: () =>
+      pb
+        .collection<MaintenanceRequestsResponse>(
+          Collections.MaintenanceRequests,
+        )
+        .getFullList({
+          filter: selected.map((id) => `id='${id}'`).join('||'),
+          requestKey: null,
+        }),
+  });
 
 export const batchDeleteMaintenanceRequestMutation = (selected: string[]) =>
   mutationOptions({
@@ -149,7 +166,7 @@ export const maintenanceOperationStatCardKpiViewQuery = () =>
     queryFn: () =>
       pb
         .collection<MaintenanceOperationStatCardKpiViewResponse>(
-          Collections.MaintenanceOperationStatCardKpiView
+          Collections.MaintenanceOperationStatCardKpiView,
         )
         .getFullList({ requestKey: null }),
   });
@@ -160,7 +177,7 @@ export const maintenanceRequestOverviewStatCardKpiViewQuery = () =>
     queryFn: () =>
       pb
         .collection<MaintenanceRequestOverviewStatCardKpiViewResponse>(
-          Collections.MaintenanceRequestOverviewStatCardKpiView
+          Collections.MaintenanceRequestOverviewStatCardKpiView,
         )
         .getFullList({ requestKey: null }),
   });
@@ -171,7 +188,7 @@ export const maintenanceRequestStatusStatCardKpiViewQuery = () =>
     queryFn: () =>
       pb
         .collection<MaintenanceRequestStatusStatCardKpiViewResponse>(
-          Collections.MaintenanceRequestStatusStatCardKpiView
+          Collections.MaintenanceRequestStatusStatCardKpiView,
         )
         .getFullList({ requestKey: null }),
   });
@@ -182,8 +199,7 @@ export const highPriorityUnresolvedRequestsStatCardKpiViewQuery = () =>
     queryFn: () =>
       pb
         .collection<HighPriorityUnresolvedRequestsStatCardKpiViewResponse>(
-          Collections.HighPriorityUnresolvedRequestsStatCardKpiView
+          Collections.HighPriorityUnresolvedRequestsStatCardKpiView,
         )
         .getFullList({ requestKey: null }),
   });
-

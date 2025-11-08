@@ -9,15 +9,19 @@ import type {
 } from '../schemas/tenants';
 import {
   Collections,
+  type OutstandingReceivablesChartViewResponse,
+  type TenantFinancialOverviewChartViewResponse,
   type TenantsResponse as TenantsClientResponse,
   type UsersRecord,
-  type TenantFinancialOverviewChartViewResponse,
-  type OutstandingReceivablesChartViewResponse,
 } from '../types';
 
 export type TenantsResponse = TenantsClientResponse<{ user: UsersRecord }>;
 
-export const listTenantsQuery = (page: number, perPage: number, sort?: string) =>
+export const listTenantsQuery = (
+  page: number,
+  perPage: number,
+  sort?: string,
+) =>
   queryOptions({
     queryKey: [Collections.Tenants, page, perPage, sort],
     queryFn: () =>
@@ -39,10 +43,12 @@ export const getCurrentTenantQuery = (userId: string) =>
   queryOptions({
     queryKey: [Collections.Tenants, 'current', userId],
     queryFn: async () => {
-      const result = await pb.collection(Collections.Tenants).getFullList<TenantsResponse>({
-        filter: `user = '${userId}'`,
-        expand: 'user',
-      });
+      const result = await pb
+        .collection(Collections.Tenants)
+        .getFullList<TenantsResponse>({
+          filter: `user = '${userId}'`,
+          expand: 'user',
+        });
       if (result.length === 0) {
         throw new Error('Tenant not found for the current user');
       }
@@ -54,13 +60,11 @@ export const inTenantsQuery = (selected: string[]) =>
   queryOptions({
     queryKey: [Collections.Tenants, selected],
     queryFn: () =>
-      pb
-        .collection<TenantsResponse>(Collections.Tenants)
-        .getFullList({
-          filter: selected.map((id) => `id='${id}'`).join('||'),
-          expand: 'user',
-          requestKey: null,
-        }),
+      pb.collection<TenantsResponse>(Collections.Tenants).getFullList({
+        filter: selected.map((id) => `id='${id}'`).join('||'),
+        expand: 'user',
+        requestKey: null,
+      }),
   });
 
 export const createTenantMutation = mutationOptions<
@@ -139,9 +143,11 @@ export const batchDeleteTenantMutation = (selected: string[]) =>
 export const deactivateTenantMutation = (id: string) =>
   mutationOptions({
     mutationFn: async () => {
-      const tenant = await pb.collection(Collections.Tenants).getOne<TenantsResponse>(id, {
-        expand: 'user',
-      });
+      const tenant = await pb
+        .collection(Collections.Tenants)
+        .getOne<TenantsResponse>(id, {
+          expand: 'user',
+        });
 
       // Deactivate the associated user
       await pb.collection('users').update(tenant.user, { isActive: false });
@@ -165,7 +171,7 @@ export const tenantFinancialOverviewChartViewQuery = () =>
     queryFn: () =>
       pb
         .collection<TenantFinancialOverviewChartViewResponse>(
-          Collections.TenantFinancialOverviewChartView
+          Collections.TenantFinancialOverviewChartView,
         )
         .getFullList({ requestKey: null }),
   });
@@ -176,8 +182,7 @@ export const outstandingReceivablesChartViewQuery = () =>
     queryFn: () =>
       pb
         .collection<OutstandingReceivablesChartViewResponse>(
-          Collections.OutstandingReceivablesChartView
+          Collections.OutstandingReceivablesChartView,
         )
         .getFullList({ requestKey: null }),
   });
-

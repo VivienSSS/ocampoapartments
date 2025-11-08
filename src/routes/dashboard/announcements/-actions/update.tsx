@@ -13,6 +13,7 @@ import {
   DialogTitle,
 } from '@/components/ui/dialog';
 import { useAppForm } from '@/components/ui/form';
+import FormDialog from '@/components/ui/form-dialog';
 import {
   listAnnouncementsQuery,
   updateAnnouncementMutation,
@@ -20,7 +21,6 @@ import {
 } from '@/pocketbase/queries/announcements';
 import { updateAnnouncementSchema } from '@/pocketbase/schemas/announcements';
 import { AnnouncementForm } from './form';
-import FormDialog from '@/components/ui/form-dialog';
 
 const EditAnnouncementDialogForm = () => {
   const navigate = useNavigate({ from: '/dashboard/announcements' });
@@ -73,8 +73,8 @@ const EditAnnouncementDialogForm = () => {
       onSubmit={() => {
         form.handleSubmit();
       }}
-      title={"Edit announcement"}
-      description={"Update Information"}
+      title={'Edit announcement'}
+      description={'Update Information'}
     >
       <form.AppForm>
         <AnnouncementForm form={form as any} />

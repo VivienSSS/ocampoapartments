@@ -53,7 +53,6 @@ export const EditPropertyForm = withForm({
   defaultValues: {} as z.infer<typeof updatePropertySchema>,
   render: ({ form }) => (
     <>
-
       <form.AppField name="branch">
         {(field) => (
           <field.SelectField
@@ -75,7 +74,6 @@ export const EditPropertyForm = withForm({
           />
         )}
       </form.AppField>
-
     </>
   ),
 });

@@ -17,7 +17,7 @@ import {
   createTenantMutation,
   listTenantsQuery,
 } from '@/pocketbase/queries/tenants';
-import { insertTenantSchema } from '@/pocketbase/schemas/tenants';
+import type { insertTenantSchema } from '@/pocketbase/schemas/tenants';
 import { CreateTenantForm } from './form';
 
 const CreateTenantDialogForm = () => {

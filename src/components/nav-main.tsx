@@ -21,7 +21,9 @@ export function NavMain({
   const [activeTitle, setActiveTitle] = React.useState<string>(() => {
     if (typeof window === 'undefined') return '';
     const path = window.location.pathname;
-    const match = items.find((i) => i.url && (i.url === path || path.startsWith(i.url)));
+    const match = items.find(
+      (i) => i.url && (i.url === path || path.startsWith(i.url)),
+    );
     return match?.title ?? '';
   });
 

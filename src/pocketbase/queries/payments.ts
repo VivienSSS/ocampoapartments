@@ -10,10 +10,10 @@ import type {
 import {
   type BillsRecord,
   Collections,
-  type PaymentsResponse as PaymentsClientResponse,
-  type PorfolioStatCardKpiViewResponse,
   type MonthlyRevenueTrendStatCardKpiViewResponse,
   type PaymentMethodsDistributionChartViewResponse,
+  type PaymentsResponse as PaymentsClientResponse,
+  type PorfolioStatCardKpiViewResponse,
 } from '../types';
 import type { TenantsResponse } from './tenants';
 
@@ -22,7 +22,11 @@ export type PaymentsResponse = PaymentsClientResponse<{
   tenant: TenantsResponse;
 }>;
 
-export const listPaymentsQuery = (page: number, perPage: number, sort?: string) =>
+export const listPaymentsQuery = (
+  page: number,
+  perPage: number,
+  sort?: string,
+) =>
   queryOptions({
     queryKey: [Collections.Payments, page, perPage, sort],
     queryFn: () =>
@@ -102,7 +106,7 @@ export const porfolioStatCardKpiViewQuery = () =>
     queryFn: () =>
       pb
         .collection<PorfolioStatCardKpiViewResponse>(
-          Collections.PorfolioStatCardKpiView
+          Collections.PorfolioStatCardKpiView,
         )
         .getFullList({ requestKey: null }),
   });
@@ -113,7 +117,7 @@ export const monthlyRevenueTrendStatCardKpiViewQuery = () =>
     queryFn: () =>
       pb
         .collection<MonthlyRevenueTrendStatCardKpiViewResponse>(
-          Collections.MonthlyRevenueTrendStatCardKpiView
+          Collections.MonthlyRevenueTrendStatCardKpiView,
         )
         .getFullList({ requestKey: null }),
   });
@@ -124,8 +128,7 @@ export const paymentMethodsDistributionChartViewQuery = () =>
     queryFn: () =>
       pb
         .collection<PaymentMethodsDistributionChartViewResponse>(
-          Collections.PaymentMethodsDistributionChartView
+          Collections.PaymentMethodsDistributionChartView,
         )
         .getFullList({ requestKey: null }),
   });
-

@@ -82,7 +82,6 @@ const showNav = () => {
           url: '/dashboard/maintenances',
           icon: Hammer,
         },
-
       ];
     case UsersRoleOptions['Building Admin']:
       return [
@@ -133,7 +132,7 @@ const showNav = () => {
     default:
       return [];
   }
-}
+};
 
 const data = {
   teams: [
@@ -148,10 +147,7 @@ const data = {
       plan: 'Startup',
     },
   ],
-  navMain: [
-
-    ...Array.from(showNav())
-  ],
+  navMain: [...Array.from(showNav())],
   //navSecondary: [
   // {
   //   title: "Calendar",

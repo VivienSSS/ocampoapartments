@@ -1,13 +1,13 @@
+import type { AutoFormFieldProps } from '@autoform/react';
+import type React from 'react';
 import {
   Select,
   SelectContent,
   SelectItem,
   SelectTrigger,
   SelectValue,
-} from "@/components/ui/select";
-import { cn } from "@/lib/utils";
-import { AutoFormFieldProps } from "@autoform/react";
-import React from "react";
+} from '@/components/ui/select';
+import { cn } from '@/lib/utils';
 
 export const SelectField: React.FC<AutoFormFieldProps> = ({
   field,
@@ -31,7 +31,10 @@ export const SelectField: React.FC<AutoFormFieldProps> = ({
       }}
       defaultValue={field.default}
     >
-      <SelectTrigger id={id} className={cn(error ? "border-destructive" : "", "w-full")}>
+      <SelectTrigger
+        id={id}
+        className={cn(error ? 'border-destructive' : '', 'w-full')}
+      >
         <SelectValue placeholder="Select an option" />
       </SelectTrigger>
       <SelectContent>

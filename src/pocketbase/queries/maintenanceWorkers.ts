@@ -13,11 +13,17 @@ import {
   type WorkerPerformanceChartViewResponse,
 } from '../types';
 
-export const listMaintenanceWorkersQuery = (page: number, perPage: number, sort?: string) =>
+export const listMaintenanceWorkersQuery = (
+  page: number,
+  perPage: number,
+  sort?: string,
+) =>
   queryOptions({
     queryKey: [Collections.MaintenanceWorkers, page, perPage, sort],
     queryFn: () =>
-      pb.collection(Collections.MaintenanceWorkers).getList(page, perPage, { sort }),
+      pb
+        .collection(Collections.MaintenanceWorkers)
+        .getList(page, perPage, { sort }),
   });
 
 export const viewMaintenanceWorkerQuery = (id: string) =>
@@ -32,7 +38,10 @@ export const inMaintenanceWorkersQuery = (ids: string[]) =>
     queryFn: () =>
       pb
         .collection(Collections.MaintenanceWorkers)
-        .getFullList({ filter: `id ~ "${ids.join('", "')}"`, requestKey: null }),
+        .getFullList({
+          filter: `id ~ "${ids.join('", "')}"`,
+          requestKey: null,
+        }),
   });
 
 export const createMaintenanceWorkerMutation = mutationOptions<
@@ -118,8 +127,7 @@ export const workerPerformanceChartViewQuery = () =>
     queryFn: () =>
       pb
         .collection<WorkerPerformanceChartViewResponse>(
-          Collections.WorkerPerformanceChartView
+          Collections.WorkerPerformanceChartView,
         )
         .getFullList({ requestKey: null }),
   });
-

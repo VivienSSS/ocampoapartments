@@ -10,15 +10,19 @@ import type {
 import {
   type AnnouncementsResponse as AnnouncementsClientResponse,
   Collections,
-  type UsersRecord,
   type RecentAnnouncementsChartViewResponse,
+  type UsersRecord,
 } from '../types';
 
 export type AnnouncementsResponse = AnnouncementsClientResponse<{
   author: UsersRecord;
 }>;
 
-export const listAnnouncementsQuery = (page: number, perPage: number, sort?: string) =>
+export const listAnnouncementsQuery = (
+  page: number,
+  perPage: number,
+  sort?: string,
+) =>
   queryOptions({
     queryKey: [Collections.Announcements, page, perPage, sort],
     queryFn: () =>
@@ -27,13 +31,17 @@ export const listAnnouncementsQuery = (page: number, perPage: number, sort?: str
         .getList(page, perPage, { expand: 'author', sort, requestKey: null }),
   });
 
-export const inAnnouncementsQuery = (selected: string[]) => queryOptions({
-  queryKey: [Collections.Announcements, selected],
-  queryFn: () =>
-    pb
-      .collection<AnnouncementsResponse>(Collections.Announcements)
-      .getFullList({ filter: selected.map((id) => `id='${id}'`).join("||"), requestKey: null }),
-});
+export const inAnnouncementsQuery = (selected: string[]) =>
+  queryOptions({
+    queryKey: [Collections.Announcements, selected],
+    queryFn: () =>
+      pb
+        .collection<AnnouncementsResponse>(Collections.Announcements)
+        .getFullList({
+          filter: selected.map((id) => `id='${id}'`).join('||'),
+          requestKey: null,
+        }),
+  });
 
 export const viewAnnouncementQuery = (id: string) =>
   queryOptions({
@@ -43,7 +51,7 @@ export const viewAnnouncementQuery = (id: string) =>
         .collection<AnnouncementsResponse>(Collections.Announcements)
         .getOne(id, {
           expand: 'author',
-          requestKey: null
+          requestKey: null,
         }),
   });
 
@@ -55,7 +63,10 @@ export const createAnnouncementMutation = mutationOptions<
   mutationFn: async (value) =>
     pb
       .collection(Collections.Announcements)
-      .create<AnnouncementsResponse>(value, { expand: 'author', requestKey: null }),
+      .create<AnnouncementsResponse>(value, {
+        expand: 'author',
+        requestKey: null,
+      }),
   onSuccess: (value) =>
     toast.success(`Successfully Created`, {
       description: `Announcement created: ${value.title}`,
@@ -127,7 +138,7 @@ export const recentAnnouncementsChartViewQuery = () =>
     queryFn: () =>
       pb
         .collection<RecentAnnouncementsChartViewResponse>(
-          Collections.RecentAnnouncementsChartView
+          Collections.RecentAnnouncementsChartView,
         )
         .getFullList({ requestKey: null }),
   });

@@ -1,3 +1,4 @@
+import { useSuspenseQuery } from '@tanstack/react-query';
 import { useNavigate, useSearch } from '@tanstack/react-router';
 import type { ColumnDef } from '@tanstack/react-table';
 import { format } from 'date-fns';
@@ -5,9 +6,6 @@ import { MoreHorizontal } from 'lucide-react';
 import { Badge } from '@/components/ui/badge';
 import { Button } from '@/components/ui/button';
 import { Checkbox } from '@/components/ui/checkbox';
-import { useSuspenseQuery } from '@tanstack/react-query';
-import { pb } from '@/pocketbase';
-import { Collections } from '@/pocketbase/types';
 import {
   DropdownMenu,
   DropdownMenuContent,
@@ -15,39 +13,47 @@ import {
   DropdownMenuTrigger,
 } from '@/components/ui/dropdown-menu';
 import { TableColumnHeader } from '@/components/ui/kibo-ui/table';
+import { pb } from '@/pocketbase';
 import type { BillsResponse } from '@/pocketbase/queries/bills';
+import { Collections } from '@/pocketbase/types';
 
 export const columns: ColumnDef<BillsResponse>[] = [
   {
     id: 'select',
     header: ({ table }) => {
       const navigate = useNavigate({ from: '/dashboard/billing' });
-      const searchQuery = useSearch({ from: '/dashboard/billing/' })
-      return <Checkbox
-        checked={searchQuery.selected.length === table.getRowModel().rows.map(row => row.original.id).length}
-        onCheckedChange={(checked) => {
-          if (checked) {
-            navigate({
-              search: (prev) => ({
-                ...prev,
-                selected: table.getRowModel().rows.map(row => row.original.id),
-              }),
-            })
-          } else {
-            navigate({
-              search: (prev) => ({
-                ...prev,
-                selected: []
-              }),
-            })
+      const searchQuery = useSearch({ from: '/dashboard/billing/' });
+      return (
+        <Checkbox
+          checked={
+            searchQuery.selected.length ===
+            table.getRowModel().rows.map((row) => row.original.id).length
           }
-        }
-        }
-      />
+          onCheckedChange={(checked) => {
+            if (checked) {
+              navigate({
+                search: (prev) => ({
+                  ...prev,
+                  selected: table
+                    .getRowModel()
+                    .rows.map((row) => row.original.id),
+                }),
+              });
+            } else {
+              navigate({
+                search: (prev) => ({
+                  ...prev,
+                  selected: [],
+                }),
+              });
+            }
+          }}
+        />
+      );
     },
     cell: ({ row }) => {
       const navigate = useNavigate({ from: '/dashboard/billing' });
-      const searchQuery = useSearch({ from: '/dashboard/billing/' })
+      const searchQuery = useSearch({ from: '/dashboard/billing/' });
 
       return (
         <div className="flex justify-center">
@@ -55,23 +61,24 @@ export const columns: ColumnDef<BillsResponse>[] = [
             checked={searchQuery.selected?.includes(row.original.id)}
             onCheckedChange={(checked) => {
               if (checked) {
-                searchQuery.selected.push(row.original.id)
+                searchQuery.selected.push(row.original.id);
                 navigate({
                   search: (prev) => ({
                     ...prev,
                     selected: searchQuery.selected,
                   }),
-                })
+                });
               } else {
                 navigate({
                   search: (prev) => ({
                     ...prev,
-                    selected: searchQuery.selected.filter((id: string) => id !== row.original.id),
+                    selected: searchQuery.selected.filter(
+                      (id: string) => id !== row.original.id,
+                    ),
                   }),
-                })
+                });
               }
-            }
-            }
+            }}
           />
         </div>
       );
@@ -93,7 +100,9 @@ export const columns: ColumnDef<BillsResponse>[] = [
           }),
       });
 
-      const types = (data?.items ?? []).map((i: any) => i.chargeType).filter(Boolean);
+      const types = (data?.items ?? [])
+        .map((i: any) => i.chargeType)
+        .filter(Boolean);
       const unique = Array.from(new Set(types));
 
       return unique.length ? unique.join(', ') : '—';

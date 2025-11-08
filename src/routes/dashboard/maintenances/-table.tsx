@@ -19,32 +19,38 @@ export const columns: ColumnDef<MaintenanceRequestsResponse>[] = [
     id: 'select',
     header: ({ table }) => {
       const navigate = useNavigate({ from: '/dashboard/maintenances' });
-      const searchQuery = useSearch({ from: '/dashboard/maintenances/' })
-      return <Checkbox
-        checked={searchQuery.selected.length === table.getRowModel().rows.map(row => row.original.id).length}
-        onCheckedChange={(checked) => {
-          if (checked) {
-            navigate({
-              search: (prev) => ({
-                ...prev,
-                selected: table.getRowModel().rows.map(row => row.original.id),
-              }),
-            })
-          } else {
-            navigate({
-              search: (prev) => ({
-                ...prev,
-                selected: []
-              }),
-            })
+      const searchQuery = useSearch({ from: '/dashboard/maintenances/' });
+      return (
+        <Checkbox
+          checked={
+            searchQuery.selected.length ===
+            table.getRowModel().rows.map((row) => row.original.id).length
           }
-        }
-        }
-      />
+          onCheckedChange={(checked) => {
+            if (checked) {
+              navigate({
+                search: (prev) => ({
+                  ...prev,
+                  selected: table
+                    .getRowModel()
+                    .rows.map((row) => row.original.id),
+                }),
+              });
+            } else {
+              navigate({
+                search: (prev) => ({
+                  ...prev,
+                  selected: [],
+                }),
+              });
+            }
+          }}
+        />
+      );
     },
     cell: ({ row }) => {
       const navigate = useNavigate({ from: '/dashboard/maintenances' });
-      const searchQuery = useSearch({ from: '/dashboard/maintenances/' })
+      const searchQuery = useSearch({ from: '/dashboard/maintenances/' });
 
       return (
         <div className="flex justify-center">
@@ -52,23 +58,24 @@ export const columns: ColumnDef<MaintenanceRequestsResponse>[] = [
             checked={searchQuery.selected?.includes(row.original.id)}
             onCheckedChange={(checked) => {
               if (checked) {
-                searchQuery.selected.push(row.original.id)
+                searchQuery.selected.push(row.original.id);
                 navigate({
                   search: (prev) => ({
                     ...prev,
                     selected: searchQuery.selected,
                   }),
-                })
+                });
               } else {
                 navigate({
                   search: (prev) => ({
                     ...prev,
-                    selected: searchQuery.selected.filter((id: string) => id !== row.original.id),
+                    selected: searchQuery.selected.filter(
+                      (id: string) => id !== row.original.id,
+                    ),
                   }),
-                })
+                });
               }
-            }
-            }
+            }}
           />
         </div>
       );
@@ -90,7 +97,9 @@ export const columns: ColumnDef<MaintenanceRequestsResponse>[] = [
   {
     accessorKey: 'unit',
     enableSorting: false,
-    header: ({ column }) => <TableColumnHeader column={column} title="Address" />,
+    header: ({ column }) => (
+      <TableColumnHeader column={column} title="Address" />
+    ),
     cell: ({ row }) => {
       const unit = row.original.expand?.unit;
       const letter = unit?.unitLetter ?? 'N/A';
@@ -211,4 +220,3 @@ export const columns: ColumnDef<MaintenanceRequestsResponse>[] = [
     },
   },
 ];
-

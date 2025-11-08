@@ -1,2 +1,2 @@
-export * from "./AutoForm";
-export * from "./types";
+export * from './AutoForm';
+export * from './types';
