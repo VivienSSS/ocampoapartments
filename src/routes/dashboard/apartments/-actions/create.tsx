@@ -12,7 +12,7 @@ import {
   DialogHeader,
   DialogTitle,
 } from '@/components/ui/dialog';
-import { useAppForm } from '@/components/ui/form';
+import { useAppForm } from '@/components/ui/forms';
 import {
   createApartmentUnitMutation,
   listApartmentUnitsQuery,
@@ -20,6 +20,7 @@ import {
 import { listPropertiesQuery } from '@/pocketbase/queries/properties';
 import type { insertApartmentUnitSchema } from '@/pocketbase/schemas/apartmentUnits';
 import { CreateApartmentForm } from './form';
+import FormDialog from '@/components/ui/forms/utils/dialog';
 
 const CreateApartmentDialogForm = () => {
   const navigate = useNavigate({ from: '/dashboard/apartments' });
@@ -27,14 +28,6 @@ const CreateApartmentDialogForm = () => {
   const { queryClient } = useRouteContext({ from: '/dashboard/apartments/' });
 
   const apartmentMutation = useMutation(createApartmentUnitMutation);
-
-  const { data: properties } = useQuery(
-    {
-      ...listPropertiesQuery(1, 500),
-      enabled: searchQuery.new,
-    },
-    queryClient,
-  );
 
   const form = useAppForm({
     defaultValues: {} as z.infer<typeof insertApartmentUnitSchema>,
@@ -49,37 +42,21 @@ const CreateApartmentDialogForm = () => {
       }),
   });
   return (
-    <Dialog
-      open={searchQuery.new}
-      onOpenChange={() =>
-        navigate({ to: '/dashboard/apartments', search: { new: undefined } })
-      }
-    >
-      <DialogContent>
-        <DialogHeader>
-          <DialogTitle>Want to add a new unit?</DialogTitle>
-          <DialogDescription>Enter the right information</DialogDescription>
-        </DialogHeader>
-        <form
-          className="grid grid-cols-4 gap-6"
-          onSubmit={(e) => {
-            e.preventDefault();
-            e.stopPropagation();
-            form.handleSubmit();
-          }}
-        >
-          <form.AppForm>
-            <CreateApartmentForm
-              form={form}
-              properties={properties?.items ?? []}
-            />
-            <form.SubmitButton className="col-span-full mt-2">
-              Create Unit
-            </form.SubmitButton>
-          </form.AppForm>
-        </form>
-      </DialogContent>
-    </Dialog>
+    <form.AppForm>
+      <FormDialog
+        title={'Want to add a new unit?'}
+        description={'Enter the right information'}
+        open={searchQuery.new}
+        onOpenChange={() =>
+          navigate({
+            to: '/dashboard/apartments',
+            search: { new: undefined },
+          })
+        }
+      >
+        <CreateApartmentForm form={form} />
+      </FormDialog>
+    </form.AppForm>
   );
 };
 

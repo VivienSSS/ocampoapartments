@@ -13,7 +13,7 @@ import {
   listAnnouncementsQuery,
 } from '@/pocketbase/queries/announcements';
 import { insertAnnouncementSchema } from '@/pocketbase/schemas/announcements';
-import { AnnouncementForm } from './form';
+import { CreateAnnouncementForm } from './form';
 
 const CreateAnnouncementDialogForm = () => {
   const navigate = useNavigate({ from: '/dashboard/announcements' });
@@ -51,32 +51,30 @@ const CreateAnnouncementDialogForm = () => {
   });
 
   return (
-    <form>
-      <form.AppForm>
-        <FormDialog
-          open={searchParams.new}
-          onOpenChange={() =>
-            navigate({
-              to: '/dashboard/announcements',
-              search: { new: undefined },
-            })
-          }
-          title={'Want to add a new announcement?'}
-          description={'Enter the right information'}
-          onClear={(e) => {
-            e.preventDefault();
-            form.reset();
-          }}
-          onSubmit={(e) => {
-            e.preventDefault();
-            e.stopPropagation();
-            form.handleSubmit();
-          }}
-        >
-          <AnnouncementForm form={form} />
-        </FormDialog>
-      </form.AppForm>
-    </form>
+    <form.AppForm>
+      <FormDialog
+        open={searchParams.new}
+        onOpenChange={() =>
+          navigate({
+            to: '/dashboard/announcements',
+            search: { new: undefined },
+          })
+        }
+        title={'Want to add a new announcement?'}
+        description={'Enter the right information'}
+        onClear={(e) => {
+          e.preventDefault();
+          form.reset();
+        }}
+        onSubmit={(e) => {
+          e.preventDefault();
+          e.stopPropagation();
+          form.handleSubmit();
+        }}
+      >
+        <CreateAnnouncementForm form={form} />
+      </FormDialog>
+    </form.AppForm>
   );
 };
 

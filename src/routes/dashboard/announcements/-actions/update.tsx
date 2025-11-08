@@ -5,22 +5,16 @@ import {
   useSearch,
 } from '@tanstack/react-router';
 import type z from 'zod';
-import {
-  Dialog,
-  DialogContent,
-  DialogDescription,
-  DialogHeader,
-  DialogTitle,
-} from '@/components/ui/dialog';
-import { useAppForm } from '@/components/ui/form';
-import FormDialog from '@/components/ui/form-dialog';
+
+import { useAppForm } from '@/components/ui/forms';
+import FormDialog from '@/components/ui/forms/utils/dialog';
 import {
   listAnnouncementsQuery,
   updateAnnouncementMutation,
   viewAnnouncementQuery,
 } from '@/pocketbase/queries/announcements';
 import { updateAnnouncementSchema } from '@/pocketbase/schemas/announcements';
-import { AnnouncementForm } from './form';
+import { UpdateAnnouncementForm } from './form';
 
 const EditAnnouncementDialogForm = () => {
   const navigate = useNavigate({ from: '/dashboard/announcements' });
@@ -46,7 +40,7 @@ const EditAnnouncementDialogForm = () => {
       title: ann?.title ?? '',
       message: ann?.message ?? '',
     } as z.infer<typeof updateAnnouncementSchema>,
-    validators: { onChange: updateAnnouncementSchema },
+    validators: { onSubmit: updateAnnouncementSchema },
     onSubmit: async ({ value }) =>
       mutation.mutateAsync(value, {
         onSuccess: () => {
@@ -62,27 +56,30 @@ const EditAnnouncementDialogForm = () => {
   });
 
   return (
-    <FormDialog
-      open={!!searchQuery.edit && !!searchQuery.id}
-      onOpenChange={() =>
-        navigate({
-          to: '/dashboard/announcements',
-          search: { edit: undefined, id: undefined },
-        })
-      }
-      onSubmit={() => {
-        form.handleSubmit();
-      }}
-      title={'Edit announcement'}
-      description={'Update Information'}
-    >
-      <form.AppForm>
-        <AnnouncementForm form={form as any} />
-        <div className="mt-4">
-          <form.SubmitButton>Update Announcement</form.SubmitButton>
-        </div>
-      </form.AppForm>
-    </FormDialog>
+    <form.AppForm>
+      <FormDialog
+        open={!!searchQuery.edit && !!searchQuery.id}
+        onOpenChange={() =>
+          navigate({
+            to: '/dashboard/announcements',
+            search: { edit: undefined, id: undefined },
+          })
+        }
+        onSubmit={(e) => {
+          e.preventDefault();
+          e.stopPropagation();
+          form.handleSubmit();
+        }}
+        onClear={(e) => {
+          e.preventDefault();
+          form.reset();
+        }}
+        title={'Edit announcement'}
+        description={'Update Information'}
+      >
+        <UpdateAnnouncementForm form={form} />
+      </FormDialog>
+    </form.AppForm>
   );
 };
 

@@ -1,13 +1,12 @@
 import { formOptions } from '@tanstack/react-form';
-import { useSuspenseQuery } from '@tanstack/react-query';
 import type z from 'zod';
-import { withForm } from '@/components/ui/form';
-import { pb } from '@/pocketbase';
+import { withForm } from '@/components/ui/forms';
 import type {
   insertApartmentUnitSchema,
   updateApartmentUnitSchema,
 } from '@/pocketbase/schemas/apartmentUnits';
 import { Collections, type PropertiesResponse } from '@/pocketbase/types';
+import { useRouteContext } from '@tanstack/react-router';
 
 export const CreateApartmentUnitFormOption = formOptions({
   defaultValues: {} as z.infer<typeof insertApartmentUnitSchema>,
@@ -19,37 +18,36 @@ export const UpdateApartmentUnitFormOption = formOptions({
 
 export const CreateApartmentForm = withForm({
   ...CreateApartmentUnitFormOption,
-  props: {} as { properties: PropertiesResponse[] },
-  render: ({ form, properties }) => {
+  render: ({ form }) => {
+    const { pocketbase } = useRouteContext({ from: '/dashboard/apartments/' });
+
     return (
       <>
         <form.AppField name="floorNumber">
           {(field) => (
-            <field.TextField
+            <field.NumberField
               className="col-span-full"
               label="Floor Number"
               placeholder="ex. 1"
-              type="number"
             />
           )}
         </form.AppField>
         <form.AppField name="capacity">
           {(field) => (
-            <field.TextField
+            <field.NumberField
               className="col-span-2"
               label="Capacity"
               placeholder="ex. 2"
-              type="number"
             />
           )}
         </form.AppField>
         <form.AppField name="price">
           {(field) => (
-            <field.TextField
+            <field.NumberField
+              showClearButton
               className="col-span-2"
               label="Price"
               placeholder="ex. 5000"
-              type="number"
             />
           )}
         </form.AppField>
@@ -64,20 +62,17 @@ export const CreateApartmentForm = withForm({
         </form.AppField>
         <form.AppField name="property">
           {(field) => (
-            <field.SelectField
-              className="col-span-full"
-              options={properties.map((value) => ({
-                label: value.address,
-                value: value.id,
-              }))}
+            <field.RelationField
+              pocketbase={pocketbase}
+              collectionName={Collections.Properties}
+              relationshipName="property"
+              displayField="branch"
               label="Property"
             />
           )}
         </form.AppField>
         <form.AppField name="isAvailable">
-          {(field) => (
-            <field.CheckBoxField className="col-span-full" label="Available" />
-          )}
+          {(field) => <field.BoolField label="Available" />}
         </form.AppField>
       </>
     );
@@ -131,7 +126,6 @@ export const EditApartmentForm = withForm({
       <form.AppField name="property">
         {(field) => (
           <field.SelectField
-            className="col-span-full"
             options={properties.map((value) => ({
               label: value.address,
               value: value.id,
@@ -141,12 +135,7 @@ export const EditApartmentForm = withForm({
         )}
       </form.AppField>
       <form.AppField name="isAvailable">
-        {(field) => (
-          <field.CheckBoxField
-            className="col-span-full mt-2"
-            label="Available"
-          />
-        )}
+        {(field) => <field.BoolField label="Available" />}
       </form.AppField>
     </div>
   ),

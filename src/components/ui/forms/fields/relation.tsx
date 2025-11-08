@@ -1,9 +1,8 @@
-import { useRouteContext } from '@tanstack/react-router';
 import type React from 'react';
 import { useCallback } from 'react';
-import type { TypedPocketBase } from '@/pocketbase/types';
+import type { Collections, TypedPocketBase } from '@/pocketbase/types';
 import { AsyncSelect } from '../../async-select';
-import { Field, FieldDescription, FieldError, FieldLabel } from '../../field';
+import { Field, FieldDescription, FieldError } from '../../field';
 import { useFieldContext } from '..';
 import { TooltipFieldLabel } from '../utils/tooltip-field-label';
 
@@ -18,7 +17,7 @@ export type RelationFieldProps = {
   tooltip?: React.ReactNode;
   tooltipSide?: 'top' | 'right' | 'bottom' | 'left';
   relationshipName: string;
-  collectionName: string;
+  collectionName: Collections;
   displayField?: string;
   preload?: boolean;
   placeholder?: string;

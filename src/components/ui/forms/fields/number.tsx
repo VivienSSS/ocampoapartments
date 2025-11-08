@@ -1,7 +1,7 @@
 'use client';
 
 import type React from 'react';
-import { Field, FieldDescription, FieldError, FieldLabel } from '../../field';
+import { Field, FieldDescription, FieldError } from '../../field';
 import {
   InputGroup,
   InputGroupAddon,
@@ -34,19 +34,17 @@ export type NumberFieldProps = {
   addonEnd?: React.ReactNode;
 } & Omit<
   React.ComponentProps<'input'>,
-  keyof {
-    textAddonStart: any;
-    textAddonEnd: any;
-    iconAddonEnd: any;
-    showClearButton: any;
-    showValidationIcon: any;
-    showSpinners: any;
-    inputGroupClassName: any;
-    addonStart: any;
-    addonEnd: any;
-    tooltip: any;
-    tooltipSide: any;
-  }
+  | 'textAddonStart'
+  | 'textAddonEnd'
+  | 'iconAddonEnd'
+  | 'showClearButton'
+  | 'showValidationIcon'
+  | 'showSpinners'
+  | 'inputGroupClassName'
+  | 'addonStart'
+  | 'addonEnd'
+  | 'tooltip'
+  | 'tooltipSide'
 >;
 
 const NumberField = (props: NumberFieldProps) => {
@@ -76,7 +74,7 @@ const NumberField = (props: NumberFieldProps) => {
   const isValid =
     field.state.meta.isTouched && field.state.meta.isValid && !isInvalid;
 
-  const currentValue = field.state.value ?? 0;
+  const currentValue = field.state.value;
 
   const handleIncrement = () => {
     const newValue = currentValue + (typeof step === 'number' ? step : 1);
