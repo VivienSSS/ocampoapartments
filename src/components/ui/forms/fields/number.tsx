@@ -8,12 +8,7 @@ import {
   InputGroupInput,
 } from '../../input-group';
 import { useFieldContext } from '..';
-import {
-  ClearButtonAddon,
-  NumberSpinnerAddon,
-  TextAddon,
-  ValidationAddon,
-} from '../utils/input-group-patterns';
+import { TextAddon, ValidationAddon } from '../utils/input-group-patterns';
 import { TooltipFieldLabel } from '../utils/tooltip-field-label';
 
 export type NumberFieldProps = {
@@ -58,15 +53,10 @@ const NumberField = (props: NumberFieldProps) => {
     textAddonStart,
     textAddonEnd,
     iconAddonEnd,
-    showClearButton = false,
     showValidationIcon = false,
-    showSpinners = false,
     inputGroupClassName,
     addonStart,
     addonEnd,
-    min,
-    max,
-    step = 1,
     ...inputProps
   } = props;
 
@@ -75,27 +65,6 @@ const NumberField = (props: NumberFieldProps) => {
     field.state.meta.isTouched && field.state.meta.isValid && !isInvalid;
 
   const currentValue = field.state.value;
-
-  const handleIncrement = () => {
-    const newValue = currentValue + (typeof step === 'number' ? step : 1);
-    if (max === undefined || newValue <= Number(max)) {
-      field.handleChange(newValue);
-    }
-  };
-
-  const handleDecrement = () => {
-    const newValue = currentValue - (typeof step === 'number' ? step : 1);
-    if (min === undefined || newValue >= Number(min)) {
-      field.handleChange(newValue);
-    }
-  };
-
-  const handleClear = () => {
-    field.handleChange(0);
-  };
-
-  const canIncrement = max === undefined || currentValue < Number(max);
-  const canDecrement = min === undefined || currentValue > Number(min);
 
   return (
     <Field data-invalid={isInvalid}>
@@ -120,9 +89,6 @@ const NumberField = (props: NumberFieldProps) => {
           onBlur={field.handleBlur}
           onChange={(e) => field.handleChange(Number(e.target.value))}
           aria-invalid={isInvalid}
-          min={min}
-          max={max}
-          step={step}
           {...inputProps}
         />
 
@@ -133,20 +99,6 @@ const NumberField = (props: NumberFieldProps) => {
         {showValidationIcon && (
           <InputGroupAddon align="inline-end">
             <ValidationAddon isValid={isValid} isError={isInvalid} />
-          </InputGroupAddon>
-        )}
-        {showClearButton && currentValue !== 0 && (
-          <InputGroupAddon align="inline-end">
-            <ClearButtonAddon onClick={handleClear} />
-          </InputGroupAddon>
-        )}
-        {showSpinners && (
-          <InputGroupAddon align="inline-end">
-            <NumberSpinnerAddon
-              onIncrement={handleIncrement}
-              onDecrement={handleDecrement}
-              disabled={!canIncrement || !canDecrement}
-            />
           </InputGroupAddon>
         )}
         {textAddonEnd && (

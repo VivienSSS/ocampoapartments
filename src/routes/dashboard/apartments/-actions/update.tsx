@@ -1,27 +1,19 @@
-import { useMutation, useQueries, useQuery } from '@tanstack/react-query';
+import { useMutation, useQuery } from '@tanstack/react-query';
 import {
   useNavigate,
   useRouteContext,
   useSearch,
 } from '@tanstack/react-router';
-import { useEffect } from 'react';
 import type z from 'zod';
-import {
-  Dialog,
-  DialogContent,
-  DialogDescription,
-  DialogHeader,
-  DialogTitle,
-} from '@/components/ui/dialog';
-import { useAppForm } from '@/components/ui/form';
+import { useAppForm } from '@/components/ui/forms';
 import {
   listApartmentUnitsQuery,
   updateApartmentUnitMutation,
   viewApartmentUnitQuery,
 } from '@/pocketbase/queries/apartmentUnits';
-import { listPropertiesQuery } from '@/pocketbase/queries/properties';
-import type { updateApartmentUnitSchema } from '@/pocketbase/schemas/apartmentUnits';
+import { updateApartmentUnitSchema } from '@/pocketbase/schemas/apartmentUnits';
 import { EditApartmentForm } from './form';
+import FormDialog from '@/components/ui/forms/utils/dialog';
 
 const EditApartmentDialogForm = () => {
   const navigate = useNavigate({ from: '/dashboard/apartments' });
@@ -32,31 +24,21 @@ const EditApartmentDialogForm = () => {
     updateApartmentUnitMutation(searchQuery.id ?? ''),
   );
 
-  const [{ data: apt }, { data: properties }] = useQueries(
+  const { data: apartment } = useQuery(
     {
-      queries: [
-        {
-          ...viewApartmentUnitQuery(searchQuery.id ?? ''),
-          enabled: !!searchQuery.id && searchQuery.edit,
-        },
-        {
-          ...listPropertiesQuery(1, 500),
-          enabled: !!searchQuery.id && searchQuery.edit,
-        },
-      ],
+      ...viewApartmentUnitQuery(searchQuery.id ?? ''),
+      enabled: !!searchQuery.id && searchQuery.edit,
     },
     queryClient,
   );
 
   const form = useAppForm({
     defaultValues: {
-      unitLetter: '',
-      property: undefined,
-      floorNumber: undefined,
-      capacity: undefined,
-      price: undefined,
-      isAvailable: true,
+      ...apartment,
     } as z.infer<typeof updateApartmentUnitSchema>,
+    validators: {
+      onSubmit: updateApartmentUnitSchema,
+    },
     onSubmit: async ({ value }) =>
       mutation.mutateAsync(value, {
         onSuccess: () => {
@@ -71,52 +53,31 @@ const EditApartmentDialogForm = () => {
       }),
   });
 
-  // Update form values when data loads
-  useEffect(() => {
-    if (apt) {
-      form.setFieldValue('unitLetter', apt.unitLetter ?? '');
-      form.setFieldValue('property', apt.property ?? undefined);
-      form.setFieldValue('floorNumber', apt.floorNumber ?? undefined);
-      form.setFieldValue('capacity', apt.capacity ?? undefined);
-      form.setFieldValue('price', apt.price ?? undefined);
-      form.setFieldValue('isAvailable', apt.isAvailable ?? true);
-    }
-  }, [apt, form]);
-
   return (
-    <Dialog
-      open={!!searchQuery.edit && !!searchQuery.id}
-      onOpenChange={() =>
-        navigate({
-          to: '/dashboard/apartments',
-          search: { edit: undefined, id: undefined },
-        })
-      }
-    >
-      <DialogContent>
-        <DialogHeader>
-          <DialogTitle>Edit Apartment Unit</DialogTitle>
-          <DialogDescription>Update information</DialogDescription>
-        </DialogHeader>
-        <form
-          onSubmit={(e) => {
-            e.preventDefault();
-            e.stopPropagation();
-            form.handleSubmit();
-          }}
-        >
-          <form.AppForm>
-            <EditApartmentForm
-              form={form}
-              properties={properties?.items ?? []}
-            />
-            <div className="mt-6">
-              <form.SubmitButton>Update Unit</form.SubmitButton>
-            </div>
-          </form.AppForm>
-        </form>
-      </DialogContent>
-    </Dialog>
+    <form.AppForm>
+      <FormDialog
+        title={'Edit Apartment Unit'}
+        description={'Update the necessary information'}
+        open={!!searchQuery.edit && !!searchQuery.id}
+        onOpenChange={() =>
+          navigate({
+            to: '/dashboard/apartments',
+            search: { edit: undefined, id: undefined },
+          })
+        }
+        onSubmit={(e) => {
+          e.preventDefault();
+          e.stopPropagation();
+          form.handleSubmit();
+        }}
+        onClear={(e) => {
+          e.preventDefault();
+          form.reset();
+        }}
+      >
+        <EditApartmentForm form={form} />
+      </FormDialog>
+    </form.AppForm>
   );
 };
 

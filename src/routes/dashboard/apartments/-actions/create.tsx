@@ -1,24 +1,16 @@
-import { useMutation, useQuery } from '@tanstack/react-query';
+import { useMutation } from '@tanstack/react-query';
 import {
   useNavigate,
   useRouteContext,
   useSearch,
 } from '@tanstack/react-router';
 import type z from 'zod';
-import {
-  Dialog,
-  DialogContent,
-  DialogDescription,
-  DialogHeader,
-  DialogTitle,
-} from '@/components/ui/dialog';
 import { useAppForm } from '@/components/ui/forms';
 import {
   createApartmentUnitMutation,
   listApartmentUnitsQuery,
 } from '@/pocketbase/queries/apartmentUnits';
-import { listPropertiesQuery } from '@/pocketbase/queries/properties';
-import type { insertApartmentUnitSchema } from '@/pocketbase/schemas/apartmentUnits';
+import { insertApartmentUnitSchema } from '@/pocketbase/schemas/apartmentUnits';
 import { CreateApartmentForm } from './form';
 import FormDialog from '@/components/ui/forms/utils/dialog';
 
@@ -31,6 +23,9 @@ const CreateApartmentDialogForm = () => {
 
   const form = useAppForm({
     defaultValues: {} as z.infer<typeof insertApartmentUnitSchema>,
+    validators: {
+      onSubmit: insertApartmentUnitSchema,
+    },
     onSubmit: async ({ value }) =>
       apartmentMutation.mutateAsync(value, {
         onSuccess: () => {
@@ -53,6 +48,15 @@ const CreateApartmentDialogForm = () => {
             search: { new: undefined },
           })
         }
+        onSubmit={(e) => {
+          e.preventDefault();
+          e.stopPropagation();
+          form.handleSubmit();
+        }}
+        onClear={(e) => {
+          e.preventDefault();
+          form.reset();
+        }}
       >
         <CreateApartmentForm form={form} />
       </FormDialog>

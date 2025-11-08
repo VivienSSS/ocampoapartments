@@ -3,17 +3,17 @@ import z from 'zod';
 
 export const apartmentUnitSchema = z.object({
   id: z.string(),
-  capacity: z.coerce
+  capacity: z
     .number({ message: 'Capacity must be a number' })
     .int('Capacity must be a whole number')
     .positive('Capacity must be greater than 0')
     .check(fieldConfig({ order: 3 })),
-  floorNumber: z.coerce
+  floorNumber: z
     .number({ message: 'Floor number must be a number' })
     .int('Floor number must be a whole number')
     .nonnegative('Floor number must be 0 or greater')
     .check(fieldConfig({ order: 2 })),
-  price: z.coerce
+  price: z
     .number({ message: 'Price must be a number' })
     .nonnegative('Price must be a positive number')
     .check(fieldConfig({ order: 4 })),
@@ -24,7 +24,7 @@ export const apartmentUnitSchema = z.object({
     .min(1, 'Unit letter is required')
     .max(1, 'Unit letter must be a single character')
     .check(fieldConfig({ order: 3 })),
-  isAvailable: z.boolean().optional().default(true),
+  isAvailable: z.boolean(),
   created: z.date().optional(),
   updated: z.date().optional(),
 });

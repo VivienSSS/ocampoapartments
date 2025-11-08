@@ -1,19 +1,27 @@
 import { formOptions } from '@tanstack/react-form';
 import type z from 'zod';
 import { withForm } from '@/components/ui/forms';
-import type {
+import {
   insertApartmentUnitSchema,
   updateApartmentUnitSchema,
 } from '@/pocketbase/schemas/apartmentUnits';
-import { Collections, type PropertiesResponse } from '@/pocketbase/types';
+import { Collections } from '@/pocketbase/types';
 import { useRouteContext } from '@tanstack/react-router';
 
 export const CreateApartmentUnitFormOption = formOptions({
-  defaultValues: {} as z.infer<typeof insertApartmentUnitSchema>,
+  defaultValues: {
+    isAvailable: true,
+  } as z.infer<typeof insertApartmentUnitSchema>,
+  validators: {
+    onSubmit: insertApartmentUnitSchema,
+  },
 });
 
 export const UpdateApartmentUnitFormOption = formOptions({
   defaultValues: {} as z.infer<typeof updateApartmentUnitSchema>,
+  validators: {
+    onSubmit: updateApartmentUnitSchema,
+  },
 });
 
 export const CreateApartmentForm = withForm({
@@ -81,62 +89,64 @@ export const CreateApartmentForm = withForm({
 
 export const EditApartmentForm = withForm({
   ...UpdateApartmentUnitFormOption,
-  props: {} as { properties: PropertiesResponse[] },
-  render: ({ form, properties }) => (
-    <div className="grid gap-6 grid-cols-4">
-      <form.AppField name="floorNumber">
-        {(field) => (
-          <field.TextField
-            className="col-span-full"
-            label="Floor Number"
-            placeholder="ex. 1"
-            type="number"
-          />
-        )}
-      </form.AppField>
-      <form.AppField name="capacity">
-        {(field) => (
-          <field.TextField
-            className="col-span-2"
-            label="Capacity"
-            placeholder="ex. 2"
-            type="number"
-          />
-        )}
-      </form.AppField>
-      <form.AppField name="price">
-        {(field) => (
-          <field.TextField
-            className="col-span-2"
-            label="Price"
-            placeholder="ex. 5000"
-            type="number"
-          />
-        )}
-      </form.AppField>
-      <form.AppField name="unitLetter">
-        {(field) => (
-          <field.TextField
-            className="col-span-full"
-            label="Unit Letter"
-            placeholder="ex. A"
-          />
-        )}
-      </form.AppField>
-      <form.AppField name="property">
-        {(field) => (
-          <field.SelectField
-            options={properties.map((value) => ({
-              label: value.address,
-              value: value.id,
-            }))}
-            label="Property"
-          />
-        )}
-      </form.AppField>
-      <form.AppField name="isAvailable">
-        {(field) => <field.BoolField label="Available" />}
-      </form.AppField>
-    </div>
-  ),
+  render: ({ form }) => {
+    const { pocketbase } = useRouteContext({ from: '/dashboard/apartments/' });
+    return (
+      <>
+        <form.AppField name="floorNumber">
+          {(field) => (
+            <field.TextField
+              className="col-span-full"
+              label="Floor Number"
+              placeholder="ex. 1"
+              type="number"
+            />
+          )}
+        </form.AppField>
+        <form.AppField name="capacity">
+          {(field) => (
+            <field.TextField
+              className="col-span-2"
+              label="Capacity"
+              placeholder="ex. 2"
+              type="number"
+            />
+          )}
+        </form.AppField>
+        <form.AppField name="price">
+          {(field) => (
+            <field.TextField
+              className="col-span-2"
+              label="Price"
+              placeholder="ex. 5000"
+              type="number"
+            />
+          )}
+        </form.AppField>
+        <form.AppField name="unitLetter">
+          {(field) => (
+            <field.TextField
+              className="col-span-full"
+              label="Unit Letter"
+              placeholder="ex. A"
+            />
+          )}
+        </form.AppField>
+        <form.AppField name="property">
+          {(field) => (
+            <field.RelationField
+              pocketbase={pocketbase}
+              collectionName={Collections.Properties}
+              relationshipName="property"
+              displayField="branch"
+              label="Property"
+            />
+          )}
+        </form.AppField>
+        <form.AppField name="isAvailable">
+          {(field) => <field.BoolField label="Available" />}
+        </form.AppField>
+      </>
+    );
+  },
 });
