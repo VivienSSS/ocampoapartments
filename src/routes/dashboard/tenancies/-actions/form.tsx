@@ -1,11 +1,11 @@
-import type z from 'zod';
+import z from 'zod';
 import { AsyncSelect } from '@/components/ui/async-select';
 import { withForm } from '@/components/ui/forms';
 import { pb } from '@/pocketbase';
 import type { ApartmentUnitsResponse } from '@/pocketbase/queries/apartmentUnits';
 import type { TenantsResponse } from '@/pocketbase/queries/tenants';
 import {
-  type insertTenanciesSchema,
+  insertTenanciesSchema,
   updateTenanciesSchema,
 } from '@/pocketbase/schemas/tenancies';
 import { Collections } from '@/pocketbase/types';
@@ -21,6 +21,11 @@ export const CreateTenancyForm = withForm({
     z.infer<typeof insertTenanciesSchema>,
     'leaseStartDate' | 'leaseEndDate'
   > & { leaseContract: LeaseContract },
+  validators: {
+    onSubmit: insertTenanciesSchema.extend({
+      leaseContract: z.enum(LeaseContract),
+    }),
+  },
   render: ({ form }) => {
     const { pocketbase } = useRouteContext({
       from: '/dashboard/tenancies/',
@@ -81,7 +86,7 @@ export const CreateTenancyForm = withForm({
 export const EditTenancyForm = withForm({
   defaultValues: {} as z.infer<typeof updateTenanciesSchema>,
   validators: {
-    onChange: updateTenanciesSchema,
+    onSubmit: updateTenanciesSchema,
   },
   props: {} as {
     tenants: TenantsResponse[];

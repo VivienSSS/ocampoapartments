@@ -63,7 +63,7 @@ const EditTenancyDialogForm = () => {
         ? new Date(tenancy.leaseEndDate)
         : undefined,
     } as z.infer<typeof updateTenanciesSchema>,
-    validators: { onChange: updateTenanciesSchema },
+    validators: { onSubmit: updateTenanciesSchema },
     onSubmit: async ({ value }) =>
       mutation.mutateAsync(value, {
         onSuccess: () => {

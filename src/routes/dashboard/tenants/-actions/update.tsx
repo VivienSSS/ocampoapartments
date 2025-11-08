@@ -20,6 +20,7 @@ import {
 } from '@/pocketbase/queries/tenants';
 import type { updateTenantSchema } from '@/pocketbase/schemas/tenants';
 import { EditTenantForm } from './form';
+import FormDialog from '@/components/ui/forms/utils/dialog';
 
 const EditTenantDialogForm = () => {
   const navigate = useNavigate({ from: '/dashboard/tenants' });
@@ -65,36 +66,29 @@ const EditTenantDialogForm = () => {
   });
 
   return (
-    <Dialog
-      open={!!searchQuery.edit && !!searchQuery.id}
-      onOpenChange={() =>
-        navigate({
-          search: { edit: undefined, id: undefined },
-        })
-      }
-    >
-      <DialogContent>
-        <DialogHeader>
-          <DialogTitle>Edit Existing Tenant</DialogTitle>
-          <DialogDescription>Enter the right information</DialogDescription>
-        </DialogHeader>
-        <form
-          className="grid grid-cols-4 gap-2.5"
-          onSubmit={(e) => {
-            e.preventDefault();
-            e.stopPropagation();
-            form.handleSubmit();
-          }}
-        >
-          <form.AppForm>
-            <EditTenantForm form={form} />
-            <form.SubmitButton className="col-span-full mt-2">
-              Update Tenant
-            </form.SubmitButton>
-          </form.AppForm>
-        </form>
-      </DialogContent>
-    </Dialog>
+    <form.AppForm>
+      <FormDialog
+        title="Edit Existing Tenant"
+        description="Enter the right information"
+        open={!!searchQuery.edit && !!searchQuery.id}
+        onOpenChange={() =>
+          navigate({
+            search: { edit: undefined, id: undefined },
+          })
+        }
+        onSubmit={(e) => {
+          e.preventDefault();
+          e.stopPropagation();
+          form.handleSubmit();
+        }}
+        onClear={(e) => {
+          e.preventDefault();
+          form.reset();
+        }}
+      >
+        <EditTenantForm form={form} />
+      </FormDialog>
+    </form.AppForm>
   );
 };
 

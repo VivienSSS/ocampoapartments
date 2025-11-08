@@ -4,7 +4,7 @@ import {
   useRouteContext,
   useSearch,
 } from '@tanstack/react-router';
-import type z from 'zod';
+import z from 'zod';
 import {
   Dialog,
   DialogContent,
@@ -19,7 +19,7 @@ import {
   listTenanciesQuery,
 } from '@/pocketbase/queries/tenancies';
 import { listTenantsQuery } from '@/pocketbase/queries/tenants';
-import type { insertTenanciesSchema } from '@/pocketbase/schemas/tenancies';
+import { insertTenanciesSchema } from '@/pocketbase/schemas/tenancies';
 import { CreateTenancyForm, LeaseContract } from './form';
 import FormDialog from '@/components/ui/forms/utils/dialog';
 
@@ -35,6 +35,11 @@ const CreateTenancyDialogForm = () => {
       z.infer<typeof insertTenanciesSchema>,
       'leaseStartDate' | 'leaseEndDate'
     > & { leaseContract: LeaseContract },
+    validators: {
+      onSubmit: insertTenanciesSchema.extend({
+        leaseContract: z.enum(LeaseContract),
+      }),
+    },
     onSubmit: async ({ value }) => {
       const now = new Date();
       let leaseEndDate: Date;

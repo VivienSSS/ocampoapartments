@@ -5,13 +5,6 @@ import {
   useSearch,
 } from '@tanstack/react-router';
 import type z from 'zod';
-import {
-  Dialog,
-  DialogContent,
-  DialogDescription,
-  DialogHeader,
-  DialogTitle,
-} from '@/components/ui/dialog';
 import { useAppForm } from '@/components/ui/forms';
 import {
   createTenantMutation,
@@ -19,6 +12,7 @@ import {
 } from '@/pocketbase/queries/tenants';
 import type { insertTenantSchema } from '@/pocketbase/schemas/tenants';
 import { CreateTenantForm } from './form';
+import FormDialog from '@/components/ui/forms/utils/dialog';
 
 const CreateTenantDialogForm = () => {
   const navigate = useNavigate({ from: '/dashboard/tenants' });
@@ -41,32 +35,25 @@ const CreateTenantDialogForm = () => {
   });
 
   return (
-    <Dialog
-      open={searchParams.new}
-      onOpenChange={() => navigate({ search: { new: undefined } })}
-    >
-      <DialogContent>
-        <DialogHeader>
-          <DialogTitle>Want to add a new tenant?</DialogTitle>
-          <DialogDescription>Enter the right information</DialogDescription>
-        </DialogHeader>
-        <form
-          className="grid grid-cols-4 gap-2.5"
-          onSubmit={(e) => {
-            e.preventDefault();
-            e.stopPropagation();
-            form.handleSubmit();
-          }}
-        >
-          <form.AppForm>
-            <CreateTenantForm form={form} />
-            <form.SubmitButton className="col-span-full mt-2">
-              Create Tenant
-            </form.SubmitButton>
-          </form.AppForm>
-        </form>
-      </DialogContent>
-    </Dialog>
+    <form.AppForm>
+      <FormDialog
+        title="Create New Tenant"
+        description="Fill in the details to add a new tenant"
+        open={searchParams.new}
+        onOpenChange={() => navigate({ search: { new: undefined } })}
+        onSubmit={(e) => {
+          e.preventDefault();
+          e.stopPropagation();
+          form.handleSubmit();
+        }}
+        onClear={(e) => {
+          e.preventDefault();
+          form.reset();
+        }}
+      >
+        <CreateTenantForm form={form} />
+      </FormDialog>
+    </form.AppForm>
   );
 };
 
