@@ -44,7 +44,6 @@ export const listMaintenanceRequestsQuery = (
         .collection(Collections.MaintenanceRequests)
         .getList<MaintenanceRequestsResponse>(page, perPage, {
           expand: 'tenant.user,unit,worker',
-          fields: '*,description:excerpt(25,true)',
           sort,
           filter: tenantFilter,
         }),

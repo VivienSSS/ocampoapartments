@@ -12,7 +12,7 @@ import {
   DialogHeader,
   DialogTitle,
 } from '@/components/ui/dialog';
-import { useAppForm } from '@/components/ui/form';
+import { useAppForm } from '@/components/ui/forms';
 import { pb } from '@/pocketbase';
 import {
   listMaintenanceRequestsQuery,
@@ -22,6 +22,7 @@ import {
 import { updateMaintenanceRequestSchema } from '@/pocketbase/schemas/maintenanceRequests';
 import { UsersRoleOptions } from '@/pocketbase/types';
 import { EditMaintenanceForm } from './form';
+import FormDialog from '@/components/ui/forms/utils/dialog';
 
 const EditMaintenanceDialogForm = () => {
   const navigate = useNavigate({ from: '/dashboard/maintenances' });
@@ -50,7 +51,7 @@ const EditMaintenanceDialogForm = () => {
       description: req?.description ?? '',
       status: req?.status ?? '',
     } as z.infer<typeof updateMaintenanceRequestSchema>,
-    validators: { onChange: updateMaintenanceRequestSchema },
+    validators: { onSubmit: updateMaintenanceRequestSchema },
     onSubmit: async ({ value }) =>
       mutation.mutateAsync(value, {
         onSuccess: () => {
@@ -77,35 +78,29 @@ const EditMaintenanceDialogForm = () => {
   });
 
   return (
-    <Dialog
-      open={!!searchQuery.edit && !!currentId}
-      onOpenChange={() =>
-        navigate({
-          search: (prev) => ({ ...prev, edit: undefined, id: undefined }),
-        })
-      }
-    >
-      <DialogContent>
-        <DialogHeader>
-          <DialogTitle>Edit Request</DialogTitle>
-          <DialogDescription>Update information</DialogDescription>
-        </DialogHeader>
-        <form
-          onSubmit={(e) => {
-            e.preventDefault();
-            e.stopPropagation();
-            form.handleSubmit();
-          }}
-        >
-          <form.AppForm>
-            <EditMaintenanceForm form={form} />
-            <form.SubmitButton className="mt-4">
-              Update Request
-            </form.SubmitButton>
-          </form.AppForm>
-        </form>
-      </DialogContent>
-    </Dialog>
+    <form.AppForm>
+      <FormDialog
+        title="Edit Maintenance Request"
+        description="Update information"
+        open={!!searchQuery.edit && !!currentId}
+        onOpenChange={() =>
+          navigate({
+            search: (prev) => ({ ...prev, edit: undefined, id: undefined }),
+          })
+        }
+        onSubmit={(e) => {
+          e.preventDefault();
+          e.stopPropagation();
+          form.handleSubmit();
+        }}
+        onClear={(e) => {
+          e.preventDefault();
+          form.reset();
+        }}
+      >
+        <EditMaintenanceForm form={form} />
+      </FormDialog>
+    </form.AppForm>
   );
 };
 

@@ -5,23 +5,17 @@ import {
   useSearch,
 } from '@tanstack/react-router';
 import type z from 'zod';
-import {
-  Dialog,
-  DialogContent,
-  DialogDescription,
-  DialogHeader,
-  DialogTitle,
-} from '@/components/ui/dialog';
-import { useAppForm } from '@/components/ui/form';
+import { useAppForm } from '@/components/ui/forms';
 import { pb } from '@/pocketbase';
 import {
   createMaintenanceRequestMutation,
   listMaintenanceRequestsQuery,
 } from '@/pocketbase/queries/maintenanceRequests';
 import type { TenantsResponse } from '@/pocketbase/queries/tenants';
-import type { insertMaintenanceRequestSchema } from '@/pocketbase/schemas/maintenanceRequests';
+import { insertMaintenanceRequestSchema } from '@/pocketbase/schemas/maintenanceRequests';
 import { Collections, UsersRoleOptions } from '@/pocketbase/types';
 import { CreateMaintenanceForm } from './form';
+import FormDialog from '@/components/ui/forms/utils/dialog';
 
 const CreateMaintenanceDialogForm = () => {
   const navigate = useNavigate({ from: '/dashboard/maintenances' });
@@ -57,9 +51,9 @@ const CreateMaintenanceDialogForm = () => {
       status: 'Pending',
       ...(isTenant && tenantData ? { tenant: tenantData.id } : {}),
     } as unknown as z.infer<typeof insertMaintenanceRequestSchema>,
-    // validators: {
-    //   onChange: insertMaintenanceRequestSchema,
-    // },
+    validators: {
+      onSubmit: insertMaintenanceRequestSchema,
+    },
     onSubmit: async ({ value }) => {
       // For tenants, ensure tenant field is set
       const submitValue =
@@ -91,34 +85,30 @@ const CreateMaintenanceDialogForm = () => {
   });
 
   return (
-    <Dialog
-      open={searchParams.new}
-      onOpenChange={() =>
-        navigate({ to: '/dashboard/maintenances', search: { new: undefined } })
-      }
-    >
-      <DialogContent>
-        <DialogHeader>
-          <DialogTitle>Want to add a new request?</DialogTitle>
-          <DialogDescription>Enter the right information</DialogDescription>
-        </DialogHeader>
-        <form
-          className="grid grid-cols-4 gap-2.5"
-          onSubmit={(e) => {
-            e.preventDefault();
-            e.stopPropagation();
-            form.handleSubmit();
-          }}
-        >
-          <form.AppForm>
-            <CreateMaintenanceForm form={form} />
-            <form.SubmitButton className="col-span-full mt-4">
-              Create Request
-            </form.SubmitButton>
-          </form.AppForm>
-        </form>
-      </DialogContent>
-    </Dialog>
+    <form.AppForm>
+      <FormDialog
+        title="Want to add a new request?"
+        description="Enter the right information"
+        open={searchParams.new}
+        onOpenChange={() =>
+          navigate({
+            to: '/dashboard/maintenances',
+            search: { new: undefined },
+          })
+        }
+        onSubmit={(e) => {
+          e.preventDefault();
+          e.stopPropagation();
+          form.handleSubmit();
+        }}
+        onClear={(e) => {
+          e.preventDefault();
+          form.reset();
+        }}
+      >
+        <CreateMaintenanceForm form={form} />
+      </FormDialog>
+    </form.AppForm>
   );
 };
 

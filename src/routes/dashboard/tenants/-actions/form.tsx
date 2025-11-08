@@ -1,6 +1,6 @@
 import type z from 'zod';
 import { AsyncSelect } from '@/components/ui/async-select';
-import { withForm } from '@/components/ui/form';
+import { withForm } from '@/components/ui/forms';
 import { pb } from '@/pocketbase';
 import type {
   insertTenantSchema,

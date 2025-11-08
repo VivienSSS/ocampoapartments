@@ -12,7 +12,7 @@ export type FileFieldProps = {
 };
 
 const FileField = (props: FileFieldProps) => {
-  const field = useFieldContext<File | File[] | null>();
+  const field = useFieldContext<File>();
 
   const isInvalid = field.state.meta.isTouched && !field.state.meta.isValid;
 
@@ -32,15 +32,11 @@ const FileField = (props: FileFieldProps) => {
         onBlur={field.handleBlur}
         onChange={(e) => {
           const files = e.target.files;
-          if (files) {
-            field.handleChange(
-              files.length === 1 ? files[0] : Array.from(files),
-            );
+          if (files && files.length > 0) {
+            field.setValue(files[0]);
           }
         }}
         aria-invalid={isInvalid}
-        placeholder="File field (TODO: implement)"
-        disabled
       />
       <FieldDescription>{props.description}</FieldDescription>
       {isInvalid && <FieldError errors={field.state.meta.errors} />}

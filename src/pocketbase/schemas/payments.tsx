@@ -9,11 +9,9 @@ export const paymentSchema = z.object({
   created: z.date().optional(),
   id: z.string(),
   paymentDate: z.date({ message: 'Payment date is required' }),
-  paymentMethod: z
-    .enum(PaymentsPaymentMethodOptions, {
-      message: 'Please select a valid payment method',
-    })
-    .default(PaymentsPaymentMethodOptions.GCash),
+  paymentMethod: z.enum(PaymentsPaymentMethodOptions, {
+    message: 'Please select a valid payment method',
+  }),
   screenshot: z.url('Please provide a valid URL for the screenshot'),
   tenant: z.string().nonempty('Tenant is required'),
   transactionId: z.string().nonempty('Transaction ID is required'),

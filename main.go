@@ -10,7 +10,6 @@ import (
 	"github.com/pocketbase/pocketbase/plugins/migratecmd"
 
 	_ "github.com/VivienSSS/ocampoapartments/migrations"
-	"github.com/VivienSSS/ocampoapartments/workers"
 )
 
 func main() {
@@ -25,9 +24,6 @@ func main() {
 		se.Router.GET("/{path...}", apis.Static(os.DirFS("./dist"), true))
 		return se.Next()
 	})
-
-	// events
-	workers.PaymentNotification(app)
 
 	if err := app.Start(); err != nil {
 		log.Fatal(err)

@@ -1,157 +1,96 @@
-import { useSuspenseQueries } from '@tanstack/react-query';
 import { format } from 'date-fns';
 import type z from 'zod';
-import { AsyncSelect } from '@/components/ui/async-select';
-import { withForm } from '@/components/ui/form';
-import { pb } from '@/pocketbase';
+import { withForm } from '@/components/ui/forms';
 import type { BillsResponse } from '@/pocketbase/queries/bills';
 import type { TenantsResponse } from '@/pocketbase/queries/tenants';
-import {
-  type insertPaymentSchema,
-  updatePaymentSchema,
-} from '@/pocketbase/schemas/payments';
+import { insertPaymentSchema } from '@/pocketbase/schemas/payments';
 import { Collections, PaymentsPaymentMethodOptions } from '@/pocketbase/types';
+import { useRouteContext } from '@tanstack/react-router';
 
 export const CreatePaymentForm = withForm({
   defaultValues: {} as z.infer<typeof insertPaymentSchema>,
-
+  validators: {
+    onSubmit: insertPaymentSchema,
+  },
   render: ({ form }) => {
+    const { pocketbase } = useRouteContext({
+      from: '/dashboard/payments/',
+    });
+
     return (
       <>
         <form.AppField name="tenant">
           {(field) => (
-            <div className="col-span-full">
-              <label className="block text-sm font-medium text-foreground mb-2">
-                Tenant
-              </label>
-              <AsyncSelect<TenantsResponse>
-                className="w-full"
-                fetcher={async (query) =>
-                  (
-                    await pb
-                      .collection(Collections.Tenants)
-                      .getList<TenantsResponse>(1, 10, {
-                        filter: query
-                          ? `user.firstName ~ '%${query}%' || user.lastName ~ '%${query}%' || user.contactEmail ~ '%${query}%'`
-                          : '',
-                        expand: 'user',
-                        requestKey: null,
-                      })
-                  ).items
-                }
-                getOptionValue={(option) => option.id}
-                getDisplayValue={(option) =>
-                  `${option.expand?.user?.firstName || ''} ${option.expand?.user?.lastName || ''}`.trim() ||
-                  option.id
-                }
-                renderOption={(option) => (
-                  <div>
-                    <div className="font-medium">
-                      {`${option.expand?.user?.firstName || ''} ${option.expand?.user?.lastName || ''}`.trim() ||
-                        option.id}
-                    </div>
-                    {option.expand?.user?.contactEmail && (
-                      <div className="text-sm text-muted-foreground">
-                        {option.expand.user.contactEmail}
-                      </div>
-                    )}
-                  </div>
-                )}
-                value={field.state.value || ''}
-                onChange={field.handleChange}
-                label="Tenant"
-              />
-            </div>
+            <field.RelationField<TenantsResponse>
+              label="Tenant"
+              tooltip="Select the tenant making the payment"
+              description="The tenant who is making the payment"
+              pocketbase={pocketbase}
+              relationshipName="tenant"
+              collectionName={Collections.Tenants}
+              recordListOption={{ expand: 'user' }}
+              renderOption={(item) =>
+                `${item.expand.user.firstName} ${item.expand.user.lastName}`
+              }
+            />
           )}
         </form.AppField>
         <form.AppField name="bill">
           {(field) => (
-            <div className="col-span-full">
-              <label className="block text-sm font-medium text-foreground mb-2">
-                Bill
-              </label>
-              <AsyncSelect<BillsResponse>
-                className="w-full"
-                fetcher={async (query) =>
-                  (
-                    await pb
-                      .collection(Collections.Bills)
-                      .getList<BillsResponse>(1, 10, {
-                        filter: query
-                          ? `(tenancy.tenant.user.firstName ~ '%${query}%' || tenancy.tenant.user.lastName ~ '%${query}%') && status != 'Paid'`
-                          : `status != 'Paid'`,
-                        expand: 'tenancy.tenant.user,tenancy.unit.property',
-                        requestKey: null,
-                      })
-                  ).items
-                }
-                getOptionValue={(option) => option.id}
-                getDisplayValue={(option) => {
-                  const date = format(new Date(option.dueDate), 'PPP');
-                  const firstName =
-                    option.expand?.tenancy?.expand?.tenant?.expand?.user
-                      ?.firstName || '';
-                  const lastName =
-                    option.expand?.tenancy?.expand?.tenant?.expand?.user
-                      ?.lastName || '';
-                  const fullName = `${firstName} ${lastName}`.trim();
-                  return `${date} - ${fullName}` || option.id;
-                }}
-                renderOption={(option) => {
-                  const date = format(new Date(option.dueDate), 'PPP');
-                  const firstName =
-                    option.expand?.tenancy?.expand?.tenant?.expand?.user
-                      ?.firstName || '';
-                  const lastName =
-                    option.expand?.tenancy?.expand?.tenant?.expand?.user
-                      ?.lastName || '';
-                  const fullName = `${firstName} ${lastName}`.trim();
-                  return (
-                    <div>
-                      <div className="font-medium">{`${date} - ${fullName}`}</div>
-                      <div className="text-sm text-muted-foreground">
-                        Status: {option.status}
-                      </div>
-                    </div>
-                  );
-                }}
-                value={field.state.value || ''}
-                onChange={field.handleChange}
-                label="Bill"
-              />
-            </div>
+            <field.RelationField<BillsResponse>
+              label="Bill"
+              tooltip="Select the bill being paid"
+              description="The bill that is being paid"
+              pocketbase={pocketbase}
+              relationshipName="bill"
+              recordListOption={{ expand: 'tenancy.tenant.user' }}
+              collectionName={Collections.Bills}
+              renderOption={(item) => {
+                const date = format(new Date(item.dueDate), 'PPP');
+                const firstName =
+                  item.expand?.tenancy?.expand?.tenant?.expand?.user
+                    ?.firstName || '';
+                const lastName =
+                  item.expand?.tenancy?.expand?.tenant?.expand?.user
+                    ?.lastName || '';
+                const fullName = `${firstName} ${lastName}`.trim();
+                return `${date} - ${fullName}`;
+              }}
+            />
           )}
         </form.AppField>
         <form.AppField name="paymentMethod">
           {(field) => (
             <field.SelectField
-              className="col-span-full"
+              label="Payment Method"
+              tooltip="Select the payment method"
+              description="The method used to make the payment"
               options={Object.keys(PaymentsPaymentMethodOptions).map(
                 (value) => ({ label: value, value: value }),
               )}
-              label="Payment Method"
             />
           )}
         </form.AppField>
         <form.AppField name="amountPaid">
           {(field) => (
-            <field.TextField
+            <field.NumberField
+              tooltip="Enter the amount paid"
+              description="The total amount paid by the tenant"
               className="col-span-full"
               label="Amount Paid"
-              type="number"
             />
           )}
         </form.AppField>
         <form.AppField name="paymentDate">
-          {(field) => (
-            <field.DateField className="col-span-full" label="Payment Date" />
-          )}
+          {(field) => <field.DateTimeField label="Payment Date" showTime />}
         </form.AppField>
         <form.AppField name="transactionId">
           {(field) => (
             <field.TextField
               className="col-span-full"
               label="Transaction ID and Proof of Payment"
+              tooltip="Enter the transaction ID from the payment and upload proof of payment"
+              description="The transaction ID provided after making the payment"
               placeholder="ex. 12345678910"
             />
           )}
@@ -159,163 +98,9 @@ export const CreatePaymentForm = withForm({
         <form.AppField name="screenshot">
           {(field) => (
             <field.FileField
-              className="col-span-full"
               label="Proof of Payment"
-            />
-          )}
-        </form.AppField>
-      </>
-    );
-  },
-});
-
-export const EditPaymentForm = withForm({
-  defaultValues: {} as z.infer<typeof updatePaymentSchema>,
-  validators: {
-    onChange: updatePaymentSchema,
-  },
-  render: ({ form }) => {
-    return (
-      <>
-        <form.AppField name="tenant">
-          {(field) => (
-            <div className="col-span-full">
-              <label className="block text-sm font-medium text-foreground mb-2">
-                Tenant
-              </label>
-              <AsyncSelect<TenantsResponse>
-                className="w-full"
-                fetcher={async (query) =>
-                  (
-                    await pb
-                      .collection(Collections.Tenants)
-                      .getList<TenantsResponse>(1, 10, {
-                        filter: query
-                          ? `user.firstName ~ '%${query}%' || user.lastName ~ '%${query}%' || user.contactEmail ~ '%${query}%'`
-                          : '',
-                        expand: 'user',
-                        requestKey: null,
-                      })
-                  ).items
-                }
-                getOptionValue={(option) => option.id}
-                getDisplayValue={(option) =>
-                  `${option.expand?.user?.firstName || ''} ${option.expand?.user?.lastName || ''}`.trim() ||
-                  option.id
-                }
-                renderOption={(option) => (
-                  <div>
-                    <div className="font-medium">
-                      {`${option.expand?.user?.firstName || ''} ${option.expand?.user?.lastName || ''}`.trim() ||
-                        option.id}
-                    </div>
-                    {option.expand?.user?.contactEmail && (
-                      <div className="text-sm text-muted-foreground">
-                        {option.expand.user.contactEmail}
-                      </div>
-                    )}
-                  </div>
-                )}
-                value={field.state.value || ''}
-                onChange={field.handleChange}
-                placeholder="Tenant"
-                label="Tenant"
-              />
-            </div>
-          )}
-        </form.AppField>
-        <form.AppField name="bill">
-          {(field) => (
-            <div className="col-span-full">
-              <label className="block text-sm font-medium text-foreground mb-2">
-                Bill
-              </label>
-              <AsyncSelect<BillsResponse>
-                className="w-full"
-                fetcher={async (query) =>
-                  (
-                    await pb
-                      .collection(Collections.Bills)
-                      .getList<BillsResponse>(1, 10, {
-                        filter: query
-                          ? `(tenancy.tenant.user.firstName ~ '%${query}%' || tenancy.tenant.user.lastName ~ '%${query}%') && status != 'Paid'`
-                          : `status != 'Paid'`,
-                        expand: 'tenancy.tenant.user,tenancy.unit.property',
-                        requestKey: null,
-                      })
-                  ).items
-                }
-                getOptionValue={(option) => option.id}
-                getDisplayValue={(option) => {
-                  const date = format(new Date(option.dueDate), 'PPP');
-                  const firstName =
-                    option.expand?.tenancy?.expand?.tenant?.expand?.user
-                      ?.firstName || '';
-                  const lastName =
-                    option.expand?.tenancy?.expand?.tenant?.expand?.user
-                      ?.lastName || '';
-                  const fullName = `${firstName} ${lastName}`.trim();
-                  return `${date} - ${fullName}` || option.id;
-                }}
-                renderOption={(option) => {
-                  const date = format(new Date(option.dueDate), 'PPP');
-                  const firstName =
-                    option.expand?.tenancy?.expand?.tenant?.expand?.user
-                      ?.firstName || '';
-                  const lastName =
-                    option.expand?.tenancy?.expand?.tenant?.expand?.user
-                      ?.lastName || '';
-                  const fullName = `${firstName} ${lastName}`.trim();
-                  return (
-                    <div>
-                      <div className="font-medium">{`${date} - ${fullName}`}</div>
-                      <div className="text-sm text-muted-foreground">
-                        Status: {option.status}
-                      </div>
-                    </div>
-                  );
-                }}
-                value={field.state.value || ''}
-                onChange={field.handleChange}
-                placeholder="Bill"
-                label="Bill"
-              />
-            </div>
-          )}
-        </form.AppField>
-        <form.AppField name="paymentMethod">
-          {(field) => (
-            <field.SelectField
-              className="col-span-full"
-              options={Object.keys(PaymentsPaymentMethodOptions).map(
-                (value) => ({ label: value, value: value }),
-              )}
-              placeholder="Payment Method"
-            />
-          )}
-        </form.AppField>
-        <form.AppField name="amountPaid">
-          {(field) => (
-            <field.TextField
-              className="col-span-full"
-              placeholder="Amount Paid"
-              type="number"
-            />
-          )}
-        </form.AppField>
-        <form.AppField name="paymentDate">
-          {(field) => (
-            <field.DateField
-              className="col-span-full"
-              placeholder="Payment Date"
-            />
-          )}
-        </form.AppField>
-        <form.AppField name="transactionId">
-          {(field) => (
-            <field.TextField
-              className="col-span-full"
-              placeholder="Transaction ID"
+              tooltip="Upload a screenshot of the payment proof"
+              description="The screenshot of the payment proof"
             />
           )}
         </form.AppField>

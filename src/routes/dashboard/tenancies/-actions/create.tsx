@@ -12,7 +12,7 @@ import {
   DialogHeader,
   DialogTitle,
 } from '@/components/ui/dialog';
-import { useAppForm } from '@/components/ui/form';
+import { useAppForm } from '@/components/ui/forms';
 import { listApartmentUnitsQuery } from '@/pocketbase/queries/apartmentUnits';
 import {
   createTenancyMutation,
@@ -21,6 +21,7 @@ import {
 import { listTenantsQuery } from '@/pocketbase/queries/tenants';
 import type { insertTenanciesSchema } from '@/pocketbase/schemas/tenancies';
 import { CreateTenancyForm, LeaseContract } from './form';
+import FormDialog from '@/components/ui/forms/utils/dialog';
 
 const CreateTenancyDialogForm = () => {
   const navigate = useNavigate({ from: '/dashboard/tenancies' });
@@ -28,19 +29,6 @@ const CreateTenancyDialogForm = () => {
   const { queryClient } = useRouteContext({ from: '/dashboard/tenancies/' });
 
   const mutation = useMutation(createTenancyMutation);
-
-  const [{ data: tenants }, { data: apartmentUnits }] = useQueries({
-    queries: [
-      {
-        ...listTenantsQuery(1, 500),
-        enabled: search.new,
-      },
-      {
-        ...listApartmentUnitsQuery(1, 500),
-        enabled: search.new,
-      },
-    ],
-  });
 
   const form = useAppForm({
     defaultValues: {} as Omit<
@@ -84,38 +72,27 @@ const CreateTenancyDialogForm = () => {
   });
 
   return (
-    <Dialog
-      open={!!search.new}
-      onOpenChange={() =>
-        navigate({ to: '/dashboard/tenancies', search: { new: undefined } })
-      }
-    >
-      <DialogContent>
-        <DialogHeader>
-          <DialogTitle>Want to add a new tenancy?</DialogTitle>
-          <DialogDescription>Enter the right information</DialogDescription>
-        </DialogHeader>
-        <form
-          className="grid grid-cols-4 gap-2.5"
-          onSubmit={(e) => {
-            e.preventDefault();
-            e.stopPropagation();
-            form.handleSubmit();
-          }}
-        >
-          <form.AppForm>
-            <CreateTenancyForm
-              form={form}
-              tenants={tenants?.items ?? []}
-              apartmentUnits={apartmentUnits?.items ?? []}
-            />
-            <form.SubmitButton className="col-span-full mt-2">
-              Create Tenancy
-            </form.SubmitButton>
-          </form.AppForm>
-        </form>
-      </DialogContent>
-    </Dialog>
+    <form.AppForm>
+      <FormDialog
+        title="Create New Tenancy"
+        description="Enter the right information"
+        open={!!search.new}
+        onOpenChange={() =>
+          navigate({ to: '/dashboard/tenancies', search: { new: undefined } })
+        }
+        onSubmit={(e) => {
+          e.preventDefault();
+          e.stopPropagation();
+          form.handleSubmit();
+        }}
+        onClear={(e) => {
+          e.preventDefault();
+          form.reset();
+        }}
+      >
+        <CreateTenancyForm form={form} />
+      </FormDialog>
+    </form.AppForm>
   );
 };
 

@@ -1,6 +1,6 @@
 import { formOptions } from '@tanstack/react-form';
 import type z from 'zod';
-import { withForm } from '@/components/ui/form';
+import { withForm } from '@/components/ui/forms';
 import {
   insertPropertySchema,
   updatePropertySchema,
@@ -10,14 +10,14 @@ import { PropertiesBranchOptions } from '@/pocketbase/types';
 export const CreatePropertyFormOption = formOptions({
   defaultValues: {} as z.infer<typeof insertPropertySchema>,
   validators: {
-    onChange: insertPropertySchema,
+    onSubmit: insertPropertySchema,
   },
 });
 
 export const UpdatePropertyFormOption = formOptions({
   defaultValues: {} as z.infer<typeof updatePropertySchema>,
   validators: {
-    onChange: updatePropertySchema,
+    onSubmit: updatePropertySchema,
   },
 });
 
@@ -28,18 +28,21 @@ export const CreatePropertyForm = withForm({
       <form.AppField name="branch">
         {(field) => (
           <field.SelectField
+            tooltip="Select the branch for the property"
+            description="The branch where the property is located"
             options={Object.keys(PropertiesBranchOptions).map((key) => ({
               label: key,
               value: key,
             }))}
-            className="col-span-full space-y-2"
             label="Branch"
           />
         )}
       </form.AppField>
       <form.AppField name="address">
         {(field) => (
-          <field.TextAreaField
+          <field.TextareaField
+            tooltip="Enter the full address of the property"
+            description="The complete address including street, city, and zip code"
             className="col-span-full space-y-2"
             label="Address"
           />
@@ -56,11 +59,12 @@ export const EditPropertyForm = withForm({
       <form.AppField name="branch">
         {(field) => (
           <field.SelectField
+            tooltip="Select the branch for the property"
+            description="The branch where the property is located"
             options={Object.keys(PropertiesBranchOptions).map((key) => ({
               label: key,
               value: key,
             }))}
-            className="col-span-full space-y-2"
             label="Branch"
           />
         )}
@@ -68,7 +72,9 @@ export const EditPropertyForm = withForm({
 
       <form.AppField name="address">
         {(field) => (
-          <field.TextAreaField
+          <field.TextareaField
+            tooltip="Enter the full address of the property"
+            description="The complete address including street, city, and zip code"
             className="col-span-full space-y-2"
             label="Address"
           />

@@ -12,7 +12,7 @@ import {
   DialogHeader,
   DialogTitle,
 } from '@/components/ui/dialog';
-import { useAppForm } from '@/components/ui/form';
+import { useAppForm } from '@/components/ui/forms';
 import { listApartmentUnitsQuery } from '@/pocketbase/queries/apartmentUnits';
 import {
   listTenanciesQuery,
@@ -22,6 +22,7 @@ import {
 import { listTenantsQuery } from '@/pocketbase/queries/tenants';
 import { updateTenanciesSchema } from '@/pocketbase/schemas/tenancies';
 import { EditTenancyForm } from './form';
+import FormDialog from '@/components/ui/forms/utils/dialog';
 
 const EditTenancyDialogForm = () => {
   const navigate = useNavigate({ from: '/dashboard/tenancies' });
@@ -80,41 +81,34 @@ const EditTenancyDialogForm = () => {
   });
 
   return (
-    <Dialog
-      open={!!searchQuery.edit && !!searchQuery.id}
-      onOpenChange={() =>
-        navigate({
-          to: '/dashboard/tenancies',
-          search: { edit: undefined, id: undefined },
-        })
-      }
-    >
-      <DialogContent>
-        <DialogHeader>
-          <DialogTitle>Edit Tenancy</DialogTitle>
-          <DialogDescription>Update tenancy information</DialogDescription>
-        </DialogHeader>
-        <form
-          className="grid grid-cols-4 gap-2.5"
-          onSubmit={(e) => {
-            e.preventDefault();
-            e.stopPropagation();
-            form.handleSubmit();
-          }}
-        >
-          <form.AppForm>
-            <EditTenancyForm
-              form={form}
-              tenants={tenants?.items ?? []}
-              apartmentUnits={apartmentUnits?.items ?? []}
-            />
-            <form.SubmitButton className="col-span-full mt-2">
-              Update Tenancy
-            </form.SubmitButton>
-          </form.AppForm>
-        </form>
-      </DialogContent>
-    </Dialog>
+    <form.AppForm>
+      <FormDialog
+        open={!!searchQuery.edit && !!searchQuery.id}
+        onOpenChange={() =>
+          navigate({
+            to: '/dashboard/tenancies',
+            search: { edit: undefined, id: undefined },
+          })
+        }
+        onSubmit={(e) => {
+          e.preventDefault();
+          e.stopPropagation();
+          form.handleSubmit();
+        }}
+        onClear={(e) => {
+          e.preventDefault();
+          form.reset();
+        }}
+        title="Edit Tenancy"
+        description="Update tenancy information"
+      >
+        <EditTenancyForm
+          form={form}
+          tenants={tenants?.items ?? []}
+          apartmentUnits={apartmentUnits?.items ?? []}
+        />
+      </FormDialog>
+    </form.AppForm>
   );
 };
 

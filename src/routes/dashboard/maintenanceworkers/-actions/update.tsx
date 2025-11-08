@@ -12,18 +12,15 @@ import {
   DialogHeader,
   DialogTitle,
 } from '@/components/ui/dialog';
-import { useAppForm } from '@/components/ui/form';
+import { useAppForm } from '@/components/ui/forms';
 import {
-  createMaintenanceWorkerMutation,
   listMaintenanceWorkersQuery,
   updateMaintenanceWorkerMutation,
   viewMaintenanceWorkerQuery,
 } from '@/pocketbase/queries/maintenanceWorkers';
-import {
-  insertMaintenanceWorkerSchema,
-  type updateMaintenanceWorkerSchema,
-} from '@/pocketbase/schemas/maintenanceWorkers';
-import { CreateWorkersForm, EditWorkersForm } from './form';
+import { type updateMaintenanceWorkerSchema } from '@/pocketbase/schemas/maintenanceWorkers';
+import { EditWorkersForm } from './form';
+import FormDialog from '@/components/ui/forms/utils/dialog';
 
 const EditWorkerDialogForm = () => {
   const navigate = useNavigate({ from: '/dashboard/maintenanceworkers' });
@@ -68,37 +65,30 @@ const EditWorkerDialogForm = () => {
   });
 
   return (
-    <Dialog
-      open={searchParams.edit}
-      onOpenChange={() =>
-        navigate({
-          to: '/dashboard/maintenanceworkers',
-          search: { edit: undefined, id: undefined },
-        })
-      }
-    >
-      <DialogContent>
-        <DialogHeader>
-          <DialogTitle>Edit Worker</DialogTitle>
-          <DialogDescription>Enter the right information</DialogDescription>
-        </DialogHeader>
-        <form
-          className="grid grid-cols-4 gap-2.5"
-          onSubmit={(e) => {
-            e.preventDefault();
-            e.stopPropagation();
-            form.handleSubmit();
-          }}
-        >
-          <form.AppForm>
-            <EditWorkersForm form={form} />
-            <form.SubmitButton className="col-span-full">
-              Update Worker
-            </form.SubmitButton>
-          </form.AppForm>
-        </form>
-      </DialogContent>
-    </Dialog>
+    <form.AppForm>
+      <FormDialog
+        open={searchParams.edit}
+        onOpenChange={() =>
+          navigate({
+            to: '/dashboard/maintenanceworkers',
+            search: { edit: undefined, id: undefined },
+          })
+        }
+        title="Edit Worker"
+        description="Enter the right information"
+        onSubmit={(e) => {
+          e.preventDefault();
+          e.stopPropagation();
+          form.handleSubmit();
+        }}
+        onClear={(e) => {
+          e.preventDefault();
+          form.reset();
+        }}
+      >
+        <EditWorkersForm form={form} />
+      </FormDialog>
+    </form.AppForm>
   );
 };
 
