@@ -1,17 +1,22 @@
 import type React from 'react';
 import { useCallback } from 'react';
-import type { Collections, TypedPocketBase } from '@/pocketbase/types';
+import type {
+  BaseSystemFields,
+  Collections,
+  TypedPocketBase,
+} from '@/pocketbase/types';
 import { AsyncSelect } from '../../async-select';
 import { Field, FieldDescription, FieldError } from '../../field';
 import { useFieldContext } from '..';
 import { TooltipFieldLabel } from '../utils/tooltip-field-label';
+import type { RecordListOptions } from 'pocketbase';
 
 export interface RelationItem {
   id: string;
   [key: string]: unknown;
 }
 
-export type RelationFieldProps = {
+export type RelationFieldProps<Records extends RelationItem> = {
   label?: React.ReactNode;
   description?: React.ReactNode;
   tooltip?: React.ReactNode;
@@ -22,9 +27,13 @@ export type RelationFieldProps = {
   preload?: boolean;
   placeholder?: string;
   pocketbase: TypedPocketBase;
+  renderOption?: (item: Records) => React.ReactNode;
+  recordListOption?: RecordListOptions;
 };
 
-const RelationField = (props: RelationFieldProps) => {
+const RelationField = <Records extends RelationItem>(
+  props: RelationFieldProps<Records>,
+) => {
   const field = useFieldContext<string>();
   const {
     collectionName,
@@ -38,7 +47,7 @@ const RelationField = (props: RelationFieldProps) => {
 
   // Fetcher function to query related records
   const fetcher = useCallback(
-    async (query?: string): Promise<RelationItem[]> => {
+    async (query?: string): Promise<Records[]> => {
       try {
         let filter = '';
         if (query) {
@@ -48,17 +57,20 @@ const RelationField = (props: RelationFieldProps) => {
         const records = await props.pocketbase
           .collection(collectionName)
           .getList(1, 50, {
-            filter: filter || undefined,
-            sort: `-updated`,
+            ...{
+              filter: filter || undefined,
+              sort: `-updated`,
+            },
+            ...props.recordListOption,
           });
 
-        return records.items as RelationItem[];
+        return records.items as unknown as Records[];
       } catch (error) {
         console.error('Failed to fetch relation records:', error);
         return [];
       }
     },
-    [props.pocketbase, collectionName, displayField],
+    [props.pocketbase, collectionName, displayField, props.recordListOption],
   );
 
   return (
@@ -70,16 +82,20 @@ const RelationField = (props: RelationFieldProps) => {
       >
         {props.label}
       </TooltipFieldLabel>
-      <AsyncSelect<RelationItem>
+      <AsyncSelect<Records>
         fetcher={fetcher}
         preload={preload}
-        renderOption={(item) => (
-          <div className="flex items-center justify-between w-full">
-            <span>{String(item[displayField])}</span>
-          </div>
-        )}
+        renderOption={(item) =>
+          props.renderOption
+            ? props.renderOption(item)
+            : String(item[displayField])
+        }
         getOptionValue={(item) => item.id}
-        getDisplayValue={(item) => String(item[displayField])}
+        getDisplayValue={(item) =>
+          props.renderOption
+            ? props.renderOption(item)
+            : String(item[displayField])
+        }
         label={String(props.label || relationshipName)}
         placeholder={placeholder}
         value={field.state.value ?? ''}

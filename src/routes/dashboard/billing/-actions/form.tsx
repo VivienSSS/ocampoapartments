@@ -8,122 +8,126 @@ import {
   CardContent,
   CardHeader,
 } from '@/components/ui/card';
-import { withFieldGroup, withForm } from '@/components/ui/form';
+import { withFieldGroup, withForm } from '@/components/ui/forms';
 import { pb } from '@/pocketbase';
 import type { TenanciesResponse } from '@/pocketbase/queries/tenancies';
 import type { insertBillItemsSchema } from '@/pocketbase/schemas/billItems';
-import {
-  type insertBillSchema,
-  updateBillSchema,
-} from '@/pocketbase/schemas/bills';
+import { insertBillSchema, updateBillSchema } from '@/pocketbase/schemas/bills';
 import {
   BillItemsChargeTypeOptions,
   BillsStatusOptions,
   Collections,
 } from '@/pocketbase/types';
+import { useRouteContext } from '@tanstack/react-router';
+import {
+  Accordion,
+  AccordionContent,
+  AccordionItem,
+  AccordionTrigger,
+} from '@/components/ui/accordion';
+import {
+  FieldDescription,
+  FieldGroup,
+  FieldLegend,
+  FieldSeparator,
+  FieldSet,
+} from '@/components/ui/field';
 
 export const CreateBillingForm = withForm({
   defaultValues: {
     items: [{}],
   } as z.infer<typeof insertBillSchema>,
-  // validators: {
-  //   onChange: insertBillSchema,
-  // },
+  validators: {
+    onSubmit: insertBillSchema,
+  },
   render: ({ form }) => {
+    const { pocketbase } = useRouteContext({ from: '/dashboard/billing/' });
+
     return (
       <>
-        <form.AppField name="tenancy">
-          {(field) => (
-            <div className="col-span-full">
-              <label className="block text-sm font-medium text-foreground mb-2">
-                Tenant
-              </label>
-              <AsyncSelect<TenanciesResponse>
-                className="w-full"
-                fetcher={async (query) =>
-                  (
-                    await pb
-                      .collection(Collections.Tenancies)
-                      .getList<TenanciesResponse>(1, 10, {
-                        filter: query
-                          ? `tenant.user.firstName ~ '%${query}%' || tenant.user.lastName ~ '%${query}%'`
-                          : '',
-                        expand: 'tenant.user,unit.property',
-                        requestKey: null,
-                      })
-                  ).items
-                }
-                getOptionValue={(option) => option.id}
-                getDisplayValue={(option) =>
-                  `${option.expand.tenant.expand.user.firstName} ${option.expand.tenant.expand.user.lastName}`
-                }
-                renderOption={(option) => (
-                  <div>
-                    <div className="font-medium">{`${option.expand.tenant.expand.user.firstName} ${option.expand.tenant.expand.user.lastName}`}</div>
-                    <div className="text-sm text-muted-foreground">
-                      Unit {option.expand.unit.unitLetter} -{' '}
-                      {option.expand.unit.expand.property.branch}
-                    </div>
-                  </div>
-                )}
-                value={field.state.value || ''}
-                onChange={field.handleChange}
-                label="Tenancies"
-                placeholder="Search tenants..."
-              />
-            </div>
-          )}
-        </form.AppField>
-        <form.AppField name="status">
-          {(field) => (
-            <field.SelectField
-              className="col-span-full"
-              options={Object.keys(BillsStatusOptions)
-                .filter((value) => value !== 'Paid')
-                .map((value) => ({
-                  label: value,
-                  value: value,
-                }))}
-              label="Status"
-            />
-          )}
-        </form.AppField>
-        <form.AppField name="dueDate">
-          {(field) => (
-            <field.DateField className="col-span-full" label="Due Date" />
-          )}
-        </form.AppField>
-
-        <label className="block text-lg font-medium text-foreground mb-2">
-          Bill Items
-        </label>
-        <form.AppField name="items" mode="array">
-          {(field) => (
-            <>
-              <Button
-                type="button"
-                className="bg-emerald-500 mb-4 col-span-full"
-                onClick={() =>
-                  field.pushValue({
-                    chargeType: BillItemsChargeTypeOptions.Electricity,
-                    description: '',
-                    amount: undefined,
-                  })
-                }
-              >
-                <BadgePlus /> Add Item
-              </Button>
-              {field.state.value?.map((item, index) => (
-                <CreateBillingItemForm
-                  key={`${item.description}-${item.amount}-${index}`}
-                  form={form}
-                  fields={`items[${index}]`}
-                  onDelete={() => field.removeValue(index)}
+        <FieldSet>
+          <FieldLegend>Bill information</FieldLegend>
+          <FieldDescription>
+            Select the tenancy and set the bill details
+          </FieldDescription>
+          <FieldGroup>
+            <form.AppField name="tenancy">
+              {(field) => (
+                <field.RelationField<TenanciesResponse>
+                  pocketbase={pocketbase}
+                  collectionName={Collections.Tenancies}
+                  relationshipName="tenancy"
+                  renderOption={(item) =>
+                    `${item?.expand?.tenant?.expand.user?.firstName} ${item?.expand?.tenant?.expand.user?.lastName} - ${item?.expand?.tenant?.expand.user.contactEmail}`
+                  }
+                  recordListOption={{ expand: 'tenant.user' }}
                 />
-              ))}
-            </>
-          )}
-        </form.AppField>
+              )}
+            </form.AppField>
+            <form.AppField name="status">
+              {(field) => (
+                <field.SelectField
+                  options={Object.keys(BillsStatusOptions)
+                    .filter((value) => value !== 'Paid')
+                    .map((value) => ({
+                      label: value,
+                      value: value,
+                    }))}
+                  label="Status"
+                />
+              )}
+            </form.AppField>
+            <form.AppField name="dueDate">
+              {(field) => (
+                <field.DateTimeField
+                  label="Due Date"
+                  showTime
+                  showCalendarIcon
+                />
+              )}
+            </form.AppField>
+          </FieldGroup>
+        </FieldSet>
+        <FieldSeparator>Bill Items</FieldSeparator>
+        <FieldSet>
+          <FieldLegend>Items to be charged</FieldLegend>
+          <FieldDescription>Add items to the bill</FieldDescription>
+          <FieldGroup>
+            <form.AppField name="items" mode="array">
+              {(field) => (
+                <>
+                  <Button
+                    type="button"
+                    className="mb-4 col-span-full"
+                    onClick={() =>
+                      field.pushValue({
+                        chargeType: BillItemsChargeTypeOptions.Electricity,
+                        description: '',
+                        amount: undefined,
+                      })
+                    }
+                  >
+                    <BadgePlus /> Add Item
+                  </Button>
+                  <Accordion
+                    type="single"
+                    className="col-span-full"
+                    collapsible
+                  >
+                    {field.state.value?.map((item, index) => (
+                      <CreateBillingItemForm
+                        key={`${item.description}-${item.amount}-${index}`}
+                        form={form}
+                        fields={`items[${index}]`}
+                        onDelete={() => field.removeValue(index)}
+                      />
+                    ))}
+                  </Accordion>
+                </>
+              )}
+            </form.AppField>
+          </FieldGroup>
+        </FieldSet>
       </>
     );
   },
@@ -134,15 +138,16 @@ export const CreateBillingItemForm = withFieldGroup({
   props: { onDelete: () => {} },
   render: ({ group, onDelete }) => {
     return (
-      <Card className="col-span-full">
-        <CardHeader>
-          <CardAction onClick={onDelete}>
-            <Button variant={'outline'} size={'icon'}>
-              <Trash />
-            </Button>
-          </CardAction>
-        </CardHeader>
-        <CardContent className="grid grid-cols-1 gap-5">
+      <AccordionItem
+        value={`item-${group.state.values.amount}`}
+        className="border rounded-md p-4 first:rounded-b-none last:rounded-t-none"
+      >
+        <AccordionTrigger>
+          <Button onClick={onDelete} variant={'outline'} size={'icon'}>
+            <Trash />
+          </Button>
+        </AccordionTrigger>
+        <AccordionContent className="grid grid-cols-1 gap-5">
           <group.AppField name="chargeType">
             {(field) => (
               <field.SelectField
@@ -155,13 +160,13 @@ export const CreateBillingItemForm = withFieldGroup({
             )}
           </group.AppField>
           <group.AppField name="amount">
-            {(field) => <field.TextField label="Amount" />}
+            {(field) => <field.NumberField label="Amount" />}
           </group.AppField>
           <group.AppField name="description">
-            {(field) => <field.TextAreaField label="Description" />}
+            {(field) => <field.TextareaField label="Description" />}
           </group.AppField>
-        </CardContent>
-      </Card>
+        </AccordionContent>
+      </AccordionItem>
     );
   },
 });
@@ -176,7 +181,6 @@ export const EditBillingForm = withForm({
       <form.AppField name="status">
         {(field) => (
           <field.SelectField
-            className="col-span-full"
             options={Object.keys(BillsStatusOptions).map((value) => ({
               label: value,
               value: value,

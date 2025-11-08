@@ -5,17 +5,11 @@ import {
   useSearch,
 } from '@tanstack/react-router';
 import type z from 'zod';
-import {
-  Dialog,
-  DialogContent,
-  DialogDescription,
-  DialogHeader,
-  DialogTitle,
-} from '@/components/ui/dialog';
-import { useAppForm } from '@/components/ui/form';
+import { useAppForm } from '@/components/ui/forms';
 import { createBillMutation, listBillsQuery } from '@/pocketbase/queries/bills';
-import type { insertBillSchema } from '@/pocketbase/schemas/bills';
+import { insertBillSchema } from '@/pocketbase/schemas/bills';
 import { CreateBillingForm } from './form';
+import FormDialog from '@/components/ui/forms/utils/dialog';
 
 const CreateBillingDialogForm = () => {
   const navigate = useNavigate({ from: '/dashboard/billing' });
@@ -26,9 +20,9 @@ const CreateBillingDialogForm = () => {
 
   const form = useAppForm({
     defaultValues: {} as z.infer<typeof insertBillSchema>,
-    // validators: {
-    //   onChange: insertBillSchema,
-    // },
+    validators: {
+      onSubmit: insertBillSchema,
+    },
     onSubmit: async ({ value }) =>
       billMutation.mutateAsync(value, {
         onSuccess: () => {
@@ -41,34 +35,27 @@ const CreateBillingDialogForm = () => {
   });
 
   return (
-    <Dialog
-      open={searchParams.new}
-      onOpenChange={() =>
-        navigate({ to: '/dashboard/billing', search: { new: undefined } })
-      }
-    >
-      <DialogContent className="!max-h-3/4 overflow-y-auto">
-        <DialogHeader>
-          <DialogTitle>Want to add a new billing to a tenant?</DialogTitle>
-          <DialogDescription>Enter the right information</DialogDescription>
-        </DialogHeader>
-        <form
-          className="grid grid-cols-4 gap-5"
-          onSubmit={(e) => {
-            e.preventDefault();
-            e.stopPropagation();
-            form.handleSubmit();
-          }}
-        >
-          <form.AppForm>
-            <CreateBillingForm form={form} />
-            <form.SubmitButton className="col-span-full">
-              Create Billing
-            </form.SubmitButton>
-          </form.AppForm>
-        </form>
-      </DialogContent>
-    </Dialog>
+    <form.AppForm>
+      <FormDialog
+        title={'Want to add a new billing to a tenant?'}
+        description={'Enter the right information'}
+        open={searchParams.new}
+        onOpenChange={() =>
+          navigate({ to: '/dashboard/billing', search: { new: undefined } })
+        }
+        onSubmit={(e) => {
+          e.preventDefault();
+          e.stopPropagation();
+          form.handleSubmit();
+        }}
+        onClear={(e) => {
+          e.preventDefault();
+          form.reset();
+        }}
+      >
+        <CreateBillingForm form={form} />
+      </FormDialog>
+    </form.AppForm>
   );
 };
 

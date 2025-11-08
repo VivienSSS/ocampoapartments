@@ -5,14 +5,7 @@ import {
   useSearch,
 } from '@tanstack/react-router';
 import type z from 'zod';
-import {
-  Dialog,
-  DialogContent,
-  DialogDescription,
-  DialogHeader,
-  DialogTitle,
-} from '@/components/ui/dialog';
-import { useAppForm } from '@/components/ui/form';
+import { useAppForm } from '@/components/ui/forms';
 import {
   listBillsQuery,
   updateBillMutation,
@@ -20,6 +13,7 @@ import {
 } from '@/pocketbase/queries/bills';
 import { updateBillSchema } from '@/pocketbase/schemas/bills';
 import { EditBillingForm } from './form';
+import FormDialog from '@/components/ui/forms/utils/dialog';
 
 const EditBillingDialogForm = () => {
   const navigate = useNavigate({ from: '/dashboard/billing' });
@@ -58,36 +52,30 @@ const EditBillingDialogForm = () => {
   });
 
   return (
-    <Dialog
-      open={!!searchQuery.edit && !!searchQuery.id}
-      onOpenChange={() =>
-        navigate({
-          to: '/dashboard/billing',
-          search: { edit: undefined, id: undefined },
-        })
-      }
-    >
-      <DialogContent>
-        <DialogHeader>
-          <DialogTitle>Edit Bill</DialogTitle>
-          <DialogDescription>Update billing information</DialogDescription>
-        </DialogHeader>
-        <form
-          onSubmit={(e) => {
-            e.preventDefault();
-            e.stopPropagation();
-            form.handleSubmit();
-          }}
-        >
-          <form.AppForm>
-            <EditBillingForm form={form} />
-            <div className="mt-6">
-              <form.SubmitButton>Update Bill</form.SubmitButton>
-            </div>
-          </form.AppForm>
-        </form>
-      </DialogContent>
-    </Dialog>
+    <form.AppForm>
+      <FormDialog
+        title={'Edit Bill'}
+        description={'Update billing information'}
+        open={!!searchQuery.edit && !!searchQuery.id}
+        onOpenChange={() =>
+          navigate({
+            to: '/dashboard/billing',
+            search: { edit: undefined, id: undefined },
+          })
+        }
+        onSubmit={(e) => {
+          e.preventDefault();
+          e.stopPropagation();
+          form.handleSubmit();
+        }}
+        onClear={(e) => {
+          e.preventDefault();
+          form.reset();
+        }}
+      >
+        <EditBillingForm form={form} />
+      </FormDialog>
+    </form.AppForm>
   );
 };
 

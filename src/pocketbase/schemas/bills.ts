@@ -24,11 +24,7 @@ export const insertBillSchema = billSchema
     updated: true,
   })
   .extend({
-    items: z
-      .array(insertBillItemsSchema)
-      .check(
-        fieldConfig({ label: 'Bill items', description: 'Amount to charge' }),
-      ),
+    items: z.array(insertBillItemsSchema),
   });
 
 export const updateBillSchema = insertBillSchema.partial();
