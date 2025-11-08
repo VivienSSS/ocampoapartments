@@ -9,13 +9,12 @@ export const announcementSchema = z.object({
   id: z.string(),
   message: z
     .string()
-    .check(
-      fieldConfig<React.ReactNode, FieldTypes>({
-        order: 2,
-        fieldType: 'textarea',
-      }),
-    ),
-  title: z.string().check(fieldConfig({ order: 1 })),
+    .nonempty('Message field required')
+    .min(10, 'Message should contain atlest 10 characters long'),
+  title: z
+    .string()
+    .nonempty('Title field required')
+    .min(10, 'Title should contain atleast 10 characters long'),
   updated: z.date().optional(),
 });
 
