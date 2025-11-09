@@ -2,26 +2,18 @@ import { Button } from '@/components/ui/button';
 import { Card, CardContent } from '@/components/ui/card';
 import { useAppForm } from '@/components/ui/forms';
 import type { ApartmentUnitsResponse } from '@/pocketbase/queries/apartmentUnits';
+import { inquirySchema } from '@/pocketbase/schemas/inquiry';
 import { Collections } from '@/pocketbase/types';
 import { useRouteContext } from '@tanstack/react-router';
 import { toast } from 'sonner';
-
-type ContactFormData = {
-  firstName: string;
-  lastName: string;
-  age: number;
-  email: string;
-  phone: string;
-  message: string;
-  unitInterested: string;
-  numberOfOccupants: number;
-};
+import type z from 'zod';
 
 const ContactForm = () => {
   const { pocketbase } = useRouteContext({ from: '/' });
 
   const form = useAppForm({
-    defaultValues: {} as ContactFormData,
+    defaultValues: {} as z.infer<typeof inquirySchema>,
+    validators: { onSubmit: inquirySchema },
     onSubmit: async ({ value }) => {
       await pocketbase.collection(Collections.Inquiry).create(value);
       toast.success(

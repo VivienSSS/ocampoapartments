@@ -19,6 +19,7 @@ import { Route as DashboardPropertiesIndexRouteImport } from './routes/dashboard
 import { Route as DashboardPaymentsIndexRouteImport } from './routes/dashboard/payments/index'
 import { Route as DashboardMaintenanceworkersIndexRouteImport } from './routes/dashboard/maintenanceworkers/index'
 import { Route as DashboardMaintenancesIndexRouteImport } from './routes/dashboard/maintenances/index'
+import { Route as DashboardInquiriesIndexRouteImport } from './routes/dashboard/inquiries/index'
 import { Route as DashboardBldgAdminOverviewIndexRouteImport } from './routes/dashboard/bldg-admin-overview/index'
 import { Route as DashboardBillingIndexRouteImport } from './routes/dashboard/billing/index'
 import { Route as DashboardApartmentsIndexRouteImport } from './routes/dashboard/apartments/index'
@@ -78,6 +79,11 @@ const DashboardMaintenancesIndexRoute =
     path: '/maintenances/',
     getParentRoute: () => DashboardRouteRoute,
   } as any)
+const DashboardInquiriesIndexRoute = DashboardInquiriesIndexRouteImport.update({
+  id: '/inquiries/',
+  path: '/inquiries/',
+  getParentRoute: () => DashboardRouteRoute,
+} as any)
 const DashboardBldgAdminOverviewIndexRoute =
   DashboardBldgAdminOverviewIndexRouteImport.update({
     id: '/bldg-admin-overview/',
@@ -110,6 +116,7 @@ export interface FileRoutesByFullPath {
   '/dashboard/apartments': typeof DashboardApartmentsIndexRoute
   '/dashboard/billing': typeof DashboardBillingIndexRoute
   '/dashboard/bldg-admin-overview': typeof DashboardBldgAdminOverviewIndexRoute
+  '/dashboard/inquiries': typeof DashboardInquiriesIndexRoute
   '/dashboard/maintenances': typeof DashboardMaintenancesIndexRoute
   '/dashboard/maintenanceworkers': typeof DashboardMaintenanceworkersIndexRoute
   '/dashboard/payments': typeof DashboardPaymentsIndexRoute
@@ -125,6 +132,7 @@ export interface FileRoutesByTo {
   '/dashboard/apartments': typeof DashboardApartmentsIndexRoute
   '/dashboard/billing': typeof DashboardBillingIndexRoute
   '/dashboard/bldg-admin-overview': typeof DashboardBldgAdminOverviewIndexRoute
+  '/dashboard/inquiries': typeof DashboardInquiriesIndexRoute
   '/dashboard/maintenances': typeof DashboardMaintenancesIndexRoute
   '/dashboard/maintenanceworkers': typeof DashboardMaintenanceworkersIndexRoute
   '/dashboard/payments': typeof DashboardPaymentsIndexRoute
@@ -142,6 +150,7 @@ export interface FileRoutesById {
   '/dashboard/apartments/': typeof DashboardApartmentsIndexRoute
   '/dashboard/billing/': typeof DashboardBillingIndexRoute
   '/dashboard/bldg-admin-overview/': typeof DashboardBldgAdminOverviewIndexRoute
+  '/dashboard/inquiries/': typeof DashboardInquiriesIndexRoute
   '/dashboard/maintenances/': typeof DashboardMaintenancesIndexRoute
   '/dashboard/maintenanceworkers/': typeof DashboardMaintenanceworkersIndexRoute
   '/dashboard/payments/': typeof DashboardPaymentsIndexRoute
@@ -160,6 +169,7 @@ export interface FileRouteTypes {
     | '/dashboard/apartments'
     | '/dashboard/billing'
     | '/dashboard/bldg-admin-overview'
+    | '/dashboard/inquiries'
     | '/dashboard/maintenances'
     | '/dashboard/maintenanceworkers'
     | '/dashboard/payments'
@@ -175,6 +185,7 @@ export interface FileRouteTypes {
     | '/dashboard/apartments'
     | '/dashboard/billing'
     | '/dashboard/bldg-admin-overview'
+    | '/dashboard/inquiries'
     | '/dashboard/maintenances'
     | '/dashboard/maintenanceworkers'
     | '/dashboard/payments'
@@ -191,6 +202,7 @@ export interface FileRouteTypes {
     | '/dashboard/apartments/'
     | '/dashboard/billing/'
     | '/dashboard/bldg-admin-overview/'
+    | '/dashboard/inquiries/'
     | '/dashboard/maintenances/'
     | '/dashboard/maintenanceworkers/'
     | '/dashboard/payments/'
@@ -277,6 +289,13 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof DashboardMaintenancesIndexRouteImport
       parentRoute: typeof DashboardRouteRoute
     }
+    '/dashboard/inquiries/': {
+      id: '/dashboard/inquiries/'
+      path: '/inquiries'
+      fullPath: '/dashboard/inquiries'
+      preLoaderRoute: typeof DashboardInquiriesIndexRouteImport
+      parentRoute: typeof DashboardRouteRoute
+    }
     '/dashboard/bldg-admin-overview/': {
       id: '/dashboard/bldg-admin-overview/'
       path: '/bldg-admin-overview'
@@ -314,6 +333,7 @@ interface DashboardRouteRouteChildren {
   DashboardApartmentsIndexRoute: typeof DashboardApartmentsIndexRoute
   DashboardBillingIndexRoute: typeof DashboardBillingIndexRoute
   DashboardBldgAdminOverviewIndexRoute: typeof DashboardBldgAdminOverviewIndexRoute
+  DashboardInquiriesIndexRoute: typeof DashboardInquiriesIndexRoute
   DashboardMaintenancesIndexRoute: typeof DashboardMaintenancesIndexRoute
   DashboardMaintenanceworkersIndexRoute: typeof DashboardMaintenanceworkersIndexRoute
   DashboardPaymentsIndexRoute: typeof DashboardPaymentsIndexRoute
@@ -329,6 +349,7 @@ const DashboardRouteRouteChildren: DashboardRouteRouteChildren = {
   DashboardApartmentsIndexRoute: DashboardApartmentsIndexRoute,
   DashboardBillingIndexRoute: DashboardBillingIndexRoute,
   DashboardBldgAdminOverviewIndexRoute: DashboardBldgAdminOverviewIndexRoute,
+  DashboardInquiriesIndexRoute: DashboardInquiriesIndexRoute,
   DashboardMaintenancesIndexRoute: DashboardMaintenancesIndexRoute,
   DashboardMaintenanceworkersIndexRoute: DashboardMaintenanceworkersIndexRoute,
   DashboardPaymentsIndexRoute: DashboardPaymentsIndexRoute,
