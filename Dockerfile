@@ -13,17 +13,17 @@ COPY . .
 
 RUN CGO_ENABLED=0 GOOS=linux go build -o /app/server ./main.go
 
-FROM oven/bun:latest AS frontend-build
+FROM node:latest AS frontend-build
 
 WORKDIR /app
 
 COPY package*.json ./
 
-RUN bun install --frozen-lockfile
+RUN npm install --frozen-lockfile
 
 COPY . .
 
-RUN bun rsbuild build --mode production
+RUN npm run build
 
 FROM alpine_base AS runtime
 

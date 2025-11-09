@@ -8,6 +8,9 @@
   "version": "0.7.1",
   "private": true,
   "type": "module",
+  "scripts": {
+    "build": "rsbuild build --mode production"
+  },
   "dependencies": {
     "@autoform/react": "^4.0.0",
     "@autoform/zod": "^5.0.0",
