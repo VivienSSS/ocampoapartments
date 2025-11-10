@@ -85,13 +85,13 @@ const ContactForm = () => {
                 <div className="col-span-2">
                   <field.RelationField<ApartmentUnitsResponse>
                     label="Unit"
-                    description="The apartment unit that are interested in"
+                    // description="The apartment unit that are interested in"
                     pocketbase={pocketbase}
                     relationshipName="unit"
                     collectionName={Collections.ApartmentUnits}
                     recordListOption={{ expand: 'property' }}
                     renderOption={(item) =>
-                      `${item.expand.property.address} - ${item.unitLetter} - ${item.floorNumber}`
+                      `${item.expand.property.branch} - ${item.unitLetter} - ${item.floorNumber}`
                     }
                   />
                 </div>

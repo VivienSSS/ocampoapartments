@@ -222,16 +222,17 @@ function RouteComponent() {
           of Pampanga.
         </p>
       </section>
-      <section className="grid grid-cols-2 px-4 py-15">
-        <div>
-          <h2 className="text-2xl font-bold">Get in Touch</h2>
-          <ul className="my-6 ml-6 list-disc [&>li]:mt-2">
-            <li>Share your project goals and requirements</li>
-            <li>Receive a tailored proposal</li>
-            <li>Schedule a strategy consultation</li>
-          </ul>
+      <section className="grid grid-cols-1 md:grid-cols-2 gap-7 px-5 py-6 items-center">
+        <div className="w-full rounded-lg overflow-hidden shadow-lg">
+          <img
+            src="image5.jpg"
+            alt="Contact us - Ocampo Apartments"
+            className="w-auto h-auto object-cover"
+          />
         </div>
-        <ContactForm />
+        <div>
+          <ContactForm />
+        </div>
       </section>
       <section
         id="contact"
