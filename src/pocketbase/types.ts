@@ -274,6 +274,7 @@ export type InquiryRecord = {
 	created: IsoAutoDateString
 	email?: string
 	firstName?: string
+	hasSent?: boolean
 	id: string
 	lastName?: string
 	message?: HTMLString
