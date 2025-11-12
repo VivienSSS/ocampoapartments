@@ -3,17 +3,19 @@ import { Card, CardContent } from '@/components/ui/card';
 import { useAppForm } from '@/components/ui/forms';
 import type { ApartmentUnitsResponse } from '@/pocketbase/queries/apartmentUnits';
 import { inquirySchema } from '@/pocketbase/schemas/inquiry';
-import { Collections } from '@/pocketbase/types';
+import { Collections, InquirySubmissionTypeOptions } from '@/pocketbase/types';
 import { useRouteContext } from '@tanstack/react-router';
 import { toast } from 'sonner';
-import type z from 'zod';
+import z from 'zod';
+
+const MutationSchema = inquirySchema.omit({ id: true })
 
 const ContactForm = () => {
   const { pocketbase } = useRouteContext({ from: '/' });
 
   const form = useAppForm({
-    defaultValues: {} as z.infer<typeof inquirySchema>,
-    validators: { onSubmit: inquirySchema },
+    defaultValues: {} as z.infer<typeof MutationSchema>,
+    validators: { onSubmit: MutationSchema },
     onSubmit: async ({ value }) => {
       await pocketbase.collection(Collections.Inquiry).create(value);
       toast.success(
@@ -84,14 +86,14 @@ const ContactForm = () => {
               {(field) => (
                 <div className="col-span-2">
                   <field.RelationField<ApartmentUnitsResponse>
-                    label="Unit"
+                    label="Choose Unit"
                     // description="The apartment unit that are interested in"
                     pocketbase={pocketbase}
                     relationshipName="unit"
                     collectionName={Collections.ApartmentUnits}
                     recordListOption={{ expand: 'property' }}
                     renderOption={(item) =>
-                      `${item.expand.property.branch} - ${item.unitLetter} - ${item.floorNumber}`
+                      `${item.expand.property.branch} - ${item.floorNumber} - ${item.unitLetter}`
                     }
                   />
                 </div>
@@ -107,8 +109,35 @@ const ContactForm = () => {
                 </div>
               )}
             </form.AppField>
-            <div className="flex flex-row items-center gap-2.5">
-              <Button type="submit">Submit</Button>
+            <form.AppField name="submission_type">
+              {(field) => (
+                <div className="col-span-2">
+                  <field.SelectField
+                    label="Payment Type"
+                    placeholder="Select payment type"
+                    options={Object.values(InquirySubmissionTypeOptions).map(
+                      (value) => ({
+                        label: value,
+                        value: value,
+                      })
+                    )}
+                  />
+                </div>
+              )}
+            </form.AppField>
+            <form.AppField name="qr_image_proof">
+              {(field) => (
+                <div className="col-span-2">
+                  <field.FileField
+                    label="Proof of Payment"
+                  />
+                </div>
+              )}
+            </form.AppField>
+            <div className="col-span-4 flex flex-row items-center gap-2.5 pt-4">
+              <Button type="submit" size="lg" className="w-full">
+                Submit Inquiry
+              </Button>
             </div>
           </CardContent>
         </Card>

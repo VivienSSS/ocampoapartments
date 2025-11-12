@@ -265,6 +265,10 @@ export type HighPriorityUnresolvedRequestsStatCardKpiViewRecord<TdaysOpen = unkn
 	urgency: HighPriorityUnresolvedRequestsStatCardKpiViewUrgencyOptions
 }
 
+export enum InquirySubmissionTypeOptions {
+	"Payment for deposit" = "Payment for deposit",
+	"Payment for advance" = "Payment for advance",
+}
 export type InquiryRecord = {
 	age: number
 	created: IsoAutoDateString
@@ -275,6 +279,8 @@ export type InquiryRecord = {
 	message?: HTMLString
 	numberOfOccupants: number
 	phone?: string
+	qr_image_proof?: FileNameString
+	submission_type?: InquirySubmissionTypeOptions
 	unitInterested?: RecordIdString
 	updated: IsoAutoDateString
 }
