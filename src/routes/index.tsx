@@ -150,7 +150,7 @@ function RouteComponent() {
       {/* Hero Section */}
       <section
         className="relative py-20 px-4 text-center bg-cover bg-center bg-no-repeat"
-        style={{ backgroundImage: 'url("sample.jpg")' }}
+        style={{ backgroundImage: 'url("header.jpg")' }}
       >
         {/* Optional overlay for better text readability */}
         <div className="absolute inset-0 bg-black/40"></div>
@@ -165,6 +165,7 @@ function RouteComponent() {
             variant="outline"
             size="lg"
             onClick={() => scrollTo('contact')}
+            className="border-2 dark:bg-slate-900 dark:text-white"
           >
             Contact Us
           </Button>
@@ -225,7 +226,7 @@ function RouteComponent() {
       <section className="grid grid-cols-1 md:grid-cols-2 gap-7 px-5 py-6 items-center">
         <div className="w-full rounded-lg overflow-hidden shadow-lg">
           <img
-            src="image5.jpg"
+            src="picture1.png"
             alt="Contact us - Ocampo Apartments"
             className="w-auto h-auto object-cover"
           />
