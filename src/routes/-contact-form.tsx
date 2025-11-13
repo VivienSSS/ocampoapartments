@@ -1,17 +1,25 @@
 import { Button } from '@/components/ui/button';
 import { Card, CardContent } from '@/components/ui/card';
+import {
+  AlertDialog,
+  AlertDialogContent,
+  AlertDialogTrigger,
+} from '@/components/ui/alert-dialog';
 import { useAppForm } from '@/components/ui/forms';
 import type { ApartmentUnitsResponse } from '@/pocketbase/queries/apartmentUnits';
 import { inquirySchema } from '@/pocketbase/schemas/inquiry';
 import { Collections, InquirySubmissionTypeOptions } from '@/pocketbase/types';
 import { useRouteContext } from '@tanstack/react-router';
 import { toast } from 'sonner';
+import { useState } from 'react';
+import { X } from 'lucide-react';
 import z from 'zod';
 
 const MutationSchema = inquirySchema.omit({ id: true })
 
 const ContactForm = () => {
   const { pocketbase } = useRouteContext({ from: '/' });
+  const [openImageDialog, setOpenImageDialog] = useState(false);
 
   const form = useAppForm({
     defaultValues: {} as z.infer<typeof MutationSchema>,
@@ -34,7 +42,7 @@ const ContactForm = () => {
     >
       <form.AppForm>
         <Card>
-          <CardContent className="grid grid-cols-4 gap-2.5">
+          <CardContent className="grid grid-cols-4 gap-5">
             <form.AppField name="firstName">
               {(field) => (
                 <div className="col-span-2">
@@ -109,6 +117,32 @@ const ContactForm = () => {
                 </div>
               )}
             </form.AppField>
+            <div className="col-span-4 flex items-center">
+              <AlertDialog open={openImageDialog} onOpenChange={setOpenImageDialog}>
+                <AlertDialogTrigger asChild>
+                  <Button type="button" variant="outline" className='w-full'>
+                    View QR for Payment
+                  </Button>
+                </AlertDialogTrigger>
+                <AlertDialogContent className="max-w-xs w-96">
+                  <div className="flex justify-end mb-2">
+                    <button
+                      onClick={() => setOpenImageDialog(false)}
+                      className="p-1 hover:bg-gray-100 rounded-full"
+                    >
+                      <X className="w-5 h-5" />
+                    </button>
+                  </div>
+                  <div className="flex flex-col items-center justify-center gap-4">
+                    <img
+                      src="/myqr.jpg"
+                      alt="QR Code"
+                      className="w-full max-w-xs rounded-lg"
+                    />
+                  </div>
+                </AlertDialogContent>
+              </AlertDialog>
+            </div>
             <form.AppField name="submission_type">
               {(field) => (
                 <div className="col-span-2">
@@ -134,7 +168,7 @@ const ContactForm = () => {
                 </div>
               )}
             </form.AppField>
-            <div className="col-span-4 flex flex-row items-center gap-2.5 pt-4">
+            <div className="col-span-4 flex flex-row items-center gap-2.5 pt-2">
               <Button type="submit" size="lg" className="w-full">
                 Submit Inquiry
               </Button>
