@@ -6,6 +6,7 @@ import {
   HandCoins,
   Hotel,
   House,
+  Mail,
   MapPinHouse,
   Megaphone,
   Pickaxe,
@@ -36,6 +37,11 @@ const showNav = () => {
           title: 'Dashboard',
           url: '/dashboard',
           icon: Command,
+        },
+        {
+          title: 'Inquiries',
+          url: '/dashboard/inquiries',
+          icon: Mail,
         },
         {
           title: 'Announcements',

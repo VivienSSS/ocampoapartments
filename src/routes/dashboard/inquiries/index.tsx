@@ -91,31 +91,31 @@ function RouteComponent() {
                   navigate({
                     search: (prev) => ({
                       ...prev,
-                      sort: [{ field: 'address', order: '+' }],
+                      sort: [{ field: 'firstName', order: '+' }],
                     }),
                   })
                 }
               >
-                Address (A to Z)
+                Name (A to Z)
               </DropdownMenuItem>
               <DropdownMenuItem
                 onClick={() =>
                   navigate({
                     search: (prev) => ({
                       ...prev,
-                      sort: [{ field: 'address', order: '-' }],
+                      sort: [{ field: 'firstName', order: '-' }],
                     }),
                   })
                 }
               >
-                Address (Z to A)
+                Name (Z to A)
               </DropdownMenuItem>
               <DropdownMenuItem
                 onClick={() =>
                   navigate({
                     search: (prev) => ({
                       ...prev,
-                      sort: [{ field: 'created', order: '-' }],
+                      sort: [{ field: 'updated', order: '-' }],
                     }),
                   })
                 }
@@ -127,7 +127,7 @@ function RouteComponent() {
                   navigate({
                     search: (prev) => ({
                       ...prev,
-                      sort: [{ field: 'created', order: '+' }],
+                      sort: [{ field: 'updated', order: '+' }],
                     }),
                   })
                 }
