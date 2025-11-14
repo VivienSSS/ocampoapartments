@@ -101,7 +101,7 @@ export const columns: ColumnDef<AnnouncementsResponse>[] = [
     header: ({ column }) => (
       <TableColumnHeader column={column} title="Author" />
     ),
-    cell: ({ row }) => row.original.expand.author.email,
+    cell: ({ row }) => row.original.expand.author.role,
   },
   {
     accessorKey: 'created',
