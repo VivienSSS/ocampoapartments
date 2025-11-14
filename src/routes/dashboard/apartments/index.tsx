@@ -31,7 +31,7 @@ export const Route = createFileRoute('/dashboard/apartments/')({
   pendingComponent: LoadingComponent,
   validateSearch: zodValidator(searchParams(apartmentUnitSchema.keyof())),
   beforeLoad: ({ search, context }) => {
-    if (context.user.role !== UsersRoleOptions.Administrator) {
+    if (context.user.role !== UsersRoleOptions.Administrator && context.user.role !== UsersRoleOptions['Building Admin']) {
       if (context.user.role === UsersRoleOptions.Tenant) {
         throw redirect({ to: '/dashboard/tenant-overview' });
       }
@@ -42,8 +42,8 @@ export const Route = createFileRoute('/dashboard/apartments/')({
   loader: ({ context }) => {
     const sortString = context.search.sort
       ? context.search.sort
-          .map((s) => `${s.order === '-' ? '-' : ''}${s.field}`)
-          .join(',')
+        .map((s) => `${s.order === '-' ? '-' : ''}${s.field}`)
+        .join(',')
       : undefined;
     return context.queryClient.fetchQuery(
       listApartmentUnitsQuery(
