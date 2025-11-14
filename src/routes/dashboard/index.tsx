@@ -9,6 +9,9 @@ export const Route = createFileRoute('/dashboard/')({
       if (context.user.role === UsersRoleOptions.Tenant) {
         throw redirect({ to: '/dashboard/tenant-overview' });
       }
+      if (context.user.role === UsersRoleOptions['Building Admin']) {
+        throw redirect({ to: "/dashboard/bldg-admin-overview" })
+      }
     }
   },
 });

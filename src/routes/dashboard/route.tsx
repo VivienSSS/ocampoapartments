@@ -29,8 +29,8 @@ export const Route = createFileRoute('/dashboard')({
   component: RouteComponent,
   beforeLoad: () => {
     if (!pb.authStore.isValid) throw redirect({ to: '/' }); // for fail
-
     return { user: pb.authStore.record as unknown as UsersRecord };
+
   },
   loader: async () =>
     pb.collection('maintenance_requests').getFullList({ requestKey: null }),

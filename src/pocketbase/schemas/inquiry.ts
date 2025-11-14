@@ -11,8 +11,8 @@ export const inquirySchema = z.object({
     message: z.string().min(1, 'Message is required'),
     unitInterested: z.string().min(1, 'Unit interested is required'),
     numberOfOccupants: z.number().int().positive('Number of occupants must be a positive number'),
-    qr_image_proof: z.instanceof(File, { error: 'QR code image Required' }),
-    submission_type: z.string().min(1, 'Submission type is required'),
+    qr_image_proof: z.instanceof(File, { error: 'QR code image Required' }).optional(),
+    submission_type: z.string().min(1, 'Submission type is required').optional(),
     created: z.date().optional(),
     updated: z.date().optional(),
 })

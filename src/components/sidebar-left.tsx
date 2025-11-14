@@ -102,6 +102,16 @@ const showNav = () => {
         //   icon: Megaphone,
         // },
         {
+          title: 'Inquiries',
+          url: '/dashboard/inquiries',
+          icon: Mail,
+        },
+        {
+          title: 'Apartment Units',
+          url: '/dashboard/apartments',
+          icon: Hotel,
+        },
+        {
           title: 'Requests',
           url: '/dashboard/maintenances',
           icon: Hammer,

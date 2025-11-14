@@ -27,7 +27,7 @@ export const Route = createFileRoute('/dashboard/inquiries/')({
   pendingComponent: LoadingComponent,
   validateSearch: zodValidator(searchParams(inquirySchema.keyof())),
   beforeLoad: ({ search, context }) => {
-    if (context.user.role !== UsersRoleOptions.Administrator) {
+    if (context.user.role !== UsersRoleOptions.Administrator && context.user.role !== UsersRoleOptions['Building Admin']) {
       throw redirect({ to: '/dashboard' });
     }
     return { search };
