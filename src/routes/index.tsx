@@ -87,13 +87,12 @@ function RouteComponent() {
             <nav className="hidden md:flex gap-4 mr-4 items-center">
               <Button
                 onClick={toggleTheme}
-                className="text-sm ml-2 px-2 py-1 rounded hover:bg-accent/10"
+                variant="ghost"
+                size="icon"
                 title={isDark ? 'Switch to light mode' : 'Switch to dark mode'}
               >
                 {isDark ? '🌙' : '☀️'}
-              </Button>
-
-              <a
+              </Button>              <a
                 href="#units"
                 onClick={(e: MouseEvent<HTMLAnchorElement>) => {
                   e.preventDefault();
