@@ -18,7 +18,7 @@ import { CreateAnnouncementForm } from './form';
 const CreateAnnouncementDialogForm = () => {
   const navigate = useNavigate({ from: '/dashboard/announcements' });
   const searchParams = useSearch({ from: '/dashboard/announcements/' });
-  const { queryClient } = useRouteContext({
+  const { queryClient, pocketbase } = useRouteContext({
     from: '/dashboard/announcements/',
   });
 
@@ -26,7 +26,7 @@ const CreateAnnouncementDialogForm = () => {
 
   const form = useAppForm({
     defaultValues: {
-      author: '',
+      author: pocketbase.authStore.record?.id || '',
       message: '',
       title: '',
     } as z.infer<typeof insertAnnouncementSchema>,
