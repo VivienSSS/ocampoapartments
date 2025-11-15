@@ -90,7 +90,7 @@ export const CreateMaintenanceForm = withForm({
                 pocketbase={pocketbase}
                 relationshipName="tenant"
                 collectionName={Collections.Tenants}
-                recordListOption={{ expand: 'user' }}
+                recordListOption={{ expand: 'user', filter: (query) => `${query ? `${query} ~ user.firstName &&` : ``} user.firstName != null` }}
                 renderOption={(item) =>
                   `${item.expand.user.firstName} ${item.expand.user.lastName}`
                 }
@@ -141,6 +141,7 @@ export const CreateMaintenanceForm = withForm({
               pocketbase={pocketbase}
               relationshipName="worker"
               collectionName={Collections.MaintenanceWorkers}
+              recordListOption={{ filter: (query) => `${query ? `${query} ~ name &&` : ``} name != null` }}
               renderOption={(item) => item.name}
             />
           )}
@@ -181,6 +182,7 @@ export const EditMaintenanceForm = withForm({
             pocketbase={pb}
             relationshipName="worker"
             collectionName={Collections.MaintenanceWorkers}
+            recordListOption={{ filter: (query) => `${query ? `${query} ~ name &&` : ``} name != null` }}
             renderOption={(item) => item.name}
             label="Worker"
           />

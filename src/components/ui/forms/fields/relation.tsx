@@ -51,7 +51,7 @@ const RelationField = <Records extends RelationItem>(
   const fetcher = useCallback(
     async (query?: string): Promise<Records[]> => {
       try {
-        let filter = typeof props.recordListOption?.filter === "function" ? props.recordListOption.filter?.(query) : `${query} ~ ${displayField}`
+        let filter = typeof props.recordListOption?.filter === "function" ? props.recordListOption.filter?.(query) : undefined
 
         const records = await props.pocketbase
           .collection(collectionName)
@@ -66,7 +66,7 @@ const RelationField = <Records extends RelationItem>(
         return [];
       }
     },
-    [props.pocketbase, collectionName, displayField, props.recordListOption],
+    [props.pocketbase, collectionName, props.recordListOption],
   );
 
   return (

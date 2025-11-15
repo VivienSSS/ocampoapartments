@@ -92,35 +92,6 @@ export function SidebarRight({
         />
         {/* <Calendars calendars={data.calendars} /> */}
       </SidebarContent>
-      <SidebarFooter>
-        <SidebarMenu>
-          <SidebarMenuItem>
-            <Dialog>
-              <DialogTrigger asChild>
-                <SidebarMenuButton>
-                  <Bell />
-                  <span>Notifications</span>
-                </SidebarMenuButton>
-              </DialogTrigger>
-              <DialogContent>
-                <DialogHeader>
-                  <DialogTitle>Notifications</DialogTitle>
-                </DialogHeader>
-                <Item variant="muted" size="sm">
-                  <ItemMedia>
-                    <BellPlus className="size-5" />
-                  </ItemMedia>
-                  <ItemContent>
-                    <ItemTitle>Item</ItemTitle>
-                    <ItemDescription>Item</ItemDescription>
-                  </ItemContent>
-                  <ItemActions />
-                </Item>
-              </DialogContent>
-            </Dialog>
-          </SidebarMenuItem>
-        </SidebarMenu>
-      </SidebarFooter>
     </Sidebar>
   );
 }

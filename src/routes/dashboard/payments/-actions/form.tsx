@@ -28,7 +28,7 @@ export const CreatePaymentForm = withForm({
               pocketbase={pocketbase}
               relationshipName="tenant"
               collectionName={Collections.Tenants}
-              recordListOption={{ expand: 'user' }}
+              recordListOption={{ expand: 'user', filter: (query) => `${query ? `${query} ~ user.firstName &&` : ``} user.firstName != null` }}
               renderOption={(item) =>
                 `${item.expand.user.firstName} ${item.expand.user.lastName}`
               }
@@ -43,7 +43,7 @@ export const CreatePaymentForm = withForm({
               description="The bill that is being paid"
               pocketbase={pocketbase}
               relationshipName="bill"
-              recordListOption={{ expand: 'tenancy.tenant.user' }}
+              recordListOption={{ expand: 'tenancy.tenant.user', filter: (query) => `${query ? `${query} ~ dueDate &&` : ``} dueDate != null` }}
               collectionName={Collections.Bills}
               renderOption={(item) => {
                 const date = format(new Date(item.dueDate), 'PPP');
@@ -82,7 +82,7 @@ export const CreatePaymentForm = withForm({
           )}
         </form.AppField>
         <form.AppField name="paymentDate">
-          {(field) => <field.DateTimeField label="Payment Date" showTime />}
+          {(field) => <field.DateTimeField label="Payment Date" />}
         </form.AppField>
         <form.AppField name="transactionId">
           {(field) => (

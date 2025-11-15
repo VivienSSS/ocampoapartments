@@ -5,7 +5,7 @@ import {
   insertApartmentUnitSchema,
   updateApartmentUnitSchema,
 } from '@/pocketbase/schemas/apartmentUnits';
-import { Collections } from '@/pocketbase/types';
+import { Collections, type PropertiesRecord } from '@/pocketbase/types';
 import { useRouteContext } from '@tanstack/react-router';
 
 export const CreateApartmentUnitFormOption = formOptions({
@@ -70,11 +70,14 @@ export const CreateApartmentForm = withForm({
         </form.AppField>
         <form.AppField name="property">
           {(field) => (
-            <field.RelationField
+            <field.RelationField<PropertiesRecord>
               pocketbase={pocketbase}
               collectionName={Collections.Properties}
               relationshipName="property"
-              displayField="branch"
+              recordListOption={{
+                filter: (query) => `branch ~ '${query}'`
+              }}
+              renderOption={(item) => item.branch}
               label="Property"
             />
           )}
@@ -134,11 +137,14 @@ export const EditApartmentForm = withForm({
         </form.AppField>
         <form.AppField name="property">
           {(field) => (
-            <field.RelationField
+            <field.RelationField<PropertiesRecord>
               pocketbase={pocketbase}
               collectionName={Collections.Properties}
               relationshipName="property"
-              displayField="branch"
+              recordListOption={{
+                filter: (query) => `branch ~ '${query}'`
+              }}
+              renderOption={(item) => item.branch}
               label="Property"
             />
           )}

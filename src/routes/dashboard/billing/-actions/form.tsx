@@ -60,7 +60,7 @@ export const CreateBillingForm = withForm({
                   renderOption={(item) =>
                     `${item?.expand?.tenant?.expand.user?.firstName} ${item?.expand?.tenant?.expand.user?.lastName} - ${item?.expand?.tenant?.expand.user.contactEmail}`
                   }
-                  recordListOption={{ expand: 'tenant.user' }}
+                  recordListOption={{ expand: 'tenant.user', filter: (query) => `${query ? `${query} ~ tenant.user.firstName &&` : ``} tenant.user.firstName != null` }}
                 />
               )}
             </form.AppField>
@@ -81,7 +81,6 @@ export const CreateBillingForm = withForm({
               {(field) => (
                 <field.DateTimeField
                   label="Due Date"
-                  showTime
                   showCalendarIcon
                 />
               )}

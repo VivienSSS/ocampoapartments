@@ -30,7 +30,7 @@ export type DateTimeFieldProps = {
 
 const DateTimeField = (props: DateTimeFieldProps) => {
   const {
-    showTime = true,
+    showTime = false,
     timeStep = 15,
     inputGroupClassName,
     showCalendarIcon = true,
@@ -72,8 +72,8 @@ const DateTimeField = (props: DateTimeFieldProps) => {
 
   const timeValue = dateValue
     ? `${String(dateValue.getHours()).padStart(2, '0')}:${String(
-        dateValue.getMinutes(),
-      ).padStart(2, '0')}`
+      dateValue.getMinutes(),
+    ).padStart(2, '0')}`
     : '00:00';
 
   return (

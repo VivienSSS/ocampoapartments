@@ -99,7 +99,7 @@ const ContactForm = () => {
                     pocketbase={pocketbase}
                     relationshipName="unit"
                     collectionName={Collections.ApartmentUnits}
-                    recordListOption={{ expand: 'property' }}
+                    recordListOption={{ expand: 'property', filter: (query) => `unitLetter ~ '${query}'` }}
                     renderOption={(item) =>
                       `${item.expand.property.branch} - ${item.floorNumber} - ${item.unitLetter}`
                     }
