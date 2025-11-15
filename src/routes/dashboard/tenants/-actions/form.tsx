@@ -25,6 +25,10 @@ export const CreateTenantForm = withForm({
               description="Only users with the 'Tenant' role will be displayed"
               pocketbase={pocketbase}
               collectionName={Collections.Users}
+              displayField='contactEmail'
+              recordListOption={{
+                filter: (query) => `${query ? `${query} ~ contactEmail &&` : ``} role = 'Tenant'`,
+              }}
               relationshipName="user"
               renderOption={(item) =>
                 `${item.firstName} ${item.lastName} - ${item.contactEmail}`

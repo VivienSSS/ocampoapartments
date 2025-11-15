@@ -28,7 +28,9 @@ export type RelationFieldProps<Records extends RelationItem> = {
   placeholder?: string;
   pocketbase: TypedPocketBase;
   renderOption?: (item: Records) => React.ReactNode;
-  recordListOption?: RecordListOptions;
+  recordListOption?: Omit<RecordListOptions, 'filter'> & {
+    filter?: string | ((query?: string) => string)
+  };
 };
 
 const RelationField = <Records extends RelationItem>(
@@ -49,19 +51,13 @@ const RelationField = <Records extends RelationItem>(
   const fetcher = useCallback(
     async (query?: string): Promise<Records[]> => {
       try {
-        let filter = '';
-        if (query) {
-          filter = `${displayField} ~ "${query}"`;
-        }
+        let filter = typeof props.recordListOption?.filter === "function" ? props.recordListOption.filter?.(query) : `${query} ~ ${displayField}`
 
         const records = await props.pocketbase
           .collection(collectionName)
           .getList(1, 50, {
-            ...{
-              filter: filter || undefined,
-              sort: `-updated`,
-            },
             ...props.recordListOption,
+            filter
           });
 
         return records.items as unknown as Records[];
