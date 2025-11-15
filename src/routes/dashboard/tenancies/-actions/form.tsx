@@ -29,6 +29,8 @@ export const CreateTenancyForm = withForm({
       from: '/dashboard/tenancies/',
     });
 
+    const selectedUnit = form.state.values.unit;
+
     return (
       <>
         <form.AppField name="tenant">
@@ -56,7 +58,10 @@ export const CreateTenancyForm = withForm({
               pocketbase={pocketbase}
               collectionName={Collections.ApartmentUnits}
               relationshipName="unit"
-              recordListOption={{ expand: 'property', filter: 'isAvailable = true' }}
+              recordListOption={{
+                expand: 'property',
+                filter: selectedUnit ? `isAvailable = true && id != '${selectedUnit}'` : 'isAvailable = true'
+              }}
               renderOption={(item) =>
                 `${item.expand.property.branch} - ${item.floorNumber} - ${item.unitLetter}`
               }
@@ -95,6 +100,8 @@ export const EditTenancyForm = withForm({
       from: '/dashboard/tenancies/',
     });
 
+    const selectedUnit = form.state.values.unit;
+
     return (
       <>
         <form.AppField name="tenant">
@@ -122,7 +129,10 @@ export const EditTenancyForm = withForm({
               pocketbase={pocketbase}
               collectionName={Collections.ApartmentUnits}
               relationshipName="unit"
-              recordListOption={{ expand: 'property' }}
+              recordListOption={{
+                expand: 'property',
+                filter: selectedUnit ? `isAvailable = true && id != '${selectedUnit}'` : 'isAvailable = true'
+              }}
               renderOption={(item) =>
                 `${item.expand.property.address} - ${item.floorNumber} - ${item.unitLetter}`
               }
