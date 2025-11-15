@@ -98,31 +98,29 @@ export const EditApartmentForm = withForm({
       <>
         <form.AppField name="floorNumber">
           {(field) => (
-            <field.TextField
+            <field.NumberField
               className="col-span-full"
               label="Floor Number"
               placeholder="ex. 1"
-              type="number"
             />
           )}
         </form.AppField>
         <form.AppField name="capacity">
           {(field) => (
-            <field.TextField
+            <field.NumberField
               className="col-span-2"
               label="Capacity"
               placeholder="ex. 2"
-              type="number"
             />
           )}
         </form.AppField>
         <form.AppField name="price">
           {(field) => (
-            <field.TextField
+            <field.NumberField
+              showClearButton
               className="col-span-2"
               label="Price"
               placeholder="ex. 5000"
-              type="number"
             />
           )}
         </form.AppField>
