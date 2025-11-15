@@ -45,7 +45,12 @@ export const columns: ColumnDef<InquiryResponse<{ unitInterested: ApartmentUnits
   {
     accessorKey: 'unitInterested',
     header: 'Unit Interested',
-    cell: ({ row }) => `${row.original.expand.unitInterested.floorNumber} - ${row.original.expand.unitInterested.unitLetter} - ${row.original.expand.unitInterested.expand.property.branch}`
+    cell: ({ row }) => {
+      const unit = row.original.expand?.unitInterested;
+      const property = unit?.expand?.property;
+      if (!unit || !property) return 'N/A';
+      return `${unit.floorNumber} - ${unit.unitLetter} - ${property.branch}`;
+    }
   },
   {
     accessorKey: 'message',
