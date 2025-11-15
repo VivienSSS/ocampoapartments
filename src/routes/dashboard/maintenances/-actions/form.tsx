@@ -132,25 +132,35 @@ export const CreateMaintenanceForm = withForm({
             />
           )}
         </form.AppField>
-        <form.AppField name="worker">
-          {(field) => (
-            <field.RelationField<MaintenanceWorkersResponse>
-              label="Assigned Worker"
-              tooltip="Select the maintenance worker assigned to this request"
-              description="The maintenance worker assigned to handle this request"
-              pocketbase={pocketbase}
-              relationshipName="worker"
-              collectionName={Collections.MaintenanceWorkers}
-              recordListOption={{ filter: (query) => `${query ? `${query} ~ name &&` : ``} name != null` }}
-              renderOption={(item) => item.name}
-            />
-          )}
-        </form.AppField>
+        {!isTenant && (
+          <form.AppField name="worker">
+            {(field) => (
+              <field.RelationField<MaintenanceWorkersResponse>
+                label="Assigned Worker"
+                tooltip="Select the maintenance worker assigned to this request"
+                description="The maintenance worker assigned to handle this request"
+                pocketbase={pocketbase}
+                relationshipName="worker"
+                collectionName={Collections.MaintenanceWorkers}
+                recordListOption={{ filter: (query) => `${query ? `${query} ~ name &&` : ``} name != null` }}
+                renderOption={(item) => item.name}
+              />
+            )}
+          </form.AppField>
+        )}
         <form.AppField name="description">
           {(field) => (
             <field.TextareaField
               label="Description"
               placeholder="ex. We have a broken faucet. . ."
+            />
+          )}
+        </form.AppField>
+        <form.AppField name="submittedDate">
+          {(field) => (
+            <field.DateTimeField
+              label="Submitted Date"
+              placeholder="Submitted Date"
             />
           )}
         </form.AppField>
