@@ -8,7 +8,7 @@ export const inquirySchema = z.object({
     age: z.number().int().positive('Age must be a positive number'),
     email: z.string().email('Invalid email address'),
     phone: z.string().min(1, 'Phone number is required'),
-    message: z.string().min(1, 'Message is required'),
+    message: z.string().optional(),
     unitInterested: z.string().min(1, 'Unit interested is required'),
     numberOfOccupants: z.number().int().positive('Number of occupants must be a positive number'),
     qr_image_proof: z.instanceof(File, { error: 'QR code image Required' }).optional(),

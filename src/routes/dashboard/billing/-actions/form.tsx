@@ -135,7 +135,7 @@ export const CreateBillingForm = withForm({
 
 export const CreateBillingItemForm = withFieldGroup({
   defaultValues: {} as z.infer<typeof insertBillItemsSchema>,
-  props: { onDelete: () => {} },
+  props: { onDelete: () => { } },
   render: ({ group, onDelete }) => {
     return (
       <AccordionItem

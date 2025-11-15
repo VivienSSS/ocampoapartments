@@ -58,9 +58,9 @@ export const CreateTenancyForm = withForm({
               pocketbase={pocketbase}
               collectionName={Collections.ApartmentUnits}
               relationshipName="unit"
-              recordListOption={{ expand: 'property' }}
+              recordListOption={{ expand: 'property', filter: 'isAvailable = true' }}
               renderOption={(item) =>
-                `${item.expand.property.address} - ${item.unitLetter} - ${item.floorNumber}`
+                `${item.expand.property.branch} - ${item.floorNumber} - ${item.unitLetter}`
               }
             />
           )}
@@ -124,9 +124,9 @@ export const EditTenancyForm = withForm({
               pocketbase={pocketbase}
               collectionName={Collections.ApartmentUnits}
               relationshipName="unit"
-              recordListOption={{ expand: 'property' }}
+              recordListOption={{ expand: 'property', filter: 'isAvailable = true' }}
               renderOption={(item) =>
-                `${item.expand.property.address} - ${item.unitLetter} - ${item.floorNumber}`
+                `${item.expand.property.address} - ${item.floorNumber} - ${item.unitLetter}`
               }
             />
           )}

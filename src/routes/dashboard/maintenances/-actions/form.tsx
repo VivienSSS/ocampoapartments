@@ -1,9 +1,10 @@
+import { useEffect, useState } from 'react';
 import type z from 'zod';
-import { AsyncSelect } from '@/components/ui/async-select';
 import { withForm } from '@/components/ui/forms';
 import { pb } from '@/pocketbase';
 import type { ApartmentUnitsResponse } from '@/pocketbase/queries/apartmentUnits';
 import type { TenantsResponse } from '@/pocketbase/queries/tenants';
+import type { TenanciesResponse } from '@/pocketbase/queries/tenancies';
 import {
   type insertMaintenanceRequestSchema,
   updateMaintenanceRequestSchema,
@@ -31,6 +32,51 @@ export const CreateMaintenanceForm = withForm({
     const { pocketbase } = useRouteContext({
       from: '/dashboard/maintenances/',
     });
+    const [tenantUnits, setTenantUnits] = useState<string[]>([]);
+    const [currentTenant, setCurrentTenant] = useState<string>('');
+
+    // Fetch current tenant's units if user is a tenant
+    useEffect(() => {
+      if (isTenant && pb.authStore.record?.id) {
+        const fetchTenantData = async () => {
+          try {
+            // Get the current tenant record
+            const tenants = await pb
+              .collection(Collections.Tenants)
+              .getFullList<TenantsResponse>({
+                filter: `user = '${pb.authStore.record?.id}'`,
+              });
+
+            if (tenants.length > 0) {
+              const tenantId = tenants[0].id;
+              setCurrentTenant(tenantId);
+
+              // Get all tenancies for this tenant
+              const tenancies = await pb
+                .collection(Collections.Tenancies)
+                .getFullList<TenanciesResponse>({
+                  filter: `tenant = '${tenantId}'`,
+                });
+
+              // Extract unit IDs
+              const unitIds = tenancies.map((t) => t.unit);
+              setTenantUnits(unitIds);
+            }
+          } catch (error) {
+            console.error('Failed to fetch tenant data:', error);
+          }
+        };
+
+        fetchTenantData();
+      }
+    }, [isTenant]);
+
+    // Set tenant field value if user is a tenant
+    useEffect(() => {
+      if (isTenant && currentTenant && !form.state.values.tenant) {
+        form.setFieldValue('tenant', currentTenant);
+      }
+    }, [isTenant, currentTenant, form]);
 
     return (
       <>
@@ -61,9 +107,15 @@ export const CreateMaintenanceForm = withForm({
               pocketbase={pocketbase}
               relationshipName="unit"
               collectionName={Collections.ApartmentUnits}
-              recordListOption={{ expand: 'property' }}
+              recordListOption={{
+                expand: 'property',
+                filter:
+                  isTenant && tenantUnits.length > 0
+                    ? tenantUnits.map((id) => `id = '${id}'`).join(' || ')
+                    : undefined,
+              }}
               renderOption={(item) =>
-                `${item.expand.property.address} - ${item.unitLetter} - ${item.floorNumber}`
+                `${item.expand.property.branch} - ${item.floorNumber} - ${item.unitLetter}`
               }
             />
           )}

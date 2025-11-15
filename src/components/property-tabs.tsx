@@ -397,16 +397,7 @@ function PropertyTabs() {
                                 </h3>
                                 <div className="bg-muted/50 p-4 rounded-lg space-y-2 text-sm">
                                   <div className="text-justify">
-                                    The landlord requires (1) month advance rent
-                                    payment, (2) months deposit, and ₱2,000
-                                    refundable deposit for the water and
-                                    electricity. If a potential tenant decides
-                                    to cancel their move-in at the last minute,
-                                    all payments made, including any deposits or
-                                    fees, will not be refunded. Tenants that
-                                    reside in Pampanga and paid late will have a
-                                    fee of ₱250. Otherwise if not, there is no
-                                    fee.{' '}
+                                    The landlord requires one (1) month advance rent payment, two (2) months deposit, and ₱2,000 refundable deposit for the water and electricity. If a potential tenant decides to cancel their move-in at the last minute, all payments made, including any deposits or fees, will not be refunded.{' '}
                                   </div>
                                   <div>
                                     • <strong>Utilities:</strong> Electricity

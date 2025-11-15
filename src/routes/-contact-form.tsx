@@ -169,7 +169,7 @@ const ContactForm = () => {
             </form.AppField>
             <div className="col-span-4 flex flex-row items-center gap-2.5 pt-2">
               <Button type="submit" size="lg" className="w-full">
-                Submit Inquiry
+                Register Now
               </Button>
             </div>
           </CardContent>
