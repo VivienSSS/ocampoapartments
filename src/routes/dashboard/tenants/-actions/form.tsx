@@ -90,7 +90,7 @@ export const EditTenantForm = withForm({
           {(field) => (
             <field.TextField
               tooltip="Enter the tenant's phone number"
-              description="Include country code if applicable"
+              description="This will be displayed on the tenant's profile"
               label="Phone Number"
               type="number"
             />

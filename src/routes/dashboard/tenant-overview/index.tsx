@@ -149,7 +149,7 @@ function RouteComponent() {
         {/* Billing Card */}
         <Card>
           <CardHeader>
-            <CardTitle>Payment History</CardTitle>
+            <CardTitle>Billings</CardTitle>
             <CardDescription>Outstanding and recent bills</CardDescription>
           </CardHeader>
           <CardContent className="space-y-4">
@@ -249,13 +249,12 @@ function BillCard({
 
           {/* Status Badge - Top Right */}
           <div
-            className={`px-4 py-2 rounded-lg text-sm font-semibold whitespace-nowrap ${
-              bill.status === 'Paid'
+            className={`px-4 py-2 rounded-lg text-sm font-semibold whitespace-nowrap ${bill.status === 'Paid'
                 ? 'bg-green-100 text-green-700'
                 : bill.status === 'Overdue'
                   ? 'bg-red-100 text-red-700'
                   : 'bg-blue-100 text-blue-700'
-            }`}
+              }`}
           >
             {bill.status}
           </div>
