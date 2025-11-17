@@ -11,13 +11,10 @@ import {
   DialogTrigger,
 } from '@/components/ui/dialog';
 import { pb } from '@/pocketbase';
-import type { ApartmentUnitsResponse, InquiryResponse, PropertiesResponse } from '@/pocketbase/types';
+import type { ApartmentUnitsResponse, InquiryResponse, PropertiesResponse, OtpResponse } from '@/pocketbase/types';
+import { Badge } from '@/components/ui/badge';
 
-export const columns: ColumnDef<InquiryResponse<{ unitInterested: ApartmentUnitsResponse<{ property: PropertiesResponse }> }>>[] = [
-  // {
-  //   accessorKey: 'id',
-  //   header: 'ID',
-  // },
+export const columns: ColumnDef<InquiryResponse<{ unitInterested: ApartmentUnitsResponse<{ property: PropertiesResponse }>, otp: OtpResponse }>>[] = [
   {
     accessorKey: 'firstName',
     header: 'First Name',
@@ -41,6 +38,49 @@ export const columns: ColumnDef<InquiryResponse<{ unitInterested: ApartmentUnits
   {
     accessorKey: 'numberOfOccupants',
     header: 'Occupants',
+  },
+  {
+    accessorKey: 'status',
+    header: 'Status',
+    cell: ({ row }) => {
+      const status = row.original.status;
+      const statusColors: Record<string, string> = {
+        pending: 'bg-yellow-100 text-yellow-800',
+        verified: 'bg-blue-100 text-blue-800',
+        approved: 'bg-green-100 text-green-800',
+        rejected: 'bg-red-100 text-red-800',
+      };
+      return (
+        <Badge className={statusColors[status] || 'bg-gray-100 text-gray-800'}>
+          {status}
+        </Badge>
+      );
+    },
+  },
+  {
+    accessorKey: 'emailVerified',
+    header: 'Email Verified',
+    cell: ({ row }) => {
+      const emailVerified = row.original.emailVerified;
+      return (
+        <Badge variant={emailVerified ? 'default' : 'secondary'}>
+          {emailVerified ? 'Verified' : 'Pending'}
+        </Badge>
+      );
+    },
+  },
+  {
+    accessorKey: 'expand.otp.hasSent',
+    header: 'OTP Sent',
+    cell: ({ row }) => {
+      const otp = row.original.expand?.otp;
+      const hasSent = otp?.hasSent || false;
+      return (
+        <Badge variant={hasSent ? 'default' : 'outline'}>
+          {hasSent ? 'Sent' : 'Pending'}
+        </Badge>
+      );
+    },
   },
   {
     accessorKey: 'unitInterested',

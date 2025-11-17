@@ -27,6 +27,7 @@ export enum Collections {
 	MaintenanceRequests = "maintenance_requests",
 	MaintenanceWorkers = "maintenance_workers",
 	MonthlyRevenueTrendStatCardKpiView = "monthly_revenue_trend_stat_card_kpi_view",
+	Otp = "otp",
 	OutstandingReceivablesChartView = "outstanding_receivables_chart_view",
 	PaymentMethodsDistributionChartView = "payment_methods_distribution_chart_view",
 	Payments = "payments",
@@ -56,8 +57,8 @@ export type HTMLString = string
 
 type ExpandType<T> = unknown extends T
 	? T extends unknown
-		? { expand?: unknown }
-		: { expand: T }
+	? { expand?: unknown }
+	: { expand: T }
 	: { expand: T }
 
 // System fields
@@ -111,6 +112,19 @@ export type OtpsRecord = {
 	password: string
 	recordRef: string
 	sentTo?: string
+	updated: IsoAutoDateString
+}
+
+export type OtpRecord = {
+	id: string
+	inquiry: RecordIdString
+	code: string
+	expiresAt: IsoDateString
+	hasSent?: boolean
+	sentAt?: IsoDateString
+	verifiedAt?: IsoDateString
+	attemptCount?: number
+	created: IsoAutoDateString
 	updated: IsoAutoDateString
 }
 
@@ -269,10 +283,19 @@ export enum InquirySubmissionTypeOptions {
 	"Payment for deposit" = "Payment for deposit",
 	"Payment for advance" = "Payment for advance",
 }
+
+export enum InquiryStatusOptions {
+	"pending" = "pending",
+	"verified" = "verified",
+	"approved" = "approved",
+	"rejected" = "rejected",
+}
+
 export type InquiryRecord = {
 	age: number
 	created: IsoAutoDateString
 	email?: string
+	emailVerified?: boolean
 	firstName?: string
 	hasSent?: boolean
 	id: string
@@ -281,8 +304,11 @@ export type InquiryRecord = {
 	numberOfOccupants: number
 	phone?: string
 	qr_image_proof?: FileNameString
+	rejectionReason?: string
+	status?: InquiryStatusOptions
 	submission_type?: InquirySubmissionTypeOptions
 	unitInterested?: RecordIdString
+	verifiedAt?: IsoDateString
 	updated: IsoAutoDateString
 }
 
@@ -600,6 +626,7 @@ export type AuthoriginsResponse<Texpand = unknown> = Required<AuthoriginsRecord>
 export type ExternalauthsResponse<Texpand = unknown> = Required<ExternalauthsRecord> & BaseSystemFields<Texpand>
 export type MfasResponse<Texpand = unknown> = Required<MfasRecord> & BaseSystemFields<Texpand>
 export type OtpsResponse<Texpand = unknown> = Required<OtpsRecord> & BaseSystemFields<Texpand>
+export type OtpResponse<Texpand = unknown> = Required<OtpRecord> & BaseSystemFields<Texpand>
 export type SuperusersResponse<Texpand = unknown> = Required<SuperusersRecord> & AuthSystemFields<Texpand>
 export type ActiveTenanciesChartViewResponse<TleaseStatus = unknown, Texpand = unknown> = Required<ActiveTenanciesChartViewRecord<TleaseStatus>> & BaseSystemFields<Texpand>
 export type AnnouncementsResponse<Texpand = unknown> = Required<AnnouncementsRecord> & BaseSystemFields<Texpand>
@@ -660,6 +687,7 @@ export type CollectionRecords = {
 	maintenance_requests: MaintenanceRequestsRecord
 	maintenance_workers: MaintenanceWorkersRecord
 	monthly_revenue_trend_stat_card_kpi_view: MonthlyRevenueTrendStatCardKpiViewRecord
+	otp: OtpRecord
 	outstanding_receivables_chart_view: OutstandingReceivablesChartViewRecord
 	payment_methods_distribution_chart_view: PaymentMethodsDistributionChartViewRecord
 	payments: PaymentsRecord
@@ -702,6 +730,7 @@ export type CollectionResponses = {
 	maintenance_requests: MaintenanceRequestsResponse
 	maintenance_workers: MaintenanceWorkersResponse
 	monthly_revenue_trend_stat_card_kpi_view: MonthlyRevenueTrendStatCardKpiViewResponse
+	otp: OtpResponse
 	outstanding_receivables_chart_view: OutstandingReceivablesChartViewResponse
 	payment_methods_distribution_chart_view: PaymentMethodsDistributionChartViewResponse
 	payments: PaymentsResponse
@@ -726,13 +755,13 @@ export type CollectionResponses = {
 
 type ProcessCreateAndUpdateFields<T> = Omit<{
 	// Omit AutoDate fields
-	[K in keyof T as Extract<T[K], IsoAutoDateString> extends never ? K : never]: 
-		// Convert FileNameString to File
-		T[K] extends infer U ? 
-			U extends (FileNameString | FileNameString[]) ? 
-				U extends any[] ? File[] : File 
-			: U
-		: never
+	[K in keyof T as Extract<T[K], IsoAutoDateString> extends never ? K : never]:
+	// Convert FileNameString to File
+	T[K] extends infer U ?
+	U extends (FileNameString | FileNameString[]) ?
+	U extends any[] ? File[] : File
+	: U
+	: never
 }, 'id'>
 
 // Create type for Auth collections
@@ -770,14 +799,14 @@ export type UpdateBase<T> = Partial<
 // Get the correct create type for any collection
 export type Create<T extends keyof CollectionResponses> =
 	CollectionResponses[T] extends AuthSystemFields
-		? CreateAuth<CollectionRecords[T]>
-		: CreateBase<CollectionRecords[T]>
+	? CreateAuth<CollectionRecords[T]>
+	: CreateBase<CollectionRecords[T]>
 
 // Get the correct update type for any collection
 export type Update<T extends keyof CollectionResponses> =
 	CollectionResponses[T] extends AuthSystemFields
-		? UpdateAuth<CollectionRecords[T]>
-		: UpdateBase<CollectionRecords[T]>
+	? UpdateAuth<CollectionRecords[T]>
+	: UpdateBase<CollectionRecords[T]>
 
 // Type for usage with type asserted PocketBase instance
 // https://github.com/pocketbase/js-sdk#specify-typescript-definitions
