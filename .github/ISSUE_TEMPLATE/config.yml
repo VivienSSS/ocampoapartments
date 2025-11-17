@@ -1,0 +1,29 @@
+blank_issues_enabled: true
+contact_links: []
+issue_template_inquiry:
+  about: For inquiries or discussions, please use GitHub Discussions
+  contact_url: https://github.com/VivienSSS/ocampoapartments/discussions
+  name: Question or Discussion
+
+issue_templates:
+  - name: Bug Report
+    description: Report a bug or issue in the apartment management system
+    title: '[BUG] '
+    labels:
+      - 'type: bug'
+    assignees: []
+
+  - name: Feature Request
+    description: Suggest a new feature or improvement for the system
+    title: '[FEATURE] '
+    labels:
+      - 'type: feature'
+    assignees: []
+
+  - name: Database Migration
+    description: Request a database schema change or migration
+    title: '[DB] '
+    labels:
+      - 'type: database'
+      - 'area: backend'
+    assignees: []
