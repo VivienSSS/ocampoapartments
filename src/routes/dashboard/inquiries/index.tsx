@@ -4,8 +4,7 @@ import {
   ArrowUpDown,
   ChevronLeft,
   ChevronRight,
-  Edit,
-  Plus,
+  Filter,
 } from 'lucide-react';
 import { Button } from '@/components/ui/button';
 import {
@@ -18,14 +17,22 @@ import DataTable from '@/components/ui/kibo-ui/table/data-table';
 import { searchParams } from '@/lib/utils';
 import { listInqueryQuery } from '@/pocketbase/queries/inquries';
 import { UsersRoleOptions } from '@/pocketbase/types';
+import { useState } from 'react';
 import LoadingComponent from './-loading';
 import { columns } from './-table';
 import { inquirySchema } from '@/pocketbase/schemas/inquiry';
+import z from 'zod';
+
+const inquiryStatusOptions = ['pending', 'verified', 'approved', 'rejected'] as const;
 
 export const Route = createFileRoute('/dashboard/inquiries/')({
   component: RouteComponent,
   pendingComponent: LoadingComponent,
-  validateSearch: zodValidator(searchParams(inquirySchema.keyof())),
+  validateSearch: zodValidator(
+    searchParams(inquirySchema.keyof()).extend({
+      status: z.enum(inquiryStatusOptions).optional(),
+    })
+  ),
   beforeLoad: ({ search, context }) => {
     if (context.user.role !== UsersRoleOptions.Administrator && context.user.role !== UsersRoleOptions['Building Admin']) {
       throw redirect({ to: '/dashboard' });
@@ -59,6 +66,46 @@ function RouteComponent() {
       <section className="flex items-center justify-between py-2.5">
         <h1 className="text-2xl font-bold">Inquiries</h1>
         <div className="flex gap-2.5">
+          <DropdownMenu>
+            <DropdownMenuTrigger asChild>
+              <Button variant={searchQuery.status ? 'default' : 'outline'}>
+                <Filter className="w-4 h-4" />
+                Status {searchQuery.status && `(${searchQuery.status})`}
+              </Button>
+            </DropdownMenuTrigger>
+            <DropdownMenuContent>
+              <DropdownMenuItem
+                onClick={() =>
+                  navigate({
+                    search: (prev) => {
+                      const newSearch = { ...prev };
+                      delete newSearch.status;
+                      return { ...newSearch, page: 1 };
+                    },
+                  })
+                }
+              >
+                All Statuses
+              </DropdownMenuItem>
+              {inquiryStatusOptions.map((status) => (
+                <DropdownMenuItem
+                  key={status}
+                  onClick={() =>
+                    navigate({
+                      search: (prev) => ({
+                        ...prev,
+                        status,
+                        page: 1,
+                      }),
+                    })
+                  }
+                >
+                  {status.charAt(0).toUpperCase() + status.slice(1)}
+                </DropdownMenuItem>
+              ))}
+            </DropdownMenuContent>
+          </DropdownMenu>
+
           <Button
             disabled={searchQuery.page === 1}
             onClick={() =>

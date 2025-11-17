@@ -9,6 +9,8 @@
 // Additionally, you should also exclude this file from your linter and/or formatter to prevent it from being checked or modified.
 
 import { Route as rootRouteImport } from './routes/__root'
+import { Route as VerifyOtpRouteImport } from './routes/verify-otp'
+import { Route as RegisterRouteImport } from './routes/register'
 import { Route as DashboardRouteRouteImport } from './routes/dashboard/route'
 import { Route as IndexRouteImport } from './routes/index'
 import { Route as DashboardIndexRouteImport } from './routes/dashboard/index'
@@ -25,6 +27,16 @@ import { Route as DashboardBillingIndexRouteImport } from './routes/dashboard/bi
 import { Route as DashboardApartmentsIndexRouteImport } from './routes/dashboard/apartments/index'
 import { Route as DashboardAnnouncementsIndexRouteImport } from './routes/dashboard/announcements/index'
 
+const VerifyOtpRoute = VerifyOtpRouteImport.update({
+  id: '/verify-otp',
+  path: '/verify-otp',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const RegisterRoute = RegisterRouteImport.update({
+  id: '/register',
+  path: '/register',
+  getParentRoute: () => rootRouteImport,
+} as any)
 const DashboardRouteRoute = DashboardRouteRouteImport.update({
   id: '/dashboard',
   path: '/dashboard',
@@ -111,6 +123,8 @@ const DashboardAnnouncementsIndexRoute =
 export interface FileRoutesByFullPath {
   '/': typeof IndexRoute
   '/dashboard': typeof DashboardRouteRouteWithChildren
+  '/register': typeof RegisterRoute
+  '/verify-otp': typeof VerifyOtpRoute
   '/dashboard/': typeof DashboardIndexRoute
   '/dashboard/announcements': typeof DashboardAnnouncementsIndexRoute
   '/dashboard/apartments': typeof DashboardApartmentsIndexRoute
@@ -127,6 +141,8 @@ export interface FileRoutesByFullPath {
 }
 export interface FileRoutesByTo {
   '/': typeof IndexRoute
+  '/register': typeof RegisterRoute
+  '/verify-otp': typeof VerifyOtpRoute
   '/dashboard': typeof DashboardIndexRoute
   '/dashboard/announcements': typeof DashboardAnnouncementsIndexRoute
   '/dashboard/apartments': typeof DashboardApartmentsIndexRoute
@@ -145,6 +161,8 @@ export interface FileRoutesById {
   __root__: typeof rootRouteImport
   '/': typeof IndexRoute
   '/dashboard': typeof DashboardRouteRouteWithChildren
+  '/register': typeof RegisterRoute
+  '/verify-otp': typeof VerifyOtpRoute
   '/dashboard/': typeof DashboardIndexRoute
   '/dashboard/announcements/': typeof DashboardAnnouncementsIndexRoute
   '/dashboard/apartments/': typeof DashboardApartmentsIndexRoute
@@ -164,6 +182,8 @@ export interface FileRouteTypes {
   fullPaths:
     | '/'
     | '/dashboard'
+    | '/register'
+    | '/verify-otp'
     | '/dashboard/'
     | '/dashboard/announcements'
     | '/dashboard/apartments'
@@ -180,6 +200,8 @@ export interface FileRouteTypes {
   fileRoutesByTo: FileRoutesByTo
   to:
     | '/'
+    | '/register'
+    | '/verify-otp'
     | '/dashboard'
     | '/dashboard/announcements'
     | '/dashboard/apartments'
@@ -197,6 +219,8 @@ export interface FileRouteTypes {
     | '__root__'
     | '/'
     | '/dashboard'
+    | '/register'
+    | '/verify-otp'
     | '/dashboard/'
     | '/dashboard/announcements/'
     | '/dashboard/apartments/'
@@ -215,10 +239,26 @@ export interface FileRouteTypes {
 export interface RootRouteChildren {
   IndexRoute: typeof IndexRoute
   DashboardRouteRoute: typeof DashboardRouteRouteWithChildren
+  RegisterRoute: typeof RegisterRoute
+  VerifyOtpRoute: typeof VerifyOtpRoute
 }
 
 declare module '@tanstack/react-router' {
   interface FileRoutesByPath {
+    '/verify-otp': {
+      id: '/verify-otp'
+      path: '/verify-otp'
+      fullPath: '/verify-otp'
+      preLoaderRoute: typeof VerifyOtpRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/register': {
+      id: '/register'
+      path: '/register'
+      fullPath: '/register'
+      preLoaderRoute: typeof RegisterRouteImport
+      parentRoute: typeof rootRouteImport
+    }
     '/dashboard': {
       id: '/dashboard'
       path: '/dashboard'
@@ -366,6 +406,8 @@ const DashboardRouteRouteWithChildren = DashboardRouteRoute._addFileChildren(
 const rootRouteChildren: RootRouteChildren = {
   IndexRoute: IndexRoute,
   DashboardRouteRoute: DashboardRouteRouteWithChildren,
+  RegisterRoute: RegisterRoute,
+  VerifyOtpRoute: VerifyOtpRoute,
 }
 export const routeTree = rootRouteImport
   ._addFileChildren(rootRouteChildren)
