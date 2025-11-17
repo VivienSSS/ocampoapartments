@@ -9,12 +9,14 @@ get_field() {
 
 for file in $ISSUES_DIR/*.md; do
     title=$(get_field "title" "$file")
-    about=$(get_field "about" "$file")
     
-    # Create issue with title, brief description from 'about', and labels
+    # Extract body: skip YAML front matter, get everything until end of file
+    body=$(awk '/^---$/,/^---$/ {next} {print}' "$file")
+    
+    # Create issue with title, full body, and labels
     gh issue create \
         --title "$title" \
-        --body "$about" \
+        --body "$body" \
         --label "feature" \
         --repo "$REPO"
     
