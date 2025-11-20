@@ -17,6 +17,9 @@ export const inquirySchema = z.object({
     emailVerified: z.boolean(),
     verifiedAt: z.date().optional(),
     rejectionReason: z.string().optional(),
+    approval_status: z.enum(['pending', 'approved', 'rejected']).optional(),
+    approval_notes: z.string().optional(),
+    rejection_reason: z.string().optional(),
     created: z.date().optional(),
     updated: z.date().optional(),
 })
@@ -34,4 +37,19 @@ export const updateInquiryStatusSchema = z.object({
     inquiryId: z.string(),
     status: z.enum(['approved', 'rejected']),
     rejectionReason: z.string().optional(),
+});
+
+export const approveInquirySchema = z.object({
+    inquiryId: z.string(),
+    approval_notes: z.string().optional(),
+});
+
+export const rejectInquirySchema = z.object({
+    inquiryId: z.string(),
+    rejection_reason: z.string().min(1, 'Rejection reason is required'),
+});
+
+export const createAccountSchema = z.object({
+    inquiryId: z.string(),
+    approval_notes: z.string().optional(),
 });

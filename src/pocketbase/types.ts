@@ -57,8 +57,8 @@ export type HTMLString = string
 
 type ExpandType<T> = unknown extends T
 	? T extends unknown
-	? { expand?: unknown }
-	: { expand: T }
+		? { expand?: unknown }
+		: { expand: T }
 	: { expand: T }
 
 // System fields
@@ -115,19 +115,6 @@ export type OtpsRecord = {
 	updated: IsoAutoDateString
 }
 
-export type OtpRecord = {
-	id: string
-	inquiry: RecordIdString
-	code: string
-	expiresAt: IsoDateString
-	hasSent?: boolean
-	sentAt?: IsoDateString
-	verifiedAt?: IsoDateString
-	attemptCount?: number
-	created: IsoAutoDateString
-	updated: IsoAutoDateString
-}
-
 export type SuperusersRecord = {
 	created: IsoAutoDateString
 	email: string
@@ -158,6 +145,7 @@ export type ActiveTenanciesChartViewRecord<TleaseStatus = unknown> = {
 export type AnnouncementsRecord = {
 	author: RecordIdString
 	created: IsoAutoDateString
+	hasSent?: boolean
 	id: string
 	message: HTMLString
 	title: string
@@ -166,9 +154,11 @@ export type AnnouncementsRecord = {
 
 export type ApartmentUnitsRecord = {
 	capacity: number
+	carousel_image?: FileNameString[]
 	created: IsoAutoDateString
 	floorNumber: number
 	id: string
+	image?: FileNameString
 	isAvailable?: boolean
 	price: number
 	property: RecordIdString
@@ -179,8 +169,6 @@ export type ApartmentUnitsRecord = {
 export enum BillItemAnalysisStatCardKpiViewChargeTypeOptions {
 	"Rent" = "Rent",
 	"Water" = "Water",
-	"Electricity" = "Electricity",
-	"Miscellaneous" = "Miscellaneous",
 }
 export type BillItemAnalysisStatCardKpiViewRecord<TavgAmount = unknown, TpercentageOfTotal = unknown, TtotalAmount = unknown> = {
 	avgAmount?: null | TavgAmount
@@ -195,8 +183,6 @@ export type BillItemAnalysisStatCardKpiViewRecord<TavgAmount = unknown, Tpercent
 export enum BillItemsChargeTypeOptions {
 	"Rent" = "Rent",
 	"Water" = "Water",
-	"Electricity" = "Electricity",
-	"Miscellaneous" = "Miscellaneous",
 }
 export type BillItemsRecord = {
 	amount?: number
@@ -216,6 +202,7 @@ export enum BillsStatusOptions {
 export type BillsRecord = {
 	created: IsoAutoDateString
 	dueDate: IsoDateString
+	hasSent?: boolean
 	id: string
 	status: BillsStatusOptions
 	tenancy: RecordIdString
@@ -279,37 +266,28 @@ export type HighPriorityUnresolvedRequestsStatCardKpiViewRecord<TdaysOpen = unkn
 	urgency: HighPriorityUnresolvedRequestsStatCardKpiViewUrgencyOptions
 }
 
-export enum InquirySubmissionTypeOptions {
-	"Payment for deposit" = "Payment for deposit",
-	"Payment for advance" = "Payment for advance",
-}
-
 export enum InquiryStatusOptions {
 	"pending" = "pending",
 	"verified" = "verified",
 	"approved" = "approved",
 	"rejected" = "rejected",
 }
-
 export type InquiryRecord = {
 	age: number
 	created: IsoAutoDateString
-	email?: string
+	email: string
 	emailVerified?: boolean
-	firstName?: string
+	firstName: string
 	hasSent?: boolean
 	id: string
-	lastName?: string
+	lastName: string
 	message?: HTMLString
 	numberOfOccupants: number
 	phone?: string
-	qr_image_proof?: FileNameString
 	rejectionReason?: string
 	status?: InquiryStatusOptions
-	submission_type?: InquirySubmissionTypeOptions
-	unitInterested?: RecordIdString
-	verifiedAt?: IsoDateString
 	updated: IsoAutoDateString
+	verifiedAt?: IsoDateString
 }
 
 export type MaintenanceOperationStatCardKpiViewRecord = {
@@ -371,6 +349,7 @@ export type MaintenanceRequestsRecord = {
 	completedDate?: IsoDateString
 	created: IsoAutoDateString
 	description: HTMLString
+	hasSent?: boolean
 	id: string
 	status?: MaintenanceRequestsStatusOptions
 	submittedDate?: IsoDateString
@@ -397,6 +376,19 @@ export type MonthlyRevenueTrendStatCardKpiViewRecord<TavgPaymentSize = unknown, 
 	monthlyRevenue?: null | TmonthlyRevenue
 	paymentCount?: number
 	uniqueTenants?: number
+}
+
+export type OtpRecord = {
+	attemptCount?: number
+	code: string
+	created: IsoAutoDateString
+	expiresAt: IsoDateString
+	hasSent?: boolean
+	id: string
+	inquiry: RecordIdString
+	sentAt?: IsoDateString
+	updated: IsoAutoDateString
+	verifiedAt?: IsoDateString
 }
 
 export type OutstandingReceivablesChartViewRecord<TmostRecentDueDate = unknown, TtotalOutstanding = unknown, TurgencyLevel = unknown> = {
@@ -432,6 +424,7 @@ export type PaymentsRecord = {
 	amountPaid?: number
 	bill: RecordIdString
 	created: IsoAutoDateString
+	hasSent?: boolean
 	id: string
 	paymentDate: IsoDateString
 	paymentMethod: PaymentsPaymentMethodOptions
@@ -515,6 +508,7 @@ export type RevenuePerPropertyChartViewRecord<TcurrentMonthlyRevenue = unknown, 
 
 export type TenanciesRecord = {
 	created: IsoAutoDateString
+	hasSent?: boolean
 	id: string
 	leaseEndDate: IsoDateString
 	leaseStartDate: IsoDateString
@@ -591,6 +585,7 @@ export enum UsersRoleOptions {
 	"Administrator" = "Administrator",
 	"Building Admin" = "Building Admin",
 	"Tenant" = "Tenant",
+	"Applicant" = "Applicant",
 }
 export type UsersRecord = {
 	contactEmail: string
@@ -626,7 +621,6 @@ export type AuthoriginsResponse<Texpand = unknown> = Required<AuthoriginsRecord>
 export type ExternalauthsResponse<Texpand = unknown> = Required<ExternalauthsRecord> & BaseSystemFields<Texpand>
 export type MfasResponse<Texpand = unknown> = Required<MfasRecord> & BaseSystemFields<Texpand>
 export type OtpsResponse<Texpand = unknown> = Required<OtpsRecord> & BaseSystemFields<Texpand>
-export type OtpResponse<Texpand = unknown> = Required<OtpRecord> & BaseSystemFields<Texpand>
 export type SuperusersResponse<Texpand = unknown> = Required<SuperusersRecord> & AuthSystemFields<Texpand>
 export type ActiveTenanciesChartViewResponse<TleaseStatus = unknown, Texpand = unknown> = Required<ActiveTenanciesChartViewRecord<TleaseStatus>> & BaseSystemFields<Texpand>
 export type AnnouncementsResponse<Texpand = unknown> = Required<AnnouncementsRecord> & BaseSystemFields<Texpand>
@@ -644,6 +638,7 @@ export type MaintenanceRequestStatusStatCardKpiViewResponse<TavgResolutionDays =
 export type MaintenanceRequestsResponse<Texpand = unknown> = Required<MaintenanceRequestsRecord> & BaseSystemFields<Texpand>
 export type MaintenanceWorkersResponse<Texpand = unknown> = Required<MaintenanceWorkersRecord> & BaseSystemFields<Texpand>
 export type MonthlyRevenueTrendStatCardKpiViewResponse<TavgPaymentSize = unknown, Tmonth = unknown, TmonthlyRevenue = unknown, Texpand = unknown> = Required<MonthlyRevenueTrendStatCardKpiViewRecord<TavgPaymentSize, Tmonth, TmonthlyRevenue>> & BaseSystemFields<Texpand>
+export type OtpResponse<Texpand = unknown> = Required<OtpRecord> & BaseSystemFields<Texpand>
 export type OutstandingReceivablesChartViewResponse<TmostRecentDueDate = unknown, TtotalOutstanding = unknown, TurgencyLevel = unknown, Texpand = unknown> = Required<OutstandingReceivablesChartViewRecord<TmostRecentDueDate, TtotalOutstanding, TurgencyLevel>> & BaseSystemFields<Texpand>
 export type PaymentMethodsDistributionChartViewResponse<TavgPaymentAmount = unknown, TpaymentMethodPercentage = unknown, TtotalAmountPaid = unknown, Texpand = unknown> = Required<PaymentMethodsDistributionChartViewRecord<TavgPaymentAmount, TpaymentMethodPercentage, TtotalAmountPaid>> & BaseSystemFields<Texpand>
 export type PaymentsResponse<Texpand = unknown> = Required<PaymentsRecord> & BaseSystemFields<Texpand>
@@ -755,13 +750,13 @@ export type CollectionResponses = {
 
 type ProcessCreateAndUpdateFields<T> = Omit<{
 	// Omit AutoDate fields
-	[K in keyof T as Extract<T[K], IsoAutoDateString> extends never ? K : never]:
-	// Convert FileNameString to File
-	T[K] extends infer U ?
-	U extends (FileNameString | FileNameString[]) ?
-	U extends any[] ? File[] : File
-	: U
-	: never
+	[K in keyof T as Extract<T[K], IsoAutoDateString> extends never ? K : never]: 
+		// Convert FileNameString to File
+		T[K] extends infer U ? 
+			U extends (FileNameString | FileNameString[]) ? 
+				U extends any[] ? File[] : File 
+			: U
+		: never
 }, 'id'>
 
 // Create type for Auth collections
@@ -799,14 +794,14 @@ export type UpdateBase<T> = Partial<
 // Get the correct create type for any collection
 export type Create<T extends keyof CollectionResponses> =
 	CollectionResponses[T] extends AuthSystemFields
-	? CreateAuth<CollectionRecords[T]>
-	: CreateBase<CollectionRecords[T]>
+		? CreateAuth<CollectionRecords[T]>
+		: CreateBase<CollectionRecords[T]>
 
 // Get the correct update type for any collection
 export type Update<T extends keyof CollectionResponses> =
 	CollectionResponses[T] extends AuthSystemFields
-	? UpdateAuth<CollectionRecords[T]>
-	: UpdateBase<CollectionRecords[T]>
+		? UpdateAuth<CollectionRecords[T]>
+		: UpdateBase<CollectionRecords[T]>
 
 // Type for usage with type asserted PocketBase instance
 // https://github.com/pocketbase/js-sdk#specify-typescript-definitions

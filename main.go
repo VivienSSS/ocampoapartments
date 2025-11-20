@@ -3,7 +3,7 @@ package main
 import (
 	"fmt"
 	"log"
-	"math/rand"
+	mrand "math/rand"
 	"os"
 	"time"
 
@@ -14,6 +14,38 @@ import (
 
 	_ "github.com/VivienSSS/ocampoapartments/migrations"
 )
+
+// generatePassword creates a secure 16-character password with mixed character types
+func generatePassword() string {
+	const (
+		uppercase = "ABCDEFGHIJKLMNOPQRSTUVWXYZ"
+		lowercase = "abcdefghijklmnopqrstuvwxyz"
+		numbers   = "0123456789"
+		special   = "!@#$%^&*"
+	)
+
+	all := uppercase + lowercase + numbers + special
+	password := make([]byte, 16)
+
+	// Ensure at least one of each type
+	password[0] = uppercase[mrand.Intn(len(uppercase))]
+	password[1] = lowercase[mrand.Intn(len(lowercase))]
+	password[2] = numbers[mrand.Intn(len(numbers))]
+	password[3] = special[mrand.Intn(len(special))]
+
+	// Fill the rest randomly
+	for i := 4; i < 16; i++ {
+		password[i] = all[mrand.Intn(len(all))]
+	}
+
+	// Shuffle to randomize positions
+	for i := len(password) - 1; i > 0; i-- {
+		j := mrand.Intn(i + 1)
+		password[i], password[j] = password[j], password[i]
+	}
+
+	return string(password)
+}
 
 func main() {
 	app := pocketbase.New()
@@ -27,7 +59,7 @@ func main() {
 	// Generates a 6-digit code and sets expiresAt to now + 5 minutes
 	app.OnRecordCreate("otp").BindFunc(func(e *core.RecordEvent) error {
 		// Generate 6-digit code
-		code := fmt.Sprintf("%06d", rand.Intn(1000000))
+		code := fmt.Sprintf("%06d", mrand.Intn(1000000))
 		e.Record.Set("code", code)
 
 		// Set expiresAt to now + 5 minutes
@@ -60,6 +92,80 @@ func main() {
 	})
 
 	app.OnServe().BindFunc(func(se *core.ServeEvent) error {
+		// Custom endpoint for creating account from inquiry
+		se.Router.POST("/api/inquiry/create-account", func(e *core.RequestEvent) error {
+			inquiryId := e.Request.FormValue("inquiryId")
+
+			if inquiryId == "" {
+				return e.JSON(400, map[string]string{"error": "inquiryId is required"})
+			}
+
+			// Get the inquiry
+			inquiry, err := app.FindRecordById("inquiry", inquiryId)
+			if err != nil {
+				return e.JSON(404, map[string]string{"error": "Inquiry not found"})
+			}
+
+			// Check if inquiry is approved
+			if inquiry.GetString("approval_status") != "approved" {
+				return e.JSON(400, map[string]string{"error": "Inquiry must be approved first"})
+			}
+
+			// Generate temporary password
+			password := generatePassword()
+
+			// Get users collection
+			usersCollection, err := app.FindCollectionByNameOrId("_pb_users_auth_")
+			if err != nil {
+				return e.JSON(500, map[string]string{"error": "Users collection not found"})
+			}
+
+			// Create user record
+			user := core.NewRecord(usersCollection)
+			user.Set("email", inquiry.GetString("email"))
+			user.Set("username", inquiry.GetString("email"))
+			user.Set("password", password)
+			user.Set("firstName", inquiry.GetString("firstName"))
+			user.Set("lastName", inquiry.GetString("lastName"))
+			user.Set("role", "Tenant")
+			user.Set("isActive", true)
+
+			if err := app.Save(user); err != nil {
+				return e.JSON(500, map[string]string{"error": "Failed to create user: " + err.Error()})
+			}
+
+			// Get tenants collection
+			tenantCollection, err := app.FindCollectionByNameOrId("tenants")
+			if err != nil {
+				return e.JSON(500, map[string]string{"error": "Tenants collection not found"})
+			}
+
+			// Create tenant record linking to user
+			tenant := core.NewRecord(tenantCollection)
+			tenant.Set("user", user.Id)
+			tenant.Set("phoneNumber", inquiry.GetString("phone"))
+
+			if err := app.Save(tenant); err != nil {
+				return e.JSON(500, map[string]string{"error": "Failed to create tenant: " + err.Error()})
+			}
+
+			// Update inquiry approval_status to track account creation
+			inquiry.Set("approval_status", "approved")
+			if err := app.Save(inquiry); err != nil {
+				return e.JSON(500, map[string]string{"error": "Failed to update inquiry: " + err.Error()})
+			}
+
+			// Return credentials for email sending
+			return e.JSON(200, map[string]interface{}{
+				"user_id":    user.Id,
+				"email":      user.GetString("email"),
+				"password":   password,
+				"tenant_id":  tenant.Id,
+				"first_name": user.GetString("firstName"),
+				"last_name":  user.GetString("lastName"),
+			})
+		})
+
 		se.Router.GET("/{path...}", apis.Static(os.DirFS("./dist"), true))
 		return se.Next()
 	})
