@@ -13,9 +13,10 @@ import { Textarea } from '@/components/ui/textarea';
 import { pb } from '@/pocketbase';
 import { Collections, type InquiryResponse } from '@/pocketbase/types';
 import { useMutation, useQueryClient } from '@tanstack/react-query';
-import { X } from 'lucide-react';
+import { X, AlertTriangle } from 'lucide-react';
 import { useState } from 'react';
 import { toast } from 'sonner';
+import { Alert, AlertDescription } from '@/components/ui/alert';
 
 interface RejectInquiryDialogProps {
   inquiry: InquiryResponse;
@@ -33,17 +34,21 @@ export function RejectInquiryDialog({ inquiry }: RejectInquiryDialogProps) {
         throw new Error('Rejection reason is required');
       }
 
+      if (reason.trim().length < 10) {
+        throw new Error('Rejection reason must be at least 10 characters');
+      }
+
       // Update inquiry status to rejected
       await pb.collection(Collections.Inquiry).update(inquiry.id, {
         status: 'rejected',
         rejectionReason: reason.trim(),
       });
 
-      // TODO: In a real implementation, this would trigger an email via n8n or PocketBase hooks
-      // For now, we'll rely on external automation to watch for rejected status
+      // Note: Email notification will be sent via external automation (n8n or PocketBase hooks)
+      // that watches for status changes to 'rejected'
     },
     onSuccess: () => {
-      toast.success('Inquiry rejected and notification sent');
+      toast.success('Inquiry rejected. Rejection email will be sent to the applicant.');
       queryClient.invalidateQueries({ queryKey: [Collections.Inquiry] });
       setOpen(false);
       setReason('');
@@ -59,8 +64,18 @@ export function RejectInquiryDialog({ inquiry }: RejectInquiryDialogProps) {
       setError('Rejection reason is required');
       return;
     }
+    if (reason.trim().length < 10) {
+      setError('Rejection reason must be at least 10 characters');
+      return;
+    }
     setError('');
     rejectMutation.mutate();
+  };
+
+  const handleClose = () => {
+    setOpen(false);
+    setReason('');
+    setError('');
   };
 
   return (
@@ -71,15 +86,26 @@ export function RejectInquiryDialog({ inquiry }: RejectInquiryDialogProps) {
           Reject
         </Button>
       </DialogTrigger>
-      <DialogContent>
+      <DialogContent className="max-w-2xl">
         <DialogHeader>
-          <DialogTitle>Reject Inquiry</DialogTitle>
+          <DialogTitle className="flex items-center gap-2">
+            <AlertTriangle className="h-5 w-5 text-destructive" />
+            Reject Inquiry
+          </DialogTitle>
           <DialogDescription>
-            Reject this inquiry and notify the applicant. A rejection reason is required.
+            Reject this inquiry and notify the applicant. A detailed rejection reason is required.
           </DialogDescription>
         </DialogHeader>
         <div className="space-y-4">
-          <div className="rounded-md bg-red-50 p-4">
+          <Alert variant="destructive">
+            <AlertTriangle className="h-4 w-4" />
+            <AlertDescription>
+              This action will permanently reject this inquiry. The applicant will receive an email
+              with the rejection reason you provide below.
+            </AlertDescription>
+          </Alert>
+
+          <div className="rounded-md bg-red-50 p-4 space-y-2">
             <p className="text-sm text-red-700">
               <strong>Applicant:</strong> {inquiry.firstName} {inquiry.lastName}
             </p>
@@ -87,8 +113,16 @@ export function RejectInquiryDialog({ inquiry }: RejectInquiryDialogProps) {
               <strong>Email:</strong> {inquiry.email}
             </p>
             <p className="text-sm text-red-700">
-              <strong>Status:</strong> {inquiry.status}
+              <strong>Phone:</strong> {inquiry.phone}
             </p>
+            <p className="text-sm text-red-700">
+              <strong>Current Status:</strong> {inquiry.status}
+            </p>
+            {inquiry.message && (
+              <p className="text-sm text-red-700">
+                <strong>Message:</strong> {inquiry.message}
+              </p>
+            )}
           </div>
 
           <div className="space-y-2">
@@ -97,7 +131,7 @@ export function RejectInquiryDialog({ inquiry }: RejectInquiryDialogProps) {
             </Label>
             <Textarea
               id="reason"
-              placeholder="Please provide a clear reason for rejection..."
+              placeholder="Please provide a clear and professional reason for rejection (minimum 10 characters)..."
               value={reason}
               onChange={(e) => {
                 setReason(e.target.value);
@@ -109,29 +143,25 @@ export function RejectInquiryDialog({ inquiry }: RejectInquiryDialogProps) {
             {error && <p className="text-sm text-red-500">{error}</p>}
             <p className="text-xs text-muted-foreground">
               This reason will be sent to the applicant via email and logged for audit purposes.
+              Please be professional and specific.
             </p>
           </div>
 
           <div className="rounded-md bg-yellow-50 p-4">
-            <p className="text-sm text-yellow-700">
-              <strong>This action will:</strong>
-              <br />
-              • Set inquiry status to "rejected"
-              <br />
-              • Send rejection email to applicant with reason
-              <br />
-              • Prevent account creation
-              <br />
-              • Log rejection reason for audit trail
+            <p className="text-sm text-yellow-700 font-semibold mb-2">
+              This action will:
             </p>
+            <ul className="list-disc list-inside text-sm text-yellow-700 space-y-1">
+              <li>Set inquiry status to "rejected"</li>
+              <li>Send rejection email to <strong>{inquiry.email}</strong> with your reason</li>
+              <li>Prevent any further processing or account creation</li>
+              <li>Log rejection reason and timestamp for audit trail</li>
+              <li>Tenant account will remain inactive</li>
+            </ul>
           </div>
         </div>
         <DialogFooter>
-          <Button variant="outline" onClick={() => {
-            setOpen(false);
-            setReason('');
-            setError('');
-          }}>
+          <Button variant="outline" onClick={handleClose}>
             Cancel
           </Button>
           <Button

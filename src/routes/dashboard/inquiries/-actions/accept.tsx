@@ -13,9 +13,10 @@ import { Textarea } from '@/components/ui/textarea';
 import { pb } from '@/pocketbase';
 import { Collections, type InquiryResponse } from '@/pocketbase/types';
 import { useMutation, useQueryClient } from '@tanstack/react-query';
-import { Check } from 'lucide-react';
+import { Check, AlertCircle } from 'lucide-react';
 import { useState } from 'react';
 import { toast } from 'sonner';
+import { Alert, AlertDescription } from '@/components/ui/alert';
 
 interface AcceptInquiryDialogProps {
   inquiry: InquiryResponse;
@@ -33,9 +34,15 @@ export function AcceptInquiryDialog({ inquiry }: AcceptInquiryDialogProps) {
         status: 'approved',
         rejectionReason: note || null, // Store acceptance note/reason
       });
+
+      // TODO: Phase 3 - Account creation will be triggered here
+      // This could be done via:
+      // 1. PocketBase hooks watching for approved status
+      // 2. n8n automation triggered by status change
+      // 3. Separate admin action to create account after approval
     },
     onSuccess: () => {
-      toast.success('Inquiry approved successfully');
+      toast.success('Inquiry approved successfully. Account creation process will begin.');
       queryClient.invalidateQueries({ queryKey: [Collections.Inquiry] });
       setOpen(false);
       setNote('');
@@ -64,7 +71,7 @@ export function AcceptInquiryDialog({ inquiry }: AcceptInquiryDialogProps) {
           Accept
         </Button>
       </DialogTrigger>
-      <DialogContent>
+      <DialogContent className="max-w-2xl">
         <DialogHeader>
           <DialogTitle>Accept Inquiry</DialogTitle>
           <DialogDescription>
@@ -72,7 +79,17 @@ export function AcceptInquiryDialog({ inquiry }: AcceptInquiryDialogProps) {
           </DialogDescription>
         </DialogHeader>
         <div className="space-y-4">
-          <div className="rounded-md bg-green-50 p-4">
+          {!canAccept && (
+            <Alert variant="destructive">
+              <AlertCircle className="h-4 w-4" />
+              <AlertDescription>
+                This inquiry cannot be accepted because the email has not been verified.
+                Please send an OTP and wait for the applicant to verify their email first.
+              </AlertDescription>
+            </Alert>
+          )}
+
+          <div className="rounded-md bg-green-50 p-4 space-y-2">
             <p className="text-sm text-green-700">
               <strong>Applicant:</strong> {inquiry.firstName} {inquiry.lastName}
             </p>
@@ -80,7 +97,19 @@ export function AcceptInquiryDialog({ inquiry }: AcceptInquiryDialogProps) {
               <strong>Email:</strong> {inquiry.email}
             </p>
             <p className="text-sm text-green-700">
-              <strong>Status:</strong> {inquiry.status}
+              <strong>Phone:</strong> {inquiry.phone}
+            </p>
+            <p className="text-sm text-green-700">
+              <strong>Age:</strong> {inquiry.age}
+            </p>
+            <p className="text-sm text-green-700">
+              <strong>Occupants:</strong> {inquiry.numberOfOccupants}
+            </p>
+            <p className="text-sm text-green-700">
+              <strong>Current Status:</strong> {inquiry.status}
+            </p>
+            <p className="text-sm text-green-700">
+              <strong>Email Verified:</strong> {inquiry.emailVerified ? '✓ Yes' : '✗ No'}
             </p>
           </div>
 
@@ -99,15 +128,16 @@ export function AcceptInquiryDialog({ inquiry }: AcceptInquiryDialogProps) {
           </div>
 
           <div className="rounded-md bg-blue-50 p-4">
-            <p className="text-sm text-blue-700">
-              <strong>Next Steps:</strong>
-              <br />
-              • Inquiry status will be set to "approved"
-              <br />
-              • Account creation process will be initiated
-              <br />
-              • Tenant will be activated in the system
+            <p className="text-sm text-blue-700 font-semibold mb-2">
+              Next Steps After Approval:
             </p>
+            <ul className="list-disc list-inside text-sm text-blue-700 space-y-1">
+              <li>Inquiry status will be set to "approved"</li>
+              <li>Phase 3: Account Creation process will be triggered</li>
+              <li>User account will be created with "Applicant" role</li>
+              <li>Tenant record will be linked to the user account</li>
+              <li>Applicant will receive activation email</li>
+            </ul>
           </div>
         </div>
         <DialogFooter>
@@ -116,7 +146,7 @@ export function AcceptInquiryDialog({ inquiry }: AcceptInquiryDialogProps) {
           </Button>
           <Button
             onClick={() => acceptMutation.mutate()}
-            disabled={acceptMutation.isPending}
+            disabled={acceptMutation.isPending || !canAccept}
           >
             {acceptMutation.isPending ? 'Processing...' : 'Accept Inquiry'}
           </Button>
