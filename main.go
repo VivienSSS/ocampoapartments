@@ -91,6 +91,54 @@ func main() {
 		return e.Next()
 	})
 
+	// Hook 3: Account creation links user credentials to tenant profile
+	app.OnRecordUpdate("users").BindFunc(func(e *core.RecordEvent) error {
+
+		// skip any tenant roles
+		if e.Record.GetString("role") != "Applicant" {
+			return e.Next()
+		}
+
+		// if accepted, create a new tenant record for that user
+		// set the isActive to true
+		if e.Record.GetBool("isAccepted") {
+
+			// set the user to be active
+			e.Record.Set("isActive", true)
+
+			// change the role from applicant to tenant.
+			e.Record.Set("role", "Tenant")
+
+			// create a new tenant
+
+			tenantCollection, err := e.App.FindCollectionByNameOrId("tenants")
+
+			if err != nil {
+				return err
+			}
+
+			newTenantRecord := core.NewRecord(tenantCollection)
+
+			newTenantRecord.Set("user", e.Record.Id)
+
+			if err := e.App.Save(newTenantRecord); err != nil {
+				return err
+			}
+		}
+
+		// if rejected, set the isActive to false
+		if e.Record.GetBool("isRejected") {
+			// set the user to be inactive
+			e.Record.Set("isActive", false)
+
+			e.Record.Set("rejectionReason", `
+				sorry, your application has been denied
+			`)
+		}
+
+		return e.Next()
+	})
+
 	app.OnServe().BindFunc(func(se *core.ServeEvent) error {
 		// Custom endpoint for creating account from inquiry
 		se.Router.POST("/api/inquiry/create-account", func(e *core.RequestEvent) error {
@@ -127,8 +175,8 @@ func main() {
 			user.Set("password", password)
 			user.Set("firstName", inquiry.GetString("firstName"))
 			user.Set("lastName", inquiry.GetString("lastName"))
-			user.Set("role", "Tenant")
-			user.Set("isActive", true)
+			user.Set("role", "Applicant")
+			user.Set("isActive", false)
 
 			if err := app.Save(user); err != nil {
 				return e.JSON(500, map[string]string{"error": "Failed to create user: " + err.Error()})
