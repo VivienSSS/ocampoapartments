@@ -26,6 +26,13 @@ import {
 } from '@/components/ui/dialog';
 import { Separator } from '@/components/ui/separator';
 import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
+import {
+  Carousel,
+  CarouselContent,
+  CarouselItem,
+  CarouselNext,
+  CarouselPrevious,
+} from '@/components/ui/carousel';
 import type { ApartmentUnitsResponse } from '@/pocketbase/queries/apartmentUnits';
 
 // TypeScript interfaces for transformed data
@@ -285,6 +292,33 @@ function PropertyTabs() {
                               </DialogHeader>
 
                               <div className="space-y-6">
+                                {/* Image Carousel */}
+                                {unit.carousel_image && unit.carousel_image.length > 0 ? (
+                                  <Card className="overflow-hidden border-0 shadow-lg">
+                                    <Carousel className="w-full">
+                                      <CarouselContent>
+                                        {unit.carousel_image.map((image, index) => (
+                                          <CarouselItem key={index}>
+                                            <div className="relative w-full h-96 bg-muted flex items-center justify-center overflow-hidden rounded-lg">
+                                              <img
+                                                src={pb.files.getURL(unit, image)}
+                                                alt={`Unit ${unit.unitLetter} - Image ${index + 1}`}
+                                                className="w-full h-full object-cover hover:scale-105 transition-transform duration-300"
+                                              />
+                                            </div>
+                                          </CarouselItem>
+                                        ))}
+                                      </CarouselContent>
+                                      {unit.carousel_image.length > 1 && (
+                                        <>
+                                          <CarouselPrevious className="left-2 bg-primary dark:bg-primary hover:bg-primary/90 dark:hover:bg-primary/90 text-primary-foreground border-0" />
+                                          <CarouselNext className="right-2 bg-primary dark:bg-primary hover:bg-primary/90 dark:hover:bg-primary/90 text-primary-foreground border-0" />
+                                        </>
+                                      )}
+                                    </Carousel>
+                                  </Card>
+                                ) : null}
+
                                 {/* Unit Overview */}
                                 <div className="grid grid-cols-1 md:grid-cols-1 gap-4">
                                   <Card>
