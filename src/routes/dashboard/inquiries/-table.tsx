@@ -13,6 +13,9 @@ import {
 import { pb } from '@/pocketbase';
 import type { ApartmentUnitsResponse, InquiryResponse, PropertiesResponse, OtpResponse } from '@/pocketbase/types';
 import { Badge } from '@/components/ui/badge';
+import { SendOtpDialog } from './-actions/send-otp';
+import { AcceptInquiryDialog } from './-actions/accept';
+import { RejectInquiryDialog } from './-actions/reject';
 
 export const columns: ColumnDef<InquiryResponse<{ unitInterested: ApartmentUnitsResponse<{ property: PropertiesResponse }>, otp: OtpResponse }>>[] = [
   {
@@ -164,5 +167,19 @@ export const columns: ColumnDef<InquiryResponse<{ unitInterested: ApartmentUnits
   {
     accessorKey: 'updated',
     header: 'Updated',
+  },
+  {
+    id: 'actions',
+    header: 'Actions',
+    cell: ({ row }) => {
+      const inquiry = row.original;
+      return (
+        <div className="flex gap-2">
+          <SendOtpDialog inquiry={inquiry} />
+          <AcceptInquiryDialog inquiry={inquiry} />
+          <RejectInquiryDialog inquiry={inquiry} />
+        </div>
+      );
+    },
   },
 ];

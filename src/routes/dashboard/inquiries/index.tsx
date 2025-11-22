@@ -15,7 +15,7 @@ import {
 } from '@/components/ui/dropdown-menu';
 import DataTable from '@/components/ui/kibo-ui/table/data-table';
 import { searchParams } from '@/lib/utils';
-import { listInqueryQuery } from '@/pocketbase/queries/inquries';
+import { listInquiriesWithOtpQuery } from '@/pocketbase/queries/inquries';
 import { UsersRoleOptions } from '@/pocketbase/types';
 import { useState } from 'react';
 import LoadingComponent from './-loading';
@@ -46,9 +46,10 @@ export const Route = createFileRoute('/dashboard/inquiries/')({
         .join(',')
       : undefined;
     return context.queryClient.fetchQuery(
-      listInqueryQuery(
+      listInquiriesWithOtpQuery(
         context.search.page,
         context.search.perPage,
+        context.search.status,
         sortString,
       ),
     );

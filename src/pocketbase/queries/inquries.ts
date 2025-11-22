@@ -31,10 +31,10 @@ export const listInquiriesWithOtpQuery = (
         queryFn: async () => {
             const filter = status ? `status = '${status}'` : '';
             return pb
-                .collection<InquiryResponse<{ otp: OtpResponse }>>(Collections.Inquiry)
+                .collection<InquiryResponse<{ unitInterested: ApartmentUnitsResponse<{ property: PropertiesResponse }>, otp: OtpResponse }>>(Collections.Inquiry)
                 .getList(page, perPage, {
                     filter,
-                    expand: 'otp',
+                    expand: 'otp,unitInterested.property',
                     sort: sort || '-created',
                 });
         },
