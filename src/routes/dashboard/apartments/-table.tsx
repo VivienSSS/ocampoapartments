@@ -27,22 +27,15 @@ const MainImageCell = ({ unit }: { unit: ApartmentUnitsResponse }) => {
 
   return (
     <>
-      <div className="flex items-center gap-2">
-        <img
-          src={pb.files.getURL(unit, image)}
-          alt="Main"
-          className="w-8 h-8 rounded object-cover"
-        />
-        <Button
-          variant="ghost"
-          size="sm"
-          onClick={() => setIsOpen(true)}
-          className="gap-1 h-auto px-2 py-1 text-xs"
-        >
-          <Eye className="w-3.5 h-3.5" />
-          View
-        </Button>
-      </div>
+      <Button
+        variant="outline"
+        size="sm"
+        onClick={() => setIsOpen(true)}
+        className="gap-1 h-7 px-2.5 py-1 text-xs font-medium hover:bg-primary hover:text-primary-foreground transition-colors"
+      >
+        <Eye className="w-3 h-3" />
+        View
+      </Button>
       <ImageViewer
         isOpen={isOpen}
         onClose={() => setIsOpen(false)}
@@ -68,28 +61,15 @@ const GalleryCell = ({ unit }: { unit: ApartmentUnitsResponse }) => {
 
   return (
     <>
-      <div className="flex items-center gap-2">
-        <div className="flex -space-x-1">
-          {carouselImages.slice(0, 3).map((img, index) => (
-            <img
-              key={index}
-              src={pb.files.getURL(unit, img)}
-              alt={`Gallery ${index + 1}`}
-              className="w-6 h-6 rounded border border-background object-cover"
-            />
-          ))}
-        </div>
-        <span className="text-xs text-muted-foreground">{count}</span>
-        <Button
-          variant="ghost"
-          size="sm"
-          onClick={() => setIsOpen(true)}
-          className="gap-1 h-auto px-2 py-1 text-xs"
-        >
-          <Eye className="w-3.5 h-3.5" />
-          View
-        </Button>
-      </div>
+      <Button
+        variant="outline"
+        size="sm"
+        onClick={() => setIsOpen(true)}
+        className="gap-1 h-7 px-2.5 py-1 text-xs font-medium hover:bg-primary hover:text-primary-foreground transition-colors"
+      >
+        <Eye className="w-3 h-3" />
+        View
+      </Button>
       <ImageViewer
         isOpen={isOpen}
         onClose={() => setIsOpen(false)}
