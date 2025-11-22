@@ -9,6 +9,8 @@ export { default as DateTimeField } from './datetime';
 export type { EmailFieldProps } from './email';
 export { default as EmailField } from './email';
 export { default as FileField } from './file';
+export type { ImageUploadFieldProps } from './image-upload';
+export { default as ImageUploadField } from './image-upload';
 export { default as GeoPointField } from './geo-point';
 export { default as JSONField } from './json';
 export type { NumberFieldProps } from './number';

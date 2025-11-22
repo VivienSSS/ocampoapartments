@@ -17,6 +17,10 @@ export const apartmentUnitSchema = z.object({
     .number({ message: 'Price must be a number' })
     .nonnegative('Price must be a positive number')
     .check(fieldConfig({ order: 4 })),
+  room_size: z
+    .number({ message: 'Room size must be a number' })
+    .positive('Room size must be greater than 0')
+    .check(fieldConfig({ order: 5 })),
   property: z.string().nonempty('Property is required'),
   unitLetter: z
     .string()
@@ -26,13 +30,13 @@ export const apartmentUnitSchema = z.object({
     .check(fieldConfig({ order: 3 })),
   isAvailable: z.boolean(),
   image: z
-    .string()
-    .optional()
-    .check(fieldConfig({ order: 5 })),
-  carousel_image: z
-    .string()
+    .union([z.instanceof(File), z.string()])
     .optional()
     .check(fieldConfig({ order: 6 })),
+  carousel_image: z
+    .union([z.array(z.instanceof(File)), z.array(z.string())])
+    .optional()
+    .check(fieldConfig({ order: 7 })),
   created: z.date().optional(),
   updated: z.date().optional(),
 });

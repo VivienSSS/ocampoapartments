@@ -330,6 +330,14 @@ function PropertyTabs() {
                                     <CardContent className="space-y-2">
                                       <div className="flex justify-between">
                                         <span className="text-muted-foreground">
+                                          Room Size:
+                                        </span>
+                                        <span className="font-medium">
+                                          {unit.room_size || 'Not specified'} m²
+                                        </span>
+                                      </div>
+                                      <div className="flex justify-between">
+                                        <span className="text-muted-foreground">
                                           Unit Letter:
                                         </span>
                                         <span className="font-medium">
