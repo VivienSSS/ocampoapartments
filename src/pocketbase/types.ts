@@ -162,6 +162,7 @@ export type ApartmentUnitsRecord = {
 	isAvailable?: boolean
 	price: number
 	property: RecordIdString
+	room_size?: string
 	unitLetter: string
 	updated: IsoAutoDateString
 }
@@ -543,7 +544,7 @@ export type TenantFinancialOverviewChartViewRecord<ToutstandingBalance = unknown
 
 export type TenantsRecord = {
 	created: IsoAutoDateString
-	facebookName: string
+	facebookName?: string
 	id: string
 	phoneNumber?: number
 	updated: IsoAutoDateString
@@ -594,9 +595,12 @@ export type UsersRecord = {
 	emailVisibility?: boolean
 	firstName: string
 	id: string
+	isAccepted?: boolean
 	isActive?: boolean
+	isRejected?: boolean
 	lastName: string
 	password: string
+	rejectionReason?: HTMLString
 	role: UsersRoleOptions
 	tokenKey: string
 	updated: IsoAutoDateString

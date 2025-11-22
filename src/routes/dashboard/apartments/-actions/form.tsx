@@ -59,6 +59,16 @@ export const CreateApartmentForm = withForm({
             />
           )}
         </form.AppField>
+        <form.AppField name="room_size">
+          {(field) => (
+            <field.NumberField
+              showClearButton
+              className="col-span-2"
+              label="Room Size (m²)"
+              placeholder="ex. 25"
+            />
+          )}
+        </form.AppField>
         <form.AppField name="unitLetter">
           {(field) => (
             <field.TextField
@@ -84,6 +94,28 @@ export const CreateApartmentForm = withForm({
         </form.AppField>
         <form.AppField name="isAvailable">
           {(field) => <field.BoolField label="Available" />}
+        </form.AppField>
+        <form.AppField name="image">
+          {(field) => (
+            <field.ImageUploadField
+              className="col-span-full"
+              label="Main Image"
+              description="Upload a main image for the unit (recommended size: 1200x800px)"
+              tooltip="This is the featured image that will be displayed prominently"
+              multiple={false}
+            />
+          )}
+        </form.AppField>
+        <form.AppField name="carousel_image">
+          {(field) => (
+            <field.ImageUploadField
+              className="col-span-full"
+              label="Carousel Images"
+              description="Upload multiple images to create a gallery carousel (supports up to 10 images)"
+              tooltip="These images will be shown in the carousel on the unit details page"
+              multiple={true}
+            />
+          )}
         </form.AppField>
       </>
     );
@@ -124,6 +156,16 @@ export const EditApartmentForm = withForm({
             />
           )}
         </form.AppField>
+        <form.AppField name="room_size">
+          {(field) => (
+            <field.NumberField
+              showClearButton
+              className="col-span-2"
+              label="Room Size (m²)"
+              placeholder="ex. 25"
+            />
+          )}
+        </form.AppField>
         <form.AppField name="unitLetter">
           {(field) => (
             <field.TextField
@@ -149,6 +191,28 @@ export const EditApartmentForm = withForm({
         </form.AppField>
         <form.AppField name="isAvailable">
           {(field) => <field.BoolField label="Available" />}
+        </form.AppField>
+        <form.AppField name="image">
+          {(field) => (
+            <field.ImageUploadField
+              className="col-span-full"
+              label="Main Image"
+              description="Upload a main image for the unit (recommended size: 1200x800px)"
+              tooltip="This is the featured image that will be displayed prominently"
+              multiple={false}
+            />
+          )}
+        </form.AppField>
+        <form.AppField name="carousel_image">
+          {(field) => (
+            <field.ImageUploadField
+              className="col-span-full"
+              label="Carousel Images"
+              description="Upload multiple images to create a gallery carousel (supports up to 10 images)"
+              tooltip="These images will be shown in the carousel on the unit details page"
+              multiple={true}
+            />
+          )}
         </form.AppField>
       </>
     );
