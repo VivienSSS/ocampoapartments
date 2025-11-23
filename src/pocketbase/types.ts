@@ -246,7 +246,8 @@ export enum HighPriorityUnresolvedRequestsStatCardKpiViewUrgencyOptions {
 
 export enum HighPriorityUnresolvedRequestsStatCardKpiViewStatusOptions {
 	"Pending" = "Pending",
-	"Acknowledged" = "Acknowledged",
+	"Worker Assigned" = "Worker Assigned",
+	"In Progress" = "In Progress",
 	"Completed" = "Completed",
 }
 export type HighPriorityUnresolvedRequestsStatCardKpiViewRecord<TdaysOpen = unknown, TpriorityLabel = unknown> = {
@@ -303,7 +304,8 @@ export type MaintenanceOperationStatCardKpiViewRecord = {
 
 export enum MaintenanceRequestOverviewStatCardKpiViewStatusOptions {
 	"Pending" = "Pending",
-	"Acknowledged" = "Acknowledged",
+	"Worker Assigned" = "Worker Assigned",
+	"In Progress" = "In Progress",
 	"Completed" = "Completed",
 }
 
@@ -324,7 +326,8 @@ export type MaintenanceRequestOverviewStatCardKpiViewRecord<TassignmentRate = un
 
 export enum MaintenanceRequestStatusStatCardKpiViewStatusOptions {
 	"Pending" = "Pending",
-	"Acknowledged" = "Acknowledged",
+	"Worker Assigned" = "Worker Assigned",
+	"In Progress" = "In Progress",
 	"Completed" = "Completed",
 }
 export type MaintenanceRequestStatusStatCardKpiViewRecord<TavgResolutionDays = unknown> = {
@@ -343,7 +346,8 @@ export enum MaintenanceRequestsUrgencyOptions {
 
 export enum MaintenanceRequestsStatusOptions {
 	"Pending" = "Pending",
-	"Acknowledged" = "Acknowledged",
+	"Worker Assigned" = "Worker Assigned",
+	"In Progress" = "In Progress",
 	"Completed" = "Completed",
 }
 export type MaintenanceRequestsRecord = {

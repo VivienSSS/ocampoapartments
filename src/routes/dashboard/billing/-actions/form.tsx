@@ -1,16 +1,8 @@
 import { BadgePlus, Trash } from 'lucide-react';
 import React from 'react';
 import type z from 'zod';
-import { AsyncSelect } from '@/components/ui/async-select';
 import { Button } from '@/components/ui/button';
-import {
-  Card,
-  CardAction,
-  CardContent,
-  CardHeader,
-} from '@/components/ui/card';
 import { withFieldGroup, withForm } from '@/components/ui/forms';
-import { pb } from '@/pocketbase';
 import type { TenanciesResponse } from '@/pocketbase/queries/tenancies';
 import type { insertBillItemsSchema } from '@/pocketbase/schemas/billItems';
 import { insertBillSchema, updateBillSchema } from '@/pocketbase/schemas/bills';
@@ -43,6 +35,7 @@ export const CreateBillingForm = withForm({
   },
   render: ({ form }) => {
     const { pocketbase } = useRouteContext({ from: '/dashboard/billing/' });
+    const selectedTenancy = form.state.values.tenancy;
 
     return (
       <>
@@ -58,6 +51,7 @@ export const CreateBillingForm = withForm({
                   pocketbase={pocketbase}
                   collectionName={Collections.Tenancies}
                   relationshipName="tenancy"
+                  label="Tenant"
                   renderOption={(item) =>
                     `${item?.expand?.tenant?.expand.user?.firstName} ${item?.expand?.tenant?.expand.user?.lastName} - ${item?.expand?.tenant?.expand.user.contactEmail}`
                   }
@@ -65,6 +59,16 @@ export const CreateBillingForm = withForm({
                 />
               )}
             </form.AppField>
+            {selectedTenancy && (
+              <div className="col-span-full rounded-md bg-muted p-3">
+                <p className="text-xs font-medium text-muted-foreground uppercase tracking-wide mb-1">
+                  Tenant
+                </p>
+                <p className="text-sm font-semibold">
+                  {selectedTenancy}
+                </p>
+              </div>
+            )}
             <form.AppField name="status">
               {(field) => (
                 <field.SelectField
@@ -83,6 +87,7 @@ export const CreateBillingForm = withForm({
                 <field.DateTimeField
                   label="Due Date"
                   showCalendarIcon
+                  disablePastDates={true}
                 />
               )}
             </form.AppField>

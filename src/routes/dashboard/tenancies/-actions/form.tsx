@@ -145,6 +145,7 @@ export const EditTenancyForm = withForm({
               label="Lease Start Date"
               tooltip="Select the lease start date"
               description="The date when the lease starts"
+              disablePastDates={true}
             />
           )}
         </form.AppField>
@@ -154,6 +155,7 @@ export const EditTenancyForm = withForm({
               label="Lease End Date"
               tooltip="Select the lease end date"
               description="The date when the lease ends"
+              disablePastDates={true}
             />
           )}
         </form.AppField>

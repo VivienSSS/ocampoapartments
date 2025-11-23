@@ -1,10 +1,12 @@
 import { format } from 'date-fns';
+import { useEffect, useState } from 'react';
 import type z from 'zod';
 import { withForm } from '@/components/ui/forms';
+import { pb } from '@/pocketbase';
 import type { BillsResponse } from '@/pocketbase/queries/bills';
 import type { TenantsResponse } from '@/pocketbase/queries/tenants';
 import { insertPaymentSchema } from '@/pocketbase/schemas/payments';
-import { Collections, PaymentsPaymentMethodOptions } from '@/pocketbase/types';
+import { Collections, PaymentsPaymentMethodOptions, UsersRoleOptions } from '@/pocketbase/types';
 import { useRouteContext } from '@tanstack/react-router';
 
 export const CreatePaymentForm = withForm({
@@ -13,28 +15,67 @@ export const CreatePaymentForm = withForm({
     onSubmit: insertPaymentSchema,
   },
   render: ({ form }) => {
+    const userRole = pb.authStore.record?.role;
+    const isTenant = userRole === UsersRoleOptions.Tenant;
     const { pocketbase } = useRouteContext({
       from: '/dashboard/payments/',
     });
+    const [currentTenant, setCurrentTenant] = useState<string>('');
+
+    // Fetch current tenant's ID if user is a tenant
+    useEffect(() => {
+      if (isTenant && pb.authStore.record?.id) {
+        const fetchTenantData = async () => {
+          try {
+            // Get the current tenant record
+            const tenants = await pb
+              .collection(Collections.Tenants)
+              .getFullList<TenantsResponse>({
+                filter: `user = '${pb.authStore.record?.id}'`,
+                requestKey: null,
+              });
+
+            if (tenants.length > 0) {
+              setCurrentTenant(tenants[0].id);
+            }
+          } catch (error) {
+            if ((error as any)?.name !== 'AbortError') {
+              console.error('Failed to fetch tenant data:', error);
+            }
+          }
+        };
+
+        fetchTenantData();
+      }
+    }, [isTenant]);
+
+    // Set tenant field value if user is a tenant
+    useEffect(() => {
+      if (isTenant && currentTenant && !form.state.values.tenant) {
+        form.setFieldValue('tenant', currentTenant);
+      }
+    }, [isTenant, currentTenant, form]);
 
     return (
       <>
-        <form.AppField name="tenant">
-          {(field) => (
-            <field.RelationField<TenantsResponse>
-              label="Tenant"
-              tooltip="Select the tenant making the payment"
-              description="The tenant who is making the payment"
-              pocketbase={pocketbase}
-              relationshipName="tenant"
-              collectionName={Collections.Tenants}
-              recordListOption={{ expand: 'user', filter: (query) => `${query ? `${query} ~ user.firstName &&` : ``} user.firstName != null` }}
-              renderOption={(item) =>
-                `${item.expand.user.firstName} ${item.expand.user.lastName}`
-              }
-            />
-          )}
-        </form.AppField>
+        {!isTenant && (
+          <form.AppField name="tenant">
+            {(field) => (
+              <field.RelationField<TenantsResponse>
+                label="Tenant"
+                tooltip="Select the tenant making the payment"
+                description="The tenant who is making the payment"
+                pocketbase={pocketbase}
+                relationshipName="tenant"
+                collectionName={Collections.Tenants}
+                recordListOption={{ expand: 'user', filter: (query) => `${query ? `${query} ~ user.firstName &&` : ``} user.firstName != null` }}
+                renderOption={(item) =>
+                  `${item.expand.user.firstName} ${item.expand.user.lastName}`
+                }
+              />
+            )}
+          </form.AppField>
+        )}
         <form.AppField name="bill">
           {(field) => (
             <field.RelationField<BillsResponse>
@@ -82,7 +123,7 @@ export const CreatePaymentForm = withForm({
           )}
         </form.AppField>
         <form.AppField name="paymentDate">
-          {(field) => <field.DateTimeField label="Payment Date" />}
+          {(field) => <field.DateTimeField label="Payment Date" disablePastDates={true} />}
         </form.AppField>
         <form.AppField name="transactionId">
           {(field) => (

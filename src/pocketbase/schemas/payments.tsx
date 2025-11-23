@@ -13,7 +13,7 @@ export const paymentSchema = z.object({
     message: 'Please select a valid payment method',
   }),
   screenshot: z.url('Please provide a valid URL for the screenshot'),
-  tenant: z.string().nonempty('Tenant is required'),
+  tenant: z.string().optional(),
   transactionId: z.string().nonempty('Transaction ID is required'),
   updated: z.date().optional(),
 });

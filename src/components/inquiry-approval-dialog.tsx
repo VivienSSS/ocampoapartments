@@ -90,27 +90,31 @@ export function InquiryApprovalDialog({
 
                 <div className="space-y-4 py-4">
                     <div className="grid grid-cols-2 gap-4 text-sm">
+                        <div className="col-span-2">
+                            <Label className="font-semibold text-xs text-gray-600">Name</Label>
+                            <p className="font-medium border-b-2 border-gray-400 pb-1">{inquiry.firstName} {inquiry.lastName}</p>
+                        </div>
                         <div>
                             <Label className="font-semibold text-xs text-gray-600">Age</Label>
-                            <p className="font-medium">{inquiry.age}</p>
+                            <p className="font-medium border-b-2 border-gray-400 pb-1">{inquiry.age}</p>
                         </div>
                         <div>
                             <Label className="font-semibold text-xs text-gray-600">
                                 Occupants
                             </Label>
-                            <p className="font-medium">{inquiry.numberOfOccupants}</p>
+                            <p className="font-medium border-b-2 border-gray-400 pb-1">{inquiry.numberOfOccupants}</p>
                         </div>
                         <div className="col-span-2">
                             <Label className="font-semibold text-xs text-gray-600">
                                 Phone
                             </Label>
-                            <p className="font-medium">{inquiry.phone}</p>
+                            <p className="font-medium border-b-2 border-gray-400 pb-1">{inquiry.phone}</p>
                         </div>
                         <div className="col-span-2">
                             <Label className="font-semibold text-xs text-gray-600">
                                 Email
                             </Label>
-                            <p className="font-medium break-all text-sm">{inquiry.email}</p>
+                            <p className="font-medium break-all text-sm border-b-2 border-gray-400 pb-1">{inquiry.email}</p>
                         </div>
                     </div>
 
