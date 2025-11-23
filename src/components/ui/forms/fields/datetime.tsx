@@ -26,6 +26,7 @@ export type DateTimeFieldProps = {
   showCalendarIcon?: boolean;
   placeholder?: string;
   required?: boolean;
+  disablePastDates?: boolean;
 };
 
 const DateTimeField = (props: DateTimeFieldProps) => {
@@ -34,6 +35,7 @@ const DateTimeField = (props: DateTimeFieldProps) => {
     timeStep = 15,
     inputGroupClassName,
     showCalendarIcon = true,
+    disablePastDates = false,
   } = props;
   const field = useFieldContext<Date>();
   const [open, setOpen] = React.useState(false);
@@ -112,6 +114,11 @@ const DateTimeField = (props: DateTimeFieldProps) => {
               mode="single"
               selected={dateValue}
               onSelect={handleDateSelect}
+              disabled={disablePastDates ? (date) => {
+                const today = new Date();
+                today.setHours(0, 0, 0, 0);
+                return date < today;
+              } : undefined}
             />
           </PopoverContent>
         </Popover>

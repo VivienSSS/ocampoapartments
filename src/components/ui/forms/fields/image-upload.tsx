@@ -96,7 +96,7 @@ const ImageUploadField = ({
                     onError={console.error}
                     src={currentFiles}
                 >
-                    <Card className="border-2 border-dashed hover:border-primary hover:bg-muted/50 transition-colors cursor-pointer w-full">
+                    <Card className="border-2 hover:border-primary hover:bg-muted/50 transition-colors cursor-pointer w-full">
                         <CardContent className="pt-6 pb-6 px-6">
                             <div className="flex flex-col items-center justify-center gap-2">
                                 <Plus className="w-6 h-6 text-muted-foreground" />

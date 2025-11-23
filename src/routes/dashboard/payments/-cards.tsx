@@ -33,7 +33,7 @@ interface PaymentCardsProps {
 export function PaymentCards({ data }: PaymentCardsProps) {
   if (!data || data.length === 0) {
     return (
-      <div className="flex items-center justify-center rounded-lg border border-dashed p-8">
+      <div className="flex items-center justify-center rounded-lg border p-8">
         <p className="text-muted-foreground">No payments found.</p>
       </div>
     );
@@ -114,7 +114,7 @@ export function PaymentCards({ data }: PaymentCardsProps) {
               <Dialog>
                 <DialogTrigger asChild>
                   <div className="border-t pt-4">
-                    <button className="flex h-24 w-full items-center justify-center rounded-lg border border-dashed hover:bg-muted/50">
+                    <button className="flex h-24 w-full items-center justify-center rounded-lg border hover:bg-muted/50">
                       <div className="flex flex-col items-center gap-2">
                         <ImageIcon className="h-6 w-6 text-muted-foreground" />
                         <span className="text-xs text-muted-foreground">
