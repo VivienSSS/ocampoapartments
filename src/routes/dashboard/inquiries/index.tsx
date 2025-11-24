@@ -15,13 +15,20 @@ import {
 } from '@/components/ui/dropdown-menu';
 import DataTable from '@/components/ui/kibo-ui/table/data-table';
 import { searchParams } from '@/lib/utils';
+<<<<<<< HEAD
 import { listInquiriesWithOtpQuery } from '@/pocketbase/queries/inquries';
 import { UsersRoleOptions } from '@/pocketbase/types';
+=======
+import { listInqueryQuery } from '@/pocketbase/queries/inquries';
+import { UsersRoleOptions, type InquiryResponse } from '@/pocketbase/types';
+>>>>>>> bd532f5 (feat: enhance apartment unit schema with image fields and update inquiry schema for approval process)
 import { useState } from 'react';
 import LoadingComponent from './-loading';
 import { columns } from './-table';
 import { inquirySchema } from '@/pocketbase/schemas/inquiry';
 import z from 'zod';
+import { InquiryApprovalDialog } from '@/components/inquiry-approval-dialog';
+import { CreateAccountDialog } from '@/components/create-account-dialog';
 
 const inquiryStatusOptions = ['pending', 'verified', 'approved', 'rejected'] as const;
 
@@ -60,6 +67,11 @@ function RouteComponent() {
   const navigate = Route.useNavigate();
   const searchQuery = Route.useSearch();
   const inquiries = Route.useLoaderData();
+
+  // State for dialogs
+  const [selectedInquiry, setSelectedInquiry] = useState<InquiryResponse | null>(null);
+  const [approvalDialogOpen, setApprovalDialogOpen] = useState(false);
+  const [createAccountDialogOpen, setCreateAccountDialogOpen] = useState(false);
 
   return (
     <article className="space-y-4">
@@ -187,8 +199,44 @@ function RouteComponent() {
         </div>
       </section>
       <section>
-        <DataTable columns={columns} data={inquiries} />
+        <DataTable
+          columns={columns({
+            onApprove: (inquiry) => {
+              setSelectedInquiry(inquiry);
+              setApprovalDialogOpen(true);
+            },
+            onCreateAccount: (inquiry) => {
+              setSelectedInquiry(inquiry);
+              setCreateAccountDialogOpen(true);
+            },
+          })}
+          data={inquiries}
+        />
       </section>
+
+      {/* Approval Dialog */}
+      <InquiryApprovalDialog
+        inquiry={selectedInquiry}
+        open={approvalDialogOpen}
+        onOpenChange={(open) => {
+          setApprovalDialogOpen(open);
+          if (!open) setSelectedInquiry(null);
+        }}
+        page={searchQuery.page}
+        perPage={searchQuery.perPage}
+      />
+
+      {/* Create Account Dialog */}
+      <CreateAccountDialog
+        inquiry={selectedInquiry}
+        open={createAccountDialogOpen}
+        onOpenChange={(open) => {
+          setCreateAccountDialogOpen(open);
+          if (!open) setSelectedInquiry(null);
+        }}
+        page={searchQuery.page}
+        perPage={searchQuery.perPage}
+      />
     </article>
   );
 }

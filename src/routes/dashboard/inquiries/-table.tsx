@@ -1,5 +1,5 @@
 import type { ColumnDef } from '@tanstack/react-table';
-import { ZoomIn, ZoomOut } from 'lucide-react';
+import { ZoomIn, ZoomOut, CheckCircle, XCircle, UserPlus } from 'lucide-react';
 import { useState } from 'react';
 import { Button } from '@/components/ui/button';
 import {
@@ -10,6 +10,12 @@ import {
   DialogTitle,
   DialogTrigger,
 } from '@/components/ui/dialog';
+import {
+  DropdownMenu,
+  DropdownMenuContent,
+  DropdownMenuItem,
+  DropdownMenuTrigger,
+} from '@/components/ui/dropdown-menu';
 import { pb } from '@/pocketbase';
 import type { ApartmentUnitsResponse, InquiryResponse, PropertiesResponse, OtpResponse } from '@/pocketbase/types';
 import { Badge } from '@/components/ui/badge';
@@ -17,7 +23,12 @@ import { SendOtpDialog } from './-actions/send-otp';
 import { AcceptInquiryDialog } from './-actions/accept';
 import { RejectInquiryDialog } from './-actions/reject';
 
-export const columns: ColumnDef<InquiryResponse<{ unitInterested: ApartmentUnitsResponse<{ property: PropertiesResponse }>, otp: OtpResponse }>>[] = [
+interface ColumnsProps {
+  onApprove: (inquiry: InquiryResponse) => void;
+  onCreateAccount: (inquiry: InquiryResponse) => void;
+}
+
+export const columns = ({ onApprove, onCreateAccount }: ColumnsProps): ColumnDef<InquiryResponse<{ unitInterested: ApartmentUnitsResponse<{ property: PropertiesResponse }>, otp: OtpResponse }>>[] => [
   {
     accessorKey: 'firstName',
     header: 'First Name',
@@ -56,6 +67,23 @@ export const columns: ColumnDef<InquiryResponse<{ unitInterested: ApartmentUnits
       return (
         <Badge className={statusColors[status] || 'bg-gray-100 text-gray-800'}>
           {status}
+        </Badge>
+      );
+    },
+  },
+  {
+    accessorKey: 'approval_status',
+    header: 'Approval',
+    cell: ({ row }) => {
+      const approvalStatus = row.original.approval_status || 'pending';
+      const statusColors: Record<string, string> = {
+        pending: 'bg-gray-100 text-gray-800',
+        approved: 'bg-green-100 text-green-800',
+        rejected: 'bg-red-100 text-red-800',
+      };
+      return (
+        <Badge className={statusColors[approvalStatus] || 'bg-gray-100 text-gray-800'}>
+          {approvalStatus}
         </Badge>
       );
     },
@@ -173,12 +201,52 @@ export const columns: ColumnDef<InquiryResponse<{ unitInterested: ApartmentUnits
     header: 'Actions',
     cell: ({ row }) => {
       const inquiry = row.original;
+<<<<<<< HEAD
       return (
         <div className="flex gap-2">
           <SendOtpDialog inquiry={inquiry} />
           <AcceptInquiryDialog inquiry={inquiry} />
           <RejectInquiryDialog inquiry={inquiry} />
         </div>
+=======
+      const isApproved = inquiry.approval_status === 'approved';
+      const isVerified = inquiry.emailVerified;
+
+      return (
+        <DropdownMenu>
+          <DropdownMenuTrigger asChild>
+            <Button variant="ghost" size="sm">
+              Actions
+            </Button>
+          </DropdownMenuTrigger>
+          <DropdownMenuContent align="end" className="w-48">
+            {inquiry.approval_status !== 'approved' && inquiry.approval_status !== 'rejected' && (
+              <DropdownMenuItem
+                onClick={() => onApprove(inquiry)}
+                className="cursor-pointer"
+              >
+                <CheckCircle className="w-4 h-4 mr-2" />
+                Approve or Reject
+              </DropdownMenuItem>
+            )}
+            {isApproved && isVerified && (
+              <DropdownMenuItem
+                onClick={() => onCreateAccount(inquiry)}
+                className="cursor-pointer"
+              >
+                <UserPlus className="w-4 h-4 mr-2" />
+                Create Account
+              </DropdownMenuItem>
+            )}
+            {inquiry.approval_status === 'rejected' && (
+              <DropdownMenuItem disabled className="text-xs">
+                <XCircle className="w-4 h-4 mr-2" />
+                Rejected
+              </DropdownMenuItem>
+            )}
+          </DropdownMenuContent>
+        </DropdownMenu>
+>>>>>>> bd532f5 (feat: enhance apartment unit schema with image fields and update inquiry schema for approval process)
       );
     },
   },

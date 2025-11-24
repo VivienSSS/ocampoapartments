@@ -1,20 +1,12 @@
 import { useLoaderData } from '@tanstack/react-router';
 import {
-  Car,
-  Droplets,
   Home,
   ListStart,
-  Mail,
   MapPin,
   Package,
-  Phone,
-  Shield,
-  Star,
-  Users,
-  Wifi,
-  Zap,
 } from 'lucide-react';
 import { useMemo, useState } from 'react';
+import { pb } from '@/pocketbase';
 import { Badge } from '@/components/ui/badge';
 import { Button } from '@/components/ui/button';
 import {
@@ -178,172 +170,172 @@ function PropertyTabs() {
 
                 {/* Available Units */}
                 <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
-                  {propertyGroups[branch].units.map((unit) => (
-                    <Card key={unit.id} className="overflow-hidden">
-                      <div className="relative bg-gradient-to-br from-primary/10 to-secondary/10 h-48 flex items-center justify-center">
-                        <div className="text-center">
-                          <div className="text-4xl font-bold text-primary mb-2">
-                            {unit.unitLetter}
-                          </div>
-                          <div className="text-sm text-muted-foreground">
-                            Floor {unit.floorNumber}
-                          </div>
-                        </div>
-                        <Badge
-                          variant="default"
-                          className="absolute top-4 left-4"
-                        >
-                          Available
-                        </Badge>
-                      </div>
+                  {propertyGroups[branch].units.map((unit) => {
+                    const imageUrl = unit.image
+                      ? pb.files.getUrl(unit, unit.image)
+                      : '/apartment-unit.jpg';
+                    return (
+                      <Card key={unit.id} className="overflow-hidden">
+                        <div className="relative h-48 flex items-center justify-center bg-cover bg-center bg-no-repeat" style={{ backgroundImage: `url('${imageUrl}')` }}>
+                          <div className="absolute inset-0 bg-black/30"></div>
+                          <div className="relative z-10 text-center">
 
-                      <CardContent className="p-6 space-y-4">
-                        <div className="flex justify-between items-center">
-                          <CardTitle className="text-lg">
-                            Unit {unit.unitLetter}
-                          </CardTitle>
-                          <div className="text-right">
-                            {unit.price ? (
-                              <>
-                                <span className="font-bold text-2xl text-card-foreground">
-                                  ₱{unit.price.toLocaleString()}
+                          </div>
+                          <Badge
+                            variant="default"
+                            className="absolute top-4 left-4 z-20"
+                          >
+                            Available
+                          </Badge>
+                        </div>
+
+                        <CardContent className="p-6 space-y-4">
+                          <div className="flex justify-between items-center">
+                            <CardTitle className="text-lg">
+                              Unit {unit.unitLetter}
+                            </CardTitle>
+                            <div className="text-right">
+                              {unit.price ? (
+                                <>
+                                  <span className="font-bold text-2xl text-card-foreground">
+                                    ₱{unit.price.toLocaleString()}
+                                  </span>
+                                  <span className="text-base font-normal text-muted-foreground">
+                                    /month
+                                  </span>
+                                </>
+                              ) : (
+                                <span className="text-sm text-muted-foreground">
+                                  Price on request
                                 </span>
-                                <span className="text-base font-normal text-muted-foreground">
-                                  /month
-                                </span>
-                              </>
-                            ) : (
-                              <span className="text-sm text-muted-foreground">
-                                Price on request
+                              )}
+                            </div>
+                          </div>
+
+                          <div className="grid grid-cols-2 gap-4 text-muted-foreground text-sm">
+                            <span className="flex items-center gap-1 ">
+                              <ListStart className="w-4 h-4" />
+                              Floor {unit.floorNumber}
+                            </span>
+                            {unit.capacity && (
+                              <span className="flex items-center gap-1">
+                                <svg
+                                  width="16"
+                                  height="16"
+                                  fill="none"
+                                  stroke="currentColor"
+                                  strokeWidth="2"
+                                  viewBox="0 0 24 24"
+                                >
+                                  <path d="M16 21v-2a4 4 0 0 0-4-4H6a4 4 0 0 0-4 4v2" />
+                                  <circle cx="9" cy="7" r="4" />
+                                  <path d="M22 21v-2a4 4 0 0 0-3-3.87" />
+                                  <path d="M16 3.13a4 4 0 0 1 0 7.75" />
+                                </svg>
+                                {unit.capacity} person
+                                {unit.capacity !== 1 ? 's' : ''} max
                               </span>
                             )}
                           </div>
-                        </div>
 
-                        <div className="grid grid-cols-2 gap-4 text-muted-foreground text-sm">
-                          <span className="flex items-center gap-1 ">
-                            <ListStart className="w-4 h-4" />
-                            Floor {unit.floorNumber}
-                          </span>
-                          {unit.capacity && (
-                            <span className="flex items-center gap-1">
-                              <svg
-                                width="16"
-                                height="16"
-                                fill="none"
-                                stroke="currentColor"
-                                strokeWidth="2"
-                                viewBox="0 0 24 24"
-                              >
-                                <path d="M16 21v-2a4 4 0 0 0-4-4H6a4 4 0 0 0-4 4v2" />
-                                <circle cx="9" cy="7" r="4" />
-                                <path d="M22 21v-2a4 4 0 0 0-3-3.87" />
-                                <path d="M16 3.13a4 4 0 0 1 0 7.75" />
-                              </svg>
-                              {unit.capacity} person
-                              {unit.capacity !== 1 ? 's' : ''} max
-                            </span>
-                          )}
-                        </div>
-
-                        <div className="flex flex-wrap gap-2">
-                          <Badge variant="outline" className="text-xs">
-                            Unit {unit.unitLetter}
-                          </Badge>
-                          <Badge variant="outline" className="text-xs">
-                            {unit.floorNumber}
-                            {unit.floorNumber === 1
-                              ? 'st'
-                              : unit.floorNumber === 2
-                                ? 'nd'
-                                : unit.floorNumber === 3
-                                  ? 'rd'
-                                  : 'th'}{' '}
-                            Floor
-                          </Badge>
-                          <Badge
-                            variant="outline"
-                            className="text-xs text-green-600"
-                          >
-                            Available Now
-                          </Badge>
-                        </div>
-
-                        <Dialog>
-                          <DialogTrigger asChild>
-                            <Button
-                              className="w-full"
-                              variant="default"
-                              size="lg"
+                          <div className="flex flex-wrap gap-2">
+                            <Badge variant="outline" className="text-xs">
+                              Unit {unit.unitLetter}
+                            </Badge>
+                            <Badge variant="outline" className="text-xs">
+                              {unit.floorNumber}
+                              {unit.floorNumber === 1
+                                ? 'st'
+                                : unit.floorNumber === 2
+                                  ? 'nd'
+                                  : unit.floorNumber === 3
+                                    ? 'rd'
+                                    : 'th'}{' '}
+                              Floor
+                            </Badge>
+                            <Badge
+                              variant="outline"
+                              className="text-xs text-green-600"
                             >
-                              View Details
-                            </Button>
-                          </DialogTrigger>
+                              Available Now
+                            </Badge>
+                          </div>
 
-                          <DialogContent className="max-w-3xl max-h-[80vh] overflow-y-auto">
-                            <DialogHeader>
-                              <DialogTitle className="flex items-center gap-2">
-                                <Home className="w-5 h-5" />
-                                Unit {unit.unitLetter} - {branch} Property
-                              </DialogTitle>
-                              <DialogDescription>
-                                This apartment unit is eligible for a closet and
-                                a bedframe ★
-                              </DialogDescription>
-                            </DialogHeader>
+                          <Dialog>
+                            <DialogTrigger asChild>
+                              <Button
+                                className="w-full"
+                                variant="default"
+                                size="lg"
+                              >
+                                View Details
+                              </Button>
+                            </DialogTrigger>
 
-                            <div className="space-y-6">
-                              {/* Unit Overview */}
-                              <div className="grid grid-cols-1 md:grid-cols-1 gap-4">
-                                <Card>
-                                  <CardHeader className="pb-4">
-                                    <CardTitle className="text-lg">
-                                      Unit Information
-                                    </CardTitle>
-                                  </CardHeader>
-                                  <CardContent className="space-y-2">
-                                    <div className="flex justify-between">
-                                      <span className="text-muted-foreground">
-                                        Unit Letter:
-                                      </span>
-                                      <span className="font-medium">
-                                        {unit.unitLetter}
-                                      </span>
-                                    </div>
-                                    <div className="flex justify-between">
-                                      <span className="text-muted-foreground">
-                                        Floor:
-                                      </span>
-                                      <span className="font-medium">
-                                        {unit.floorNumber}
-                                      </span>
-                                    </div>
-                                    <div className="flex justify-between">
-                                      <span className="text-muted-foreground">
-                                        Capacity:
-                                      </span>
-                                      <span className="font-medium">
-                                        {unit.capacity || 'Not specified'}{' '}
-                                        person{unit.capacity !== 1 ? 's' : ''}{' '}
-                                        maximum
-                                      </span>
-                                    </div>
-                                    <div className="flex justify-between">
-                                      <span className="text-muted-foreground">
-                                        Monthly Rent:
-                                      </span>
-                                      <span className="font-bold text-lg">
-                                        {unit.price
-                                          ? `₱${unit.price.toLocaleString()}`
-                                          : 'Price on request'}
-                                      </span>
-                                    </div>
-                                  </CardContent>
-                                </Card>
-                              </div>
+                            <DialogContent className="max-w-3xl max-h-[80vh] overflow-y-auto">
+                              <DialogHeader>
+                                <DialogTitle className="flex items-center gap-2">
+                                  <Home className="w-5 h-5" />
+                                  Unit {unit.unitLetter} - {branch} Property
+                                </DialogTitle>
+                                <DialogDescription>
+                                  This apartment unit is eligible for a closet and
+                                  a bedframe ★
+                                </DialogDescription>
+                              </DialogHeader>
 
-                              {/* Amenities & Features */}
-                              {/* <div>
+                              <div className="space-y-6">
+                                {/* Unit Overview */}
+                                <div className="grid grid-cols-1 md:grid-cols-1 gap-4">
+                                  <Card>
+                                    <CardHeader className="pb-4">
+                                      <CardTitle className="text-lg">
+                                        Unit Information
+                                      </CardTitle>
+                                    </CardHeader>
+                                    <CardContent className="space-y-2">
+                                      <div className="flex justify-between">
+                                        <span className="text-muted-foreground">
+                                          Unit Letter:
+                                        </span>
+                                        <span className="font-medium">
+                                          {unit.unitLetter}
+                                        </span>
+                                      </div>
+                                      <div className="flex justify-between">
+                                        <span className="text-muted-foreground">
+                                          Floor:
+                                        </span>
+                                        <span className="font-medium">
+                                          {unit.floorNumber}
+                                        </span>
+                                      </div>
+                                      <div className="flex justify-between">
+                                        <span className="text-muted-foreground">
+                                          Capacity:
+                                        </span>
+                                        <span className="font-medium">
+                                          {unit.capacity || 'Not specified'}{' '}
+                                          person{unit.capacity !== 1 ? 's' : ''}{' '}
+                                          maximum
+                                        </span>
+                                      </div>
+                                      <div className="flex justify-between">
+                                        <span className="text-muted-foreground">
+                                          Monthly Rent:
+                                        </span>
+                                        <span className="font-bold text-lg">
+                                          {unit.price
+                                            ? `₱${unit.price.toLocaleString()}`
+                                            : 'Price on request'}
+                                        </span>
+                                      </div>
+                                    </CardContent>
+                                  </Card>
+                                </div>
+
+                                {/* Amenities & Features */}
+                                {/* <div>
                                 <h3 className="text-lg font-semibold mb-4 flex items-center gap-2">
                                   <Package className="w-5 h-5" />
                                   Included Amenities & Features
@@ -388,33 +380,33 @@ function PropertyTabs() {
                                 </div>
                               </div> */}
 
-                              <Separator />
+                                <Separator />
 
-                              {/* Lease Terms */}
-                              <div>
-                                <h3 className="text-lg font-semibold mb-4">
-                                  Lease Terms & Rental Contract
-                                </h3>
-                                <div className="bg-muted/50 p-4 rounded-lg space-y-2 text-sm">
-                                  <div className="text-justify">
-                                    The landlord requires one (1) month advance rent payment, two (2) months deposit, and ₱2,000 refundable deposit for the water and electricity. If a potential tenant decides to cancel their move-in at the last minute, all payments made, including any deposits or fees, will not be refunded.{' '}
-                                  </div>
-                                  <div>
-                                    • <strong>Utilities:</strong> Electricity
-                                    and water included in rent.
-                                  </div>
-                                  <div>
-                                    • <strong>Pets:</strong> Small pets allowed
-                                    with no additional deposit.
-                                  </div>
-                                  <div>
-                                    • <strong>Parking:</strong> (1) motorcycle
-                                    only, additional is ₱500/month.
+                                {/* Lease Terms */}
+                                <div>
+                                  <h3 className="text-lg font-semibold mb-4">
+                                    Lease Terms & Rental Contract
+                                  </h3>
+                                  <div className="bg-muted/50 p-4 rounded-lg space-y-2 text-sm">
+                                    <div className="text-justify">
+                                      The landlord requires one (1) month advance rent payment, two (2) months deposit, and ₱2,000 refundable deposit for the water and electricity. If a potential tenant decides to cancel their move-in at the last minute, all payments made, including any deposits or fees, will not be refunded.{' '}
+                                    </div>
+                                    <div>
+                                      • <strong>Utilities:</strong> Electricity
+                                      and water included in rent.
+                                    </div>
+                                    <div>
+                                      • <strong>Pets:</strong> Small pets allowed
+                                      with no additional deposit.
+                                    </div>
+                                    <div>
+                                      • <strong>Parking:</strong> (1) motorcycle
+                                      only, additional is ₱500/month.
+                                    </div>
                                   </div>
                                 </div>
-                              </div>
 
-                              {/* Contact Information
+                                {/* Contact Information
                               <div>
                                 <h3 className="text-lg font-semibold mb-4">Contact Information</h3>
                                 <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
@@ -435,8 +427,8 @@ function PropertyTabs() {
                                 </div>
                               </div> */}
 
-                              {/* Action Buttons */}
-                              {/* <div className="flex gap-3 pt-4">
+                                {/* Action Buttons */}
+                                {/* <div className="flex gap-3 pt-4">
                                 <Button className="flex-1" size="lg">
                                   Schedule Viewing
                                 </Button>
@@ -444,12 +436,13 @@ function PropertyTabs() {
                                   Contact Owner
                                 </Button>
                               </div> */}
-                            </div>
-                          </DialogContent>
-                        </Dialog>
-                      </CardContent>
-                    </Card>
-                  ))}
+                              </div>
+                            </DialogContent>
+                          </Dialog>
+                        </CardContent>
+                      </Card>
+                    );
+                  })}
                 </div>
               </CardContent>
             </Card>

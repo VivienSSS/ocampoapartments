@@ -2,7 +2,8 @@ import { queryOptions, mutationOptions } from "@tanstack/react-query";
 import { Collections, type InquiryResponse, type ApartmentUnitsResponse, type PropertiesResponse, type OtpResponse } from "../types";
 import { pb } from "..";
 import type z from "zod";
-import type { insertInquirySchema, updateInquiryStatusSchema } from "../schemas/inquiry";
+import type { insertInquirySchema, updateInquiryStatusSchema, approveInquirySchema, rejectInquirySchema, createAccountSchema } from "../schemas/inquiry";
+import { toast } from "sonner";
 
 export const listInqueryQuery = (
     page: number,
@@ -60,6 +61,7 @@ export const registerInquiryMutation = mutationOptions({
                 ...data,
                 status: 'pending',
                 emailVerified: false,
+                approval_status: 'pending',
             }) as InquiryResponse;
 
         // OTP will be auto-created via PocketBase hooks or needs to be created here
@@ -82,6 +84,92 @@ export const updateInquiryStatusMutation = mutationOptions({
         return pb.collection(Collections.Inquiry).update(data.inquiryId, {
             status: data.status,
             rejectionReason: data.rejectionReason || null,
+        });
+    },
+});
+
+export const approveInquiryMutation = mutationOptions<
+    InquiryResponse,
+    Error,
+    z.infer<typeof approveInquirySchema>
+>({
+    mutationFn: async (data) => {
+        return pb
+            .collection<InquiryResponse>(Collections.Inquiry)
+            .update(data.inquiryId, {
+                approval_status: 'approved',
+                approval_notes: data.approval_notes || '',
+            });
+    },
+    onSuccess: () => {
+        toast.success('Inquiry Approved', {
+            description: 'The inquiry has been approved successfully',
+        });
+    },
+    onError: (err) => {
+        toast.error('Failed to Approve Inquiry', {
+            description: err.message,
+        });
+    },
+});
+
+export const rejectInquiryMutation = mutationOptions<
+    InquiryResponse,
+    Error,
+    z.infer<typeof rejectInquirySchema>
+>({
+    mutationFn: async (data) => {
+        return pb
+            .collection<InquiryResponse>(Collections.Inquiry)
+            .update(data.inquiryId, {
+                approval_status: 'rejected',
+                rejection_reason: data.rejection_reason,
+            });
+    },
+    onSuccess: () => {
+        toast.success('Inquiry Rejected', {
+            description: 'The inquiry has been rejected',
+        });
+    },
+    onError: (err) => {
+        toast.error('Failed to Reject Inquiry', {
+            description: err.message,
+        });
+    },
+});
+
+export const createAccountMutation = mutationOptions<
+    { user_id: string; email: string; tenant_id: string; first_name: string; last_name: string; password: string },
+    Error,
+    z.infer<typeof createAccountSchema>
+>({
+    mutationFn: async (data) => {
+        const response = await fetch('/api/inquiry/create-account', {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/x-www-form-urlencoded',
+                'Authorization': `Bearer ${pb.authStore.token}`,
+            },
+            body: new URLSearchParams({
+                inquiryId: data.inquiryId,
+            }),
+        });
+
+        if (!response.ok) {
+            const error = await response.json();
+            throw new Error(error.error || 'Failed to create account');
+        }
+
+        return response.json();
+    },
+    onSuccess: (data) => {
+        toast.success('Account Created Successfully', {
+            description: `Account for ${data.first_name} ${data.last_name} has been created`,
+        });
+    },
+    onError: (err) => {
+        toast.error('Failed to Create Account', {
+            description: err.message,
         });
     },
 });

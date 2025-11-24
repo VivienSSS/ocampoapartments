@@ -124,9 +124,12 @@ export const columns: ColumnDef<BillsResponse>[] = [
           }),
       });
 
-      const total = (data?.items ?? []).reduce((sum: number, item: any) => {
+      const billItemsTotal = (data?.items ?? []).reduce((sum: number, item: any) => {
         return sum + (item.amount || 0);
       }, 0);
+
+      const rentAmount = 7000;
+      const total = rentAmount + billItemsTotal;
 
       return total > 0 ? `₱${total.toFixed(2)}` : '—';
     },

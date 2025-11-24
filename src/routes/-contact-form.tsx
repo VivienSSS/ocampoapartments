@@ -8,7 +8,7 @@ import {
 import { useAppForm } from '@/components/ui/forms';
 import type { ApartmentUnitsResponse } from '@/pocketbase/queries/apartmentUnits';
 import { inquirySchema } from '@/pocketbase/schemas/inquiry';
-import { Collections, InquirySubmissionTypeOptions } from '@/pocketbase/types';
+import { Collections, } from '@/pocketbase/types';
 import { useRouteContext } from '@tanstack/react-router';
 import { toast } from 'sonner';
 import { useState } from 'react';
@@ -118,55 +118,7 @@ const ContactForm = () => {
               )}
             </form.AppField>
             <div className="col-span-4 flex items-center">
-              <AlertDialog open={openImageDialog} onOpenChange={setOpenImageDialog}>
-                <AlertDialogTrigger asChild>
-                  <Button type="button" variant="outline" className='w-full'>
-                    View QR for Payment
-                  </Button>
-                </AlertDialogTrigger>
-                <AlertDialogContent className="max-w-xs w-96">
-                  <button
-                    onClick={() => setOpenImageDialog(false)}
-                    className="ring-offset-background focus:ring-ring data-[state=open]:bg-accent data-[state=open]:text-muted-foreground absolute top-4 right-4 rounded-xs opacity-70 transition-opacity hover:opacity-100 focus:ring-2 focus:ring-offset-2 focus:outline-hidden disabled:pointer-events-none [&_svg]:pointer-events-none [&_svg]:shrink-0 [&_svg:not([class*='size-'])]:size-4"
-                  >
-                    <X />
-                    <span className="sr-only">Close</span>
-                  </button>
-                  <div className="flex flex-col items-center justify-center gap-4 pt-4">
-                    <img
-                      src="/myqr.jpg"
-                      alt="QR Code"
-                      className="w-72 rounded-lg"
-                    />
-                  </div>
-                </AlertDialogContent>
-              </AlertDialog>
             </div>
-            <form.AppField name="submission_type">
-              {(field) => (
-                <div className="col-span-2">
-                  <field.SelectField
-                    label="Payment Type"
-                    placeholder="Select payment type"
-                    options={Object.values(InquirySubmissionTypeOptions).map(
-                      (value) => ({
-                        label: value,
-                        value: value,
-                      })
-                    )}
-                  />
-                </div>
-              )}
-            </form.AppField>
-            <form.AppField name="qr_image_proof">
-              {(field) => (
-                <div className="col-span-2">
-                  <field.FileField
-                    label="Proof of Payment"
-                  />
-                </div>
-              )}
-            </form.AppField>
             <div className="col-span-4 flex flex-row items-center gap-2.5 pt-2">
               <Button type="submit" size="lg" className="w-full">
                 Register Now

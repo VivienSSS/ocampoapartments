@@ -25,6 +25,14 @@ export const apartmentUnitSchema = z.object({
     .max(1, 'Unit letter must be a single character')
     .check(fieldConfig({ order: 3 })),
   isAvailable: z.boolean(),
+  image: z
+    .string()
+    .optional()
+    .check(fieldConfig({ order: 5 })),
+  carousel_image: z
+    .string()
+    .optional()
+    .check(fieldConfig({ order: 6 })),
   created: z.date().optional(),
   updated: z.date().optional(),
 });

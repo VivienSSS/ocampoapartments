@@ -1,4 +1,5 @@
 import { BadgePlus, Trash } from 'lucide-react';
+import React from 'react';
 import type z from 'zod';
 import { AsyncSelect } from '@/components/ui/async-select';
 import { Button } from '@/components/ui/button';
@@ -35,7 +36,7 @@ import {
 
 export const CreateBillingForm = withForm({
   defaultValues: {
-    items: [{}],
+    items: [{ chargeType: BillItemsChargeTypeOptions.Rent, amount: 7000, description: '' }],
   } as z.infer<typeof insertBillSchema>,
   validators: {
     onSubmit: insertBillSchema,
@@ -100,7 +101,7 @@ export const CreateBillingForm = withForm({
                     className="mb-4 col-span-full"
                     onClick={() =>
                       field.pushValue({
-                        chargeType: BillItemsChargeTypeOptions.Electricity,
+                        chargeType: BillItemsChargeTypeOptions.Water,
                         description: '',
                         amount: undefined,
                       })
@@ -115,7 +116,7 @@ export const CreateBillingForm = withForm({
                   >
                     {field.state.value?.map((item, index) => (
                       <CreateBillingItemForm
-                        key={`${item.description}-${item.amount}-${index}`}
+                        key={`${item.description}-${index}`}
                         form={form}
                         fields={`items[${index}]`}
                         onDelete={() => field.removeValue(index)}
@@ -136,9 +137,23 @@ export const CreateBillingItemForm = withFieldGroup({
   defaultValues: {} as z.infer<typeof insertBillItemsSchema>,
   props: { onDelete: () => { } },
   render: ({ group, onDelete }) => {
+    const chargeType = group.state.values.chargeType;
+    const isRent = chargeType === BillItemsChargeTypeOptions.Rent;
+    const isWater = chargeType === BillItemsChargeTypeOptions.Water;
+
+    // Auto-set amount to 7000 when Rent is selected, clear for others
+    React.useEffect(() => {
+      if (isRent) {
+        group.setFieldValue('amount', 7000);
+      } else if (!isWater) {
+        group.setFieldValue('amount', undefined);
+      }
+    }, [chargeType]);
+
     return (
       <AccordionItem
-        value={`item-${group.state.values.amount}`}
+        key={`item-${chargeType}`}
+        value={`item-${group.state.values.description}`}
         className="border rounded-md p-4 first:rounded-b-none last:rounded-t-none"
       >
         <AccordionTrigger>
@@ -158,9 +173,16 @@ export const CreateBillingItemForm = withFieldGroup({
               />
             )}
           </group.AppField>
-          <group.AppField name="amount">
-            {(field) => <field.NumberField label="Amount" />}
-          </group.AppField>
+          {isWater && (
+            <group.AppField name="amount">
+              {(field) => <field.NumberField label="Amount" />}
+            </group.AppField>
+          )}
+          {isRent && (
+            <div className="rounded-md bg-muted p-3 text-sm text-muted-foreground">
+              Fixed amount: ₱7,000
+            </div>
+          )}
           <group.AppField name="description">
             {(field) => <field.TextareaField label="Description" />}
           </group.AppField>
