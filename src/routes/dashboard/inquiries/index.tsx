@@ -15,13 +15,8 @@ import {
 } from '@/components/ui/dropdown-menu';
 import DataTable from '@/components/ui/kibo-ui/table/data-table';
 import { searchParams } from '@/lib/utils';
-<<<<<<< HEAD
 import { listInquiriesWithOtpQuery } from '@/pocketbase/queries/inquries';
-import { UsersRoleOptions } from '@/pocketbase/types';
-=======
-import { listInqueryQuery } from '@/pocketbase/queries/inquries';
 import { UsersRoleOptions, type InquiryResponse } from '@/pocketbase/types';
->>>>>>> bd532f5 (feat: enhance apartment unit schema with image fields and update inquiry schema for approval process)
 import { useState } from 'react';
 import LoadingComponent from './-loading';
 import { columns } from './-table';
