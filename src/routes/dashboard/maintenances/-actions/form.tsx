@@ -272,15 +272,6 @@ export const EditMaintenanceForm = withForm({
             />
           )}
         </form.AppField>
-        <form.AppField name="completedDate">
-          {(field) => (
-            <field.DateTimeField
-              label="Completed Date"
-              placeholder="Completed Date"
-              disablePastDates={true}
-            />
-          )}
-        </form.AppField>
       </div>
     );
   },

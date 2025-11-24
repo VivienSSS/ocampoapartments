@@ -52,8 +52,16 @@ const EditMaintenanceDialogForm = () => {
       status: req?.status ?? '',
     } as z.infer<typeof updateMaintenanceRequestSchema>,
     validators: { onSubmit: updateMaintenanceRequestSchema },
-    onSubmit: async ({ value }) =>
-      mutation.mutateAsync(value, {
+    onSubmit: async ({ value }) => {
+      // Automatically set completedDate when status is Completed
+      const submitValue = {
+        ...value,
+        ...(value.status === 'Completed' && !req?.completedDate
+          ? { completedDate: new Date() }
+          : {}),
+      };
+
+      return mutation.mutateAsync(submitValue, {
         onSuccess: () => {
           // Determine tenant filter if user is a tenant
           let tenantFilter: string | undefined;
@@ -74,7 +82,8 @@ const EditMaintenanceDialogForm = () => {
             search: { edit: undefined, id: undefined },
           });
         },
-      }),
+      });
+    },
   });
 
   return (
