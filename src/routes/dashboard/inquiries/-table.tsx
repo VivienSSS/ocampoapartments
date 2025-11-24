@@ -201,52 +201,12 @@ export const columns = ({ onApprove, onCreateAccount }: ColumnsProps): ColumnDef
     header: 'Actions',
     cell: ({ row }) => {
       const inquiry = row.original;
-<<<<<<< HEAD
       return (
         <div className="flex gap-2">
           <SendOtpDialog inquiry={inquiry} />
           <AcceptInquiryDialog inquiry={inquiry} />
           <RejectInquiryDialog inquiry={inquiry} />
         </div>
-=======
-      const isApproved = inquiry.approval_status === 'approved';
-      const isVerified = inquiry.emailVerified;
-
-      return (
-        <DropdownMenu>
-          <DropdownMenuTrigger asChild>
-            <Button variant="ghost" size="sm">
-              Actions
-            </Button>
-          </DropdownMenuTrigger>
-          <DropdownMenuContent align="end" className="w-48">
-            {inquiry.approval_status !== 'approved' && inquiry.approval_status !== 'rejected' && (
-              <DropdownMenuItem
-                onClick={() => onApprove(inquiry)}
-                className="cursor-pointer"
-              >
-                <CheckCircle className="w-4 h-4 mr-2" />
-                Approve or Reject
-              </DropdownMenuItem>
-            )}
-            {isApproved && isVerified && (
-              <DropdownMenuItem
-                onClick={() => onCreateAccount(inquiry)}
-                className="cursor-pointer"
-              >
-                <UserPlus className="w-4 h-4 mr-2" />
-                Create Account
-              </DropdownMenuItem>
-            )}
-            {inquiry.approval_status === 'rejected' && (
-              <DropdownMenuItem disabled className="text-xs">
-                <XCircle className="w-4 h-4 mr-2" />
-                Rejected
-              </DropdownMenuItem>
-            )}
-          </DropdownMenuContent>
-        </DropdownMenu>
->>>>>>> bd532f5 (feat: enhance apartment unit schema with image fields and update inquiry schema for approval process)
       );
     },
   },
