@@ -129,7 +129,7 @@ export function InquiryApprovalDialog({
                         </TabsList>
 
                         <TabsContent value="approve" className="space-y-4">
-                            <div>
+                            <div className="mt-4 space-y-5">
                                 <Label htmlFor="approval-notes">Notes (Optional)</Label>
                                 <Textarea
                                     id="approval-notes"
@@ -141,9 +141,9 @@ export function InquiryApprovalDialog({
                             </div>
                         </TabsContent>
 
-                        <TabsContent value="reject" className="space-y-4">
-                            <div>
-                                <Label htmlFor="rejection-reason">Reason for Rejection</Label>
+                        <TabsContent value="reject" className="space-y-6">
+                            <div className='space-y-5 mt-4'>
+                                <Label htmlFor="rejection-reason" className='gap-6'>Reason for Rejection</Label>
                                 <Textarea
                                     id="rejection-reason"
                                     placeholder="Explain why this inquiry is being rejected..."
@@ -157,8 +157,8 @@ export function InquiryApprovalDialog({
                     </Tabs>
                 </div>
 
-                <DialogFooter>
-                    <Button variant="outline" onClick={() => onOpenChange(false)}>
+                <DialogFooter className='gap-y-5'>
+                    <Button variant="outline" onClick={() => onOpenChange(false)} className='space-y-5'>
                         Cancel
                     </Button>
                     {activeTab === 'approve' ? (
