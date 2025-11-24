@@ -46,6 +46,20 @@ export const viewTenancyQuery = (id: string) =>
         .getOne<TenanciesResponse>(id, { expand: 'tenant.user,unit.property' }),
   });
 
+export const getCurrentTenantTenancyQuery = (tenantId: string) =>
+  queryOptions({
+    queryKey: [Collections.Tenancies, 'current', tenantId],
+    queryFn: async () => {
+      const result = await pb
+        .collection(Collections.Tenancies)
+        .getFullList<TenanciesResponse>({
+          filter: `tenant = '${tenantId}'`,
+          expand: 'tenant.user,unit.property',
+        });
+      return result.length > 0 ? result[0] : null;
+    },
+  });
+
 export const createTenancyMutation = mutationOptions<
   TenanciesResponse,
   ClientResponseError,
