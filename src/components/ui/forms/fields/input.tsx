@@ -202,7 +202,6 @@ const InputField = (props: InputFieldProps) => {
         )}
       </InputGroup>
       {description && <FieldDescription>{description}</FieldDescription>}
-      {isInvalid && <FieldError errors={field.state.meta.errors} />}
     </>
   );
 };
