@@ -151,8 +151,12 @@ export const CreateMaintenanceForm = withForm({
                 description="The tenant who is requesting the maintenance"
                 pocketbase={pocketbase}
                 relationshipName="tenant"
-                collectionName={Collections.Tenants}
-                recordListOption={{ expand: 'user', filter: (query) => `${query ? `${query} ~ user.firstName &&` : ``} user.firstName != null` }}
+                collection={Collections.Tenants}
+                recordListOption={{
+                  expand: 'user',
+                  filter: (query) =>
+                    `${query ? `${query} ~ user.firstName &&` : ``} user.firstName != null`,
+                }}
                 renderOption={(item) =>
                   `${item.expand.user.firstName} ${item.expand.user.lastName}`
                 }
@@ -174,7 +178,7 @@ export const CreateMaintenanceForm = withForm({
                 description="The apartment unit that requires maintenance"
                 pocketbase={pocketbase}
                 relationshipName="unit"
-                collectionName={Collections.ApartmentUnits}
+                collection={Collections.ApartmentUnits}
                 recordListOption={{
                   expand: 'property',
                   filter:
@@ -210,8 +214,11 @@ export const CreateMaintenanceForm = withForm({
                 description="The maintenance worker assigned to handle this request"
                 pocketbase={pocketbase}
                 relationshipName="worker"
-                collectionName={Collections.MaintenanceWorkers}
-                recordListOption={{ filter: (query) => `${query ? `${query} ~ name &&` : ``} name != null` }}
+                collection={Collections.MaintenanceWorkers}
+                recordListOption={{
+                  filter: (query) =>
+                    `${query ? `${query} ~ name &&` : ``} name != null`,
+                }}
                 renderOption={(item) => item.name}
               />
             )}
@@ -245,7 +252,9 @@ export const EditMaintenanceForm = withForm({
     onSubmit: updateMaintenanceRequestSchema,
   },
   render: ({ form }) => {
-    const currentStatus = form.state.values.status as MaintenanceRequestsStatusOptions | undefined;
+    const currentStatus = form.state.values.status as
+      | MaintenanceRequestsStatusOptions
+      | undefined;
     const validNextStatuses = getNextStatuses(currentStatus);
 
     return (
@@ -253,9 +262,10 @@ export const EditMaintenanceForm = withForm({
         <form.AppField name="status">
           {(field) => (
             <field.SelectField
-              options={validNextStatuses.map(
-                (value) => ({ label: value, value: value }),
-              )}
+              options={validNextStatuses.map((value) => ({
+                label: value,
+                value: value,
+              }))}
               label="Status"
             />
           )}
@@ -265,8 +275,11 @@ export const EditMaintenanceForm = withForm({
             <field.RelationField<MaintenanceWorkersResponse>
               pocketbase={pb}
               relationshipName="worker"
-              collectionName={Collections.MaintenanceWorkers}
-              recordListOption={{ filter: (query) => `${query ? `${query} ~ name &&` : ``} name != null` }}
+              collection={Collections.MaintenanceWorkers}
+              recordListOption={{
+                filter: (query) =>
+                  `${query ? `${query} ~ name &&` : ``} name != null`,
+              }}
               renderOption={(item) => item.name}
               label="Worker"
             />

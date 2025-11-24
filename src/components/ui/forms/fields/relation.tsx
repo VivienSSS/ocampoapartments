@@ -17,19 +17,15 @@ export interface RelationItem {
 }
 
 export type RelationFieldProps<Records extends RelationItem> = {
-  label?: React.ReactNode;
-  description?: React.ReactNode;
-  tooltip?: React.ReactNode;
-  tooltipSide?: 'top' | 'right' | 'bottom' | 'left';
   relationshipName: string;
-  collectionName: Collections;
+  collection: Collections;
   displayField?: string;
   preload?: boolean;
   placeholder?: string;
-  pocketbase: TypedPocketBase;
+  pocketbase?: TypedPocketBase;
   renderOption?: (item: Records) => React.ReactNode;
   recordListOption?: Omit<RecordListOptions, 'filter'> & {
-    filter?: string | ((query?: string) => string)
+    filter?: string | ((query?: string) => string);
   };
 };
 
@@ -38,28 +34,28 @@ const RelationField = <Records extends RelationItem>(
 ) => {
   const field = useFieldContext<string>();
   const {
-    collectionName,
+    collection: collectionName,
     relationshipName,
     displayField = 'name',
     preload = false,
     placeholder = 'Search...',
+    pocketbase,
   } = props;
-
-  const isInvalid = field.state.meta.isTouched && !field.state.meta.isValid;
 
   // Fetcher function to query related records
   const fetcher = useCallback(
     async (query?: string): Promise<Records[]> => {
       try {
-        let filter = typeof props.recordListOption?.filter === "function"
-          ? props.recordListOption.filter?.(query)
-          : props.recordListOption?.filter
+        let filter =
+          typeof props.recordListOption?.filter === 'function'
+            ? props.recordListOption.filter?.(query)
+            : props.recordListOption?.filter;
 
-        const records = await props.pocketbase
+        const records = await pocketbase!
           .collection(collectionName)
           .getList(1, 50, {
             ...props.recordListOption,
-            filter
+            filter,
           });
 
         return records.items as unknown as Records[];
@@ -68,44 +64,33 @@ const RelationField = <Records extends RelationItem>(
         return [];
       }
     },
-    [props.pocketbase, collectionName, props.recordListOption],
+    [pocketbase, collectionName, props.recordListOption],
   );
 
   return (
-    <Field data-invalid={isInvalid}>
-      <TooltipFieldLabel
-        htmlFor={field.name}
-        tooltip={props.tooltip}
-        tooltipSide={props.tooltipSide}
-      >
-        {props.label}
-      </TooltipFieldLabel>
-      <AsyncSelect<Records>
-        fetcher={fetcher}
-        preload={preload}
-        renderOption={(item) =>
-          props.renderOption
-            ? props.renderOption(item)
-            : String(item[displayField])
-        }
-        getOptionValue={(item) => item.id}
-        getDisplayValue={(item) =>
-          props.renderOption
-            ? props.renderOption(item)
-            : String(item[displayField])
-        }
-        label={String(props.label || relationshipName)}
-        placeholder={placeholder}
-        value={field.state.value ?? ''}
-        onChange={field.handleChange}
-        notFound={
-          <div className="py-6 text-center text-sm">No records found</div>
-        }
-        clearable={true}
-      />
-      <FieldDescription>{props.description}</FieldDescription>
-      {isInvalid && <FieldError errors={field.state.meta.errors} />}
-    </Field>
+    <AsyncSelect<Records>
+      fetcher={fetcher}
+      preload={preload}
+      renderOption={(item) =>
+        props.renderOption
+          ? props.renderOption(item)
+          : String(item[displayField])
+      }
+      getOptionValue={(item) => item.id}
+      getDisplayValue={(item) =>
+        props.renderOption
+          ? props.renderOption(item)
+          : String(item[displayField])
+      }
+      label={relationshipName}
+      placeholder={placeholder}
+      value={field.state.value ?? ''}
+      onChange={field.handleChange}
+      notFound={
+        <div className="py-6 text-center text-sm">No records found</div>
+      }
+      clearable={true}
+    />
   );
 };
 

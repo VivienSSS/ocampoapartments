@@ -82,10 +82,10 @@ export const CreateApartmentForm = withForm({
           {(field) => (
             <field.RelationField<PropertiesRecord>
               pocketbase={pocketbase}
-              collectionName={Collections.Properties}
+              collection={Collections.Properties}
               relationshipName="property"
               recordListOption={{
-                filter: (query) => `branch ~ '${query}'`
+                filter: (query) => `branch ~ '${query}'`,
               }}
               renderOption={(item) => item.branch}
               label="Property"
@@ -179,10 +179,10 @@ export const EditApartmentForm = withForm({
           {(field) => (
             <field.RelationField<PropertiesRecord>
               pocketbase={pocketbase}
-              collectionName={Collections.Properties}
+              collection={Collections.Properties}
               relationshipName="property"
               recordListOption={{
-                filter: (query) => `branch ~ '${query}'`
+                filter: (query) => `branch ~ '${query}'`,
               }}
               renderOption={(item) => item.branch}
               label="Property"

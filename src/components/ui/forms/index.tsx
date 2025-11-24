@@ -18,6 +18,7 @@ import {
   URLField,
 } from './fields';
 import FormDialog from './utils/dialog';
+import InputField from './fields/input';
 
 export const { fieldContext, formContext, useFieldContext, useFormContext } =
   createFormHookContexts();
@@ -42,6 +43,7 @@ export const { useAppForm, withFieldGroup, withForm } = createFormHook({
     TextField,
     TextareaField,
     URLField,
+    InputField,
   },
   formComponents: { FormDialog },
 });

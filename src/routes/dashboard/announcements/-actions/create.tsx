@@ -13,7 +13,7 @@ import {
   listAnnouncementsQuery,
 } from '@/pocketbase/queries/announcements';
 import { insertAnnouncementSchema } from '@/pocketbase/schemas/announcements';
-import { CreateAnnouncementForm } from './form';
+import AutoFieldSet from '@/components/ui/autoform';
 
 const CreateAnnouncementDialogForm = () => {
   const navigate = useNavigate({ from: '/dashboard/announcements' });
@@ -72,7 +72,28 @@ const CreateAnnouncementDialogForm = () => {
           form.handleSubmit();
         }}
       >
-        <CreateAnnouncementForm form={form} />
+        {/* <CreateAnnouncementForm form={form} /> */}
+        <AutoFieldSet
+          form={form}
+          schema={{
+            groups: [
+              {
+                name: 'title',
+                type: 'text',
+                label: 'Title',
+                description: 'Title of the announcement',
+                orientation: 'vertical',
+              },
+              {
+                name: 'message',
+                type: 'textarea',
+                label: 'Message',
+                description: 'Content of the announcement',
+                orientation: 'vertical',
+              },
+            ],
+          }}
+        />
       </FormDialog>
     </form.AppForm>
   );

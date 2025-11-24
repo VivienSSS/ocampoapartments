@@ -40,8 +40,12 @@ export const CreateTenancyForm = withForm({
               tooltip="Select the tenant for the tenancy"
               description="The tenant who will be renting the unit"
               pocketbase={pocketbase}
-              collectionName={Collections.Tenants}
-              recordListOption={{ expand: 'user', filter: (query) => `${query ? `${query} ~ user.firstName &&` : ``} user.firstName != null` }}
+              collection={Collections.Tenants}
+              recordListOption={{
+                expand: 'user',
+                filter: (query) =>
+                  `${query ? `${query} ~ user.firstName &&` : ``} user.firstName != null`,
+              }}
               renderOption={(item) =>
                 `${item.expand.user.firstName} ${item.expand.user.lastName}`
               }
@@ -56,11 +60,13 @@ export const CreateTenancyForm = withForm({
               tooltip="Select the apartment unit for the tenancy"
               description="The apartment unit that will be rented"
               pocketbase={pocketbase}
-              collectionName={Collections.ApartmentUnits}
+              collection={Collections.ApartmentUnits}
               relationshipName="unit"
               recordListOption={{
                 expand: 'property',
-                filter: selectedUnit ? `isAvailable = true && id != '${selectedUnit}'` : 'isAvailable = true'
+                filter: selectedUnit
+                  ? `isAvailable = true && id != '${selectedUnit}'`
+                  : 'isAvailable = true',
               }}
               renderOption={(item) =>
                 `${item.expand.property.branch} - ${item.floorNumber} - ${item.unitLetter}`
@@ -112,8 +118,12 @@ export const EditTenancyForm = withForm({
               description="The tenant who will be renting the unit"
               pocketbase={pocketbase}
               relationshipName="tenant"
-              collectionName={Collections.Tenants}
-              recordListOption={{ expand: 'user', filter: (query) => `${query ? `${query} ~ user.firstName &&` : ``} user.firstName != null` }}
+              collection={Collections.Tenants}
+              recordListOption={{
+                expand: 'user',
+                filter: (query) =>
+                  `${query ? `${query} ~ user.firstName &&` : ``} user.firstName != null`,
+              }}
               renderOption={(item) =>
                 `${item.expand.user.firstName} ${item.expand.user.lastName}`
               }
@@ -127,11 +137,13 @@ export const EditTenancyForm = withForm({
               tooltip="Select the apartment unit for the tenancy"
               description="The apartment unit that will be rented"
               pocketbase={pocketbase}
-              collectionName={Collections.ApartmentUnits}
+              collection={Collections.ApartmentUnits}
               relationshipName="unit"
               recordListOption={{
                 expand: 'property',
-                filter: selectedUnit ? `isAvailable = true && id != '${selectedUnit}'` : 'isAvailable = true'
+                filter: selectedUnit
+                  ? `isAvailable = true && id != '${selectedUnit}'`
+                  : 'isAvailable = true',
               }}
               renderOption={(item) =>
                 `${item.expand.property.address} - ${item.floorNumber} - ${item.unitLetter}`

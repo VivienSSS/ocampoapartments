@@ -6,7 +6,11 @@ import { pb } from '@/pocketbase';
 import type { BillsResponse } from '@/pocketbase/queries/bills';
 import type { TenantsResponse } from '@/pocketbase/queries/tenants';
 import { insertPaymentSchema } from '@/pocketbase/schemas/payments';
-import { Collections, PaymentsPaymentMethodOptions, UsersRoleOptions } from '@/pocketbase/types';
+import {
+  Collections,
+  PaymentsPaymentMethodOptions,
+  UsersRoleOptions,
+} from '@/pocketbase/types';
 import { useRouteContext } from '@tanstack/react-router';
 
 export const CreatePaymentForm = withForm({
@@ -67,8 +71,12 @@ export const CreatePaymentForm = withForm({
                 description="The tenant who is making the payment"
                 pocketbase={pocketbase}
                 relationshipName="tenant"
-                collectionName={Collections.Tenants}
-                recordListOption={{ expand: 'user', filter: (query) => `${query ? `${query} ~ user.firstName &&` : ``} user.firstName != null` }}
+                collection={Collections.Tenants}
+                recordListOption={{
+                  expand: 'user',
+                  filter: (query) =>
+                    `${query ? `${query} ~ user.firstName &&` : ``} user.firstName != null`,
+                }}
                 renderOption={(item) =>
                   `${item.expand.user.firstName} ${item.expand.user.lastName}`
                 }
@@ -84,8 +92,12 @@ export const CreatePaymentForm = withForm({
               description="The bill that is being paid"
               pocketbase={pocketbase}
               relationshipName="bill"
-              recordListOption={{ expand: 'tenancy.tenant.user', filter: (query) => `${query ? `${query} ~ dueDate &&` : ``} dueDate != null` }}
-              collectionName={Collections.Bills}
+              recordListOption={{
+                expand: 'tenancy.tenant.user',
+                filter: (query) =>
+                  `${query ? `${query} ~ dueDate &&` : ``} dueDate != null`,
+              }}
+              collection={Collections.Bills}
               renderOption={(item) => {
                 const date = format(new Date(item.dueDate), 'PPP');
                 const firstName =
@@ -123,7 +135,9 @@ export const CreatePaymentForm = withForm({
           )}
         </form.AppField>
         <form.AppField name="paymentDate">
-          {(field) => <field.DateTimeField label="Payment Date" disablePastDates={true} />}
+          {(field) => (
+            <field.DateTimeField label="Payment Date" disablePastDates={true} />
+          )}
         </form.AppField>
         <form.AppField name="transactionId">
           {(field) => (

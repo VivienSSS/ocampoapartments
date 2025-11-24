@@ -24,9 +24,10 @@ export const CreateTenantForm = withForm({
               tooltip="Select the user associated with this tenant"
               description="Only users with the 'Tenant' role will be displayed"
               pocketbase={pocketbase}
-              collectionName={Collections.Users}
+              collection={Collections.Users}
               recordListOption={{
-                filter: (query) => `${query ? `${query} ~ contactEmail &&` : ``} role = 'Tenant'`,
+                filter: (query) =>
+                  `${query ? `${query} ~ contactEmail &&` : ``} role = 'Tenant'`,
               }}
               relationshipName="user"
               renderOption={(item) =>
@@ -75,9 +76,10 @@ export const EditTenantForm = withForm({
               tooltip="Select the user associated with this tenant"
               description="Only users with the 'Tenant' role will be displayed"
               pocketbase={pocketbase}
-              collectionName={Collections.Users}
+              collection={Collections.Users}
               recordListOption={{
-                filter: (query) => `${query ? `${query} ~ contactEmail &&` : ``} role = 'Tenant'`,
+                filter: (query) =>
+                  `${query ? `${query} ~ contactEmail &&` : ``} role = 'Tenant'`,
               }}
               relationshipName="user"
               renderOption={(item) =>

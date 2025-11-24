@@ -28,7 +28,13 @@ import {
 
 export const CreateBillingForm = withForm({
   defaultValues: {
-    items: [{ chargeType: BillItemsChargeTypeOptions.Rent, amount: 7000, description: '' }],
+    items: [
+      {
+        chargeType: BillItemsChargeTypeOptions.Rent,
+        amount: 7000,
+        description: '',
+      },
+    ],
   } as z.infer<typeof insertBillSchema>,
   validators: {
     onSubmit: insertBillSchema,
@@ -49,13 +55,17 @@ export const CreateBillingForm = withForm({
               {(field) => (
                 <field.RelationField<TenanciesResponse>
                   pocketbase={pocketbase}
-                  collectionName={Collections.Tenancies}
+                  collection={Collections.Tenancies}
                   relationshipName="tenancy"
                   label="Tenant"
                   renderOption={(item) =>
                     `${item?.expand?.tenant?.expand.user?.firstName} ${item?.expand?.tenant?.expand.user?.lastName} - ${item?.expand?.tenant?.expand.user.contactEmail}`
                   }
-                  recordListOption={{ expand: 'tenant.user', filter: (query) => `${query ? `${query} ~ tenant.user.firstName &&` : ``} tenant.user.firstName != null` }}
+                  recordListOption={{
+                    expand: 'tenant.user',
+                    filter: (query) =>
+                      `${query ? `${query} ~ tenant.user.firstName &&` : ``} tenant.user.firstName != null`,
+                  }}
                 />
               )}
             </form.AppField>
@@ -64,9 +74,7 @@ export const CreateBillingForm = withForm({
                 <p className="text-xs font-medium text-muted-foreground uppercase tracking-wide mb-1">
                   Tenant
                 </p>
-                <p className="text-sm font-semibold">
-                  {selectedTenancy}
-                </p>
+                <p className="text-sm font-semibold">{selectedTenancy}</p>
               </div>
             )}
             <form.AppField name="status">
@@ -140,7 +148,7 @@ export const CreateBillingForm = withForm({
 
 export const CreateBillingItemForm = withFieldGroup({
   defaultValues: {} as z.infer<typeof insertBillItemsSchema>,
-  props: { onDelete: () => { } },
+  props: { onDelete: () => {} },
   render: ({ group, onDelete }) => {
     const chargeType = group.state.values.chargeType;
     const isRent = chargeType === BillItemsChargeTypeOptions.Rent;

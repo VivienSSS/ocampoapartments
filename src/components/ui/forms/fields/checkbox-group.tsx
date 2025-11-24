@@ -1,6 +1,6 @@
 import type React from 'react';
 import { Checkbox } from '../../checkbox';
-import { Field, FieldDescription, FieldError, FieldLabel } from '../../field';
+import { Field, FieldDescription, FieldError } from '../../field';
 import { useFieldContext } from '..';
 import { TooltipFieldLabel } from '../utils/tooltip-field-label';
 

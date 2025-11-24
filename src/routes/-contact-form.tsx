@@ -8,14 +8,14 @@ import {
 import { useAppForm } from '@/components/ui/forms';
 import type { ApartmentUnitsResponse } from '@/pocketbase/queries/apartmentUnits';
 import { inquirySchema } from '@/pocketbase/schemas/inquiry';
-import { Collections, } from '@/pocketbase/types';
+import { Collections } from '@/pocketbase/types';
 import { useRouteContext } from '@tanstack/react-router';
 import { toast } from 'sonner';
 import { useState } from 'react';
 import { X } from 'lucide-react';
 import z from 'zod';
 
-const MutationSchema = inquirySchema.omit({ id: true })
+const MutationSchema = inquirySchema.omit({ id: true });
 
 const ContactForm = () => {
   const { pocketbase } = useRouteContext({ from: '/' });
@@ -98,8 +98,11 @@ const ContactForm = () => {
                     // description="The apartment unit that are interested in"
                     pocketbase={pocketbase}
                     relationshipName="unit"
-                    collectionName={Collections.ApartmentUnits}
-                    recordListOption={{ expand: 'property', filter: (query) => `unitLetter ~ '${query}'` }}
+                    collection={Collections.ApartmentUnits}
+                    recordListOption={{
+                      expand: 'property',
+                      filter: (query) => `unitLetter ~ '${query}'`,
+                    }}
                     renderOption={(item) =>
                       `${item.expand.property.branch} - ${item.floorNumber} - ${item.unitLetter}`
                     }
@@ -117,8 +120,7 @@ const ContactForm = () => {
                 </div>
               )}
             </form.AppField>
-            <div className="col-span-4 flex items-center">
-            </div>
+            <div className="col-span-4 flex items-center"></div>
             <div className="col-span-4 flex flex-row items-center gap-2.5 pt-2">
               <Button type="submit" size="lg" className="w-full">
                 Register Now
