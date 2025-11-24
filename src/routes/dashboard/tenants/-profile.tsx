@@ -1,12 +1,198 @@
-import { format } from 'date-fns';
-import { Calendar, Facebook, Mail, Phone, User } from 'lucide-react';
+import { format, differenceInDays } from 'date-fns';
+import { Calendar, Facebook, Mail, Phone, User, FileText, CheckCircle2 } from 'lucide-react';
+import { useSuspenseQuery } from '@tanstack/react-query';
 import { Avatar, AvatarFallback, AvatarImage } from '@/components/ui/avatar';
 import { Badge } from '@/components/ui/badge';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
+import { getCurrentTenantTenancyQuery } from '@/pocketbase/queries/tenancies';
 import type { TenantsResponse } from '@/pocketbase/queries/tenants';
 
 interface TenantProfileProps {
   tenant: TenantsResponse;
+}
+
+function LeaseContractCard({ tenantId }: { tenantId: string }) {
+  const { data: tenancy } = useSuspenseQuery(
+    getCurrentTenantTenancyQuery(tenantId),
+  );
+
+  if (!tenancy) {
+    return null;
+  }
+
+  const leaseStartDate = new Date(tenancy.leaseStartDate);
+  const leaseEndDate = new Date(tenancy.leaseEndDate);
+  const daysRemaining = differenceInDays(leaseEndDate, new Date());
+  const totalLeaseDays = differenceInDays(leaseEndDate, leaseStartDate);
+  const progressPercentage = Math.max(
+    0,
+    Math.min(100, ((totalLeaseDays - daysRemaining) / totalLeaseDays) * 100),
+  );
+  const isExpiringSoon = daysRemaining <= 30 && daysRemaining > 0;
+  const isExpired = daysRemaining <= 0;
+
+  return (
+    <Card className="hover:shadow-lg transition-all duration-300 border-muted-foreground/20">
+      <CardContent>
+        <CardHeader className="pb-6">
+          <CardTitle className="flex items-center gap-3">
+            <div className="p-2 rounded-lg bg-blue-100/50">
+              <FileText className="w-5 h-5 text-blue-600" />
+            </div>
+            <h2 className="scroll-m-20 border-b pb-4 text-3xl font-semibold tracking-tight transition-colors first:mt-0">
+              Lease Contract
+            </h2>
+          </CardTitle>
+        </CardHeader>
+
+        <div className="space-y-6">
+          {/* Lease Period */}
+          <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+            <div className="p-4 rounded-xl bg-muted/50 border border-muted-foreground/10">
+              <p className="text-muted-foreground text-sm font-medium mb-1">
+                Lease Start Date
+              </p>
+              <p className="text-lg font-semibold">
+                {format(leaseStartDate, 'PPP')}
+              </p>
+            </div>
+
+            <div className="p-4 rounded-xl bg-muted/50 border border-muted-foreground/10">
+              <p className="text-muted-foreground text-sm font-medium mb-1">
+                Lease End Date
+              </p>
+              <p className="text-lg font-semibold">
+                {format(leaseEndDate, 'PPP')}
+              </p>
+            </div>
+          </div>
+
+          {/* Lease Duration Info */}
+          <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
+            <div className="p-4 rounded-xl border bg-gradient-to-br from-sky-100/30 via-sky-50/20 to-transparent">
+              <p className="text-muted-foreground text-sm font-medium mb-2">
+                Total Lease Duration
+              </p>
+              <p className="text-2xl font-bold text-sky-600">
+                {totalLeaseDays} days
+              </p>
+              <p className="text-xs text-muted-foreground mt-1">
+                {Math.floor(totalLeaseDays / 365)} year
+                {Math.floor(totalLeaseDays / 365) !== 1 ? 's' : ''}{' '}
+                {Math.floor((totalLeaseDays % 365) / 30)} month
+                {Math.floor((totalLeaseDays % 365) / 30) !== 1 ? 's' : ''}
+              </p>
+            </div>
+
+            <div
+              className={`p-4 rounded-xl border bg-gradient-to-br ${isExpired
+                ? 'from-red-100/30 via-red-50/20 to-transparent'
+                : isExpiringSoon
+                  ? 'from-amber-100/30 via-amber-50/20 to-transparent'
+                  : 'from-green-100/30 via-green-50/20 to-transparent'
+                }`}
+            >
+              <p className="text-muted-foreground text-sm font-medium mb-2">
+                Time Remaining
+              </p>
+              <p
+                className={`text-2xl font-bold ${isExpired
+                  ? 'text-red-600'
+                  : isExpiringSoon
+                    ? 'text-amber-600'
+                    : 'text-green-600'
+                  }`}
+              >
+                {isExpired ? 'Expired' : `${Math.max(0, daysRemaining)} days`}
+              </p>
+              {isExpiringSoon && !isExpired && (
+                <p className="text-xs text-amber-600 mt-1 font-medium">
+                  Expiring soon! Please renew your lease.
+                </p>
+              )}
+            </div>
+          </div>
+
+          {/* Progress Bar */}
+          <div className="space-y-2">
+            <div className="flex justify-between items-center">
+              <p className="text-sm font-medium text-muted-foreground">
+                Lease Progress
+              </p>
+              <p className="text-sm font-semibold">
+                {Math.round(progressPercentage)}%
+              </p>
+            </div>
+            <div className="w-full h-3 bg-muted rounded-full overflow-hidden border border-muted-foreground/10">
+              <div
+                className={`h-full transition-all duration-300 ${isExpired
+                  ? 'bg-red-500'
+                  : isExpiringSoon
+                    ? 'bg-amber-500'
+                    : 'bg-gradient-to-r from-green-500 to-emerald-500'
+                  }`}
+                style={{ width: `${Math.min(100, progressPercentage)}%` }}
+              />
+            </div>
+          </div>
+
+          {/* Unit Information - TODO: Enable when needed
+          <div className="p-4 rounded-xl bg-blue-50/30 border border-blue-200/30 dark:bg-blue-950/10 dark:border-blue-900/30">
+            <div className="flex items-start gap-3">
+              <CheckCircle2 className="w-5 h-5 text-blue-600 flex-shrink-0 mt-0.5" />
+              <div className="flex-1 min-w-0">
+                <p className="text-sm font-semibold text-blue-900 dark:text-blue-300 mb-2">
+                  Unit Details
+                </p>
+                <div className="space-y-1 text-sm text-muted-foreground">
+                  <p>
+                    <span className="font-medium">Unit:</span>{' '}
+                    {tenancy.expand.unit.name}
+                  </p>
+                  <p>
+                    <span className="font-medium">Property:</span>{' '}
+                    {tenancy.expand.unit.expand.property.name}
+                  </p>
+                  <p>
+                    <span className="font-medium">Floor:</span>{' '}
+                    {tenancy.expand.unit.floorNumber}
+                  </p>
+                </div>
+              </div>
+            </div>
+          </div>
+          */}
+
+          {/* Lease Terms Info Box */}
+          <div className="p-6 rounded-xl bg-slate-50/50 dark:bg-slate-950/20 border border-slate-200/50 dark:border-slate-800/50">
+            <h3 className="text-sm font-bold mb-4 text-foreground">Lease Terms & Conditions</h3>
+            <div className="space-y-4 text-sm leading-relaxed text-muted-foreground">
+              <p>
+                The landlord requires <span className="font-semibold text-foreground">one (1) month advance rent payment</span>, <span className="font-semibold text-foreground">two (2) months deposit</span>, and <span className="font-semibold text-foreground">₱2,000 refundable deposit</span> for the water and electricity. If a potential tenant decides to cancel their move-in at the last minute, all payments made, including any deposits or fees, will not be refunded.
+              </p>
+
+              <div className="border-t border-slate-200/50 dark:border-slate-800/50 pt-4 space-y-3">
+                <div className="flex gap-3">
+                  <span className="text-slate-400 dark:text-slate-600 font-semibold flex-shrink-0">•</span>
+                  <span><span className="font-semibold text-foreground">Utilities:</span> Electricity and water included in rent.</span>
+                </div>
+
+                <div className="flex gap-3">
+                  <span className="text-slate-400 dark:text-slate-600 font-semibold flex-shrink-0">•</span>
+                  <span><span className="font-semibold text-foreground">Pets:</span> Small pets allowed with no additional deposit.</span>
+                </div>
+
+                <div className="flex gap-3">
+                  <span className="text-slate-400 dark:text-slate-600 font-semibold flex-shrink-0">•</span>
+                  <span><span className="font-semibold text-foreground">Parking:</span> (1) motorcycle only, additional is ₱500/month.</span>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </CardContent>
+    </Card>
+  );
 }
 
 export function TenantProfile({ tenant }: TenantProfileProps) {
@@ -207,7 +393,7 @@ export function TenantProfile({ tenant }: TenantProfileProps) {
               <div className="text-3xl font-bold text-violet-600 mb-2 group-hover:scale-105 transition-transform duration-200">
                 {Math.floor(
                   (Date.now() - new Date(tenant.created!).getTime()) /
-                    (1000 * 60 * 60 * 24),
+                  (1000 * 60 * 60 * 24),
                 )}
               </div>
               <p className="text-muted-foreground text-sm font-medium">
@@ -217,6 +403,9 @@ export function TenantProfile({ tenant }: TenantProfileProps) {
           </div>
         </CardContent>
       </Card>
+
+      {/* Lease Contract Card */}
+      <LeaseContractCard tenantId={tenant.id} />
     </div>
   );
 }
