@@ -1,19 +1,24 @@
 import { mutationOptions } from '@tanstack/react-query';
-import type { Collections, Create, TypedPocketBase, Update } from './types';
+import type {
+  CollectionResponses,
+  Collections,
+  Create,
+  TypedPocketBase,
+  Update,
+} from './types';
 import type { ClientResponseError } from 'pocketbase';
 import { toast } from 'sonner';
 
 export const CreateRecordMutationOption = <C extends Collections>(
   pocketbase: TypedPocketBase,
   collection: C,
-  data: Create<C>,
 ) =>
-  mutationOptions({
-    mutationKey: [collection, 'create', data],
-    mutationFn: async () => {
+  mutationOptions<CollectionResponses[C], ClientResponseError, Create<C>>({
+    mutationKey: [collection, 'create'],
+    mutationFn: async (data) => {
       return await pocketbase.collection(collection).create(data);
     },
-    onError: (error: ClientResponseError) => {
+    onError: (error) => {
       toast.error(`Error creating record: ${error.message}`, {
         description: error.data?.message,
       });
@@ -28,15 +33,15 @@ export const CreateRecordMutationOption = <C extends Collections>(
 export const UpdateRecordMutationOption = <C extends Collections>(
   pocketbase: TypedPocketBase,
   collection: C,
-  id: string,
-  data: Update<C>,
+  id?: string,
 ) =>
-  mutationOptions({
-    mutationKey: [collection, 'update', id, data],
-    mutationFn: async () => {
+  mutationOptions<CollectionResponses[C], ClientResponseError, Update<C>>({
+    mutationKey: [collection, 'update', id],
+    mutationFn: async (data) => {
+      if (!id) throw new Error('ID is required for updating a record');
       return await pocketbase.collection(collection).update(id, data);
     },
-    onError: (error: ClientResponseError) => {
+    onError: (error) => {
       toast.error(`Error updating record: ${error.message}`, {
         description: error.data?.message,
       });
@@ -51,14 +56,16 @@ export const UpdateRecordMutationOption = <C extends Collections>(
 export const DeleteRecordMutationOption = <C extends Collections>(
   pocketbase: TypedPocketBase,
   collection: C,
-  id: string,
+  id?: string,
 ) =>
-  mutationOptions({
+  mutationOptions<boolean, ClientResponseError>({
     mutationKey: [collection, 'delete', id],
     mutationFn: async () => {
+      if (!id) throw new Error('ID is required for deleting a record');
+
       return await pocketbase.collection(collection).delete(id);
     },
-    onError: (error: ClientResponseError) => {
+    onError: (error) => {
       toast.error(`Error deleting record: ${error.message}`, {
         description: error.data?.message,
       });

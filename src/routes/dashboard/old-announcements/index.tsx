@@ -26,7 +26,7 @@ import EditAnnouncementDialogForm from './-actions/update';
 import LoadingComponent from './-loading';
 import { columns } from './-table';
 
-export const Route = createFileRoute('/dashboard/announcements/')({
+export const Route = createFileRoute('/dashboard/old-announcements/')({
   component: RouteComponent,
   pendingComponent: LoadingComponent,
   validateSearch: zodValidator(searchParams(announcementSchema.keyof())),

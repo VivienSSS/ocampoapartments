@@ -14,18 +14,19 @@ import { Route as RegisterRouteImport } from './routes/register'
 import { Route as DashboardRouteRouteImport } from './routes/dashboard/route'
 import { Route as IndexRouteImport } from './routes/index'
 import { Route as DashboardIndexRouteImport } from './routes/dashboard/index'
+import { Route as DashboardCollectionRouteImport } from './routes/dashboard/$collection'
 import { Route as DashboardTenantsIndexRouteImport } from './routes/dashboard/tenants/index'
 import { Route as DashboardTenantOverviewIndexRouteImport } from './routes/dashboard/tenant-overview/index'
 import { Route as DashboardTenanciesIndexRouteImport } from './routes/dashboard/tenancies/index'
 import { Route as DashboardPropertiesIndexRouteImport } from './routes/dashboard/properties/index'
 import { Route as DashboardPaymentsIndexRouteImport } from './routes/dashboard/payments/index'
+import { Route as DashboardOldAnnouncementsIndexRouteImport } from './routes/dashboard/old-announcements/index'
 import { Route as DashboardMaintenanceworkersIndexRouteImport } from './routes/dashboard/maintenanceworkers/index'
 import { Route as DashboardMaintenancesIndexRouteImport } from './routes/dashboard/maintenances/index'
 import { Route as DashboardInquiriesIndexRouteImport } from './routes/dashboard/inquiries/index'
 import { Route as DashboardBldgAdminOverviewIndexRouteImport } from './routes/dashboard/bldg-admin-overview/index'
 import { Route as DashboardBillingIndexRouteImport } from './routes/dashboard/billing/index'
 import { Route as DashboardApartmentsIndexRouteImport } from './routes/dashboard/apartments/index'
-import { Route as DashboardAnnouncementsIndexRouteImport } from './routes/dashboard/announcements/index'
 
 const VerifyOtpRoute = VerifyOtpRouteImport.update({
   id: '/verify-otp',
@@ -50,6 +51,11 @@ const IndexRoute = IndexRouteImport.update({
 const DashboardIndexRoute = DashboardIndexRouteImport.update({
   id: '/',
   path: '/',
+  getParentRoute: () => DashboardRouteRoute,
+} as any)
+const DashboardCollectionRoute = DashboardCollectionRouteImport.update({
+  id: '/$collection',
+  path: '/$collection',
   getParentRoute: () => DashboardRouteRoute,
 } as any)
 const DashboardTenantsIndexRoute = DashboardTenantsIndexRouteImport.update({
@@ -79,6 +85,12 @@ const DashboardPaymentsIndexRoute = DashboardPaymentsIndexRouteImport.update({
   path: '/payments/',
   getParentRoute: () => DashboardRouteRoute,
 } as any)
+const DashboardOldAnnouncementsIndexRoute =
+  DashboardOldAnnouncementsIndexRouteImport.update({
+    id: '/old-announcements/',
+    path: '/old-announcements/',
+    getParentRoute: () => DashboardRouteRoute,
+  } as any)
 const DashboardMaintenanceworkersIndexRoute =
   DashboardMaintenanceworkersIndexRouteImport.update({
     id: '/maintenanceworkers/',
@@ -113,26 +125,21 @@ const DashboardApartmentsIndexRoute =
     path: '/apartments/',
     getParentRoute: () => DashboardRouteRoute,
   } as any)
-const DashboardAnnouncementsIndexRoute =
-  DashboardAnnouncementsIndexRouteImport.update({
-    id: '/announcements/',
-    path: '/announcements/',
-    getParentRoute: () => DashboardRouteRoute,
-  } as any)
 
 export interface FileRoutesByFullPath {
   '/': typeof IndexRoute
   '/dashboard': typeof DashboardRouteRouteWithChildren
   '/register': typeof RegisterRoute
   '/verify-otp': typeof VerifyOtpRoute
+  '/dashboard/$collection': typeof DashboardCollectionRoute
   '/dashboard/': typeof DashboardIndexRoute
-  '/dashboard/announcements': typeof DashboardAnnouncementsIndexRoute
   '/dashboard/apartments': typeof DashboardApartmentsIndexRoute
   '/dashboard/billing': typeof DashboardBillingIndexRoute
   '/dashboard/bldg-admin-overview': typeof DashboardBldgAdminOverviewIndexRoute
   '/dashboard/inquiries': typeof DashboardInquiriesIndexRoute
   '/dashboard/maintenances': typeof DashboardMaintenancesIndexRoute
   '/dashboard/maintenanceworkers': typeof DashboardMaintenanceworkersIndexRoute
+  '/dashboard/old-announcements': typeof DashboardOldAnnouncementsIndexRoute
   '/dashboard/payments': typeof DashboardPaymentsIndexRoute
   '/dashboard/properties': typeof DashboardPropertiesIndexRoute
   '/dashboard/tenancies': typeof DashboardTenanciesIndexRoute
@@ -143,14 +150,15 @@ export interface FileRoutesByTo {
   '/': typeof IndexRoute
   '/register': typeof RegisterRoute
   '/verify-otp': typeof VerifyOtpRoute
+  '/dashboard/$collection': typeof DashboardCollectionRoute
   '/dashboard': typeof DashboardIndexRoute
-  '/dashboard/announcements': typeof DashboardAnnouncementsIndexRoute
   '/dashboard/apartments': typeof DashboardApartmentsIndexRoute
   '/dashboard/billing': typeof DashboardBillingIndexRoute
   '/dashboard/bldg-admin-overview': typeof DashboardBldgAdminOverviewIndexRoute
   '/dashboard/inquiries': typeof DashboardInquiriesIndexRoute
   '/dashboard/maintenances': typeof DashboardMaintenancesIndexRoute
   '/dashboard/maintenanceworkers': typeof DashboardMaintenanceworkersIndexRoute
+  '/dashboard/old-announcements': typeof DashboardOldAnnouncementsIndexRoute
   '/dashboard/payments': typeof DashboardPaymentsIndexRoute
   '/dashboard/properties': typeof DashboardPropertiesIndexRoute
   '/dashboard/tenancies': typeof DashboardTenanciesIndexRoute
@@ -163,14 +171,15 @@ export interface FileRoutesById {
   '/dashboard': typeof DashboardRouteRouteWithChildren
   '/register': typeof RegisterRoute
   '/verify-otp': typeof VerifyOtpRoute
+  '/dashboard/$collection': typeof DashboardCollectionRoute
   '/dashboard/': typeof DashboardIndexRoute
-  '/dashboard/announcements/': typeof DashboardAnnouncementsIndexRoute
   '/dashboard/apartments/': typeof DashboardApartmentsIndexRoute
   '/dashboard/billing/': typeof DashboardBillingIndexRoute
   '/dashboard/bldg-admin-overview/': typeof DashboardBldgAdminOverviewIndexRoute
   '/dashboard/inquiries/': typeof DashboardInquiriesIndexRoute
   '/dashboard/maintenances/': typeof DashboardMaintenancesIndexRoute
   '/dashboard/maintenanceworkers/': typeof DashboardMaintenanceworkersIndexRoute
+  '/dashboard/old-announcements/': typeof DashboardOldAnnouncementsIndexRoute
   '/dashboard/payments/': typeof DashboardPaymentsIndexRoute
   '/dashboard/properties/': typeof DashboardPropertiesIndexRoute
   '/dashboard/tenancies/': typeof DashboardTenanciesIndexRoute
@@ -184,14 +193,15 @@ export interface FileRouteTypes {
     | '/dashboard'
     | '/register'
     | '/verify-otp'
+    | '/dashboard/$collection'
     | '/dashboard/'
-    | '/dashboard/announcements'
     | '/dashboard/apartments'
     | '/dashboard/billing'
     | '/dashboard/bldg-admin-overview'
     | '/dashboard/inquiries'
     | '/dashboard/maintenances'
     | '/dashboard/maintenanceworkers'
+    | '/dashboard/old-announcements'
     | '/dashboard/payments'
     | '/dashboard/properties'
     | '/dashboard/tenancies'
@@ -202,14 +212,15 @@ export interface FileRouteTypes {
     | '/'
     | '/register'
     | '/verify-otp'
+    | '/dashboard/$collection'
     | '/dashboard'
-    | '/dashboard/announcements'
     | '/dashboard/apartments'
     | '/dashboard/billing'
     | '/dashboard/bldg-admin-overview'
     | '/dashboard/inquiries'
     | '/dashboard/maintenances'
     | '/dashboard/maintenanceworkers'
+    | '/dashboard/old-announcements'
     | '/dashboard/payments'
     | '/dashboard/properties'
     | '/dashboard/tenancies'
@@ -221,14 +232,15 @@ export interface FileRouteTypes {
     | '/dashboard'
     | '/register'
     | '/verify-otp'
+    | '/dashboard/$collection'
     | '/dashboard/'
-    | '/dashboard/announcements/'
     | '/dashboard/apartments/'
     | '/dashboard/billing/'
     | '/dashboard/bldg-admin-overview/'
     | '/dashboard/inquiries/'
     | '/dashboard/maintenances/'
     | '/dashboard/maintenanceworkers/'
+    | '/dashboard/old-announcements/'
     | '/dashboard/payments/'
     | '/dashboard/properties/'
     | '/dashboard/tenancies/'
@@ -280,6 +292,13 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof DashboardIndexRouteImport
       parentRoute: typeof DashboardRouteRoute
     }
+    '/dashboard/$collection': {
+      id: '/dashboard/$collection'
+      path: '/$collection'
+      fullPath: '/dashboard/$collection'
+      preLoaderRoute: typeof DashboardCollectionRouteImport
+      parentRoute: typeof DashboardRouteRoute
+    }
     '/dashboard/tenants/': {
       id: '/dashboard/tenants/'
       path: '/tenants'
@@ -313,6 +332,13 @@ declare module '@tanstack/react-router' {
       path: '/payments'
       fullPath: '/dashboard/payments'
       preLoaderRoute: typeof DashboardPaymentsIndexRouteImport
+      parentRoute: typeof DashboardRouteRoute
+    }
+    '/dashboard/old-announcements/': {
+      id: '/dashboard/old-announcements/'
+      path: '/old-announcements'
+      fullPath: '/dashboard/old-announcements'
+      preLoaderRoute: typeof DashboardOldAnnouncementsIndexRouteImport
       parentRoute: typeof DashboardRouteRoute
     }
     '/dashboard/maintenanceworkers/': {
@@ -357,25 +383,19 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof DashboardApartmentsIndexRouteImport
       parentRoute: typeof DashboardRouteRoute
     }
-    '/dashboard/announcements/': {
-      id: '/dashboard/announcements/'
-      path: '/announcements'
-      fullPath: '/dashboard/announcements'
-      preLoaderRoute: typeof DashboardAnnouncementsIndexRouteImport
-      parentRoute: typeof DashboardRouteRoute
-    }
   }
 }
 
 interface DashboardRouteRouteChildren {
+  DashboardCollectionRoute: typeof DashboardCollectionRoute
   DashboardIndexRoute: typeof DashboardIndexRoute
-  DashboardAnnouncementsIndexRoute: typeof DashboardAnnouncementsIndexRoute
   DashboardApartmentsIndexRoute: typeof DashboardApartmentsIndexRoute
   DashboardBillingIndexRoute: typeof DashboardBillingIndexRoute
   DashboardBldgAdminOverviewIndexRoute: typeof DashboardBldgAdminOverviewIndexRoute
   DashboardInquiriesIndexRoute: typeof DashboardInquiriesIndexRoute
   DashboardMaintenancesIndexRoute: typeof DashboardMaintenancesIndexRoute
   DashboardMaintenanceworkersIndexRoute: typeof DashboardMaintenanceworkersIndexRoute
+  DashboardOldAnnouncementsIndexRoute: typeof DashboardOldAnnouncementsIndexRoute
   DashboardPaymentsIndexRoute: typeof DashboardPaymentsIndexRoute
   DashboardPropertiesIndexRoute: typeof DashboardPropertiesIndexRoute
   DashboardTenanciesIndexRoute: typeof DashboardTenanciesIndexRoute
@@ -384,14 +404,15 @@ interface DashboardRouteRouteChildren {
 }
 
 const DashboardRouteRouteChildren: DashboardRouteRouteChildren = {
+  DashboardCollectionRoute: DashboardCollectionRoute,
   DashboardIndexRoute: DashboardIndexRoute,
-  DashboardAnnouncementsIndexRoute: DashboardAnnouncementsIndexRoute,
   DashboardApartmentsIndexRoute: DashboardApartmentsIndexRoute,
   DashboardBillingIndexRoute: DashboardBillingIndexRoute,
   DashboardBldgAdminOverviewIndexRoute: DashboardBldgAdminOverviewIndexRoute,
   DashboardInquiriesIndexRoute: DashboardInquiriesIndexRoute,
   DashboardMaintenancesIndexRoute: DashboardMaintenancesIndexRoute,
   DashboardMaintenanceworkersIndexRoute: DashboardMaintenanceworkersIndexRoute,
+  DashboardOldAnnouncementsIndexRoute: DashboardOldAnnouncementsIndexRoute,
   DashboardPaymentsIndexRoute: DashboardPaymentsIndexRoute,
   DashboardPropertiesIndexRoute: DashboardPropertiesIndexRoute,
   DashboardTenanciesIndexRoute: DashboardTenanciesIndexRoute,
