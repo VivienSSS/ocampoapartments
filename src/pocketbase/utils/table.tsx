@@ -3,6 +3,7 @@ import schema from '../../../public/schema.json';
 import { format } from 'date-fns';
 import { Badge } from '@/components/ui/badge';
 import { ToggleRight } from 'lucide-react';
+import { Checkbox } from '@/components/ui/checkbox';
 
 export const schemaToColumnDef = (collection: string) => {
   const table = schema.find((col) => col.name === collection);
@@ -17,10 +18,18 @@ export const schemaToColumnDef = (collection: string) => {
     if (field.primaryKey) {
       columns.push({
         id: field.name,
-        header: field.name,
-        accessorKey: field.name,
-        cell: (info) => (
-          <Badge variant={'secondary'}>{info.getValue() as string}</Badge>
+        header: ({ table }) => (
+          <Checkbox
+            checked={table.getIsAllRowsSelected()}
+            onCheckedChange={table.getToggleAllPageRowsSelectedHandler()} //or getToggleAllPageRowsSelectedHandler
+          />
+        ),
+        cell: ({ row }) => (
+          <Checkbox
+            checked={row.getIsSelected()}
+            disabled={!row.getCanSelect()}
+            onCheckedChange={row.getToggleSelectedHandler()}
+          />
         ),
       });
       continue;

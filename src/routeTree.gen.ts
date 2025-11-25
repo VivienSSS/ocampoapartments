@@ -15,18 +15,8 @@ import { Route as DashboardRouteRouteImport } from './routes/dashboard/route'
 import { Route as IndexRouteImport } from './routes/index'
 import { Route as DashboardIndexRouteImport } from './routes/dashboard/index'
 import { Route as DashboardCollectionRouteImport } from './routes/dashboard/$collection'
-import { Route as DashboardTenantsIndexRouteImport } from './routes/dashboard/tenants/index'
 import { Route as DashboardTenantOverviewIndexRouteImport } from './routes/dashboard/tenant-overview/index'
-import { Route as DashboardTenanciesIndexRouteImport } from './routes/dashboard/tenancies/index'
-import { Route as DashboardPropertiesIndexRouteImport } from './routes/dashboard/properties/index'
-import { Route as DashboardPaymentsIndexRouteImport } from './routes/dashboard/payments/index'
-import { Route as DashboardOldInquiriesIndexRouteImport } from './routes/dashboard/old-inquiries/index'
-import { Route as DashboardOldAnnouncementsIndexRouteImport } from './routes/dashboard/old-announcements/index'
-import { Route as DashboardMaintenanceworkersIndexRouteImport } from './routes/dashboard/maintenanceworkers/index'
-import { Route as DashboardMaintenancesIndexRouteImport } from './routes/dashboard/maintenances/index'
 import { Route as DashboardBldgAdminOverviewIndexRouteImport } from './routes/dashboard/bldg-admin-overview/index'
-import { Route as DashboardBillingIndexRouteImport } from './routes/dashboard/billing/index'
-import { Route as DashboardApartmentsIndexRouteImport } from './routes/dashboard/apartments/index'
 
 const VerifyOtpRoute = VerifyOtpRouteImport.update({
   id: '/verify-otp',
@@ -58,72 +48,16 @@ const DashboardCollectionRoute = DashboardCollectionRouteImport.update({
   path: '/$collection',
   getParentRoute: () => DashboardRouteRoute,
 } as any)
-const DashboardTenantsIndexRoute = DashboardTenantsIndexRouteImport.update({
-  id: '/tenants/',
-  path: '/tenants/',
-  getParentRoute: () => DashboardRouteRoute,
-} as any)
 const DashboardTenantOverviewIndexRoute =
   DashboardTenantOverviewIndexRouteImport.update({
     id: '/tenant-overview/',
     path: '/tenant-overview/',
     getParentRoute: () => DashboardRouteRoute,
   } as any)
-const DashboardTenanciesIndexRoute = DashboardTenanciesIndexRouteImport.update({
-  id: '/tenancies/',
-  path: '/tenancies/',
-  getParentRoute: () => DashboardRouteRoute,
-} as any)
-const DashboardPropertiesIndexRoute =
-  DashboardPropertiesIndexRouteImport.update({
-    id: '/properties/',
-    path: '/properties/',
-    getParentRoute: () => DashboardRouteRoute,
-  } as any)
-const DashboardPaymentsIndexRoute = DashboardPaymentsIndexRouteImport.update({
-  id: '/payments/',
-  path: '/payments/',
-  getParentRoute: () => DashboardRouteRoute,
-} as any)
-const DashboardOldInquiriesIndexRoute =
-  DashboardOldInquiriesIndexRouteImport.update({
-    id: '/old-inquiries/',
-    path: '/old-inquiries/',
-    getParentRoute: () => DashboardRouteRoute,
-  } as any)
-const DashboardOldAnnouncementsIndexRoute =
-  DashboardOldAnnouncementsIndexRouteImport.update({
-    id: '/old-announcements/',
-    path: '/old-announcements/',
-    getParentRoute: () => DashboardRouteRoute,
-  } as any)
-const DashboardMaintenanceworkersIndexRoute =
-  DashboardMaintenanceworkersIndexRouteImport.update({
-    id: '/maintenanceworkers/',
-    path: '/maintenanceworkers/',
-    getParentRoute: () => DashboardRouteRoute,
-  } as any)
-const DashboardMaintenancesIndexRoute =
-  DashboardMaintenancesIndexRouteImport.update({
-    id: '/maintenances/',
-    path: '/maintenances/',
-    getParentRoute: () => DashboardRouteRoute,
-  } as any)
 const DashboardBldgAdminOverviewIndexRoute =
   DashboardBldgAdminOverviewIndexRouteImport.update({
     id: '/bldg-admin-overview/',
     path: '/bldg-admin-overview/',
-    getParentRoute: () => DashboardRouteRoute,
-  } as any)
-const DashboardBillingIndexRoute = DashboardBillingIndexRouteImport.update({
-  id: '/billing/',
-  path: '/billing/',
-  getParentRoute: () => DashboardRouteRoute,
-} as any)
-const DashboardApartmentsIndexRoute =
-  DashboardApartmentsIndexRouteImport.update({
-    id: '/apartments/',
-    path: '/apartments/',
     getParentRoute: () => DashboardRouteRoute,
   } as any)
 
@@ -134,18 +68,8 @@ export interface FileRoutesByFullPath {
   '/verify-otp': typeof VerifyOtpRoute
   '/dashboard/$collection': typeof DashboardCollectionRoute
   '/dashboard/': typeof DashboardIndexRoute
-  '/dashboard/apartments': typeof DashboardApartmentsIndexRoute
-  '/dashboard/billing': typeof DashboardBillingIndexRoute
   '/dashboard/bldg-admin-overview': typeof DashboardBldgAdminOverviewIndexRoute
-  '/dashboard/maintenances': typeof DashboardMaintenancesIndexRoute
-  '/dashboard/maintenanceworkers': typeof DashboardMaintenanceworkersIndexRoute
-  '/dashboard/old-announcements': typeof DashboardOldAnnouncementsIndexRoute
-  '/dashboard/old-inquiries': typeof DashboardOldInquiriesIndexRoute
-  '/dashboard/payments': typeof DashboardPaymentsIndexRoute
-  '/dashboard/properties': typeof DashboardPropertiesIndexRoute
-  '/dashboard/tenancies': typeof DashboardTenanciesIndexRoute
   '/dashboard/tenant-overview': typeof DashboardTenantOverviewIndexRoute
-  '/dashboard/tenants': typeof DashboardTenantsIndexRoute
 }
 export interface FileRoutesByTo {
   '/': typeof IndexRoute
@@ -153,18 +77,8 @@ export interface FileRoutesByTo {
   '/verify-otp': typeof VerifyOtpRoute
   '/dashboard/$collection': typeof DashboardCollectionRoute
   '/dashboard': typeof DashboardIndexRoute
-  '/dashboard/apartments': typeof DashboardApartmentsIndexRoute
-  '/dashboard/billing': typeof DashboardBillingIndexRoute
   '/dashboard/bldg-admin-overview': typeof DashboardBldgAdminOverviewIndexRoute
-  '/dashboard/maintenances': typeof DashboardMaintenancesIndexRoute
-  '/dashboard/maintenanceworkers': typeof DashboardMaintenanceworkersIndexRoute
-  '/dashboard/old-announcements': typeof DashboardOldAnnouncementsIndexRoute
-  '/dashboard/old-inquiries': typeof DashboardOldInquiriesIndexRoute
-  '/dashboard/payments': typeof DashboardPaymentsIndexRoute
-  '/dashboard/properties': typeof DashboardPropertiesIndexRoute
-  '/dashboard/tenancies': typeof DashboardTenanciesIndexRoute
   '/dashboard/tenant-overview': typeof DashboardTenantOverviewIndexRoute
-  '/dashboard/tenants': typeof DashboardTenantsIndexRoute
 }
 export interface FileRoutesById {
   __root__: typeof rootRouteImport
@@ -174,18 +88,8 @@ export interface FileRoutesById {
   '/verify-otp': typeof VerifyOtpRoute
   '/dashboard/$collection': typeof DashboardCollectionRoute
   '/dashboard/': typeof DashboardIndexRoute
-  '/dashboard/apartments/': typeof DashboardApartmentsIndexRoute
-  '/dashboard/billing/': typeof DashboardBillingIndexRoute
   '/dashboard/bldg-admin-overview/': typeof DashboardBldgAdminOverviewIndexRoute
-  '/dashboard/maintenances/': typeof DashboardMaintenancesIndexRoute
-  '/dashboard/maintenanceworkers/': typeof DashboardMaintenanceworkersIndexRoute
-  '/dashboard/old-announcements/': typeof DashboardOldAnnouncementsIndexRoute
-  '/dashboard/old-inquiries/': typeof DashboardOldInquiriesIndexRoute
-  '/dashboard/payments/': typeof DashboardPaymentsIndexRoute
-  '/dashboard/properties/': typeof DashboardPropertiesIndexRoute
-  '/dashboard/tenancies/': typeof DashboardTenanciesIndexRoute
   '/dashboard/tenant-overview/': typeof DashboardTenantOverviewIndexRoute
-  '/dashboard/tenants/': typeof DashboardTenantsIndexRoute
 }
 export interface FileRouteTypes {
   fileRoutesByFullPath: FileRoutesByFullPath
@@ -196,18 +100,8 @@ export interface FileRouteTypes {
     | '/verify-otp'
     | '/dashboard/$collection'
     | '/dashboard/'
-    | '/dashboard/apartments'
-    | '/dashboard/billing'
     | '/dashboard/bldg-admin-overview'
-    | '/dashboard/maintenances'
-    | '/dashboard/maintenanceworkers'
-    | '/dashboard/old-announcements'
-    | '/dashboard/old-inquiries'
-    | '/dashboard/payments'
-    | '/dashboard/properties'
-    | '/dashboard/tenancies'
     | '/dashboard/tenant-overview'
-    | '/dashboard/tenants'
   fileRoutesByTo: FileRoutesByTo
   to:
     | '/'
@@ -215,18 +109,8 @@ export interface FileRouteTypes {
     | '/verify-otp'
     | '/dashboard/$collection'
     | '/dashboard'
-    | '/dashboard/apartments'
-    | '/dashboard/billing'
     | '/dashboard/bldg-admin-overview'
-    | '/dashboard/maintenances'
-    | '/dashboard/maintenanceworkers'
-    | '/dashboard/old-announcements'
-    | '/dashboard/old-inquiries'
-    | '/dashboard/payments'
-    | '/dashboard/properties'
-    | '/dashboard/tenancies'
     | '/dashboard/tenant-overview'
-    | '/dashboard/tenants'
   id:
     | '__root__'
     | '/'
@@ -235,18 +119,8 @@ export interface FileRouteTypes {
     | '/verify-otp'
     | '/dashboard/$collection'
     | '/dashboard/'
-    | '/dashboard/apartments/'
-    | '/dashboard/billing/'
     | '/dashboard/bldg-admin-overview/'
-    | '/dashboard/maintenances/'
-    | '/dashboard/maintenanceworkers/'
-    | '/dashboard/old-announcements/'
-    | '/dashboard/old-inquiries/'
-    | '/dashboard/payments/'
-    | '/dashboard/properties/'
-    | '/dashboard/tenancies/'
     | '/dashboard/tenant-overview/'
-    | '/dashboard/tenants/'
   fileRoutesById: FileRoutesById
 }
 export interface RootRouteChildren {
@@ -300,67 +174,11 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof DashboardCollectionRouteImport
       parentRoute: typeof DashboardRouteRoute
     }
-    '/dashboard/tenants/': {
-      id: '/dashboard/tenants/'
-      path: '/tenants'
-      fullPath: '/dashboard/tenants'
-      preLoaderRoute: typeof DashboardTenantsIndexRouteImport
-      parentRoute: typeof DashboardRouteRoute
-    }
     '/dashboard/tenant-overview/': {
       id: '/dashboard/tenant-overview/'
       path: '/tenant-overview'
       fullPath: '/dashboard/tenant-overview'
       preLoaderRoute: typeof DashboardTenantOverviewIndexRouteImport
-      parentRoute: typeof DashboardRouteRoute
-    }
-    '/dashboard/tenancies/': {
-      id: '/dashboard/tenancies/'
-      path: '/tenancies'
-      fullPath: '/dashboard/tenancies'
-      preLoaderRoute: typeof DashboardTenanciesIndexRouteImport
-      parentRoute: typeof DashboardRouteRoute
-    }
-    '/dashboard/properties/': {
-      id: '/dashboard/properties/'
-      path: '/properties'
-      fullPath: '/dashboard/properties'
-      preLoaderRoute: typeof DashboardPropertiesIndexRouteImport
-      parentRoute: typeof DashboardRouteRoute
-    }
-    '/dashboard/payments/': {
-      id: '/dashboard/payments/'
-      path: '/payments'
-      fullPath: '/dashboard/payments'
-      preLoaderRoute: typeof DashboardPaymentsIndexRouteImport
-      parentRoute: typeof DashboardRouteRoute
-    }
-    '/dashboard/old-inquiries/': {
-      id: '/dashboard/old-inquiries/'
-      path: '/old-inquiries'
-      fullPath: '/dashboard/old-inquiries'
-      preLoaderRoute: typeof DashboardOldInquiriesIndexRouteImport
-      parentRoute: typeof DashboardRouteRoute
-    }
-    '/dashboard/old-announcements/': {
-      id: '/dashboard/old-announcements/'
-      path: '/old-announcements'
-      fullPath: '/dashboard/old-announcements'
-      preLoaderRoute: typeof DashboardOldAnnouncementsIndexRouteImport
-      parentRoute: typeof DashboardRouteRoute
-    }
-    '/dashboard/maintenanceworkers/': {
-      id: '/dashboard/maintenanceworkers/'
-      path: '/maintenanceworkers'
-      fullPath: '/dashboard/maintenanceworkers'
-      preLoaderRoute: typeof DashboardMaintenanceworkersIndexRouteImport
-      parentRoute: typeof DashboardRouteRoute
-    }
-    '/dashboard/maintenances/': {
-      id: '/dashboard/maintenances/'
-      path: '/maintenances'
-      fullPath: '/dashboard/maintenances'
-      preLoaderRoute: typeof DashboardMaintenancesIndexRouteImport
       parentRoute: typeof DashboardRouteRoute
     }
     '/dashboard/bldg-admin-overview/': {
@@ -370,55 +188,21 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof DashboardBldgAdminOverviewIndexRouteImport
       parentRoute: typeof DashboardRouteRoute
     }
-    '/dashboard/billing/': {
-      id: '/dashboard/billing/'
-      path: '/billing'
-      fullPath: '/dashboard/billing'
-      preLoaderRoute: typeof DashboardBillingIndexRouteImport
-      parentRoute: typeof DashboardRouteRoute
-    }
-    '/dashboard/apartments/': {
-      id: '/dashboard/apartments/'
-      path: '/apartments'
-      fullPath: '/dashboard/apartments'
-      preLoaderRoute: typeof DashboardApartmentsIndexRouteImport
-      parentRoute: typeof DashboardRouteRoute
-    }
   }
 }
 
 interface DashboardRouteRouteChildren {
   DashboardCollectionRoute: typeof DashboardCollectionRoute
   DashboardIndexRoute: typeof DashboardIndexRoute
-  DashboardApartmentsIndexRoute: typeof DashboardApartmentsIndexRoute
-  DashboardBillingIndexRoute: typeof DashboardBillingIndexRoute
   DashboardBldgAdminOverviewIndexRoute: typeof DashboardBldgAdminOverviewIndexRoute
-  DashboardMaintenancesIndexRoute: typeof DashboardMaintenancesIndexRoute
-  DashboardMaintenanceworkersIndexRoute: typeof DashboardMaintenanceworkersIndexRoute
-  DashboardOldAnnouncementsIndexRoute: typeof DashboardOldAnnouncementsIndexRoute
-  DashboardOldInquiriesIndexRoute: typeof DashboardOldInquiriesIndexRoute
-  DashboardPaymentsIndexRoute: typeof DashboardPaymentsIndexRoute
-  DashboardPropertiesIndexRoute: typeof DashboardPropertiesIndexRoute
-  DashboardTenanciesIndexRoute: typeof DashboardTenanciesIndexRoute
   DashboardTenantOverviewIndexRoute: typeof DashboardTenantOverviewIndexRoute
-  DashboardTenantsIndexRoute: typeof DashboardTenantsIndexRoute
 }
 
 const DashboardRouteRouteChildren: DashboardRouteRouteChildren = {
   DashboardCollectionRoute: DashboardCollectionRoute,
   DashboardIndexRoute: DashboardIndexRoute,
-  DashboardApartmentsIndexRoute: DashboardApartmentsIndexRoute,
-  DashboardBillingIndexRoute: DashboardBillingIndexRoute,
   DashboardBldgAdminOverviewIndexRoute: DashboardBldgAdminOverviewIndexRoute,
-  DashboardMaintenancesIndexRoute: DashboardMaintenancesIndexRoute,
-  DashboardMaintenanceworkersIndexRoute: DashboardMaintenanceworkersIndexRoute,
-  DashboardOldAnnouncementsIndexRoute: DashboardOldAnnouncementsIndexRoute,
-  DashboardOldInquiriesIndexRoute: DashboardOldInquiriesIndexRoute,
-  DashboardPaymentsIndexRoute: DashboardPaymentsIndexRoute,
-  DashboardPropertiesIndexRoute: DashboardPropertiesIndexRoute,
-  DashboardTenanciesIndexRoute: DashboardTenanciesIndexRoute,
   DashboardTenantOverviewIndexRoute: DashboardTenantOverviewIndexRoute,
-  DashboardTenantsIndexRoute: DashboardTenantsIndexRoute,
 }
 
 const DashboardRouteRouteWithChildren = DashboardRouteRoute._addFileChildren(

@@ -1,5 +1,12 @@
+import { Button } from '@/components/ui/button';
+import {
+  DropdownMenu,
+  DropdownMenuContent,
+  DropdownMenuItem,
+  DropdownMenuTrigger,
+} from '@/components/ui/dropdown-menu';
 import { Input } from '@/components/ui/input';
-import DataTable from '@/components/ui/kibo-ui/table/data-table';
+import { DataTable } from '@/components/ui/data-table';
 import PocketbaseForms from '@/pocketbase/forms';
 import { schemaToColumnDef } from '@/pocketbase/utils/table';
 import { createFileRoute } from '@tanstack/react-router';
@@ -20,19 +27,7 @@ export const Route = createFileRoute('/dashboard/$collection')({
         .object({
           expand: z.string().optional(),
           filter: z.string().optional(),
-          sort: z
-            .object({
-              field: z.string(),
-              direction: z.enum(['asc', 'desc']).default('asc'),
-            })
-            .transform((val) => {
-              if (val.direction === 'asc') {
-                return `+${val.field}`;
-              } else {
-                return `-${val.field}`;
-              }
-            })
-            .optional(),
+          sort: z.string().optional(),
         })
         .optional(),
     }),
@@ -70,15 +65,15 @@ function RouteComponent() {
   const { columns, data, table } = Route.useLoaderData();
 
   return (
-    <article className="grid grid-cols-full">
+    <article className="grid grid-cols-full gap-5">
       {/* 
         todolist:
           - pagination - check
           - sorting
-          - filtering
+          - filtering - check
           - actions (create, edit, delete, view)
       */}
-      <section>
+      <section className="flex gap-2.5 items-center">
         <Input
           defaultValue={''}
           onChange={(event) => {
@@ -95,8 +90,39 @@ function RouteComponent() {
           }}
           placeholder="Search..."
         />
+        <DropdownMenu>
+          <DropdownMenuTrigger asChild>
+            <Button variant={'outline'}>Sort By</Button>
+          </DropdownMenuTrigger>
+          <DropdownMenuContent>
+            <DropdownMenuItem
+              onClick={() => {
+                navigate({
+                  search: (prev) => ({
+                    ...prev,
+                    options: { sort: '-created' },
+                  }),
+                });
+              }}
+            >
+              Newest
+            </DropdownMenuItem>
+            <DropdownMenuItem
+              onClick={() => {
+                navigate({
+                  search: (prev) => ({
+                    ...prev,
+                    options: { sort: '+created' },
+                  }),
+                });
+              }}
+            >
+              Oldest
+            </DropdownMenuItem>
+          </DropdownMenuContent>
+        </DropdownMenu>
       </section>
-      <DataTable data={data} columns={columns} />
+      <DataTable data={data.items} columns={columns} />
       <PocketbaseForms />
     </article>
   );
