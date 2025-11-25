@@ -30,6 +30,7 @@ export const Route = createFileRoute('/dashboard/$collection')({
           sort: z.string().optional(),
         })
         .optional(),
+      selected: z.array(z.string()).optional(),
     }),
   ),
   beforeLoad: async (routeContext) => {
@@ -122,7 +123,7 @@ function RouteComponent() {
           </DropdownMenuContent>
         </DropdownMenu>
       </section>
-      <DataTable data={data.items} columns={columns} />
+      <DataTable data={data.items} columns={columns} navigate={navigate} />
       <PocketbaseForms />
     </article>
   );

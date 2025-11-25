@@ -7,6 +7,8 @@ import {
   useReactTable,
 } from '@tanstack/react-table';
 
+import type { UseNavigateResult } from '@tanstack/react-router';
+
 import {
   Table,
   TableBody,
@@ -15,21 +17,36 @@ import {
   TableHeader,
   TableRow,
 } from '@/components/ui/table';
+import { useEffect } from 'react';
 
 interface DataTableProps<TData, TValue> {
   columns: ColumnDef<TData, TValue>[];
   data: TData[];
+  navigate?: UseNavigateResult<'/dashboard/$collection'>;
 }
 
 export function DataTable<TData, TValue>({
   columns,
   data,
+  navigate,
 }: DataTableProps<TData, TValue>) {
   const table = useReactTable({
     data,
     columns,
     getCoreRowModel: getCoreRowModel(),
   });
+
+  // biome-ignore lint/correctness/useExhaustiveDependencies: acceptable to only watch table.getSelectedRowModel()
+  useEffect(() => {
+    navigate?.({
+      search: (prev) => ({
+        ...prev,
+        selected:
+          //@ts-ignore
+          table.getSelectedRowModel().rows.map((row) => row.original.id) || [],
+      }),
+    });
+  }, [table.getSelectedRowModel()]);
 
   return (
     <div className="overflow-hidden rounded-md border">
