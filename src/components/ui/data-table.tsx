@@ -43,7 +43,7 @@ export function DataTable<TData, TValue>({
     },
   });
 
-  // biome-ignore lint/correctness/useExhaustiveDependencies: acceptable to only watch table.getSelectedRowModel()
+  // biome-ignore lint/correctness/useExhaustiveDependencies: acceptable to only watch rowSelection
   useEffect(() => {
     navigate?.({
       search: (prev) => ({

@@ -40,14 +40,9 @@ export const Route = createFileRoute('/dashboard/$collection')({
     // get table definition
     const { search } = context;
 
-    const { options }: { options: RecordListOptions } = await import(
-      `@/pocketbase/tables/${params.collection}`
-    );
-
     const response = await context.pocketbase
       .collection(params.collection)
       .getList(search.page, search.perPage, {
-        ...options,
         ...search.options,
       });
 
