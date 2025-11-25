@@ -55,7 +55,7 @@ const showNav = () => {
         },
         {
           title: 'Apartment Units',
-          url: '/dashboard/apartments',
+          url: '/dashboard/apartment_units',
           icon: Hotel,
         },
         {
@@ -70,7 +70,7 @@ const showNav = () => {
         },
         {
           title: 'Billing',
-          url: '/dashboard/billing',
+          url: '/dashboard/bills',
           icon: ReceiptText,
         },
         {
@@ -80,12 +80,12 @@ const showNav = () => {
         },
         {
           title: 'Maintenance Workers',
-          url: '/dashboard/maintenanceworkers',
+          url: '/dashboard/maintenance_workers',
           icon: ShieldUser,
         },
         {
           title: 'Requests',
-          url: '/dashboard/maintenances',
+          url: '/dashboard/maintenance_requests',
           icon: Hammer,
         },
       ];
@@ -108,17 +108,17 @@ const showNav = () => {
         },
         {
           title: 'Apartment Units',
-          url: '/dashboard/apartments',
+          url: '/dashboard/apartment_units',
           icon: Hotel,
         },
         {
           title: 'Requests',
-          url: '/dashboard/maintenances',
+          url: '/dashboard/maintenance_requests',
           icon: Hammer,
         },
         {
           title: 'Maintenance Workers',
-          url: '/dashboard/maintenanceworkers',
+          url: '/dashboard/maintenance_workers',
           icon: ShieldUser,
         },
       ];
@@ -131,7 +131,7 @@ const showNav = () => {
         },
         {
           title: 'Maintenance Requests',
-          url: '/dashboard/maintenances',
+          url: '/dashboard/maintenance_requests',
           icon: Hammer,
         },
         {
