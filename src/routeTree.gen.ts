@@ -20,10 +20,10 @@ import { Route as DashboardTenantOverviewIndexRouteImport } from './routes/dashb
 import { Route as DashboardTenanciesIndexRouteImport } from './routes/dashboard/tenancies/index'
 import { Route as DashboardPropertiesIndexRouteImport } from './routes/dashboard/properties/index'
 import { Route as DashboardPaymentsIndexRouteImport } from './routes/dashboard/payments/index'
+import { Route as DashboardOldInquiriesIndexRouteImport } from './routes/dashboard/old-inquiries/index'
 import { Route as DashboardOldAnnouncementsIndexRouteImport } from './routes/dashboard/old-announcements/index'
 import { Route as DashboardMaintenanceworkersIndexRouteImport } from './routes/dashboard/maintenanceworkers/index'
 import { Route as DashboardMaintenancesIndexRouteImport } from './routes/dashboard/maintenances/index'
-import { Route as DashboardInquiriesIndexRouteImport } from './routes/dashboard/inquiries/index'
 import { Route as DashboardBldgAdminOverviewIndexRouteImport } from './routes/dashboard/bldg-admin-overview/index'
 import { Route as DashboardBillingIndexRouteImport } from './routes/dashboard/billing/index'
 import { Route as DashboardApartmentsIndexRouteImport } from './routes/dashboard/apartments/index'
@@ -85,6 +85,12 @@ const DashboardPaymentsIndexRoute = DashboardPaymentsIndexRouteImport.update({
   path: '/payments/',
   getParentRoute: () => DashboardRouteRoute,
 } as any)
+const DashboardOldInquiriesIndexRoute =
+  DashboardOldInquiriesIndexRouteImport.update({
+    id: '/old-inquiries/',
+    path: '/old-inquiries/',
+    getParentRoute: () => DashboardRouteRoute,
+  } as any)
 const DashboardOldAnnouncementsIndexRoute =
   DashboardOldAnnouncementsIndexRouteImport.update({
     id: '/old-announcements/',
@@ -103,11 +109,6 @@ const DashboardMaintenancesIndexRoute =
     path: '/maintenances/',
     getParentRoute: () => DashboardRouteRoute,
   } as any)
-const DashboardInquiriesIndexRoute = DashboardInquiriesIndexRouteImport.update({
-  id: '/inquiries/',
-  path: '/inquiries/',
-  getParentRoute: () => DashboardRouteRoute,
-} as any)
 const DashboardBldgAdminOverviewIndexRoute =
   DashboardBldgAdminOverviewIndexRouteImport.update({
     id: '/bldg-admin-overview/',
@@ -136,10 +137,10 @@ export interface FileRoutesByFullPath {
   '/dashboard/apartments': typeof DashboardApartmentsIndexRoute
   '/dashboard/billing': typeof DashboardBillingIndexRoute
   '/dashboard/bldg-admin-overview': typeof DashboardBldgAdminOverviewIndexRoute
-  '/dashboard/inquiries': typeof DashboardInquiriesIndexRoute
   '/dashboard/maintenances': typeof DashboardMaintenancesIndexRoute
   '/dashboard/maintenanceworkers': typeof DashboardMaintenanceworkersIndexRoute
   '/dashboard/old-announcements': typeof DashboardOldAnnouncementsIndexRoute
+  '/dashboard/old-inquiries': typeof DashboardOldInquiriesIndexRoute
   '/dashboard/payments': typeof DashboardPaymentsIndexRoute
   '/dashboard/properties': typeof DashboardPropertiesIndexRoute
   '/dashboard/tenancies': typeof DashboardTenanciesIndexRoute
@@ -155,10 +156,10 @@ export interface FileRoutesByTo {
   '/dashboard/apartments': typeof DashboardApartmentsIndexRoute
   '/dashboard/billing': typeof DashboardBillingIndexRoute
   '/dashboard/bldg-admin-overview': typeof DashboardBldgAdminOverviewIndexRoute
-  '/dashboard/inquiries': typeof DashboardInquiriesIndexRoute
   '/dashboard/maintenances': typeof DashboardMaintenancesIndexRoute
   '/dashboard/maintenanceworkers': typeof DashboardMaintenanceworkersIndexRoute
   '/dashboard/old-announcements': typeof DashboardOldAnnouncementsIndexRoute
+  '/dashboard/old-inquiries': typeof DashboardOldInquiriesIndexRoute
   '/dashboard/payments': typeof DashboardPaymentsIndexRoute
   '/dashboard/properties': typeof DashboardPropertiesIndexRoute
   '/dashboard/tenancies': typeof DashboardTenanciesIndexRoute
@@ -176,10 +177,10 @@ export interface FileRoutesById {
   '/dashboard/apartments/': typeof DashboardApartmentsIndexRoute
   '/dashboard/billing/': typeof DashboardBillingIndexRoute
   '/dashboard/bldg-admin-overview/': typeof DashboardBldgAdminOverviewIndexRoute
-  '/dashboard/inquiries/': typeof DashboardInquiriesIndexRoute
   '/dashboard/maintenances/': typeof DashboardMaintenancesIndexRoute
   '/dashboard/maintenanceworkers/': typeof DashboardMaintenanceworkersIndexRoute
   '/dashboard/old-announcements/': typeof DashboardOldAnnouncementsIndexRoute
+  '/dashboard/old-inquiries/': typeof DashboardOldInquiriesIndexRoute
   '/dashboard/payments/': typeof DashboardPaymentsIndexRoute
   '/dashboard/properties/': typeof DashboardPropertiesIndexRoute
   '/dashboard/tenancies/': typeof DashboardTenanciesIndexRoute
@@ -198,10 +199,10 @@ export interface FileRouteTypes {
     | '/dashboard/apartments'
     | '/dashboard/billing'
     | '/dashboard/bldg-admin-overview'
-    | '/dashboard/inquiries'
     | '/dashboard/maintenances'
     | '/dashboard/maintenanceworkers'
     | '/dashboard/old-announcements'
+    | '/dashboard/old-inquiries'
     | '/dashboard/payments'
     | '/dashboard/properties'
     | '/dashboard/tenancies'
@@ -217,10 +218,10 @@ export interface FileRouteTypes {
     | '/dashboard/apartments'
     | '/dashboard/billing'
     | '/dashboard/bldg-admin-overview'
-    | '/dashboard/inquiries'
     | '/dashboard/maintenances'
     | '/dashboard/maintenanceworkers'
     | '/dashboard/old-announcements'
+    | '/dashboard/old-inquiries'
     | '/dashboard/payments'
     | '/dashboard/properties'
     | '/dashboard/tenancies'
@@ -237,10 +238,10 @@ export interface FileRouteTypes {
     | '/dashboard/apartments/'
     | '/dashboard/billing/'
     | '/dashboard/bldg-admin-overview/'
-    | '/dashboard/inquiries/'
     | '/dashboard/maintenances/'
     | '/dashboard/maintenanceworkers/'
     | '/dashboard/old-announcements/'
+    | '/dashboard/old-inquiries/'
     | '/dashboard/payments/'
     | '/dashboard/properties/'
     | '/dashboard/tenancies/'
@@ -334,6 +335,13 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof DashboardPaymentsIndexRouteImport
       parentRoute: typeof DashboardRouteRoute
     }
+    '/dashboard/old-inquiries/': {
+      id: '/dashboard/old-inquiries/'
+      path: '/old-inquiries'
+      fullPath: '/dashboard/old-inquiries'
+      preLoaderRoute: typeof DashboardOldInquiriesIndexRouteImport
+      parentRoute: typeof DashboardRouteRoute
+    }
     '/dashboard/old-announcements/': {
       id: '/dashboard/old-announcements/'
       path: '/old-announcements'
@@ -353,13 +361,6 @@ declare module '@tanstack/react-router' {
       path: '/maintenances'
       fullPath: '/dashboard/maintenances'
       preLoaderRoute: typeof DashboardMaintenancesIndexRouteImport
-      parentRoute: typeof DashboardRouteRoute
-    }
-    '/dashboard/inquiries/': {
-      id: '/dashboard/inquiries/'
-      path: '/inquiries'
-      fullPath: '/dashboard/inquiries'
-      preLoaderRoute: typeof DashboardInquiriesIndexRouteImport
       parentRoute: typeof DashboardRouteRoute
     }
     '/dashboard/bldg-admin-overview/': {
@@ -392,10 +393,10 @@ interface DashboardRouteRouteChildren {
   DashboardApartmentsIndexRoute: typeof DashboardApartmentsIndexRoute
   DashboardBillingIndexRoute: typeof DashboardBillingIndexRoute
   DashboardBldgAdminOverviewIndexRoute: typeof DashboardBldgAdminOverviewIndexRoute
-  DashboardInquiriesIndexRoute: typeof DashboardInquiriesIndexRoute
   DashboardMaintenancesIndexRoute: typeof DashboardMaintenancesIndexRoute
   DashboardMaintenanceworkersIndexRoute: typeof DashboardMaintenanceworkersIndexRoute
   DashboardOldAnnouncementsIndexRoute: typeof DashboardOldAnnouncementsIndexRoute
+  DashboardOldInquiriesIndexRoute: typeof DashboardOldInquiriesIndexRoute
   DashboardPaymentsIndexRoute: typeof DashboardPaymentsIndexRoute
   DashboardPropertiesIndexRoute: typeof DashboardPropertiesIndexRoute
   DashboardTenanciesIndexRoute: typeof DashboardTenanciesIndexRoute
@@ -409,10 +410,10 @@ const DashboardRouteRouteChildren: DashboardRouteRouteChildren = {
   DashboardApartmentsIndexRoute: DashboardApartmentsIndexRoute,
   DashboardBillingIndexRoute: DashboardBillingIndexRoute,
   DashboardBldgAdminOverviewIndexRoute: DashboardBldgAdminOverviewIndexRoute,
-  DashboardInquiriesIndexRoute: DashboardInquiriesIndexRoute,
   DashboardMaintenancesIndexRoute: DashboardMaintenancesIndexRoute,
   DashboardMaintenanceworkersIndexRoute: DashboardMaintenanceworkersIndexRoute,
   DashboardOldAnnouncementsIndexRoute: DashboardOldAnnouncementsIndexRoute,
+  DashboardOldInquiriesIndexRoute: DashboardOldInquiriesIndexRoute,
   DashboardPaymentsIndexRoute: DashboardPaymentsIndexRoute,
   DashboardPropertiesIndexRoute: DashboardPropertiesIndexRoute,
   DashboardTenanciesIndexRoute: DashboardTenanciesIndexRoute,

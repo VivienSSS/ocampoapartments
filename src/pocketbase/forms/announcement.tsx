@@ -50,6 +50,7 @@ export const CreateAnnouncementFormOption = (pocketbase: TypedPocketBase) =>
           meta.navigate({
             search: (prev) => ({
               ...prev,
+              options: { fields: ['*'] },
               action: undefined,
             }),
           });

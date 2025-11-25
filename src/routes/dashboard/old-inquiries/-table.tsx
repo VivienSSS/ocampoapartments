@@ -17,7 +17,12 @@ import {
   DropdownMenuTrigger,
 } from '@/components/ui/dropdown-menu';
 import { pb } from '@/pocketbase';
-import type { ApartmentUnitsResponse, InquiryResponse, PropertiesResponse, OtpResponse } from '@/pocketbase/types';
+import type {
+  ApartmentUnitsResponse,
+  InquiryResponse,
+  PropertiesResponse,
+  OtpResponse,
+} from '@/pocketbase/types';
 import { Badge } from '@/components/ui/badge';
 import { SendOtpDialog } from './-actions/send-otp';
 import { AcceptInquiryDialog } from './-actions/accept';
@@ -28,7 +33,15 @@ interface ColumnsProps {
   onCreateAccount: (inquiry: InquiryResponse) => void;
 }
 
-export const columns = ({ onApprove, onCreateAccount }: ColumnsProps): ColumnDef<InquiryResponse<{ unitInterested: ApartmentUnitsResponse<{ property: PropertiesResponse }>, otp: OtpResponse }>>[] => [
+export const columns = ({
+  onApprove,
+  onCreateAccount,
+}: ColumnsProps): ColumnDef<
+  InquiryResponse<{
+    unitInterested: ApartmentUnitsResponse<{ property: PropertiesResponse }>;
+    otp: OtpResponse;
+  }>
+>[] => [
   {
     accessorKey: 'firstName',
     header: 'First Name',
@@ -82,7 +95,11 @@ export const columns = ({ onApprove, onCreateAccount }: ColumnsProps): ColumnDef
         rejected: 'bg-red-100 text-red-800',
       };
       return (
-        <Badge className={statusColors[approvalStatus] || 'bg-gray-100 text-gray-800'}>
+        <Badge
+          className={
+            statusColors[approvalStatus] || 'bg-gray-100 text-gray-800'
+          }
+        >
           {approvalStatus}
         </Badge>
       );
@@ -121,7 +138,7 @@ export const columns = ({ onApprove, onCreateAccount }: ColumnsProps): ColumnDef
       const property = unit?.expand?.property;
       if (!unit || !property) return 'N/A';
       return `${unit.floorNumber} - ${unit.unitLetter} - ${property.branch}`;
-    }
+    },
   },
   {
     accessorKey: 'message',
@@ -148,7 +165,9 @@ export const columns = ({ onApprove, onCreateAccount }: ColumnsProps): ColumnDef
           <DialogContent>
             <DialogHeader>
               <DialogTitle>Screenshot</DialogTitle>
-              <DialogDescription>{row.original.qr_image_proof}</DialogDescription>
+              <DialogDescription>
+                {row.original.qr_image_proof}
+              </DialogDescription>
             </DialogHeader>
             <div className="flex flex-col gap-3">
               <div className="flex gap-2 justify-center">
@@ -179,7 +198,10 @@ export const columns = ({ onApprove, onCreateAccount }: ColumnsProps): ColumnDef
                     transform: `scale(${zoom / 100})`,
                     maxHeight: '70vh',
                   }}
-                  src={pb.files.getURL(row.original, row.original.qr_image_proof)}
+                  src={pb.files.getURL(
+                    row.original,
+                    row.original.qr_image_proof,
+                  )}
                 />
               </div>
             </div>

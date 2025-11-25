@@ -1,11 +1,6 @@
 import { createFileRoute, redirect } from '@tanstack/react-router';
 import { zodValidator } from '@tanstack/zod-adapter';
-import {
-  ArrowUpDown,
-  ChevronLeft,
-  ChevronRight,
-  Filter,
-} from 'lucide-react';
+import { ArrowUpDown, ChevronLeft, ChevronRight, Filter } from 'lucide-react';
 import { Button } from '@/components/ui/button';
 import {
   DropdownMenu,
@@ -25,18 +20,26 @@ import z from 'zod';
 import { InquiryApprovalDialog } from '@/components/inquiry-approval-dialog';
 import { CreateAccountDialog } from '@/components/create-account-dialog';
 
-const inquiryStatusOptions = ['pending', 'verified', 'approved', 'rejected'] as const;
+const inquiryStatusOptions = [
+  'pending',
+  'verified',
+  'approved',
+  'rejected',
+] as const;
 
-export const Route = createFileRoute('/dashboard/inquiries/')({
+export const Route = createFileRoute('/dashboard/old-inquiries/')({
   component: RouteComponent,
   pendingComponent: LoadingComponent,
   validateSearch: zodValidator(
     searchParams(inquirySchema.keyof()).extend({
       status: z.enum(inquiryStatusOptions).optional(),
-    })
+    }),
   ),
   beforeLoad: ({ search, context }) => {
-    if (context.user.role !== UsersRoleOptions.Administrator && context.user.role !== UsersRoleOptions['Building Admin']) {
+    if (
+      context.user.role !== UsersRoleOptions.Administrator &&
+      context.user.role !== UsersRoleOptions['Building Admin']
+    ) {
       throw redirect({ to: '/dashboard' });
     }
     return { search };
@@ -44,8 +47,8 @@ export const Route = createFileRoute('/dashboard/inquiries/')({
   loader: ({ context }) => {
     const sortString = context.search.sort
       ? context.search.sort
-        .map((s) => `${s.order === '-' ? '-' : ''}${s.field}`)
-        .join(',')
+          .map((s) => `${s.order === '-' ? '-' : ''}${s.field}`)
+          .join(',')
       : undefined;
     return context.queryClient.fetchQuery(
       listInquiriesWithOtpQuery(
@@ -64,7 +67,8 @@ function RouteComponent() {
   const inquiries = Route.useLoaderData();
 
   // State for dialogs
-  const [selectedInquiry, setSelectedInquiry] = useState<InquiryResponse | null>(null);
+  const [selectedInquiry, setSelectedInquiry] =
+    useState<InquiryResponse | null>(null);
   const [approvalDialogOpen, setApprovalDialogOpen] = useState(false);
   const [createAccountDialogOpen, setCreateAccountDialogOpen] = useState(false);
 
