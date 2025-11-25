@@ -613,7 +613,7 @@
         "min": 0,
         "name": "firstName",
         "pattern": "",
-        "presentable": false,
+        "presentable": true,
         "primaryKey": false,
         "required": true,
         "system": false,
@@ -627,7 +627,7 @@
         "min": 0,
         "name": "lastName",
         "pattern": "",
-        "presentable": false,
+        "presentable": true,
         "primaryKey": false,
         "required": true,
         "system": false,
@@ -638,7 +638,7 @@
         "id": "select1466534506",
         "maxSelect": 1,
         "name": "role",
-        "presentable": false,
+        "presentable": true,
         "required": true,
         "system": false,
         "type": "select",
@@ -697,17 +697,6 @@
         "type": "bool"
       },
       {
-        "exceptDomains": [],
-        "hidden": false,
-        "id": "email1401528724",
-        "name": "contactEmail",
-        "onlyDomains": [],
-        "presentable": false,
-        "required": true,
-        "system": false,
-        "type": "email"
-      },
-      {
         "hidden": false,
         "id": "bool3978294189",
         "name": "isAccepted",
@@ -762,7 +751,7 @@
       "CREATE UNIQUE INDEX `idx_email__pb_users_auth_` ON `users` (`email`) WHERE `email` != ''"
     ],
     "created": "2025-11-08 04:41:03.414Z",
-    "updated": "2025-11-24 18:41:43.383Z",
+    "updated": "2025-11-25 17:41:57.444Z",
     "system": false,
     "authRule": "",
     "manageRule": null,

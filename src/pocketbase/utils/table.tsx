@@ -2,8 +2,25 @@ import type { ColumnDef } from '@tanstack/react-table';
 import schema from '../../../public/schema.json';
 import { format } from 'date-fns';
 import { Badge } from '@/components/ui/badge';
-import { ToggleRight } from 'lucide-react';
+import { ExternalLink, ToggleRight } from 'lucide-react';
 import { Checkbox } from '@/components/ui/checkbox';
+import { useQuery, useSuspenseQuery } from '@tanstack/react-query';
+import { ViewQueryOption } from '../query';
+import { useRouteContext } from '@tanstack/react-router';
+import {
+  Dialog,
+  DialogContent,
+  DialogTitle,
+  DialogTrigger,
+} from '@/components/ui/dialog';
+import {
+  Item,
+  ItemContent,
+  ItemDescription,
+  ItemGroup,
+  ItemSeparator,
+  ItemTitle,
+} from '@/components/ui/item';
 
 export const schemaToColumnDef = (collection: string) => {
   const table = schema.find((col) => col.name === collection);
@@ -65,15 +82,183 @@ export const schemaToColumnDef = (collection: string) => {
         });
         break;
       case 'relation':
+        // if relation is multiple, skip for now
+        // @ts-ignore
+        if (field.maxSelect > 1) {
+          columns.push({
+            header: field.name,
+            accessorKey: field.name,
+            cell: (info) => {
+              const { pocketbase } = useRouteContext({
+                from: '/dashboard/$collection',
+              });
+
+              const { data } = useSuspenseQuery({
+                queryKey: [field.name, info.getValue()],
+                queryFn: async () => {
+                  // @ts-ignore
+                  const relatedIds = info.getValue() as string[];
+                  const relatedTable = schema.find(
+                    // @ts-ignore
+                    (col) => col.id === field.collectionId,
+                  );
+
+                  if (!relatedTable) return [];
+
+                  const records = await Promise.all(
+                    relatedIds.map((id) =>
+                      pocketbase.collection(relatedTable.name).getOne(id),
+                    ),
+                  );
+
+                  return records;
+                },
+              });
+
+              if (data.length === 0) {
+                return 'N/A';
+              }
+
+              const relatedTable = schema.find(
+                // @ts-ignore
+                (col) => col.id === field.collectionId,
+              );
+
+              const presentableFields = relatedTable?.fields
+                .filter((row) => row.presentable)
+                .map((row) => row.name);
+
+              return (
+                <Dialog>
+                  <DialogTrigger asChild>
+                    <Badge>
+                      <ExternalLink />
+                      {data
+                        .map((record) =>
+                          presentableFields
+                            ?.map((row) => record[row])
+                            .join(', '),
+                        )
+                        .join(' | ')}
+                    </Badge>
+                  </DialogTrigger>
+                  <DialogContent
+                    className="max-h-3/4 overflow-y-auto"
+                    showCloseButton={false}
+                  >
+                    <DialogTitle>{field.name} Information</DialogTitle>
+                    <ItemSeparator />
+                  </DialogContent>
+                </Dialog>
+              );
+            },
+          });
+          break;
+        }
+
         columns.push({
           header: field.name,
           accessorKey: field.name,
           cell: (info) => {
-            const value = info.getValue();
-            if (Array.isArray(value)) {
-              return value.join(', ');
-            }
-            return <Badge>{value as string}</Badge>;
+            const { pocketbase } = useRouteContext({
+              from: '/dashboard/$collection',
+            });
+
+            const { data } = useSuspenseQuery(
+              ViewQueryOption(
+                pocketbase,
+                //@ts-ignore
+                field.collectionId,
+                info.getValue() as string,
+              ),
+            );
+
+            const relatedTable = schema.find(
+              //@ts-ignore
+              (col) => col.id === field.collectionId,
+            );
+
+            const presentableFields = relatedTable?.fields
+              .filter((row) => row.presentable)
+              .map((row) => row.name);
+
+            return (
+              <Dialog>
+                <DialogTrigger asChild>
+                  <Badge>
+                    <ExternalLink />
+                    {presentableFields?.map((row) => data[row]).join(', ')}
+                  </Badge>
+                </DialogTrigger>
+                <DialogContent
+                  className="max-h-3/4 overflow-y-auto"
+                  showCloseButton={false}
+                >
+                  <DialogTitle>{field.name} Information</DialogTitle>
+                  <ItemSeparator />
+                  <ItemGroup className="gap-2.5">
+                    {relatedTable?.fields
+                      .filter((row) => !row.hidden)
+                      .map((row) => {
+                        switch (row.type) {
+                          case 'bool':
+                            return (
+                              <Item
+                                size={'sm'}
+                                variant={'muted'}
+                                key={row.name}
+                              >
+                                <ItemContent className="flex flex-row justify-between">
+                                  <ItemTitle>{row.name}</ItemTitle>
+                                  <ItemDescription>
+                                    <Badge>
+                                      {(data[row.name] as boolean)
+                                        ? 'Yes'
+                                        : 'No'}
+                                    </Badge>
+                                  </ItemDescription>
+                                </ItemContent>
+                              </Item>
+                            );
+                          case 'date':
+                          case 'autodate':
+                            return (
+                              <Item
+                                size={'sm'}
+                                variant={'muted'}
+                                key={row.name}
+                              >
+                                <ItemContent className="flex flex-row justify-between">
+                                  <ItemTitle>{row.name}</ItemTitle>
+                                  <ItemDescription>
+                                    {row.required === false && !data[row.name]
+                                      ? 'N/A'
+                                      : format(new Date(data[row.name]), 'PPP')}
+                                  </ItemDescription>
+                                </ItemContent>
+                              </Item>
+                            );
+                          default:
+                            return (
+                              <Item
+                                key={row.name}
+                                size={'sm'}
+                                variant={'muted'}
+                              >
+                                <ItemContent className="flex flex-row justify-between">
+                                  <ItemTitle>{row.name}</ItemTitle>
+                                  <ItemDescription>
+                                    {data[row.name]?.toString() || 'N/A'}
+                                  </ItemDescription>
+                                </ItemContent>
+                              </Item>
+                            );
+                        }
+                      })}
+                  </ItemGroup>
+                </DialogContent>
+              </Dialog>
+            );
           },
         });
         break;
