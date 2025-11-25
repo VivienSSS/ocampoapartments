@@ -180,7 +180,8 @@ export const schemaToColumnDef = (collection: string) => {
 
             const presentableFields = relatedTable?.fields
               .filter((row) => row.presentable)
-              .map((row) => row.name);
+              .map((row) => row.name)
+              .splice(0, 2);
 
             return (
               <Dialog>
