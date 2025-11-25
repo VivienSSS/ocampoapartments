@@ -4,6 +4,7 @@ import {
   type ColumnDef,
   flexRender,
   getCoreRowModel,
+  type RowSelectionState,
   useReactTable,
 } from '@tanstack/react-table';
 
@@ -17,7 +18,7 @@ import {
   TableHeader,
   TableRow,
 } from '@/components/ui/table';
-import { useEffect } from 'react';
+import { useEffect, useState } from 'react';
 
 interface DataTableProps<TData, TValue> {
   columns: ColumnDef<TData, TValue>[];
@@ -30,10 +31,16 @@ export function DataTable<TData, TValue>({
   data,
   navigate,
 }: DataTableProps<TData, TValue>) {
+  const [rowSelection, setRowSelection] = useState<RowSelectionState>({});
+
   const table = useReactTable({
     data,
     columns,
     getCoreRowModel: getCoreRowModel(),
+    onRowSelectionChange: setRowSelection,
+    state: {
+      rowSelection,
+    },
   });
 
   // biome-ignore lint/correctness/useExhaustiveDependencies: acceptable to only watch table.getSelectedRowModel()
@@ -46,7 +53,7 @@ export function DataTable<TData, TValue>({
           table.getSelectedRowModel().rows.map((row) => row.original.id) || [],
       }),
     });
-  }, [table.getSelectedRowModel()]);
+  }, [rowSelection]);
 
   return (
     <div className="overflow-hidden rounded-md border">
