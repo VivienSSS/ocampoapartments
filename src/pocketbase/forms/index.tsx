@@ -38,7 +38,11 @@ const PocketbaseForms = () => {
 
   // data fetching
   const { data: record } = useQuery(
-    ViewQueryOption(pocketbase, pathParams.collection as any, searchQuery.id),
+    ViewQueryOption(
+      pocketbase,
+      pathParams.collection as any,
+      searchQuery.selected?.[0],
+    ),
   );
 
   // create
@@ -60,10 +64,10 @@ const PocketbaseForms = () => {
     defaultValues: record || ({} as RecordModel),
     onSubmit: async ({ value }) => {
       try {
-        if (searchQuery.action === 'edit' && searchQuery.id) {
+        if (searchQuery.action === 'update' && searchQuery.selected?.[0]) {
           await updateMutation.mutateAsync({
-            id: searchQuery.id,
-            ...value,
+            id: searchQuery.selected[0],
+            data: value,
           });
         } else if (searchQuery.action === 'create') {
           await createMutation.mutateAsync(value);

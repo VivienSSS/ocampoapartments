@@ -33,12 +33,14 @@ export const CreateRecordMutationOption = <C extends Collections>(
 export const UpdateRecordMutationOption = <C extends Collections>(
   pocketbase: TypedPocketBase,
   collection: C,
-  id?: string,
 ) =>
-  mutationOptions<CollectionResponses[C], ClientResponseError, Update<C>>({
-    mutationKey: [collection, 'update', id],
-    mutationFn: async (data) => {
-      if (!id) throw new Error('ID is required for updating a record');
+  mutationOptions<
+    CollectionResponses[C],
+    ClientResponseError,
+    { id: string; data: Update<C> }
+  >({
+    mutationKey: [collection, 'update'],
+    mutationFn: async ({ id, data }) => {
       return await pocketbase.collection(collection).update(id, data);
     },
     onError: (error) => {
