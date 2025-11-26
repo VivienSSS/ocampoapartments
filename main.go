@@ -174,6 +174,11 @@ func main() {
 
 	// interceptors
 	app.OnRecordCreateRequest("announcements").BindFunc(interceptor.AddAuthorToAnnouncements)
+	app.OnRecordCreateRequest("bills").BindFunc(interceptor.GenerateInvoiceNumber)
+
+	// events
+	app.OnRecordAfterCreateSuccess("announcements").BindFunc(interceptor.SendAnnouncementsToEmails)
+	app.OnRecordAfterCreateSuccess("bills").BindFunc(interceptor.SendBillInvoiceToTenants)
 
 	if err := app.Start(); err != nil {
 		log.Fatal(err)
