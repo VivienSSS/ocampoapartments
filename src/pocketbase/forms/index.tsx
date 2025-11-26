@@ -5,19 +5,19 @@ import {
   useSearch,
 } from '@tanstack/react-router';
 
-import { Dialog, DialogContent } from '@/components/ui/dialog';
+import { Dialog, DialogContent, DialogFooter } from '@/components/ui/dialog';
 import { schemaToForm } from '../utils/form';
 import AutoFieldSet from '@/components/ui/autoform';
 import { useAppForm } from '@/components/ui/forms';
 import { ClientResponseError, type RecordModel } from 'pocketbase';
-import { useMutation, useQuery } from '@tanstack/react-query';
+import { useMutation, useQuery, useSuspenseQuery } from '@tanstack/react-query';
 import {
   BatchDeleteRecordMutationOption,
   CreateRecordMutationOption,
   DeleteRecordMutationOption,
   UpdateRecordMutationOption,
 } from '../mutation';
-import { ViewQueryOption } from '../query';
+import { ListQueryOption, ViewQueryOption } from '../query';
 import { Button } from '@/components/ui/button';
 import {
   AlertDialog,
@@ -29,6 +29,7 @@ import {
   AlertDialogHeader,
   AlertDialogTitle,
 } from '@/components/ui/alert-dialog';
+import { Collections, FormsOperationOptions } from '../types';
 
 const PocketbaseForms = () => {
   const pathParams = useParams({ from: '/dashboard/$collection' });
@@ -43,6 +44,15 @@ const PocketbaseForms = () => {
       pathParams.collection as any,
       searchQuery.selected?.[0],
     ),
+  );
+
+  const { data: formSchema } = useSuspenseQuery(
+    ListQueryOption(pocketbase, {
+      collection: Collections.Forms,
+      page: 1,
+      perPage: 1000,
+      options: {},
+    }),
   );
 
   // create
@@ -62,7 +72,7 @@ const PocketbaseForms = () => {
 
   const form = useAppForm({
     defaultValues: record || ({} as RecordModel),
-    onSubmit: async ({ value }) => {
+    onSubmit: async ({ value, formApi }) => {
       try {
         if (searchQuery.action === 'update' && searchQuery.selected?.[0]) {
           await updateMutation.mutateAsync({
@@ -73,6 +83,7 @@ const PocketbaseForms = () => {
           await createMutation.mutateAsync(value);
         }
       } finally {
+        formApi.reset();
         navigate({
           search: (prev) => ({ ...prev, action: undefined, id: undefined }),
         });
@@ -127,6 +138,7 @@ const PocketbaseForms = () => {
         showCloseButton={false}
       >
         <form
+          encType="multipart/form-data"
           onSubmit={(e) => {
             e.preventDefault();
             e.stopPropagation();
@@ -136,9 +148,17 @@ const PocketbaseForms = () => {
           <form.AppForm>
             <AutoFieldSet
               form={form}
-              schema={schemaToForm(pathParams.collection)}
+              schema={schemaToForm(
+                pathParams.collection,
+                formSchema.items,
+                searchQuery.action === 'create'
+                  ? FormsOperationOptions.create
+                  : FormsOperationOptions.update,
+              )}
             />
-            <Button type="submit">Submit</Button>
+            <DialogFooter>
+              <Button type="submit">Submit</Button>
+            </DialogFooter>
           </form.AppForm>
         </form>
       </DialogContent>

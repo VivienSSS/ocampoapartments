@@ -1,88 +1,38 @@
 import type z from 'zod';
-import schema from '../../../public/schema.json';
 import type {
   FieldSchema,
   FieldSetSchema,
 } from '@/components/ui/autoform/schema';
-import type { RelationFieldProps } from '@/components/ui/forms/fields/relation';
-import type { RecordModel } from 'pocketbase';
+import type { FormsOperationOptions, FormsRecord } from '../types';
 
 export const schemaToForm = (
   collection: string,
+  data: FormsRecord[],
+  operation: FormsOperationOptions,
 ): z.infer<typeof FieldSetSchema> => {
-  const table = schema.find((table) => table.name === collection);
+  const fields = data
+    .filter((row) => row.collection === collection)
+    .sort((a, b) => (a.order || 0) - (b.order || 0));
 
   const groups: z.infer<typeof FieldSchema>[] = [];
 
-  for (const field of table?.fields || []) {
-    if (field.primaryKey) {
+  for (const field of fields) {
+    if (!field.operation?.includes(operation)) {
       continue;
     }
 
-    if (field.type === 'autodate') {
-      continue;
-    }
-
-    switch (field.type) {
-      case 'text':
-        groups.push({
-          label: field.name,
-          name: field.name,
-          type: field.type as any,
-          description: 'Enter text value',
-          orientation: 'vertical',
-        });
-        break;
-      case 'select':
-        groups.push({
-          label: field.name,
-          name: field.name,
-          type: field.type as any,
-          description: 'Select 1 option',
-          orientation: 'vertical',
-          config: {
-            //@ts-ignore
-            options: field.values.map((variant) => ({
-              label: variant,
-              value: variant,
-            })),
-          },
-        });
-        break;
-      case 'number':
-        groups.push({
-          label: field.name,
-          name: field.name,
-          type: field.type as any,
-          orientation: 'vertical',
-        });
-        break;
-      case 'relation': {
-        const relTable = schema.find(
-          //@ts-ignore
-          (table) => table.id === field.collectionId,
-        );
-
-        const presentableFields =
-          relTable?.fields.filter((f) => f.presentable) ?? [];
-
-        groups.push({
-          label: field.name,
-          name: field.name,
-          type: field.type as any,
-          orientation: 'vertical',
-          config: {
-            //@ts-ignore
-            collection: field.collectionId,
-            relationshipName: field.name,
-            renderOption: (item: RecordModel) => {
-              return presentableFields.map((f) => item[f.name]).join(', ');
-            },
-          } as RelationFieldProps<RecordModel>,
-        });
-        break;
-      }
-    }
+    groups.push({
+      label: field.label,
+      name: field.name,
+      // biome-ignore lint/suspicious/noExplicitAny: acceptable type
+      type: field.type as any,
+      description: field.description,
+      // biome-ignore lint/suspicious/noExplicitAny: acceptable type
+      orientation: (field.orientation as any) || 'vertical',
+      // biome-ignore lint/suspicious/noExplicitAny: acceptable
+      config: field.config as any,
+      separator: field.separator,
+    });
   }
 
   return {

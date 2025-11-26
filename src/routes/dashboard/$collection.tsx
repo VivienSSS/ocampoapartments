@@ -15,7 +15,7 @@ import { zodValidator } from '@tanstack/zod-adapter';
 import type { RecordListOptions } from 'pocketbase';
 import z from 'zod';
 import { ButtonGroup } from '@/components/ui/button-group';
-import { ArrowLeftIcon, ArrowRightIcon, Plus } from 'lucide-react';
+import { ArrowLeftIcon, ArrowRightIcon, Edit, Plus, Trash } from 'lucide-react';
 
 export const Route = createFileRoute('/dashboard/$collection')({
   component: RouteComponent,
@@ -159,6 +159,7 @@ function RouteComponent() {
             navigate({ search: (prev) => ({ ...prev, action: 'delete' }) });
           }}
         >
+          <Trash />
           Delete
         </Button>
         <Button
@@ -168,6 +169,7 @@ function RouteComponent() {
             navigate({ search: (prev) => ({ ...prev, action: 'update' }) });
           }}
         >
+          <Edit />
           Edit
         </Button>
         <Button

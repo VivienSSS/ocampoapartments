@@ -15,6 +15,7 @@ export enum Collections {
 	ApartmentUnits = "apartment_units",
 	BillItems = "bill_items",
 	Bills = "bills",
+	Forms = "forms",
 	Inquiries = "inquiries",
 	MaintenanceRequests = "maintenance_requests",
 	MaintenanceWorkers = "maintenance_workers",
@@ -109,7 +110,7 @@ export type AnnouncementsRecord = {
 	created: IsoAutoDateString
 	hasSent?: boolean
 	id: string
-	message: HTMLString
+	message?: string
 	title: string
 	updated: IsoAutoDateString
 }
@@ -155,6 +156,53 @@ export type BillsRecord = {
 	items?: RecordIdString[]
 	status: BillsStatusOptions
 	tenancy: RecordIdString
+	updated: IsoAutoDateString
+}
+
+export enum FormsCollectionOptions {
+	"announcements" = "announcements",
+	"properties" = "properties",
+	"inquiries" = "inquiries",
+	"apartment_units" = "apartment_units",
+	"tenants" = "tenants",
+	"tenancies" = "tenancies",
+	"billing" = "billing",
+	"payments" = "payments",
+	"maintenance_workers" = "maintenance_workers",
+	"maintenance_requests" = "maintenance_requests",
+}
+
+export enum FormsOperationOptions {
+	"create" = "create",
+	"update" = "update",
+}
+
+export enum FormsTypeOptions {
+	"text" = "text",
+	"email" = "email",
+	"select" = "select",
+	"textarea" = "textarea",
+}
+
+export enum FormsOrientationOptions {
+	"vertical" = "vertical",
+	"horizontal" = "horizontal",
+	"responsive" = "responsive",
+}
+export type FormsRecord<Tconfig = unknown> = {
+	collection?: FormsCollectionOptions
+	config?: null | Tconfig
+	created: IsoAutoDateString
+	description?: string
+	id: string
+	label?: string
+	name: string
+	operation?: FormsOperationOptions[]
+	order: number
+	orientation?: FormsOrientationOptions
+	separator?: boolean
+	tooltip?: string
+	type: FormsTypeOptions
 	updated: IsoAutoDateString
 }
 
@@ -253,7 +301,7 @@ export enum PropertiesBranchOptions {
 	"Pampanga" = "Pampanga",
 }
 export type PropertiesRecord = {
-	address: HTMLString
+	address: string
 	branch: PropertiesBranchOptions
 	created: IsoAutoDateString
 	id: string
@@ -287,7 +335,6 @@ export enum UsersRoleOptions {
 	"Applicant" = "Applicant",
 }
 export type UsersRecord = {
-	contactEmail: string
 	created: IsoAutoDateString
 	email: string
 	emailVisibility?: boolean
@@ -316,6 +363,7 @@ export type AnnouncementsResponse<Texpand = unknown> = Required<AnnouncementsRec
 export type ApartmentUnitsResponse<Texpand = unknown> = Required<ApartmentUnitsRecord> & BaseSystemFields<Texpand>
 export type BillItemsResponse<Texpand = unknown> = Required<BillItemsRecord> & BaseSystemFields<Texpand>
 export type BillsResponse<Texpand = unknown> = Required<BillsRecord> & BaseSystemFields<Texpand>
+export type FormsResponse<Tconfig = unknown, Texpand = unknown> = Required<FormsRecord<Tconfig>> & BaseSystemFields<Texpand>
 export type InquiriesResponse<Texpand = unknown> = Required<InquiriesRecord> & BaseSystemFields<Texpand>
 export type MaintenanceRequestsResponse<Texpand = unknown> = Required<MaintenanceRequestsRecord> & BaseSystemFields<Texpand>
 export type MaintenanceWorkersResponse<Texpand = unknown> = Required<MaintenanceWorkersRecord> & BaseSystemFields<Texpand>
@@ -338,6 +386,7 @@ export type CollectionRecords = {
 	apartment_units: ApartmentUnitsRecord
 	bill_items: BillItemsRecord
 	bills: BillsRecord
+	forms: FormsRecord
 	inquiries: InquiriesRecord
 	maintenance_requests: MaintenanceRequestsRecord
 	maintenance_workers: MaintenanceWorkersRecord
@@ -359,6 +408,7 @@ export type CollectionResponses = {
 	apartment_units: ApartmentUnitsResponse
 	bill_items: BillItemsResponse
 	bills: BillsResponse
+	forms: FormsResponse
 	inquiries: InquiriesResponse
 	maintenance_requests: MaintenanceRequestsResponse
 	maintenance_workers: MaintenanceWorkersResponse
