@@ -12,6 +12,7 @@ import (
 	"github.com/pocketbase/pocketbase/core"
 	"github.com/pocketbase/pocketbase/plugins/migratecmd"
 
+	"github.com/VivienSSS/ocampoapartments/interceptor"
 	_ "github.com/VivienSSS/ocampoapartments/migrations"
 )
 
@@ -170,6 +171,9 @@ func main() {
 		se.Router.GET("/{path...}", apis.Static(os.DirFS("./dist"), true))
 		return se.Next()
 	})
+
+	// interceptors
+	app.OnRecordCreateRequest("announcements").BindFunc(interceptor.AddAuthorToAnnouncements)
 
 	if err := app.Start(); err != nil {
 		log.Fatal(err)

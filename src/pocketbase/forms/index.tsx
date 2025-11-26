@@ -12,6 +12,7 @@ import { useAppForm } from '@/components/ui/forms';
 import { ClientResponseError, type RecordModel } from 'pocketbase';
 import { useMutation, useQuery } from '@tanstack/react-query';
 import {
+  BatchDeleteRecordMutationOption,
   CreateRecordMutationOption,
   DeleteRecordMutationOption,
   UpdateRecordMutationOption,
@@ -52,7 +53,7 @@ const PocketbaseForms = () => {
 
   // delete
   const deleteMutation = useMutation(
-    DeleteRecordMutationOption(pocketbase, pathParams.collection as any),
+    BatchDeleteRecordMutationOption(pocketbase, pathParams.collection as any),
   );
 
   const form = useAppForm({
@@ -75,13 +76,13 @@ const PocketbaseForms = () => {
     },
   });
 
-  if (searchQuery.action === 'delete') {
+  if (searchQuery.action === 'delete' && searchQuery.selected) {
     return (
       <AlertDialog
         open={true}
         onOpenChange={() =>
           navigate({
-            search: { page: 1, perPage: 10 },
+            search: (prev) => ({ ...prev, action: undefined, selected: [] }),
           })
         }
       >
@@ -97,7 +98,7 @@ const PocketbaseForms = () => {
             <AlertDialogCancel>Cancel</AlertDialogCancel>
             <AlertDialogAction
               onClick={() =>
-                deleteMutation.mutate({ id: searchQuery.id || '' })
+                deleteMutation.mutate({ ids: searchQuery.selected || [] })
               }
             >
               Continue
@@ -110,10 +111,10 @@ const PocketbaseForms = () => {
 
   return (
     <Dialog
-      open={!!searchQuery.action}
+      open={!!searchQuery.action && searchQuery.action !== 'delete'}
       onOpenChange={() =>
         navigate({
-          search: { page: 1, perPage: 10 },
+          search: (prev) => ({ ...prev, action: undefined, selected: [] }),
         })
       }
     >

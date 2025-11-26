@@ -6,7 +6,7 @@ import type {
   TypedPocketBase,
   Update,
 } from './types';
-import type { ClientResponseError } from 'pocketbase';
+import type { BatchRequestResult, ClientResponseError } from 'pocketbase';
 import { toast } from 'sonner';
 
 export const CreateRecordMutationOption = <C extends Collections>(
@@ -71,3 +71,33 @@ export const DeleteRecordMutationOption = <C extends Collections>(
       toast.success(`Record at ${collection} deleted successfully`);
     },
   });
+
+export const BatchDeleteRecordMutationOption = <C extends Collections>(
+  pocketbase: TypedPocketBase,
+  collection: C,
+) =>
+  mutationOptions<BatchRequestResult[], ClientResponseError, { ids: string[] }>(
+    {
+      mutationKey: [collection, 'delete'],
+      mutationFn: async ({ ids }) => {
+        const batch = pocketbase.createBatch();
+
+        for (const id of ids) {
+          batch.collection(collection).delete(id);
+        }
+
+        const results = await batch.send();
+
+        return results;
+      },
+      onError: (error) => {
+        console.error(error);
+        toast.error(`Error deleting records: ${error.message}`, {
+          description: error.data?.message,
+        });
+      },
+      onSuccess: () => {
+        toast.success(`Record at ${collection} deleted successfully`);
+      },
+    },
+  );

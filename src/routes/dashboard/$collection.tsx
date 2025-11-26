@@ -14,13 +14,15 @@ import type { ColumnDef } from '@tanstack/react-table';
 import { zodValidator } from '@tanstack/zod-adapter';
 import type { RecordListOptions } from 'pocketbase';
 import z from 'zod';
+import { ButtonGroup } from '@/components/ui/button-group';
+import { ArrowLeftIcon, ArrowRightIcon, Plus } from 'lucide-react';
 
 export const Route = createFileRoute('/dashboard/$collection')({
   component: RouteComponent,
   validateSearch: zodValidator(
     z.object({
       page: z.number().min(1).catch(1),
-      perPage: z.number().min(10).max(20).catch(10),
+      perPage: z.number().min(5).max(5).catch(5),
       action: z.string().optional(),
       id: z.string().optional(),
       options: z
@@ -58,6 +60,7 @@ export const Route = createFileRoute('/dashboard/$collection')({
 
 function RouteComponent() {
   const navigate = Route.useNavigate();
+  const searchQuery = Route.useSearch();
   const { columns, data, table } = Route.useLoaderData();
 
   return (
@@ -86,6 +89,7 @@ function RouteComponent() {
           }}
           placeholder="Search..."
         />
+
         <DropdownMenu>
           <DropdownMenuTrigger asChild>
             <Button variant={'outline'}>Sort By</Button>
@@ -117,8 +121,65 @@ function RouteComponent() {
             </DropdownMenuItem>
           </DropdownMenuContent>
         </DropdownMenu>
+        <ButtonGroup>
+          <Button
+            disabled={searchQuery.page === 1}
+            onClick={() => {
+              navigate({
+                search: (prev) => ({ ...prev, page: searchQuery.page - 1 }),
+              });
+            }}
+            variant={'outline'}
+          >
+            <ArrowLeftIcon />
+          </Button>
+          <Button
+            disabled={
+              searchQuery.page >=
+              Math.ceil(data.totalItems / searchQuery.perPage)
+            }
+            onClick={() => {
+              navigate({
+                search: (prev) => ({ ...prev, page: searchQuery.page + 1 }),
+              });
+            }}
+            variant={'outline'}
+          >
+            <ArrowRightIcon />
+          </Button>
+        </ButtonGroup>
       </section>
       <DataTable data={data.items} columns={columns} navigate={navigate} />
+      <section className="flex justify-end gap-2.5">
+        <Button
+          disabled={!searchQuery.selected || searchQuery.selected.length === 0}
+          variant={'destructive'}
+          size={'sm'}
+          onClick={() => {
+            navigate({ search: (prev) => ({ ...prev, action: 'delete' }) });
+          }}
+        >
+          Delete
+        </Button>
+        <Button
+          disabled={searchQuery.selected?.length !== 1}
+          size={'sm'}
+          onClick={() => {
+            navigate({ search: (prev) => ({ ...prev, action: 'update' }) });
+          }}
+        >
+          Edit
+        </Button>
+        <Button
+          size={'sm'}
+          onClick={() => {
+            navigate({ search: (prev) => ({ ...prev, action: 'create' }) });
+          }}
+        >
+          <Plus />
+          Add
+        </Button>
+      </section>
       <PocketbaseForms />
     </article>
   );
