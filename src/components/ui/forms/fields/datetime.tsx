@@ -74,77 +74,71 @@ const DateTimeField = (props: DateTimeFieldProps) => {
 
   const timeValue = dateValue
     ? `${String(dateValue.getHours()).padStart(2, '0')}:${String(
-      dateValue.getMinutes(),
-    ).padStart(2, '0')}`
+        dateValue.getMinutes(),
+      ).padStart(2, '0')}`
     : '00:00';
 
   return (
-    <Field data-invalid={isInvalid}>
-      <TooltipFieldLabel
-        tooltip={props.tooltip}
-        tooltipSide={props.tooltipSide}
-      >
-        {props.label}
-      </TooltipFieldLabel>
-      <div className="flex flex-col gap-3">
-        {/* Date Picker */}
-        <Popover open={open} onOpenChange={setOpen}>
-          <InputGroup className={inputGroupClassName}>
-            <PopoverTrigger asChild>
-              <InputGroupButton
-                variant="outline"
-                data-empty={!dateValue}
-                className="data-[empty=true]:text-muted-foreground justify-start text-left font-normal flex-1"
-                onBlur={field.handleBlur}
-                aria-invalid={isInvalid}
-                type="button"
-              >
-                {showCalendarIcon && <CalendarIcon className="mr-2 size-4" />}
-                {dateFormatted}
-              </InputGroupButton>
-            </PopoverTrigger>
-            {!showTime && (
-              <InputGroupAddon align="inline-end">
-                <CalendarIcon className="size-4 text-muted-foreground" />
-              </InputGroupAddon>
-            )}
-          </InputGroup>
-          <PopoverContent className="w-auto p-0" align="start">
-            <Calendar
-              mode="single"
-              selected={dateValue}
-              onSelect={handleDateSelect}
-              disabled={disablePastDates ? (date) => {
-                const today = new Date();
-                today.setHours(0, 0, 0, 0);
-                return date < today;
-              } : undefined}
-            />
-          </PopoverContent>
-        </Popover>
-
-        {/* Time Picker */}
-        {showTime && (
-          <InputGroup className={inputGroupClassName}>
-            <InputGroupInput
-              type="time"
-              value={timeValue}
-              onChange={handleTimeChange}
+    <div className="flex flex-col gap-3">
+      {/* Date Picker */}
+      <Popover open={open} onOpenChange={setOpen}>
+        <InputGroup className={inputGroupClassName}>
+          <PopoverTrigger asChild>
+            <InputGroupButton
+              variant="outline"
+              data-empty={!dateValue}
+              className="data-[empty=true]:text-muted-foreground justify-start text-left font-normal flex-1"
               onBlur={field.handleBlur}
-              step={timeStep}
               aria-invalid={isInvalid}
-            />
+              type="button"
+            >
+              {showCalendarIcon && <CalendarIcon className="mr-2 size-4" />}
+              {dateFormatted}
+            </InputGroupButton>
+          </PopoverTrigger>
+          {!showTime && (
             <InputGroupAddon align="inline-end">
-              <span className="text-xs text-muted-foreground">
-                Step {timeStep}min
-              </span>
+              <CalendarIcon className="size-4 text-muted-foreground" />
             </InputGroupAddon>
-          </InputGroup>
-        )}
-      </div>
-      <FieldDescription>{props.description}</FieldDescription>
-      {isInvalid && <FieldError errors={field.state.meta.errors} />}
-    </Field>
+          )}
+        </InputGroup>
+        <PopoverContent className="w-auto p-0" align="start">
+          <Calendar
+            mode="single"
+            selected={dateValue}
+            onSelect={handleDateSelect}
+            disabled={
+              disablePastDates
+                ? (date) => {
+                    const today = new Date();
+                    today.setHours(0, 0, 0, 0);
+                    return date < today;
+                  }
+                : undefined
+            }
+          />
+        </PopoverContent>
+      </Popover>
+
+      {/* Time Picker */}
+      {showTime && (
+        <InputGroup className={inputGroupClassName}>
+          <InputGroupInput
+            type="time"
+            value={timeValue}
+            onChange={handleTimeChange}
+            onBlur={field.handleBlur}
+            step={timeStep}
+            aria-invalid={isInvalid}
+          />
+          <InputGroupAddon align="inline-end">
+            <span className="text-xs text-muted-foreground">
+              Step {timeStep}min
+            </span>
+          </InputGroupAddon>
+        </InputGroup>
+      )}
+    </div>
   );
 };
 

@@ -29,31 +29,18 @@ const SelectField = (props: SelectFieldProps) => {
   const isInvalid = field.state.meta.isTouched && !field.state.meta.isValid;
 
   return (
-    <Field data-invalid={isInvalid}>
-      <TooltipFieldLabel
-        tooltip={props.tooltip}
-        tooltipSide={props.tooltipSide}
-      >
-        {props.label}
-      </TooltipFieldLabel>
-      <Select
-        value={field.state.value ?? ''}
-        onValueChange={field.handleChange}
-      >
-        <SelectTrigger id={field.name} aria-invalid={isInvalid}>
-          <SelectValue placeholder={placeholder} />
-        </SelectTrigger>
-        <SelectContent>
-          {props.options.map((option) => (
-            <SelectItem key={option.value} value={option.value}>
-              {option.label}
-            </SelectItem>
-          ))}
-        </SelectContent>
-      </Select>
-      <FieldDescription>{props.description}</FieldDescription>
-      {isInvalid && <FieldError errors={field.state.meta.errors} />}
-    </Field>
+    <Select value={field.state.value ?? ''} onValueChange={field.handleChange}>
+      <SelectTrigger id={field.name} aria-invalid={isInvalid}>
+        <SelectValue placeholder={placeholder} />
+      </SelectTrigger>
+      <SelectContent>
+        {props.options.map((option) => (
+          <SelectItem key={option.value} value={option.value}>
+            {option.label}
+          </SelectItem>
+        ))}
+      </SelectContent>
+    </Select>
   );
 };
 

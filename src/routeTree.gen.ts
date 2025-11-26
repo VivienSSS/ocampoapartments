@@ -17,6 +17,7 @@ import { Route as DashboardIndexRouteImport } from './routes/dashboard/index'
 import { Route as DashboardCollectionRouteImport } from './routes/dashboard/$collection'
 import { Route as DashboardTenantOverviewIndexRouteImport } from './routes/dashboard/tenant-overview/index'
 import { Route as DashboardBldgAdminOverviewIndexRouteImport } from './routes/dashboard/bldg-admin-overview/index'
+import { Route as DashboardBillsIndexRouteImport } from './routes/dashboard/bills/index'
 
 const VerifyOtpRoute = VerifyOtpRouteImport.update({
   id: '/verify-otp',
@@ -60,6 +61,11 @@ const DashboardBldgAdminOverviewIndexRoute =
     path: '/bldg-admin-overview/',
     getParentRoute: () => DashboardRouteRoute,
   } as any)
+const DashboardBillsIndexRoute = DashboardBillsIndexRouteImport.update({
+  id: '/bills/',
+  path: '/bills/',
+  getParentRoute: () => DashboardRouteRoute,
+} as any)
 
 export interface FileRoutesByFullPath {
   '/': typeof IndexRoute
@@ -68,6 +74,7 @@ export interface FileRoutesByFullPath {
   '/verify-otp': typeof VerifyOtpRoute
   '/dashboard/$collection': typeof DashboardCollectionRoute
   '/dashboard/': typeof DashboardIndexRoute
+  '/dashboard/bills': typeof DashboardBillsIndexRoute
   '/dashboard/bldg-admin-overview': typeof DashboardBldgAdminOverviewIndexRoute
   '/dashboard/tenant-overview': typeof DashboardTenantOverviewIndexRoute
 }
@@ -77,6 +84,7 @@ export interface FileRoutesByTo {
   '/verify-otp': typeof VerifyOtpRoute
   '/dashboard/$collection': typeof DashboardCollectionRoute
   '/dashboard': typeof DashboardIndexRoute
+  '/dashboard/bills': typeof DashboardBillsIndexRoute
   '/dashboard/bldg-admin-overview': typeof DashboardBldgAdminOverviewIndexRoute
   '/dashboard/tenant-overview': typeof DashboardTenantOverviewIndexRoute
 }
@@ -88,6 +96,7 @@ export interface FileRoutesById {
   '/verify-otp': typeof VerifyOtpRoute
   '/dashboard/$collection': typeof DashboardCollectionRoute
   '/dashboard/': typeof DashboardIndexRoute
+  '/dashboard/bills/': typeof DashboardBillsIndexRoute
   '/dashboard/bldg-admin-overview/': typeof DashboardBldgAdminOverviewIndexRoute
   '/dashboard/tenant-overview/': typeof DashboardTenantOverviewIndexRoute
 }
@@ -100,6 +109,7 @@ export interface FileRouteTypes {
     | '/verify-otp'
     | '/dashboard/$collection'
     | '/dashboard/'
+    | '/dashboard/bills'
     | '/dashboard/bldg-admin-overview'
     | '/dashboard/tenant-overview'
   fileRoutesByTo: FileRoutesByTo
@@ -109,6 +119,7 @@ export interface FileRouteTypes {
     | '/verify-otp'
     | '/dashboard/$collection'
     | '/dashboard'
+    | '/dashboard/bills'
     | '/dashboard/bldg-admin-overview'
     | '/dashboard/tenant-overview'
   id:
@@ -119,6 +130,7 @@ export interface FileRouteTypes {
     | '/verify-otp'
     | '/dashboard/$collection'
     | '/dashboard/'
+    | '/dashboard/bills/'
     | '/dashboard/bldg-admin-overview/'
     | '/dashboard/tenant-overview/'
   fileRoutesById: FileRoutesById
@@ -188,12 +200,20 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof DashboardBldgAdminOverviewIndexRouteImport
       parentRoute: typeof DashboardRouteRoute
     }
+    '/dashboard/bills/': {
+      id: '/dashboard/bills/'
+      path: '/bills'
+      fullPath: '/dashboard/bills'
+      preLoaderRoute: typeof DashboardBillsIndexRouteImport
+      parentRoute: typeof DashboardRouteRoute
+    }
   }
 }
 
 interface DashboardRouteRouteChildren {
   DashboardCollectionRoute: typeof DashboardCollectionRoute
   DashboardIndexRoute: typeof DashboardIndexRoute
+  DashboardBillsIndexRoute: typeof DashboardBillsIndexRoute
   DashboardBldgAdminOverviewIndexRoute: typeof DashboardBldgAdminOverviewIndexRoute
   DashboardTenantOverviewIndexRoute: typeof DashboardTenantOverviewIndexRoute
 }
@@ -201,6 +221,7 @@ interface DashboardRouteRouteChildren {
 const DashboardRouteRouteChildren: DashboardRouteRouteChildren = {
   DashboardCollectionRoute: DashboardCollectionRoute,
   DashboardIndexRoute: DashboardIndexRoute,
+  DashboardBillsIndexRoute: DashboardBillsIndexRoute,
   DashboardBldgAdminOverviewIndexRoute: DashboardBldgAdminOverviewIndexRoute,
   DashboardTenantOverviewIndexRoute: DashboardTenantOverviewIndexRoute,
 }

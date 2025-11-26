@@ -56,13 +56,10 @@ export const UpdateRecordMutationOption = <C extends Collections>(
 export const DeleteRecordMutationOption = <C extends Collections>(
   pocketbase: TypedPocketBase,
   collection: C,
-  id?: string,
 ) =>
-  mutationOptions<boolean, ClientResponseError>({
-    mutationKey: [collection, 'delete', id],
-    mutationFn: async () => {
-      if (!id) throw new Error('ID is required for deleting a record');
-
+  mutationOptions<boolean, ClientResponseError, { id: string }>({
+    mutationKey: [collection, 'delete'],
+    mutationFn: async ({ id }) => {
       return await pocketbase.collection(collection).delete(id);
     },
     onError: (error) => {

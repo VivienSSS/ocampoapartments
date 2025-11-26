@@ -21,26 +21,13 @@ const BoolField = (props: BoolFieldProps) => {
   const Component = variant === 'switch' ? Switch : Checkbox;
 
   return (
-    <Field data-invalid={isInvalid}>
-      <div className="flex items-center gap-2">
-        <Component
-          id={field.name}
-          checked={field.state.value ?? false}
-          onCheckedChange={(checked) => field.handleChange(checked === true)}
-          onBlur={field.handleBlur}
-          aria-invalid={isInvalid}
-        />
-        <TooltipFieldLabel
-          htmlFor={field.name}
-          tooltip={props.tooltip}
-          tooltipSide={props.tooltipSide}
-        >
-          {props.label}
-        </TooltipFieldLabel>
-      </div>
-      <FieldDescription>{props.description}</FieldDescription>
-      {isInvalid && <FieldError errors={field.state.meta.errors} />}
-    </Field>
+    <Component
+      id={field.name}
+      checked={field.state.value ?? false}
+      onCheckedChange={(checked) => field.handleChange(checked === true)}
+      onBlur={field.handleBlur}
+      aria-invalid={isInvalid}
+    />
   );
 };
 

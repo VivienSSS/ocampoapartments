@@ -10,6 +10,7 @@ import { Field, FieldDescription, FieldError } from '../../field';
 import { useFieldContext } from '..';
 import { TooltipFieldLabel } from '../utils/tooltip-field-label';
 import type { RecordListOptions } from 'pocketbase';
+import { useRouteContext } from '@tanstack/react-router';
 
 export interface RelationItem {
   id: string;
@@ -32,6 +33,8 @@ export type RelationFieldProps<Records extends RelationItem> = {
 const RelationField = <Records extends RelationItem>(
   props: RelationFieldProps<Records>,
 ) => {
+  const { pocketbase } = useRouteContext({ from: '/dashboard/$collection' });
+
   const field = useFieldContext<string>();
   const {
     collection: collectionName,
@@ -39,19 +42,18 @@ const RelationField = <Records extends RelationItem>(
     displayField = 'name',
     preload = false,
     placeholder = 'Search...',
-    pocketbase,
   } = props;
 
   // Fetcher function to query related records
   const fetcher = useCallback(
     async (query?: string): Promise<Records[]> => {
       try {
-        let filter =
+        const filter =
           typeof props.recordListOption?.filter === 'function'
             ? props.recordListOption.filter?.(query)
             : props.recordListOption?.filter;
 
-        const records = await pocketbase!
+        const records = await pocketbase
           .collection(collectionName)
           .getList(1, 50, {
             ...props.recordListOption,

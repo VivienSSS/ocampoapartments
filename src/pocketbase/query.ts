@@ -25,12 +25,13 @@ export const ListQueryOption = <T extends Collections>(
 export const ViewQueryOption = <T extends Collections>(
   pocketbase: TypedPocketBase,
   collection: T,
-  id: string,
+  id?: string,
   options?: RecordOptions,
 ) =>
   queryOptions({
     queryKey: [collection, id, options],
     queryFn: async () => {
-      return await pocketbase.collection(collection).getOne(id, options);
+      return await pocketbase.collection(collection).getOne(id || '', options);
     },
+    enabled: !!id,
   });
