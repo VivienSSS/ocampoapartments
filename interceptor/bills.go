@@ -2,6 +2,10 @@ package interceptor
 
 import "github.com/pocketbase/pocketbase/core"
 
+func BillsStateMachine(e *core.RecordRequestEvent) error {
+	return e.Next()
+}
+
 func GenerateInvoiceNumber(e *core.RecordRequestEvent) error {
 
 	// generate a new invoice number. format: INVOICE-<DATE>-<LAST-ROW-NUMBER-INSERED-FOR-THE-DAY>
