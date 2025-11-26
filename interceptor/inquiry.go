@@ -13,3 +13,7 @@ func SendApproveInquiryToApplicantEmail(e *core.RecordEvent) error {
 func SendRejectionLetterToApplicantEmail(e *core.RecordEvent) error {
 	return e.Next()
 }
+
+func SetFirstTimeUserToFalseInUserOnceUserChangeItsPassword(e *core.RecordEvent) error {
+	return e.Next()
+}
