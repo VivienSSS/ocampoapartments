@@ -1,8 +1,6 @@
 import type React from 'react';
-import { Field, FieldDescription, FieldError, FieldLabel } from '../../field';
 import { Input } from '../../input';
 import { useFieldContext } from '..';
-import { TooltipFieldLabel } from '../utils/tooltip-field-label';
 
 export type FileFieldProps = React.ComponentProps<'input'>;
 
@@ -19,7 +17,11 @@ const FileField = (props: FileFieldProps) => {
       onBlur={field.handleBlur}
       onChange={(e) => {
         const files = e.target.files;
-        field.setValue(Array.from(files || []));
+        const parsedFiles: File[] = [];
+        for (const file of files || []) {
+          parsedFiles.push(file);
+        }
+        field.setValue(parsedFiles);
       }}
       aria-invalid={isInvalid}
       {...props}

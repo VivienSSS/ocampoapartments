@@ -82,10 +82,13 @@ const PocketbaseForms = () => {
         } else if (searchQuery.action === 'create') {
           await createMutation.mutateAsync(value);
         }
-      } finally {
         formApi.reset();
         navigate({
           search: (prev) => ({ ...prev, action: undefined, id: undefined }),
+        });
+      } catch (error) {
+        formApi.setErrorMap({
+          onSubmit: { fields: error as { code: string; message: string } },
         });
       }
     },
@@ -138,7 +141,6 @@ const PocketbaseForms = () => {
         showCloseButton={false}
       >
         <form
-          encType="multipart/form-data"
           onSubmit={(e) => {
             e.preventDefault();
             e.stopPropagation();

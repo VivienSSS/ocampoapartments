@@ -1,7 +1,8 @@
 'use client';
 
 import React from 'react';
-import { FieldDescription, FieldError } from '../../field';
+import { X } from 'lucide-react';
+import { FieldDescription } from '../../field';
 import {
   InputGroup,
   InputGroupAddon,
@@ -38,6 +39,10 @@ export type InputFieldProps = {
   // Composition fallback
   addonStart?: React.ReactNode;
   addonEnd?: React.ReactNode;
+  // File upload support
+  showFileList?: boolean;
+  maxFileSize?: number; // in bytes
+  allowedFileTypes?: string[]; // e.g., ['image/jpeg', 'image/png']
   // Exclude extracted props from native input props
   readonly?: boolean;
 } & Omit<
@@ -57,10 +62,13 @@ export type InputFieldProps = {
   | 'tooltip'
   | 'tooltipSide'
   | 'variant'
+  | 'showFileList'
+  | 'maxFileSize'
+  | 'allowedFileTypes'
 >;
 
 const InputField = (props: InputFieldProps) => {
-  const field = useFieldContext<string>();
+  const field = useFieldContext<string | File[]>();
   const [passwordVisible, setPasswordVisible] = React.useState(false);
 
   const {
@@ -81,6 +89,9 @@ const InputField = (props: InputFieldProps) => {
     addonStart,
     addonEnd,
     maxLength,
+    showFileList = false,
+    maxFileSize,
+    allowedFileTypes,
     ...inputProps
   } = props;
 
@@ -88,6 +99,8 @@ const InputField = (props: InputFieldProps) => {
   const isValid =
     field.state.meta.isTouched && field.state.meta.isValid && !isInvalid;
   const currentLength = field.state.value?.length ?? 0;
+  const isFileInput = inputProps.type === 'file';
+  const files = isFileInput ? (field.state.value as File[]) : [];
 
   // Determine input type
   const inputType =
@@ -98,7 +111,34 @@ const InputField = (props: InputFieldProps) => {
       : inputProps.type;
 
   const handleClear = () => {
-    field.handleChange('');
+    if (isFileInput) {
+      field.setValue([]);
+    } else {
+      field.handleChange('');
+    }
+  };
+
+  const handleRemoveFile = (index: number) => {
+    const updatedFiles = files.filter((_, i) => i !== index);
+    field.setValue(updatedFiles);
+  };
+
+  const formatFileSize = (bytes: number): string => {
+    if (bytes === 0) return '0 Bytes';
+    const k = 1024;
+    const sizes = ['Bytes', 'KB', 'MB', 'GB'];
+    const i = Math.floor(Math.log(bytes) / Math.log(k));
+    return Math.round((bytes / Math.pow(k, i)) * 100) / 100 + ' ' + sizes[i];
+  };
+
+  const validateFile = (file: File): string | null => {
+    if (maxFileSize && file.size > maxFileSize) {
+      return `File size exceeds ${formatFileSize(maxFileSize)} limit`;
+    }
+    if (allowedFileTypes && !allowedFileTypes.includes(file.type)) {
+      return `File type ${file.type} is not allowed`;
+    }
+    return null;
   };
 
   const isTextarea = variant === 'textarea';
@@ -135,7 +175,7 @@ const InputField = (props: InputFieldProps) => {
           <InputGroupTextarea
             id={field.name}
             name={field.name}
-            value={field.state.value}
+            value={field.state.value as string}
             onBlur={field.handleBlur}
             onChange={(e) => field.handleChange(e.target.value)}
             aria-invalid={isInvalid}
@@ -147,9 +187,15 @@ const InputField = (props: InputFieldProps) => {
             id={field.name}
             name={field.name}
             type={inputType}
-            value={field.state.value}
+            {...(isFileInput ? {} : { value: field.state.value as string })}
             onBlur={field.handleBlur}
-            onChange={(e) => field.handleChange(e.target.value)}
+            onChange={(e) => {
+              if (inputType === 'file') {
+                field.setValue(Array.from(e.target.files || []));
+                return;
+              }
+              field.handleChange(e.target.value);
+            }}
             aria-invalid={isInvalid}
             {...inputProps}
           />
@@ -201,6 +247,61 @@ const InputField = (props: InputFieldProps) => {
           </InputGroupAddon>
         )}
       </InputGroup>
+
+      {/* File list display */}
+      {showFileList && isFileInput && files.length > 0 && (
+        <div className="mt-3 space-y-2 rounded-md border border-border bg-card p-3">
+          <div className="text-sm font-medium text-foreground">
+            Uploaded files ({files.length})
+          </div>
+          <ul className="space-y-1">
+            {files.map((file, index) => {
+              const fileError = validateFile(file);
+              return (
+                <li
+                  key={`${file.name}-${index}`}
+                  className={`flex items-center justify-between rounded border px-3 py-2 ${
+                    fileError
+                      ? 'border-destructive bg-destructive/10'
+                      : 'border-border bg-background'
+                  }`}
+                >
+                  <div className="flex items-center gap-2 flex-1 min-w-0">
+                    <span
+                      className={`text-sm font-medium truncate ${
+                        fileError ? 'text-destructive' : 'text-foreground'
+                      }`}
+                    >
+                      {file.name}
+                    </span>
+                    <span
+                      className={`text-xs whitespace-nowrap ${
+                        fileError ? 'text-destructive' : 'text-muted-foreground'
+                      }`}
+                    >
+                      {formatFileSize(file.size)}
+                    </span>
+                    {fileError && (
+                      <span className="text-xs text-destructive">
+                        {fileError}
+                      </span>
+                    )}
+                  </div>
+                  <button
+                    type="button"
+                    onClick={() => handleRemoveFile(index)}
+                    className="ml-2 inline-flex items-center justify-center rounded p-1 text-muted-foreground hover:bg-muted hover:text-foreground"
+                    aria-label={`Remove ${file.name}`}
+                  >
+                    <X className="h-4 w-4" />
+                  </button>
+                </li>
+              );
+            })}
+          </ul>
+        </div>
+      )}
+
       {description && <FieldDescription>{description}</FieldDescription>}
     </>
   );

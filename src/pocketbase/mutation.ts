@@ -19,6 +19,10 @@ export const CreateRecordMutationOption = <C extends Collections>(
       return await pocketbase.collection(collection).create(data);
     },
     onError: (error) => {
+      if (error.status === 400) {
+        throw error.data.data; // this will be used in tanstack form error handling
+      }
+
       toast.error(`Error creating record: ${error.message}`, {
         description: error.data?.message,
       });
