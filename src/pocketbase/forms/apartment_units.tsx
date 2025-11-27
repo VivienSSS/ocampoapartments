@@ -1,5 +1,10 @@
 import { withForm } from '@/components/ui/forms';
-import type { Create, TypedPocketBase, Update } from '../types';
+import type {
+  CollectionResponses,
+  Create,
+  TypedPocketBase,
+  Update,
+} from '../types';
 import { formOptions } from '@tanstack/react-form';
 import { ClientResponseError } from 'pocketbase';
 import type { UseNavigateResult } from '@tanstack/react-router';
@@ -17,16 +22,15 @@ export const ApartmentUnitForm = () =>
             <FieldGroup>
               <form.AppField name="property">
                 {(field) => (
-                  <field.RelationField
+                  <field.RelationField<CollectionResponses['properties']>
                     label="Property"
                     description="The property building where this unit is located"
                     relationshipName="property"
                     collection={Collections.Properties}
                     placeholder="Select Property"
                     tooltip="E.g. 'Quezon City Branch'"
-                    renderOption={(item) =>
-                      String(item.branch || item.address || item.id)
-                    }
+                    recordListOption={{ expand: '' }}
+                    renderOption={(item) => `${item.branch} - ${item.address}`}
                   />
                 )}
               </form.AppField>

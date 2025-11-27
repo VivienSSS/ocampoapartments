@@ -1,7 +1,10 @@
 import { withForm } from '@/components/ui/forms';
 import type {
+  ApartmentUnitsResponse,
+  CollectionResponses,
   Create,
   MaintenanceRequestsRecord,
+  TenantsResponse,
   TypedPocketBase,
   Update,
 } from '../types';
@@ -43,15 +46,20 @@ export const MaintenanceRequestForm = () =>
                 <>
                   <form.AppField name="tenant">
                     {(field) => (
-                      <field.RelationField
+                      <field.RelationField<
+                        TenantsResponse<{
+                          user: CollectionResponses['users'];
+                        }>
+                      >
                         label="Tenant"
                         description="The tenant who submitted the maintenance request"
                         relationshipName="tenant"
                         collection={Collections.Tenants}
                         placeholder="Select Tenant"
                         tooltip="E.g. 'John Doe'"
+                        recordListOption={{ expand: 'user' }}
                         renderOption={(item) =>
-                          String(item.phoneNumber || item.user || item.id)
+                          `${item.expand.user.firstName} ${item.expand.user.lastName}`
                         }
                         disabled={isFormLocked}
                       />
@@ -59,16 +67,21 @@ export const MaintenanceRequestForm = () =>
                   </form.AppField>
                   <form.AppField name="unit">
                     {(field) => (
-                      <field.RelationField
+                      <field.RelationField<
+                        ApartmentUnitsResponse<{
+                          property: CollectionResponses['properties'];
+                        }>
+                      >
                         label="Unit"
                         description="The apartment unit where maintenance is needed"
                         relationshipName="unit"
                         collection={Collections.ApartmentUnits}
                         placeholder="Select Unit"
                         tooltip="E.g. 'Unit A - Floor 1'"
+                        recordListOption={{ expand: 'property' }}
                         renderOption={(item) =>
                           String(
-                            `${item.unitLetter} - Floor ${item.floorNumber}`,
+                            `${item.unitLetter} (${item.expand?.property?.branch || item.expand?.property?.address || 'Property'}) - Floor ${item.floorNumber}`,
                           )
                         }
                         disabled={isFormLocked}
@@ -121,6 +134,7 @@ export const MaintenanceRequestForm = () =>
                         collection={Collections.MaintenanceWorkers}
                         placeholder="Select Maintenance Worker"
                         tooltip="E.g. 'Juan Martinez'"
+                        recordListOption={{ expand: '' }}
                         renderOption={(item) => String(item.name || item.id)}
                         disabled={isFormLocked}
                       />

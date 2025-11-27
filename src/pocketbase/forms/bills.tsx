@@ -1,7 +1,10 @@
 import { withForm } from '@/components/ui/forms';
 import {
   BillsStatusOptions,
+  type CollectionResponses,
   type Create,
+  type TenanciesResponse,
+  type TenantsResponse,
   type TypedPocketBase,
   type Update,
 } from '../types';
@@ -37,14 +40,26 @@ export const BillForm = () =>
                   </form.AppField>
                   <form.AppField name="tenancy">
                     {(field) => (
-                      <field.RelationField
+                      <field.RelationField<
+                        TenanciesResponse<{
+                          tenant: TenantsResponse<{
+                            user: CollectionResponses['users'];
+                          }>;
+                          unit: CollectionResponses['apartment_units'];
+                        }>
+                      >
                         label="Tenancy"
                         description="The tenant or lease this bill is associated with"
                         relationshipName="tenancy"
                         collection={Collections.Tenancies}
                         placeholder="Select Tenancy"
                         tooltip="E.g. 'John Doe - Unit A'"
-                        renderOption={(item) => String(item.id)}
+                        recordListOption={{ expand: 'tenant.user,unit' }}
+                        renderOption={(item) =>
+                          String(
+                            `${item.expand?.tenant?.expand?.user?.email || item.expand?.tenant?.facebookName || 'Tenant'} - Unit ${item.expand?.unit?.unitLetter || 'N/A'} (Floor ${item.expand?.unit?.floorNumber || 'N/A'})`,
+                          )
+                        }
                       />
                     )}
                   </form.AppField>

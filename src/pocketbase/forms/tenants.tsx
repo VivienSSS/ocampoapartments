@@ -24,6 +24,7 @@ export const TenantForm = () =>
                     collection={Collections.Users}
                     placeholder="Select User"
                     tooltip="E.g. 'John Doe' or 'johndoe@email.com'"
+                    recordListOption={{ expand: '' }}
                     renderOption={(item) =>
                       String(item.name || item.email || item.id)
                     }
