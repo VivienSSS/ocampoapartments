@@ -147,7 +147,7 @@ const showNav = () => {
         },
         {
           title: 'Your Information',
-          url: '/dashboard/tenants',
+          url: '/dashboard/profile',
           icon: BookUser,
         },
         {

@@ -16,6 +16,7 @@ import { Route as landingRouteRouteImport } from './routes/(landing)/route'
 import { Route as DashboardIndexRouteImport } from './routes/dashboard/index'
 import { Route as landingIndexRouteImport } from './routes/(landing)/index'
 import { Route as DashboardTenantInformationRouteImport } from './routes/dashboard/tenant-information'
+import { Route as DashboardProfileRouteImport } from './routes/dashboard/profile'
 import { Route as DashboardCollectionRouteImport } from './routes/dashboard/$collection'
 import { Route as DashboardTenantOverviewIndexRouteImport } from './routes/dashboard/tenant-overview/index'
 import { Route as DashboardMaintenance_requestsIndexRouteImport } from './routes/dashboard/maintenance_requests/index'
@@ -57,6 +58,11 @@ const DashboardTenantInformationRoute =
     path: '/tenant-information',
     getParentRoute: () => DashboardRouteRoute,
   } as any)
+const DashboardProfileRoute = DashboardProfileRouteImport.update({
+  id: '/profile',
+  path: '/profile',
+  getParentRoute: () => DashboardRouteRoute,
+} as any)
 const DashboardCollectionRoute = DashboardCollectionRouteImport.update({
   id: '/$collection',
   path: '/$collection',
@@ -92,6 +98,7 @@ export interface FileRoutesByFullPath {
   '/register': typeof RegisterRoute
   '/verify-otp': typeof VerifyOtpRoute
   '/dashboard/$collection': typeof DashboardCollectionRoute
+  '/dashboard/profile': typeof DashboardProfileRoute
   '/dashboard/tenant-information': typeof DashboardTenantInformationRoute
   '/dashboard/': typeof DashboardIndexRoute
   '/properties/$id': typeof landingPropertiesIdRoute
@@ -103,6 +110,7 @@ export interface FileRoutesByTo {
   '/register': typeof RegisterRoute
   '/verify-otp': typeof VerifyOtpRoute
   '/dashboard/$collection': typeof DashboardCollectionRoute
+  '/dashboard/profile': typeof DashboardProfileRoute
   '/dashboard/tenant-information': typeof DashboardTenantInformationRoute
   '/': typeof landingIndexRoute
   '/dashboard': typeof DashboardIndexRoute
@@ -118,6 +126,7 @@ export interface FileRoutesById {
   '/register': typeof RegisterRoute
   '/verify-otp': typeof VerifyOtpRoute
   '/dashboard/$collection': typeof DashboardCollectionRoute
+  '/dashboard/profile': typeof DashboardProfileRoute
   '/dashboard/tenant-information': typeof DashboardTenantInformationRoute
   '/(landing)/': typeof landingIndexRoute
   '/dashboard/': typeof DashboardIndexRoute
@@ -134,6 +143,7 @@ export interface FileRouteTypes {
     | '/register'
     | '/verify-otp'
     | '/dashboard/$collection'
+    | '/dashboard/profile'
     | '/dashboard/tenant-information'
     | '/dashboard/'
     | '/properties/$id'
@@ -145,6 +155,7 @@ export interface FileRouteTypes {
     | '/register'
     | '/verify-otp'
     | '/dashboard/$collection'
+    | '/dashboard/profile'
     | '/dashboard/tenant-information'
     | '/'
     | '/dashboard'
@@ -159,6 +170,7 @@ export interface FileRouteTypes {
     | '/register'
     | '/verify-otp'
     | '/dashboard/$collection'
+    | '/dashboard/profile'
     | '/dashboard/tenant-information'
     | '/(landing)/'
     | '/dashboard/'
@@ -226,6 +238,13 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof DashboardTenantInformationRouteImport
       parentRoute: typeof DashboardRouteRoute
     }
+    '/dashboard/profile': {
+      id: '/dashboard/profile'
+      path: '/profile'
+      fullPath: '/dashboard/profile'
+      preLoaderRoute: typeof DashboardProfileRouteImport
+      parentRoute: typeof DashboardRouteRoute
+    }
     '/dashboard/$collection': {
       id: '/dashboard/$collection'
       path: '/$collection'
@@ -280,6 +299,7 @@ const landingRouteRouteWithChildren = landingRouteRoute._addFileChildren(
 
 interface DashboardRouteRouteChildren {
   DashboardCollectionRoute: typeof DashboardCollectionRoute
+  DashboardProfileRoute: typeof DashboardProfileRoute
   DashboardTenantInformationRoute: typeof DashboardTenantInformationRoute
   DashboardIndexRoute: typeof DashboardIndexRoute
   DashboardBldgAdminOverviewIndexRoute: typeof DashboardBldgAdminOverviewIndexRoute
@@ -289,6 +309,7 @@ interface DashboardRouteRouteChildren {
 
 const DashboardRouteRouteChildren: DashboardRouteRouteChildren = {
   DashboardCollectionRoute: DashboardCollectionRoute,
+  DashboardProfileRoute: DashboardProfileRoute,
   DashboardTenantInformationRoute: DashboardTenantInformationRoute,
   DashboardIndexRoute: DashboardIndexRoute,
   DashboardBldgAdminOverviewIndexRoute: DashboardBldgAdminOverviewIndexRoute,

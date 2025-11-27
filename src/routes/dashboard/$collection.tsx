@@ -46,6 +46,7 @@ export const Route = createFileRoute('/dashboard/$collection')({
       .collection(params.collection)
       .getList(search.page, search.perPage, {
         ...search.options,
+        requestKey: null,
       });
 
     const { columns, table } = schemaToColumnDef(params.collection);
