@@ -1,5 +1,7 @@
 import { createFileRoute, Link } from '@tanstack/react-router';
 import { Button } from '@/components/ui/button';
+import { useState } from 'react';
+import { PropertiesBranchOptions } from '@/pocketbase/types';
 
 export const Route = createFileRoute('/(landing)/')({
   component: RouteComponent,
@@ -8,6 +10,7 @@ export const Route = createFileRoute('/(landing)/')({
       .collection('apartment_units')
       .getFullList(200, {
         sort: '-created',
+        expand: 'property',
       });
     return { apartments };
   },
@@ -16,6 +19,9 @@ export const Route = createFileRoute('/(landing)/')({
 function RouteComponent() {
   const { apartments } = Route.useLoaderData();
   const { pocketbase } = Route.useRouteContext();
+  const [branch, setBranch] = useState<PropertiesBranchOptions>(
+    PropertiesBranchOptions['Quezon City'],
+  );
 
   return (
     <>
@@ -52,7 +58,7 @@ function RouteComponent() {
         {/* Filter Tabs */}
         <div className="flex justify-center px-4 py-3">
           <div className="flex h-12 w-full max-w-md items-center rounded-lg bg-muted p-1.5">
-            {['All', 'Quezon City', 'Pampanga'].map((location) => (
+            {['Quezon City', 'Pampanga'].map((location) => (
               <label
                 key={location}
                 className="flex h-full grow cursor-pointer items-center justify-center overflow-hidden rounded-md px-2 text-sm font-medium transition-all has-[:checked]:bg-background has-[:checked]:shadow-sm"
@@ -62,7 +68,13 @@ function RouteComponent() {
                   type="radio"
                   name="location-filter"
                   value={location}
-                  defaultChecked={location === 'All'}
+                  checked={location === 'All' ? false : branch === location}
+                  onChange={(e) => {
+                    const value = e.target.value;
+                    if (value === 'Quezon City' || value === 'Pampanga') {
+                      setBranch(value as PropertiesBranchOptions);
+                    }
+                  }}
                   className="invisible w-0"
                 />
               </label>
@@ -71,37 +83,44 @@ function RouteComponent() {
         </div>
         {/* Properties Grid */}
         <div className="grid gap-6 pt-6 sm:grid-cols-2 lg:grid-cols-3">
-          {apartments.map((property) => (
-            <Link
-              key={property.id}
-              to="/properties/$id"
-              params={{ id: property.id }}
-            >
-              <div className="flex flex-col gap-3 cursor-pointer transition-opacity hover:opacity-80">
-                <div className="aspect-video w-full overflow-hidden rounded-lg bg-muted">
-                  <div
-                    className="h-full w-full bg-cover bg-center transition-transform duration-300 hover:scale-105"
-                    style={{
-                      backgroundImage: property.image
-                        ? `url("${pocketbase.files.getUrl(property, property.image)}")`
-                        : undefined,
-                    }}
-                  />
+          {apartments
+            .filter((property) => {
+              const propertyBranch = (
+                property.expand as unknown as { property?: { branch?: string } }
+              )?.property?.branch;
+              return propertyBranch === branch;
+            })
+            .map((property) => (
+              <Link
+                key={property.id}
+                to="/properties/$id"
+                params={{ id: property.id }}
+              >
+                <div className="flex flex-col gap-3 cursor-pointer transition-opacity hover:opacity-80">
+                  <div className="aspect-video w-full overflow-hidden rounded-lg bg-muted">
+                    <div
+                      className="h-full w-full bg-cover bg-center transition-transform duration-300 hover:scale-105"
+                      style={{
+                        backgroundImage: property.image
+                          ? `url("${pocketbase.files.getUrl(property, property.image)}")`
+                          : undefined,
+                      }}
+                    />
+                  </div>
+                  <div className="p-2">
+                    <p className="text-lg font-semibold leading-normal">
+                      Unit {property.unitLetter}
+                    </p>
+                    <p className="text-sm leading-normal text-muted-foreground">
+                      {property.capacity} Occupants • ₱{property.price}/mo
+                    </p>
+                    <p className="text-sm font-medium leading-normal text-primary">
+                      {property.isAvailable ? 'Available' : 'Occupied'}
+                    </p>
+                  </div>
                 </div>
-                <div className="p-2">
-                  <p className="text-lg font-semibold leading-normal">
-                    Unit {property.unitLetter}
-                  </p>
-                  <p className="text-sm leading-normal text-muted-foreground">
-                    {property.capacity} Occupants • ₱{property.price}/mo
-                  </p>
-                  <p className="text-sm font-medium leading-normal text-primary">
-                    {property.isAvailable ? 'Available' : 'Occupied'}
-                  </p>
-                </div>
-              </div>
-            </Link>
-          ))}
+              </Link>
+            ))}
         </div>
       </section>
 

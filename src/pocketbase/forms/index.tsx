@@ -11,12 +11,8 @@ import AutoFieldSet from '@/components/ui/autoform';
 import { useAppForm } from '@/components/ui/forms';
 import { type RecordModel } from 'pocketbase';
 import { useMutation, useQuery, useSuspenseQuery } from '@tanstack/react-query';
-import {
-  BatchDeleteRecordMutationOption,
-  CreateRecordMutationOption,
-  UpdateRecordMutationOption,
-} from '../mutation';
-import { ListQueryOption, ViewQueryOption } from '../query';
+import { BatchDeleteRecordMutationOption } from '../mutation';
+import { ViewQueryOption } from '../query';
 import { Button } from '@/components/ui/button';
 import {
   AlertDialog,
