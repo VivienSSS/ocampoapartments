@@ -6,11 +6,7 @@ import type {
   TypedPocketBase,
 } from '@/pocketbase/types';
 import { AsyncSelect } from '../../async-select';
-import { Field, FieldDescription, FieldError } from '../../field';
 import { useFieldContext } from '..';
-import { TooltipFieldLabel } from '../utils/tooltip-field-label';
-import type { RecordListOptions } from 'pocketbase';
-import { useRouteContext } from '@tanstack/react-router';
 import { usePocketbase } from '@/pocketbase/context';
 
 export interface RelationItem {
@@ -25,6 +21,7 @@ export type RelationFieldProps<Records extends RelationItem> = {
   placeholder?: string;
   displayFields?: (keyof Records)[];
   filterFields?: (keyof Records)[];
+  renderOption?: (item: Records) => React.ReactNode;
 };
 
 const RelationField = <Records extends RelationItem>(
@@ -76,7 +73,9 @@ const RelationField = <Records extends RelationItem>(
     <AsyncSelect<Records>
       fetcher={fetcher}
       preload={preload}
-      renderOption={renderDisplayValue}
+      renderOption={
+        props.renderOption ? props.renderOption : renderDisplayValue
+      }
       getOptionValue={(item) => item.id}
       getDisplayValue={renderDisplayValue}
       label={relationshipName}

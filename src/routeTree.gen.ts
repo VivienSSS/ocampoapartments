@@ -15,8 +15,10 @@ import { Route as DashboardRouteRouteImport } from './routes/dashboard/route'
 import { Route as landingRouteRouteImport } from './routes/(landing)/route'
 import { Route as DashboardIndexRouteImport } from './routes/dashboard/index'
 import { Route as landingIndexRouteImport } from './routes/(landing)/index'
+import { Route as DashboardTenantInformationRouteImport } from './routes/dashboard/tenant-information'
 import { Route as DashboardCollectionRouteImport } from './routes/dashboard/$collection'
 import { Route as DashboardTenantOverviewIndexRouteImport } from './routes/dashboard/tenant-overview/index'
+import { Route as DashboardMaintenance_requestsIndexRouteImport } from './routes/dashboard/maintenance_requests/index'
 import { Route as DashboardBldgAdminOverviewIndexRouteImport } from './routes/dashboard/bldg-admin-overview/index'
 import { Route as DashboardBillsIndexRouteImport } from './routes/dashboard/bills/index'
 import { Route as landingPropertiesIdRouteImport } from './routes/(landing)/properties.$id'
@@ -50,6 +52,12 @@ const landingIndexRoute = landingIndexRouteImport.update({
   path: '/',
   getParentRoute: () => landingRouteRoute,
 } as any)
+const DashboardTenantInformationRoute =
+  DashboardTenantInformationRouteImport.update({
+    id: '/tenant-information',
+    path: '/tenant-information',
+    getParentRoute: () => DashboardRouteRoute,
+  } as any)
 const DashboardCollectionRoute = DashboardCollectionRouteImport.update({
   id: '/$collection',
   path: '/$collection',
@@ -59,6 +67,12 @@ const DashboardTenantOverviewIndexRoute =
   DashboardTenantOverviewIndexRouteImport.update({
     id: '/tenant-overview/',
     path: '/tenant-overview/',
+    getParentRoute: () => DashboardRouteRoute,
+  } as any)
+const DashboardMaintenance_requestsIndexRoute =
+  DashboardMaintenance_requestsIndexRouteImport.update({
+    id: '/maintenance_requests/',
+    path: '/maintenance_requests/',
     getParentRoute: () => DashboardRouteRoute,
   } as any)
 const DashboardBldgAdminOverviewIndexRoute =
@@ -84,21 +98,25 @@ export interface FileRoutesByFullPath {
   '/register': typeof RegisterRoute
   '/verify-otp': typeof VerifyOtpRoute
   '/dashboard/$collection': typeof DashboardCollectionRoute
+  '/dashboard/tenant-information': typeof DashboardTenantInformationRoute
   '/dashboard/': typeof DashboardIndexRoute
   '/properties/$id': typeof landingPropertiesIdRoute
   '/dashboard/bills': typeof DashboardBillsIndexRoute
   '/dashboard/bldg-admin-overview': typeof DashboardBldgAdminOverviewIndexRoute
+  '/dashboard/maintenance_requests': typeof DashboardMaintenance_requestsIndexRoute
   '/dashboard/tenant-overview': typeof DashboardTenantOverviewIndexRoute
 }
 export interface FileRoutesByTo {
   '/register': typeof RegisterRoute
   '/verify-otp': typeof VerifyOtpRoute
   '/dashboard/$collection': typeof DashboardCollectionRoute
+  '/dashboard/tenant-information': typeof DashboardTenantInformationRoute
   '/': typeof landingIndexRoute
   '/dashboard': typeof DashboardIndexRoute
   '/properties/$id': typeof landingPropertiesIdRoute
   '/dashboard/bills': typeof DashboardBillsIndexRoute
   '/dashboard/bldg-admin-overview': typeof DashboardBldgAdminOverviewIndexRoute
+  '/dashboard/maintenance_requests': typeof DashboardMaintenance_requestsIndexRoute
   '/dashboard/tenant-overview': typeof DashboardTenantOverviewIndexRoute
 }
 export interface FileRoutesById {
@@ -108,11 +126,13 @@ export interface FileRoutesById {
   '/register': typeof RegisterRoute
   '/verify-otp': typeof VerifyOtpRoute
   '/dashboard/$collection': typeof DashboardCollectionRoute
+  '/dashboard/tenant-information': typeof DashboardTenantInformationRoute
   '/(landing)/': typeof landingIndexRoute
   '/dashboard/': typeof DashboardIndexRoute
   '/(landing)/properties/$id': typeof landingPropertiesIdRoute
   '/dashboard/bills/': typeof DashboardBillsIndexRoute
   '/dashboard/bldg-admin-overview/': typeof DashboardBldgAdminOverviewIndexRoute
+  '/dashboard/maintenance_requests/': typeof DashboardMaintenance_requestsIndexRoute
   '/dashboard/tenant-overview/': typeof DashboardTenantOverviewIndexRoute
 }
 export interface FileRouteTypes {
@@ -123,21 +143,25 @@ export interface FileRouteTypes {
     | '/register'
     | '/verify-otp'
     | '/dashboard/$collection'
+    | '/dashboard/tenant-information'
     | '/dashboard/'
     | '/properties/$id'
     | '/dashboard/bills'
     | '/dashboard/bldg-admin-overview'
+    | '/dashboard/maintenance_requests'
     | '/dashboard/tenant-overview'
   fileRoutesByTo: FileRoutesByTo
   to:
     | '/register'
     | '/verify-otp'
     | '/dashboard/$collection'
+    | '/dashboard/tenant-information'
     | '/'
     | '/dashboard'
     | '/properties/$id'
     | '/dashboard/bills'
     | '/dashboard/bldg-admin-overview'
+    | '/dashboard/maintenance_requests'
     | '/dashboard/tenant-overview'
   id:
     | '__root__'
@@ -146,11 +170,13 @@ export interface FileRouteTypes {
     | '/register'
     | '/verify-otp'
     | '/dashboard/$collection'
+    | '/dashboard/tenant-information'
     | '/(landing)/'
     | '/dashboard/'
     | '/(landing)/properties/$id'
     | '/dashboard/bills/'
     | '/dashboard/bldg-admin-overview/'
+    | '/dashboard/maintenance_requests/'
     | '/dashboard/tenant-overview/'
   fileRoutesById: FileRoutesById
 }
@@ -205,6 +231,13 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof landingIndexRouteImport
       parentRoute: typeof landingRouteRoute
     }
+    '/dashboard/tenant-information': {
+      id: '/dashboard/tenant-information'
+      path: '/tenant-information'
+      fullPath: '/dashboard/tenant-information'
+      preLoaderRoute: typeof DashboardTenantInformationRouteImport
+      parentRoute: typeof DashboardRouteRoute
+    }
     '/dashboard/$collection': {
       id: '/dashboard/$collection'
       path: '/$collection'
@@ -217,6 +250,13 @@ declare module '@tanstack/react-router' {
       path: '/tenant-overview'
       fullPath: '/dashboard/tenant-overview'
       preLoaderRoute: typeof DashboardTenantOverviewIndexRouteImport
+      parentRoute: typeof DashboardRouteRoute
+    }
+    '/dashboard/maintenance_requests/': {
+      id: '/dashboard/maintenance_requests/'
+      path: '/maintenance_requests'
+      fullPath: '/dashboard/maintenance_requests'
+      preLoaderRoute: typeof DashboardMaintenance_requestsIndexRouteImport
       parentRoute: typeof DashboardRouteRoute
     }
     '/dashboard/bldg-admin-overview/': {
@@ -259,17 +299,22 @@ const landingRouteRouteWithChildren = landingRouteRoute._addFileChildren(
 
 interface DashboardRouteRouteChildren {
   DashboardCollectionRoute: typeof DashboardCollectionRoute
+  DashboardTenantInformationRoute: typeof DashboardTenantInformationRoute
   DashboardIndexRoute: typeof DashboardIndexRoute
   DashboardBillsIndexRoute: typeof DashboardBillsIndexRoute
   DashboardBldgAdminOverviewIndexRoute: typeof DashboardBldgAdminOverviewIndexRoute
+  DashboardMaintenance_requestsIndexRoute: typeof DashboardMaintenance_requestsIndexRoute
   DashboardTenantOverviewIndexRoute: typeof DashboardTenantOverviewIndexRoute
 }
 
 const DashboardRouteRouteChildren: DashboardRouteRouteChildren = {
   DashboardCollectionRoute: DashboardCollectionRoute,
+  DashboardTenantInformationRoute: DashboardTenantInformationRoute,
   DashboardIndexRoute: DashboardIndexRoute,
   DashboardBillsIndexRoute: DashboardBillsIndexRoute,
   DashboardBldgAdminOverviewIndexRoute: DashboardBldgAdminOverviewIndexRoute,
+  DashboardMaintenance_requestsIndexRoute:
+    DashboardMaintenance_requestsIndexRoute,
   DashboardTenantOverviewIndexRoute: DashboardTenantOverviewIndexRoute,
 }
 
