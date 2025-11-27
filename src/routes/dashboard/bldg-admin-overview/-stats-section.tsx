@@ -1,11 +1,6 @@
 'use client';
 
-import {
-  Check,
-  CheckCircle2,
-  Clock,
-  TrendingUp,
-} from 'lucide-react';
+import { Check, CheckCircle2, Clock, TrendingUp } from 'lucide-react';
 import { Badge } from '@/components/ui/badge';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import type {
