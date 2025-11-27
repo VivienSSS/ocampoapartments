@@ -184,12 +184,12 @@ func main() {
 
 	// interceptors
 	app.OnRecordCreateRequest("announcements").BindFunc(interceptor.AddAuthorToAnnouncements)
-	app.OnRecordCreateRequest("bills").BindFunc(interceptor.GenerateInvoiceNumber)
 
 	// events
 	app.OnRecordAfterCreateSuccess("announcements").BindFunc(interceptor.SendAnnouncementsToEmails)
 	app.OnRecordAfterCreateSuccess("bills").BindFunc(interceptor.SendBillInvoiceToTenants)
 	app.OnRecordUpdateRequest("bills").BindFunc(interceptor.BillsStateMachine)
+	app.OnRecordAfterUpdateSuccess("bills").BindFunc(interceptor.SendBillInvoiceToTenants)
 	app.OnRecordAfterUpdateSuccess("bills").BindFunc(interceptor.SendOverdueNoticeToTenant)
 
 	// inquiry events

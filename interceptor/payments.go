@@ -45,6 +45,24 @@ func SendPaymentAcknowledgementInvoiceToEmail(e *core.RecordEvent) error {
 		return err
 	}
 
+	// Calculate total amount from bill items and build breakdown
+	var billItemsBreakdown string = "Bill Items Breakdown:\n"
+	billItems := bill.GetStringSlice("items")
+	if len(billItems) > 0 {
+		for _, itemId := range billItems {
+			item, err := e.App.FindRecordById("bill_items", itemId)
+			if err == nil {
+				chargeType := item.GetString("chargeType")
+				amount := item.Get("amount")
+				if amount != nil {
+					if floatVal, ok := amount.(float64); ok {
+						billItemsBreakdown += fmt.Sprintf("- %s: %.2f\n", chargeType, floatVal)
+					}
+				}
+			}
+		}
+	}
+
 	// Get emails collection
 	emailCollection, err := e.App.FindCollectionByNameOrId("emails")
 	if err != nil {
@@ -60,14 +78,16 @@ We have received your payment.
 
 Payment Details:
 Invoice Number: %s
-Amount Paid: %v
+Amount Paid: %.2f
 Payment Method: %s
 Payment Date: %s
 Transaction ID: %s
 
+%s
+
 Your payment is being verified. You will receive another notification once it has been confirmed.
 If you have any questions, please contact the management office.
-	`, bill.GetString("invoiceNumber"), payment.Get("amountPaid"), payment.GetString("paymentMethod"), payment.GetString("paymentDate"), payment.GetString("transactionId")))
+	`, bill.GetString("invoiceNumber"), payment.Get("amountPaid"), payment.GetString("paymentMethod"), payment.GetString("paymentDate"), payment.GetString("transactionId"), billItemsBreakdown))
 
 	e.App.Save(emailRecord)
 
@@ -121,6 +141,24 @@ func SendPaymentVerifiedInvoiceToEmail(e *core.RecordEvent) error {
 		return err
 	}
 
+	// Calculate total amount from bill items and build breakdown
+	var billItemsBreakdown string = "Bill Items Breakdown:\n"
+	billItems := bill.GetStringSlice("items")
+	if len(billItems) > 0 {
+		for _, itemId := range billItems {
+			item, err := e.App.FindRecordById("bill_items", itemId)
+			if err == nil {
+				chargeType := item.GetString("chargeType")
+				amount := item.Get("amount")
+				if amount != nil {
+					if floatVal, ok := amount.(float64); ok {
+						billItemsBreakdown += fmt.Sprintf("- %s: %.2f\n", chargeType, floatVal)
+					}
+				}
+			}
+		}
+	}
+
 	// Get emails collection
 	emailCollection, err := e.App.FindCollectionByNameOrId("emails")
 	if err != nil {
@@ -136,14 +174,16 @@ Your payment has been verified and confirmed.
 
 Payment Confirmation Details:
 Invoice Number: %s
-Amount Paid: %s
+Amount Paid: %.2f
 Payment Method: %s
 Payment Date: %s
 Status: Confirmed
 
+%s
+
 Thank you for your payment. Your bill has been marked as paid.
 If you have any questions, please contact the management office.
-	`, bill.GetString("invoiceNumber"), payment.Get("amountPaid"), payment.GetString("paymentMethod"), payment.GetString("paymentDate")))
+	`, bill.GetString("invoiceNumber"), payment.Get("amountPaid"), payment.GetString("paymentMethod"), payment.GetString("paymentDate"), billItemsBreakdown))
 
 	e.App.Save(emailRecord)
 

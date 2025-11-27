@@ -10,8 +10,9 @@ import (
 
 func BillsStateMachine(e *core.RecordRequestEvent) error {
 	// state machine:
-	// Due ->
-	// Paid or Overdue: Terminal state
+	// Draft -> Due
+	// Due -> Paid or Overdue: Terminal states
+	// Draft -> Paid or Overdue: Terminal states
 
 	bill, err := e.App.FindRecordById("bills", e.Record.Id)
 	if err != nil {
@@ -33,7 +34,12 @@ func BillsStateMachine(e *core.RecordRequestEvent) error {
 		})
 	}
 
-	// Only allow Due -> Paid or Due -> Overdue
+	// Allow Draft -> Due, Draft -> Paid, Draft -> Overdue
+	if prevStatus == "Draft" && (newStatus == "Due" || newStatus == "Paid" || newStatus == "Overdue") {
+		return e.Next()
+	}
+
+	// Allow Due -> Paid or Due -> Overdue
 	if prevStatus == "Due" && (newStatus == "Paid" || newStatus == "Overdue") {
 		return e.Next()
 	}
@@ -43,58 +49,12 @@ func BillsStateMachine(e *core.RecordRequestEvent) error {
 	})
 }
 
-func GenerateInvoiceNumber(e *core.RecordRequestEvent) error {
-	// generate a new invoice number. format: INVOICE-<YEAR>-<LAST-ROW-NUMBER-INSERTED-FOR-THE-DAY>
-
-	// Get today's date in YYYY format
-	year := time.Now().Year()
-	dateStr := fmt.Sprintf("%04d", year)
-
-	// Query all bills created today to find the highest sequence number
-	today := time.Now().Truncate(24 * time.Hour)
-	tomorrow := today.AddDate(0, 0, 1)
-
-	records, err := e.App.FindRecordsByFilter(
-		"bills",
-		fmt.Sprintf("created >= '%s' AND created < '%s'", today.Format("2006-01-02 15:04:05"), tomorrow.Format("2006-01-02 15:04:05")),
-		"-created", // Sort by created descending to get the latest
-		1,          // Limit to 1 result
-		0,          // Offset
-	)
-	if err != nil {
-		return err
-	}
-
-	// Determine the next sequence number
-	sequenceNumber := 1
-	if len(records) > 0 {
-		lastRecord := records[0]
-		lastInvoiceNumber := lastRecord.GetString("invoiceNumber")
-
-		// Extract the sequence number from the last invoice (format: INVOICE-YYYY-###)
-		if lastInvoiceNumber != "" {
-			// Parse the last number from the invoice number string
-			var lastSeq int
-			_, err := fmt.Sscanf(lastInvoiceNumber, "INVOICE-%*d-%d", &lastSeq)
-			if err == nil {
-				sequenceNumber = lastSeq + 1
-			}
-		}
-	}
-
-	// Generate the new invoice number
-	invoiceNumber := fmt.Sprintf("INVOICE-%s-%03d", dateStr, sequenceNumber)
-	e.Record.Set("invoiceNumber", invoiceNumber)
-
-	return e.Next()
-}
-
 func SendBillInvoiceToTenants(e *core.RecordEvent) error {
 	// Get the bill record
 	bill := e.Record
 
-	// Skip if bill status is draft
-	if bill.GetString("status") == "Draft" {
+	// Only send email when status becomes Due (not Draft)
+	if bill.GetString("status") != "Due" {
 		return e.Next()
 	}
 
@@ -139,6 +99,28 @@ func SendBillInvoiceToTenants(e *core.RecordEvent) error {
 		return e.Next()
 	}
 
+	// Calculate total amount from bill items and build breakdown
+	var totalAmount float64 = 0
+	var billItemsBreakdown string = "Bill Items Breakdown:\n"
+	billItems := bill.GetStringSlice("items")
+	if len(billItems) > 0 {
+		for _, itemId := range billItems {
+			item, err := e.App.FindRecordById("bill_items", itemId)
+			if err == nil {
+				chargeType := item.GetString("chargeType")
+				amount := item.Get("amount")
+				if amount != nil {
+					// Convert to float64
+					if floatVal, ok := amount.(float64); ok {
+						totalAmount += floatVal
+						billItemsBreakdown += fmt.Sprintf("- %s: %.2f\n", chargeType, floatVal)
+					}
+				}
+			}
+		}
+	}
+	billItemsBreakdown += fmt.Sprintf("Total: %.2f", totalAmount)
+
 	// Get emails collection
 	emailCollection, err := e.App.FindCollectionByNameOrId("emails")
 	if err != nil {
@@ -154,11 +136,13 @@ Your bill invoice has been generated.
 
 Invoice Number: %s
 Status: %s
-Amount: %v
+Amount: %.2f
+
+%s
 
 Please review your invoice and arrange payment accordingly.
 If you have any questions, please contact the management office.
-	`, bill.GetString("invoiceNumber"), bill.GetString("status"), bill.Get("amount")))
+	`, bill.GetString("invoiceNumber"), bill.GetString("status"), totalAmount, billItemsBreakdown))
 
 	e.App.Save(emailRecord)
 
@@ -219,6 +203,28 @@ func SendOverdueNoticeToTenant(e *core.RecordEvent) error {
 		return e.Next()
 	}
 
+	// Calculate total amount from bill items and build breakdown
+	var totalAmount float64 = 0
+	var billItemsBreakdown string = "Bill Items Breakdown:\n"
+	billItems := bill.GetStringSlice("items")
+	if len(billItems) > 0 {
+		for _, itemId := range billItems {
+			item, err := e.App.FindRecordById("bill_items", itemId)
+			if err == nil {
+				chargeType := item.GetString("chargeType")
+				amount := item.Get("amount")
+				if amount != nil {
+					// Convert to float64
+					if floatVal, ok := amount.(float64); ok {
+						totalAmount += floatVal
+						billItemsBreakdown += fmt.Sprintf("- %s: %.2f\n", chargeType, floatVal)
+					}
+				}
+			}
+		}
+	}
+	billItemsBreakdown += fmt.Sprintf("Total: %.2f", totalAmount)
+
 	// Get emails collection
 	emailCollection, err := e.App.FindCollectionByNameOrId("emails")
 	if err != nil {
@@ -235,12 +241,14 @@ OVERDUE PAYMENT NOTICE
 Your bill payment is now overdue.
 
 Invoice Number: %s
-Amount Due: %v
+Amount Due: %.2f
 Due Date: %s
+
+%s
 
 Please remit payment immediately to avoid penalties or further action.
 Contact the management office if you have payment concerns.
-	`, bill.GetString("invoiceNumber"), bill.Get("amount"), bill.GetString("dueDate")))
+	`, bill.GetString("invoiceNumber"), totalAmount, bill.GetString("dueDate"), billItemsBreakdown))
 
 	e.App.Save(emailRecord)
 
@@ -284,8 +292,8 @@ func CreateMonthlyBillsCron(app core.App) error {
 			continue
 		}
 
-		// Parse lease start date
-		parsedDate, err := time.Parse("2006-01-02", leaseStartDate)
+		// Parse lease start date (format: 2025-12-04 12:00:00.000Z)
+		parsedDate, err := time.Parse("2006-01-02 15:04:05.000Z", leaseStartDate)
 		if err != nil {
 			continue
 		}
@@ -309,7 +317,7 @@ func CreateMonthlyBillsCron(app core.App) error {
 		// Check if a bill already exists for this tenancy with the same due date
 		existingBills, err := app.FindRecordsByFilter(
 			"bills",
-			fmt.Sprintf("tenancy = '%s' AND dueDate = '%s'", tenancy.Id, currentMonthDueDate.Format("2006-01-02")),
+			fmt.Sprintf("tenancy = '%s' && dueDate = '%s'", tenancy.Id, currentMonthDueDate.Format("2006-01-02")),
 			"",
 			1,
 			0,
@@ -397,7 +405,8 @@ func CreateBillsAndItemsForTenancy(e *core.RecordEvent) error {
 	}
 
 	// Parse the lease start date to calculate due date (first day of next month)
-	parsedDate, err := time.Parse("2006-01-02", leaseStartDate)
+	// Format: 2025-12-04 12:00:00.000Z
+	parsedDate, err := time.Parse("2006-01-02 15:04:05.000Z", leaseStartDate)
 	if err != nil {
 		return err
 	}
