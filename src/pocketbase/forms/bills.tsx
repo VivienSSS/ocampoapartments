@@ -17,34 +17,39 @@ import { Button } from '@/components/ui/button';
 export const BillForm = () =>
   withForm({
     defaultValues: {} as Update<'bills'> & { items: Update<'bill_items'>[] },
-    render: ({ form }) => {
+    props: {} as { action?: 'create' | 'update' },
+    render: ({ form, action }) => {
       return (
         <form.AppForm>
           <FieldSet>
             <FieldGroup>
-              <form.AppField name="invoiceNumber">
-                {(field) => (
-                  <field.TextField
-                    label="Invoice Number"
-                    description="Unique identifier for tracking this bill"
-                    placeholder="e.g. INV-001"
-                    tooltip="E.g. 'INV-001' or 'INV-2024-001'"
-                  />
-                )}
-              </form.AppField>
-              <form.AppField name="tenancy">
-                {(field) => (
-                  <field.RelationField
-                    label="Tenancy"
-                    description="The tenant or lease this bill is associated with"
-                    relationshipName="tenancy"
-                    collection={Collections.Tenancies}
-                    placeholder="Select Tenancy"
-                    tooltip="E.g. 'John Doe - Unit A'"
-                    renderOption={(item) => String(item.id)}
-                  />
-                )}
-              </form.AppField>
+              {action === 'create' && (
+                <>
+                  <form.AppField name="invoiceNumber">
+                    {(field) => (
+                      <field.TextField
+                        label="Invoice Number"
+                        description="Unique identifier for tracking this bill"
+                        placeholder="e.g. INV-001"
+                        tooltip="E.g. 'INV-001' or 'INV-2024-001'"
+                      />
+                    )}
+                  </form.AppField>
+                  <form.AppField name="tenancy">
+                    {(field) => (
+                      <field.RelationField
+                        label="Tenancy"
+                        description="The tenant or lease this bill is associated with"
+                        relationshipName="tenancy"
+                        collection={Collections.Tenancies}
+                        placeholder="Select Tenancy"
+                        tooltip="E.g. 'John Doe - Unit A'"
+                        renderOption={(item) => String(item.id)}
+                      />
+                    )}
+                  </form.AppField>
+                </>
+              )}
               <form.AppField name="dueDate">
                 {(field) => (
                   <field.DateTimeField
@@ -74,33 +79,37 @@ export const BillForm = () =>
                   />
                 )}
               </form.AppField>
-              <FieldSeparator />
-              <form.AppField name="items" mode="array">
-                {(field) => (
-                  <>
-                    {field.state.value?.map((item, index) => (
-                      <BillItemFieldGroup
-                        key={item}
-                        form={form}
-                        fields={`items[${index}]`}
-                        onRemove={() => {
-                          field.removeValue(index);
-                        }}
-                        index={index}
-                      />
-                    ))}
-                    <Button
-                      type="button"
-                      className="mb-4"
-                      onClick={() => {
-                        field.pushValue(undefined as any);
-                      }}
-                    >
-                      Add Item
-                    </Button>
-                  </>
-                )}
-              </form.AppField>
+              {action === 'create' && (
+                <>
+                  <FieldSeparator />
+                  <form.AppField name="items" mode="array">
+                    {(field) => (
+                      <>
+                        {field.state.value?.map((item, index) => (
+                          <BillItemFieldGroup
+                            key={item}
+                            form={form}
+                            fields={`items[${index}]`}
+                            onRemove={() => {
+                              field.removeValue(index);
+                            }}
+                            index={index}
+                          />
+                        ))}
+                        <Button
+                          type="button"
+                          className="mb-4"
+                          onClick={() => {
+                            field.pushValue(undefined as any);
+                          }}
+                        >
+                          Add Item
+                        </Button>
+                      </>
+                    )}
+                  </form.AppField>
+                </>
+              )}
             </FieldGroup>
           </FieldSet>
         </form.AppForm>

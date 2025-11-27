@@ -242,7 +242,10 @@ const PocketbaseForms = () => {
           }}
         >
           <form.AppForm>
-            <Component form={form as any} />
+            <Component
+              form={form as any}
+              action={searchQuery.action === 'create' ? 'create' : 'update'}
+            />
             <DialogFooter>
               <Button type="submit">Submit</Button>
             </DialogFooter>
