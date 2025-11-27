@@ -1,10 +1,15 @@
 import { createFileRoute } from '@tanstack/react-router';
 import { Button } from '@/components/ui/button';
-import { Input } from '@/components/ui/input';
-import { Textarea } from '@/components/ui/textarea';
 import { Card } from '@/components/ui/card';
 import { Badge } from '@/components/ui/badge';
-import { useState } from 'react';
+import { useAppForm } from '@/components/ui/forms';
+import {
+  Collections,
+  InquiriesStatusOptions,
+  type Create,
+} from '@/pocketbase/types';
+import { useMutation } from '@tanstack/react-query';
+import { CreateRecordMutationOption } from '@/pocketbase/mutation';
 
 export const Route = createFileRoute('/(landing)/properties/$id')({
   component: RouteComponent,
@@ -20,31 +25,27 @@ export const Route = createFileRoute('/(landing)/properties/$id')({
 
 function RouteComponent() {
   const { apartment } = Route.useLoaderData();
+  const pathParams = Route.useParams();
   const { pocketbase } = Route.useRouteContext();
-  const [formData, setFormData] = useState({
-    fullName: '',
-    age: '',
-    phone: '',
-    occupants: '',
-    email: '',
-    message: '',
+
+  const createMutation = useMutation(
+    CreateRecordMutationOption(pocketbase, Collections.Inquiries),
+  );
+
+  const form = useAppForm({
+    defaultValues: {
+      firstName: '',
+      lastName: '',
+      age: 18,
+      email: '',
+      phone: '',
+      numberOfOccupants: 1,
+      message: '',
+      status: InquiriesStatusOptions.pending,
+      unitInterested: pathParams.id,
+    } as Create<'inquiries'>,
+    onSubmit: async ({ value }) => createMutation.mutateAsync(value),
   });
-
-  const handleInputChange = (
-    e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>,
-  ) => {
-    const { id, value } = e.target;
-    setFormData((prev) => ({
-      ...prev,
-      [id]: value,
-    }));
-  };
-
-  const handleSubmit = (e: React.FormEvent<HTMLFormElement>) => {
-    e.preventDefault();
-    console.log('Form submitted:', formData);
-    // Add your form submission logic here
-  };
 
   // Create display data from apartment record
   const unitData = {
@@ -176,116 +177,95 @@ function RouteComponent() {
           <div className="lg:col-span-2">
             <div className="sticky top-24">
               <Card className="border p-6">
-                <form onSubmit={handleSubmit} className="flex flex-col gap-6">
-                  <h3 className="scroll-m-20 text-2xl font-bold">
-                    Interested? Send us a message!
-                  </h3>
+                <form
+                  onSubmit={(e) => {
+                    e.preventDefault();
+                    e.stopPropagation();
+                    form.handleSubmit();
+                  }}
+                  className="flex flex-col gap-6"
+                >
+                  <form.AppForm>
+                    <h3 className="scroll-m-20 text-2xl font-bold mb-4">
+                      Interested? Send us a message!
+                    </h3>
 
-                  {/* Name and Age */}
-                  <div className="grid gap-4 sm:grid-cols-2">
-                    <div className="flex flex-col gap-2">
-                      <label
-                        htmlFor="fullName"
-                        className="text-sm font-medium leading-none peer-disabled:cursor-not-allowed peer-disabled:opacity-70"
-                      >
-                        Full Name
-                      </label>
-                      <Input
-                        id="fullName"
-                        placeholder="John Doe"
-                        type="text"
-                        value={formData.fullName}
-                        onChange={handleInputChange}
-                      />
+                    {/* First Name and Last Name */}
+                    <div className="grid gap-4 sm:grid-cols-2">
+                      <form.AppField name="firstName">
+                        {(field) => (
+                          <field.TextField
+                            label="First Name"
+                            placeholder="John"
+                          />
+                        )}
+                      </form.AppField>
+                      <form.AppField name="lastName">
+                        {(field) => (
+                          <field.TextField
+                            label="Last Name"
+                            placeholder="Doe"
+                          />
+                        )}
+                      </form.AppField>
                     </div>
-                    <div className="flex flex-col gap-2">
-                      <label
-                        htmlFor="age"
-                        className="text-sm font-medium leading-none peer-disabled:cursor-not-allowed peer-disabled:opacity-70"
-                      >
-                        Age
-                      </label>
-                      <Input
-                        id="age"
-                        placeholder="25"
-                        type="number"
-                        value={formData.age}
-                        onChange={handleInputChange}
-                      />
-                    </div>
-                  </div>
 
-                  {/* Phone and Occupants */}
-                  <div className="grid gap-4 sm:grid-cols-2">
-                    <div className="flex flex-col gap-2">
-                      <label
-                        htmlFor="phone"
-                        className="text-sm font-medium leading-none peer-disabled:cursor-not-allowed peer-disabled:opacity-70"
-                      >
-                        Phone Number
-                      </label>
-                      <Input
-                        id="phone"
-                        placeholder="(123) 456-7890"
-                        type="tel"
-                        value={formData.phone}
-                        onChange={handleInputChange}
-                      />
+                    {/* Age and Number of Occupants */}
+                    <div className="grid gap-4 sm:grid-cols-2">
+                      <form.AppField name="age">
+                        {(field) => (
+                          <field.NumberField label="Age" placeholder="25" />
+                        )}
+                      </form.AppField>
+                      <form.AppField name="numberOfOccupants">
+                        {(field) => (
+                          <field.NumberField
+                            label="No. of Occupants"
+                            placeholder="2"
+                          />
+                        )}
+                      </form.AppField>
                     </div>
-                    <div className="flex flex-col gap-2">
-                      <label
-                        htmlFor="occupants"
-                        className="text-sm font-medium leading-none peer-disabled:cursor-not-allowed peer-disabled:opacity-70"
-                      >
-                        No. of Occupants
-                      </label>
-                      <Input
-                        id="occupants"
-                        placeholder="2"
-                        type="number"
-                        value={formData.occupants}
-                        onChange={handleInputChange}
-                      />
-                    </div>
-                  </div>
 
-                  {/* Email */}
-                  <div className="flex flex-col gap-2">
-                    <label
-                      htmlFor="email"
-                      className="text-sm font-medium leading-none peer-disabled:cursor-not-allowed peer-disabled:opacity-70"
+                    {/* Email and Phone */}
+                    <div className="grid gap-4 sm:grid-cols-2">
+                      <form.AppField name="email">
+                        {(field) => (
+                          <field.EmailField
+                            label="Email Address"
+                            placeholder="you@example.com"
+                          />
+                        )}
+                      </form.AppField>
+                      <form.AppField name="phone">
+                        {(field) => (
+                          <field.TextField
+                            label="Phone Number"
+                            placeholder="(123) 456-7890"
+                            type="tel"
+                          />
+                        )}
+                      </form.AppField>
+                    </div>
+
+                    {/* Message */}
+                    <form.AppField name="message">
+                      {(field) => (
+                        <field.TextareaField
+                          label="Message / Questions"
+                          placeholder="I'd like to schedule a tour..."
+                        />
+                      )}
+                    </form.AppField>
+
+                    <Button
+                      type="submit"
+                      size="lg"
+                      className="w-full font-bold"
                     >
-                      Email Address
-                    </label>
-                    <Input
-                      id="email"
-                      placeholder="you@example.com"
-                      type="email"
-                      value={formData.email}
-                      onChange={handleInputChange}
-                    />
-                  </div>
-
-                  {/* Message */}
-                  <div className="flex flex-col gap-2">
-                    <label
-                      htmlFor="message"
-                      className="text-sm font-medium leading-none peer-disabled:cursor-not-allowed peer-disabled:opacity-70"
-                    >
-                      Message / Questions
-                    </label>
-                    <Textarea
-                      id="message"
-                      placeholder="I'd like to schedule a tour..."
-                      rows={4}
-                      value={formData.message}
-                      onChange={handleInputChange}
-                    />
-                  </div>
-
-                  <Button type="submit" size="lg" className="w-full font-bold">
-                    Send Inquiry
-                  </Button>
+                      Send Inquiry
+                    </Button>
+                  </form.AppForm>
                 </form>
               </Card>
             </div>

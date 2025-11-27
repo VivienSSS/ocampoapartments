@@ -2,17 +2,6 @@ import { useMutation } from '@tanstack/react-query';
 import { useNavigate } from '@tanstack/react-router';
 import { toast } from 'sonner';
 import type z from 'zod';
-import { Button } from '@/components/ui/button';
-import {
-  Card,
-  CardContent,
-  CardDescription,
-  CardHeader,
-  CardTitle,
-} from '@/components/ui/card';
-import { Input } from '@/components/ui/input';
-import { Label } from '@/components/ui/label';
-import { cn } from '@/lib/utils';
 import { loginUserMutation } from '@/pocketbase/queries/users';
 import { loginUserSchema } from '@/pocketbase/schemas/users';
 import { useAppForm } from './ui/form';
@@ -21,7 +10,7 @@ export function LoginForm({
   className,
   ...props
 }: React.ComponentProps<'div'>) {
-  const navigate = useNavigate({ from: '/login' });
+  const navigate = useNavigate({ from: '/' });
   const loginMutation = useMutation(loginUserMutation);
 
   const form = useAppForm({
@@ -30,16 +19,8 @@ export function LoginForm({
       onChange: loginUserSchema,
     },
     onSubmit: async ({ value }) => {
-      const result = await loginMutation.mutateAsync(value);
-
-      if (!result.record.isActive) {
-        toast.error('This account is inactive', {
-          description: 'please contact the administrator for more details',
-        });
-      } else
-        [
-          navigate({ to: '/dashboard/announcements' }), //for success
-        ];
+      await loginMutation.mutateAsync(value);
+      navigate({ to: '/dashboard/tenant-overview' }); //for success
     },
   });
 

@@ -2,6 +2,8 @@ import { Button } from '@/components/ui/button';
 import { Menu } from 'lucide-react';
 import type { ReactNode } from 'react';
 import { useState } from 'react';
+import { Dialog, DialogContent, DialogTrigger } from '../ui/dialog';
+import { LoginForm } from '../login-form';
 
 interface LandingLayoutProps {
   children: ReactNode;
@@ -60,7 +62,14 @@ export function LandingLayout({ children }: LandingLayoutProps) {
           >
             Contact
           </a>
-          <Button className="font-bold">Inquire Now</Button>
+          <Dialog>
+            <DialogTrigger>
+              <Button className="font-bold">Login</Button>
+            </DialogTrigger>
+            <DialogContent>
+              <LoginForm />
+            </DialogContent>
+          </Dialog>
         </nav>
 
         {/* Mobile Menu Button */}

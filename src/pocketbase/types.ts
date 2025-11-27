@@ -245,6 +245,7 @@ export type InquiriesRecord = {
 	phone?: string
 	rejectionReason?: string
 	status?: InquiriesStatusOptions
+	unitInterested?: RecordIdString
 	updated: IsoAutoDateString
 	verifiedAt?: IsoDateString
 }
