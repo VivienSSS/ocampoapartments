@@ -6,11 +6,8 @@ import {
 } from '@tanstack/react-router';
 
 import { Dialog, DialogContent, DialogFooter } from '@/components/ui/dialog';
-import { schemaToForm } from '../utils/form';
-import AutoFieldSet from '@/components/ui/autoform';
 import { useAppForm } from '@/components/ui/forms';
-import { type RecordModel } from 'pocketbase';
-import { useMutation, useQuery, useSuspenseQuery } from '@tanstack/react-query';
+import { useMutation, useQuery } from '@tanstack/react-query';
 import { BatchDeleteRecordMutationOption } from '../mutation';
 import { ViewQueryOption } from '../query';
 import { Button } from '@/components/ui/button';
@@ -161,13 +158,14 @@ const PocketbaseForms = () => {
   const { pocketbase } = useRouteContext({ from: '/dashboard/$collection' });
 
   // data fetching
-  const { data: record } = useQuery(
-    ViewQueryOption(
+  const { data: record } = useQuery({
+    ...ViewQueryOption(
       pocketbase,
       pathParams.collection as Collections,
       searchQuery.selected?.[0],
     ),
-  );
+    enabled: !!searchQuery.selected?.[0],
+  });
 
   const { formOption, Component } = FormOptions(
     pathParams.collection,

@@ -1,7 +1,6 @@
 'use client';
 
 import {
-  AlertCircle,
   Check,
   CheckCircle2,
   Clock,
@@ -10,7 +9,6 @@ import {
 import { Badge } from '@/components/ui/badge';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import type {
-  HighPriorityUnresolvedRequestsStatCardKpiViewResponse,
   MaintenanceRequestOverviewStatCardKpiViewResponse,
   MaintenanceRequestStatusStatCardKpiViewResponse,
 } from '@/pocketbase/types';
@@ -18,18 +16,15 @@ import type {
 export function MaintenanceStatsSection({
   statusStats,
   overviewStats,
-  highPriorityStats,
 }: {
   statusStats: MaintenanceRequestStatusStatCardKpiViewResponse[];
   overviewStats: MaintenanceRequestOverviewStatCardKpiViewResponse[];
-  highPriorityStats: HighPriorityUnresolvedRequestsStatCardKpiViewResponse[];
 }) {
   return (
     <div className="space-y-6">
       <RoutineChecksCard />
       <MaintenanceRequestStatusStats stats={statusStats} />
       <MaintenanceRequestOverviewStats stats={overviewStats} />
-      <HighPriorityUnresolvedRequestsStats stats={highPriorityStats} />
     </div>
   );
 }
@@ -122,9 +117,9 @@ function MaintenanceRequestStatusStats({
       <CardContent>
         <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
           {stats && stats.length > 0 ? (
-            stats.map((item, index) => (
+            stats.map((item) => (
               <div
-                key={index}
+                key={`${item.id}-${item.status}`}
                 className="p-4 bg-background rounded-md border border-border hover:border-primary/50 transition-all hover:shadow-md"
               >
                 <div className="flex items-center justify-between mb-3">
@@ -172,10 +167,10 @@ function MaintenanceRequestOverviewStats({
       <CardContent>
         <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
           {stats && stats.length > 0 ? (
-            stats.map((item, index) => {
+            stats.map((item) => {
               return (
                 <div
-                  key={index}
+                  key={`${item.id}-${item.urgency}`}
                   className="p-4 bg-background rounded-md border border-border hover:border-primary/50 transition-all hover:shadow-md"
                 >
                   <div className="flex items-center justify-between mb-3">
@@ -216,95 +211,6 @@ function MaintenanceRequestOverviewStats({
   );
 }
 
-function HighPriorityUnresolvedRequestsStats({
-  stats,
-}: {
-  stats: HighPriorityUnresolvedRequestsStatCardKpiViewResponse[];
-}) {
-  return (
-    <Card className="border-secondary bg-card">
-      <CardHeader className="pb-3">
-        <CardTitle className="text-lg font-semibold flex items-center gap-2">
-          <AlertCircle className="w-5 h-5 text-destructive" />
-          High Priority Unresolved Requests
-        </CardTitle>
-      </CardHeader>
-      <CardContent>
-        {stats && stats.length > 0 ? (
-          <div className="space-y-3 max-h-96 overflow-y-auto">
-            {stats.map((request, index) => (
-              <div
-                key={index}
-                className="p-4 bg-background rounded-md border border-border hover:border-destructive/50 transition-all hover:shadow-md"
-              >
-                <div className="flex items-start justify-between gap-3 mb-3">
-                  <div className="flex-1">
-                    <div className="flex items-center gap-2 mb-2">
-                      <h3 className="font-semibold text-sm text-foreground">
-                        {request.firstName} {request.lastName}
-                      </h3>
-                      <UrgencyBadge urgency={request.urgency} small />
-                    </div>
-                    <p className="text-xs text-muted-foreground">
-                      {request.property} - Unit {request.unitLetter}
-                    </p>
-                  </div>
-                  <StatusBadge status={request.status} small />
-                </div>
-
-                <p className="text-sm text-foreground mb-3 line-clamp-2">
-                  {request.description}
-                </p>
-
-                <div className="grid grid-cols-2 gap-3 pt-3 border-t border-border">
-                  <div>
-                    <p className="text-xs text-muted-foreground">Days Open</p>
-                    <p className="font-semibold text-sm text-destructive">
-                      {request.daysOpen ? `${request.daysOpen} days` : 'N/A'}
-                    </p>
-                  </div>
-                  <div>
-                    <p className="text-xs text-muted-foreground">Assigned To</p>
-                    <p className="font-semibold text-sm text-foreground">
-                      {request.assignedWorker || 'Unassigned'}
-                    </p>
-                  </div>
-                </div>
-
-                <div className="mt-3 pt-3 border-t border-border">
-                  <div className="flex items-center justify-between gap-2">
-                    <div>
-                      <p className="text-xs text-muted-foreground">Contact</p>
-                      <p className="text-sm text-foreground">
-                        {request.contactEmail || 'N/A'}
-                      </p>
-                    </div>
-                    {request.phoneNumber && (
-                      <div className="text-right">
-                        <p className="text-xs text-muted-foreground">Phone</p>
-                        <p className="text-sm text-foreground">
-                          {request.phoneNumber}
-                        </p>
-                      </div>
-                    )}
-                  </div>
-                </div>
-              </div>
-            ))}
-          </div>
-        ) : (
-          <div className="text-center py-12 text-muted-foreground">
-            <CheckCircle2 className="w-12 h-12 mx-auto mb-2 text-primary" />
-            <p className="font-medium">
-              Great! No high priority unresolved requests
-            </p>
-          </div>
-        )}
-      </CardContent>
-    </Card>
-  );
-}
-
 function StatusBadge({
   status,
   small = false,
@@ -324,7 +230,7 @@ function StatusBadge({
     Acknowledged: {
       bg: 'bg-input',
       text: 'text-foreground',
-      icon: <AlertCircle className="w-3 h-3" />,
+      icon: <Clock className="w-3 h-3" />,
     },
     Completed: {
       bg: 'bg-primary/10',

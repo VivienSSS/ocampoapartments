@@ -13,7 +13,15 @@ import { createFileRoute } from '@tanstack/react-router';
 import { zodValidator } from '@tanstack/zod-adapter';
 import z from 'zod';
 import { ButtonGroup } from '@/components/ui/button-group';
-import { ArrowLeftIcon, ArrowRightIcon, Edit, Plus, Trash } from 'lucide-react';
+import {
+  ArrowLeftIcon,
+  ArrowRightIcon,
+  Edit,
+  Plus,
+  ShieldX,
+  Trash,
+  X,
+} from 'lucide-react';
 import { getPermissions } from '@/lib/permissions';
 import type { UsersRoleOptions } from '@/pocketbase/types';
 
@@ -169,12 +177,35 @@ function RouteComponent() {
           }
           variant={'destructive'}
           size={'sm'}
-          onClick={() => {
+          onClick={async () => {
+            if (
+              userRole === 'Administrator' &&
+              params.collection === 'tenants'
+            ) {
+              const batch = pocketbase.createBatch();
+
+              searchQuery.selected?.forEach((id) => {
+                batch.collection('tenants').update(id, { isActive: false });
+              });
+
+              await batch.send();
+
+              window.location.reload();
+
+              return;
+            }
+
             navigate({ search: (prev) => ({ ...prev, action: 'delete' }) });
           }}
         >
-          <Trash />
-          Delete
+          {userRole === 'Administrator' && params.collection === 'tenants' ? (
+            <ShieldX />
+          ) : (
+            <Trash />
+          )}
+          {userRole === 'Administrator' && params.collection === 'tenants'
+            ? 'Deactivate'
+            : 'Delete'}
         </Button>
         <Button
           disabled={

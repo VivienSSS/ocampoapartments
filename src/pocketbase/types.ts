@@ -11,6 +11,7 @@ export enum Collections {
 	Mfas = "_mfas",
 	Otps = "_otps",
 	Superusers = "_superusers",
+	ActiveTenanciesChartView = "active_tenancies_chart_view",
 	Announcements = "announcements",
 	ApartmentUnits = "apartment_units",
 	BillItems = "bill_items",
@@ -18,15 +19,29 @@ export enum Collections {
 	Emails = "emails",
 	Forms = "forms",
 	Inquiries = "inquiries",
+	MaintenanceOperationStatCardKpiView = "maintenance_operation_stat_card_kpi_view",
+	MaintenanceRequestOverviewStatCardKpiView = "maintenance_request_overview_stat_card_kpi_view",
+	MaintenanceRequestStatusStatCardKpiView = "maintenance_request_status_stat_card_kpi_view",
 	MaintenanceRequests = "maintenance_requests",
 	MaintenanceWorkers = "maintenance_workers",
+	MonthlyRevenueTrendStatCardKpiView = "monthly_revenue_trend_stat_card_kpi_view",
 	Otp = "otp",
+	PaymentMethodsDistributionChartView = "payment_methods_distribution_chart_view",
 	Payments = "payments",
+	PorfolioStatCardKpiView = "porfolio_stat_card_kpi_view",
 	Properties = "properties",
+	PropertySummaryChartView = "property_summary_chart_view",
+	RecentAnnouncementsChartView = "recent_announcements_chart_view",
+	RevenuePerPropertyChartView = "revenue_per_property_chart_view",
 	Schedules = "schedules",
 	Tenancies = "tenancies",
+	TenancyHealthChartView = "tenancy_health_chart_view",
 	Tenants = "tenants",
+	TenantsPerPropertyChartView = "tenants_per_property_chart_view",
+	UnitInventoryChartView = "unit_inventory_chart_view",
+	UnitPriceChartView = "unit_price_chart_view",
 	Users = "users",
+	WorkerPerformanceChartView = "worker_performance_chart_view",
 }
 
 // Alias types for improved usability
@@ -105,6 +120,22 @@ export type SuperusersRecord = {
 	tokenKey: string
 	updated: IsoAutoDateString
 	verified?: boolean
+}
+
+export type ActiveTenanciesChartViewRecord<TleaseStatus = unknown> = {
+	created: IsoAutoDateString
+	firstName: string
+	floorNumber: number
+	id: string
+	lastName: string
+	leaseEndDate: IsoDateString
+	leaseStartDate: IsoDateString
+	leaseStatus?: null | TleaseStatus
+	property: string
+	tenantId?: RecordIdString
+	tenantUsername: string
+	unitLetter: string
+	updated: IsoAutoDateString
 }
 
 export type AnnouncementsRecord = {
@@ -250,6 +281,54 @@ export type InquiriesRecord = {
 	verifiedAt?: IsoDateString
 }
 
+export type MaintenanceOperationStatCardKpiViewRecord = {
+	available_workers?: number
+	completed_requests?: number
+	critical_pending?: number
+	id: string
+	pending_requests?: number
+	total_requests?: number
+	total_workers?: number
+}
+
+export enum MaintenanceRequestOverviewStatCardKpiViewStatusOptions {
+	"Pending" = "Pending",
+	"Worker Assigned" = "Worker Assigned",
+	"In Progress" = "In Progress",
+	"Completed" = "Completed",
+	"Cancelled" = "Cancelled",
+}
+
+export enum MaintenanceRequestOverviewStatCardKpiViewUrgencyOptions {
+	"Urgent" = "Urgent",
+	"Normal" = "Normal",
+	"Low" = "Low",
+}
+export type MaintenanceRequestOverviewStatCardKpiViewRecord<TassignmentRate = unknown, TavgCompletionDays = unknown> = {
+	assignedCount?: number
+	assignmentRate?: null | TassignmentRate
+	avgCompletionDays?: null | TavgCompletionDays
+	id: string
+	requestCount?: number
+	status?: MaintenanceRequestOverviewStatCardKpiViewStatusOptions
+	urgency: MaintenanceRequestOverviewStatCardKpiViewUrgencyOptions
+}
+
+export enum MaintenanceRequestStatusStatCardKpiViewStatusOptions {
+	"Pending" = "Pending",
+	"Worker Assigned" = "Worker Assigned",
+	"In Progress" = "In Progress",
+	"Completed" = "Completed",
+	"Cancelled" = "Cancelled",
+}
+export type MaintenanceRequestStatusStatCardKpiViewRecord<TavgResolutionDays = unknown> = {
+	avgResolutionDays?: null | TavgResolutionDays
+	id: string
+	pendingCount?: number
+	status?: MaintenanceRequestStatusStatCardKpiViewStatusOptions
+	totalRequests?: number
+}
+
 export enum MaintenanceRequestsUrgencyOptions {
 	"Urgent" = "Urgent",
 	"Normal" = "Normal",
@@ -286,6 +365,15 @@ export type MaintenanceWorkersRecord = {
 	updated: IsoAutoDateString
 }
 
+export type MonthlyRevenueTrendStatCardKpiViewRecord<TavgPaymentSize = unknown, Tmonth = unknown, TmonthlyRevenue = unknown> = {
+	avgPaymentSize?: null | TavgPaymentSize
+	id: string
+	month?: null | Tmonth
+	monthlyRevenue?: null | TmonthlyRevenue
+	paymentCount?: number
+	uniqueTenants?: number
+}
+
 export type OtpRecord = {
 	attemptCount?: number
 	code: string
@@ -297,6 +385,18 @@ export type OtpRecord = {
 	sentAt?: IsoDateString
 	updated: IsoAutoDateString
 	verifiedAt?: IsoDateString
+}
+
+export enum PaymentMethodsDistributionChartViewPaymentMethodOptions {
+	"GCash" = "GCash",
+}
+export type PaymentMethodsDistributionChartViewRecord<TavgPaymentAmount = unknown, TpaymentMethodPercentage = unknown, TtotalAmountPaid = unknown> = {
+	avgPaymentAmount?: null | TavgPaymentAmount
+	id: string
+	paymentCount?: number
+	paymentMethod: PaymentMethodsDistributionChartViewPaymentMethodOptions
+	paymentMethodPercentage?: null | TpaymentMethodPercentage
+	totalAmountPaid?: null | TtotalAmountPaid
 }
 
 export enum PaymentsPaymentMethodOptions {
@@ -322,6 +422,16 @@ export type PaymentsRecord = {
 	updated: IsoAutoDateString
 }
 
+export type PorfolioStatCardKpiViewRecord<Toverall_occupancy_rate = unknown, Ttotal_monthly_potential_revenue = unknown> = {
+	id: string
+	occupied_units?: number
+	overall_occupancy_rate?: null | Toverall_occupancy_rate
+	total_active_tenants?: number
+	total_monthly_potential_revenue?: null | Ttotal_monthly_potential_revenue
+	total_properties?: number
+	total_units?: number
+}
+
 export enum PropertiesBranchOptions {
 	"Quezon City" = "Quezon City",
 	"Pampanga" = "Pampanga",
@@ -332,6 +442,42 @@ export type PropertiesRecord = {
 	created: IsoAutoDateString
 	id: string
 	updated: IsoAutoDateString
+}
+
+export enum PropertySummaryChartViewBranchOptions {
+	"Quezon City" = "Quezon City",
+	"Pampanga" = "Pampanga",
+}
+export type PropertySummaryChartViewRecord<TavailableUnits = unknown, ToccupancyRate = unknown, ToccupiedUnits = unknown> = {
+	address: string
+	availableUnits?: null | TavailableUnits
+	branch: PropertySummaryChartViewBranchOptions
+	created: IsoAutoDateString
+	id: string
+	occupancyRate?: null | ToccupancyRate
+	occupiedUnits?: null | ToccupiedUnits
+	totalUnits?: number
+	updated: IsoAutoDateString
+}
+
+export type RecentAnnouncementsChartViewRecord<TauthorName = unknown, TmessagePreview = unknown, Trecency = unknown> = {
+	authorName?: null | TauthorName
+	created: IsoAutoDateString
+	email: string
+	id: string
+	messagePreview?: null | TmessagePreview
+	recency?: null | Trecency
+	title: string
+	updated: IsoAutoDateString
+}
+
+export type RevenuePerPropertyChartViewRecord<TcurrentMonthlyRevenue = unknown, TrevenueUtilizationRate = unknown, TtotalPotentialMonthlyRevenue = unknown> = {
+	address: string
+	currentMonthlyRevenue?: null | TcurrentMonthlyRevenue
+	id: string
+	revenueUtilizationRate?: null | TrevenueUtilizationRate
+	totalPotentialMonthlyRevenue?: null | TtotalPotentialMonthlyRevenue
+	totalUnits?: number
 }
 
 export enum SchedulesReasonOptions {
@@ -362,13 +508,54 @@ export type TenanciesRecord = {
 	updated: IsoAutoDateString
 }
 
+export type TenancyHealthChartViewRecord<Tavg_lease_duration_years = unknown> = {
+	active_tenancies?: number
+	avg_lease_duration_years?: null | Tavg_lease_duration_years
+	expired_tenancies?: number
+	expiring_soon?: number
+	id: string
+	total_tenancies?: number
+}
+
 export type TenantsRecord = {
 	created: IsoAutoDateString
 	facebookName?: string
 	id: string
+	isActive?: boolean
 	phoneNumber?: number
 	updated: IsoAutoDateString
 	user: RecordIdString
+}
+
+export type TenantsPerPropertyChartViewRecord<ToccupancyPercentage = unknown> = {
+	address: string
+	id: string
+	occupancyPercentage?: null | ToccupancyPercentage
+	totalTenants?: number
+	totalUnits?: number
+}
+
+export type UnitInventoryChartViewRecord<Tstatus = unknown> = {
+	capacity: number
+	created: IsoAutoDateString
+	floorNumber: number
+	id: string
+	isAvailable?: boolean
+	price: number
+	propertyAddress: string
+	status?: null | Tstatus
+	unitLetter: string
+	updated: IsoAutoDateString
+}
+
+export type UnitPriceChartViewRecord<TavgPrice = unknown, TmaxPrice = unknown, TminPrice = unknown, TtotalMonthlyPotential = unknown> = {
+	avgPrice?: null | TavgPrice
+	id: string
+	maxPrice?: null | TmaxPrice
+	minPrice?: null | TminPrice
+	property: string
+	totalMonthlyPotential?: null | TtotalMonthlyPotential
+	unitCount?: number
 }
 
 export enum UsersRoleOptions {
@@ -397,12 +584,25 @@ export type UsersRecord = {
 	verified?: boolean
 }
 
+export type WorkerPerformanceChartViewRecord<TavgResolutionDays = unknown, TcompletionRate = unknown> = {
+	avgResolutionDays?: null | TavgResolutionDays
+	completedJobs?: number
+	completionRate?: null | TcompletionRate
+	contactDetails: HTMLString
+	id: string
+	inProgressJobs?: number
+	isAvailable?: boolean
+	name: string
+	totalAssignments?: number
+}
+
 // Response types include system fields and match responses from the PocketBase API
 export type AuthoriginsResponse<Texpand = unknown> = Required<AuthoriginsRecord> & BaseSystemFields<Texpand>
 export type ExternalauthsResponse<Texpand = unknown> = Required<ExternalauthsRecord> & BaseSystemFields<Texpand>
 export type MfasResponse<Texpand = unknown> = Required<MfasRecord> & BaseSystemFields<Texpand>
 export type OtpsResponse<Texpand = unknown> = Required<OtpsRecord> & BaseSystemFields<Texpand>
 export type SuperusersResponse<Texpand = unknown> = Required<SuperusersRecord> & AuthSystemFields<Texpand>
+export type ActiveTenanciesChartViewResponse<TleaseStatus = unknown, Texpand = unknown> = Required<ActiveTenanciesChartViewRecord<TleaseStatus>> & BaseSystemFields<Texpand>
 export type AnnouncementsResponse<Texpand = unknown> = Required<AnnouncementsRecord> & BaseSystemFields<Texpand>
 export type ApartmentUnitsResponse<Texpand = unknown> = Required<ApartmentUnitsRecord> & BaseSystemFields<Texpand>
 export type BillItemsResponse<Texpand = unknown> = Required<BillItemsRecord> & BaseSystemFields<Texpand>
@@ -410,15 +610,29 @@ export type BillsResponse<Texpand = unknown> = Required<BillsRecord> & BaseSyste
 export type EmailsResponse<Texpand = unknown> = Required<EmailsRecord> & BaseSystemFields<Texpand>
 export type FormsResponse<Tconfig = unknown, Texpand = unknown> = Required<FormsRecord<Tconfig>> & BaseSystemFields<Texpand>
 export type InquiriesResponse<Texpand = unknown> = Required<InquiriesRecord> & BaseSystemFields<Texpand>
+export type MaintenanceOperationStatCardKpiViewResponse<Texpand = unknown> = Required<MaintenanceOperationStatCardKpiViewRecord> & BaseSystemFields<Texpand>
+export type MaintenanceRequestOverviewStatCardKpiViewResponse<TassignmentRate = unknown, TavgCompletionDays = unknown, Texpand = unknown> = Required<MaintenanceRequestOverviewStatCardKpiViewRecord<TassignmentRate, TavgCompletionDays>> & BaseSystemFields<Texpand>
+export type MaintenanceRequestStatusStatCardKpiViewResponse<TavgResolutionDays = unknown, Texpand = unknown> = Required<MaintenanceRequestStatusStatCardKpiViewRecord<TavgResolutionDays>> & BaseSystemFields<Texpand>
 export type MaintenanceRequestsResponse<Texpand = unknown> = Required<MaintenanceRequestsRecord> & BaseSystemFields<Texpand>
 export type MaintenanceWorkersResponse<Texpand = unknown> = Required<MaintenanceWorkersRecord> & BaseSystemFields<Texpand>
+export type MonthlyRevenueTrendStatCardKpiViewResponse<TavgPaymentSize = unknown, Tmonth = unknown, TmonthlyRevenue = unknown, Texpand = unknown> = Required<MonthlyRevenueTrendStatCardKpiViewRecord<TavgPaymentSize, Tmonth, TmonthlyRevenue>> & BaseSystemFields<Texpand>
 export type OtpResponse<Texpand = unknown> = Required<OtpRecord> & BaseSystemFields<Texpand>
+export type PaymentMethodsDistributionChartViewResponse<TavgPaymentAmount = unknown, TpaymentMethodPercentage = unknown, TtotalAmountPaid = unknown, Texpand = unknown> = Required<PaymentMethodsDistributionChartViewRecord<TavgPaymentAmount, TpaymentMethodPercentage, TtotalAmountPaid>> & BaseSystemFields<Texpand>
 export type PaymentsResponse<Texpand = unknown> = Required<PaymentsRecord> & BaseSystemFields<Texpand>
+export type PorfolioStatCardKpiViewResponse<Toverall_occupancy_rate = unknown, Ttotal_monthly_potential_revenue = unknown, Texpand = unknown> = Required<PorfolioStatCardKpiViewRecord<Toverall_occupancy_rate, Ttotal_monthly_potential_revenue>> & BaseSystemFields<Texpand>
 export type PropertiesResponse<Texpand = unknown> = Required<PropertiesRecord> & BaseSystemFields<Texpand>
+export type PropertySummaryChartViewResponse<TavailableUnits = unknown, ToccupancyRate = unknown, ToccupiedUnits = unknown, Texpand = unknown> = Required<PropertySummaryChartViewRecord<TavailableUnits, ToccupancyRate, ToccupiedUnits>> & BaseSystemFields<Texpand>
+export type RecentAnnouncementsChartViewResponse<TauthorName = unknown, TmessagePreview = unknown, Trecency = unknown, Texpand = unknown> = Required<RecentAnnouncementsChartViewRecord<TauthorName, TmessagePreview, Trecency>> & BaseSystemFields<Texpand>
+export type RevenuePerPropertyChartViewResponse<TcurrentMonthlyRevenue = unknown, TrevenueUtilizationRate = unknown, TtotalPotentialMonthlyRevenue = unknown, Texpand = unknown> = Required<RevenuePerPropertyChartViewRecord<TcurrentMonthlyRevenue, TrevenueUtilizationRate, TtotalPotentialMonthlyRevenue>> & BaseSystemFields<Texpand>
 export type SchedulesResponse<Texpand = unknown> = Required<SchedulesRecord> & BaseSystemFields<Texpand>
 export type TenanciesResponse<Texpand = unknown> = Required<TenanciesRecord> & BaseSystemFields<Texpand>
+export type TenancyHealthChartViewResponse<Tavg_lease_duration_years = unknown, Texpand = unknown> = Required<TenancyHealthChartViewRecord<Tavg_lease_duration_years>> & BaseSystemFields<Texpand>
 export type TenantsResponse<Texpand = unknown> = Required<TenantsRecord> & BaseSystemFields<Texpand>
+export type TenantsPerPropertyChartViewResponse<ToccupancyPercentage = unknown, Texpand = unknown> = Required<TenantsPerPropertyChartViewRecord<ToccupancyPercentage>> & BaseSystemFields<Texpand>
+export type UnitInventoryChartViewResponse<Tstatus = unknown, Texpand = unknown> = Required<UnitInventoryChartViewRecord<Tstatus>> & BaseSystemFields<Texpand>
+export type UnitPriceChartViewResponse<TavgPrice = unknown, TmaxPrice = unknown, TminPrice = unknown, TtotalMonthlyPotential = unknown, Texpand = unknown> = Required<UnitPriceChartViewRecord<TavgPrice, TmaxPrice, TminPrice, TtotalMonthlyPotential>> & BaseSystemFields<Texpand>
 export type UsersResponse<Texpand = unknown> = Required<UsersRecord> & AuthSystemFields<Texpand>
+export type WorkerPerformanceChartViewResponse<TavgResolutionDays = unknown, TcompletionRate = unknown, Texpand = unknown> = Required<WorkerPerformanceChartViewRecord<TavgResolutionDays, TcompletionRate>> & BaseSystemFields<Texpand>
 
 // Types containing all Records and Responses, useful for creating typing helper functions
 
@@ -428,6 +642,7 @@ export type CollectionRecords = {
 	_mfas: MfasRecord
 	_otps: OtpsRecord
 	_superusers: SuperusersRecord
+	active_tenancies_chart_view: ActiveTenanciesChartViewRecord
 	announcements: AnnouncementsRecord
 	apartment_units: ApartmentUnitsRecord
 	bill_items: BillItemsRecord
@@ -435,15 +650,29 @@ export type CollectionRecords = {
 	emails: EmailsRecord
 	forms: FormsRecord
 	inquiries: InquiriesRecord
+	maintenance_operation_stat_card_kpi_view: MaintenanceOperationStatCardKpiViewRecord
+	maintenance_request_overview_stat_card_kpi_view: MaintenanceRequestOverviewStatCardKpiViewRecord
+	maintenance_request_status_stat_card_kpi_view: MaintenanceRequestStatusStatCardKpiViewRecord
 	maintenance_requests: MaintenanceRequestsRecord
 	maintenance_workers: MaintenanceWorkersRecord
+	monthly_revenue_trend_stat_card_kpi_view: MonthlyRevenueTrendStatCardKpiViewRecord
 	otp: OtpRecord
+	payment_methods_distribution_chart_view: PaymentMethodsDistributionChartViewRecord
 	payments: PaymentsRecord
+	porfolio_stat_card_kpi_view: PorfolioStatCardKpiViewRecord
 	properties: PropertiesRecord
+	property_summary_chart_view: PropertySummaryChartViewRecord
+	recent_announcements_chart_view: RecentAnnouncementsChartViewRecord
+	revenue_per_property_chart_view: RevenuePerPropertyChartViewRecord
 	schedules: SchedulesRecord
 	tenancies: TenanciesRecord
+	tenancy_health_chart_view: TenancyHealthChartViewRecord
 	tenants: TenantsRecord
+	tenants_per_property_chart_view: TenantsPerPropertyChartViewRecord
+	unit_inventory_chart_view: UnitInventoryChartViewRecord
+	unit_price_chart_view: UnitPriceChartViewRecord
 	users: UsersRecord
+	worker_performance_chart_view: WorkerPerformanceChartViewRecord
 }
 
 export type CollectionResponses = {
@@ -452,6 +681,7 @@ export type CollectionResponses = {
 	_mfas: MfasResponse
 	_otps: OtpsResponse
 	_superusers: SuperusersResponse
+	active_tenancies_chart_view: ActiveTenanciesChartViewResponse
 	announcements: AnnouncementsResponse
 	apartment_units: ApartmentUnitsResponse
 	bill_items: BillItemsResponse
@@ -459,15 +689,29 @@ export type CollectionResponses = {
 	emails: EmailsResponse
 	forms: FormsResponse
 	inquiries: InquiriesResponse
+	maintenance_operation_stat_card_kpi_view: MaintenanceOperationStatCardKpiViewResponse
+	maintenance_request_overview_stat_card_kpi_view: MaintenanceRequestOverviewStatCardKpiViewResponse
+	maintenance_request_status_stat_card_kpi_view: MaintenanceRequestStatusStatCardKpiViewResponse
 	maintenance_requests: MaintenanceRequestsResponse
 	maintenance_workers: MaintenanceWorkersResponse
+	monthly_revenue_trend_stat_card_kpi_view: MonthlyRevenueTrendStatCardKpiViewResponse
 	otp: OtpResponse
+	payment_methods_distribution_chart_view: PaymentMethodsDistributionChartViewResponse
 	payments: PaymentsResponse
+	porfolio_stat_card_kpi_view: PorfolioStatCardKpiViewResponse
 	properties: PropertiesResponse
+	property_summary_chart_view: PropertySummaryChartViewResponse
+	recent_announcements_chart_view: RecentAnnouncementsChartViewResponse
+	revenue_per_property_chart_view: RevenuePerPropertyChartViewResponse
 	schedules: SchedulesResponse
 	tenancies: TenanciesResponse
+	tenancy_health_chart_view: TenancyHealthChartViewResponse
 	tenants: TenantsResponse
+	tenants_per_property_chart_view: TenantsPerPropertyChartViewResponse
+	unit_inventory_chart_view: UnitInventoryChartViewResponse
+	unit_price_chart_view: UnitPriceChartViewResponse
 	users: UsersResponse
+	worker_performance_chart_view: WorkerPerformanceChartViewResponse
 }
 
 // Utility types for create/update operations
