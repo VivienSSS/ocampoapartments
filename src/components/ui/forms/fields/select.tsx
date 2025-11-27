@@ -19,10 +19,11 @@ export type SelectFieldProps = {
   options: SelectOption[];
   placeholder?: string;
   required?: boolean;
+  disabled?: boolean;
 };
 
 const SelectField = (props: SelectFieldProps) => {
-  const { placeholder = 'Select an option...' } = props;
+  const { placeholder = 'Select an option...', disabled = false } = props;
   const field = useFieldContext<string>();
 
   const isInvalid = field.state.meta.isTouched && !field.state.meta.isValid;
@@ -33,8 +34,13 @@ const SelectField = (props: SelectFieldProps) => {
       <Select
         value={field.state.value ?? ''}
         onValueChange={field.handleChange}
+        disabled={disabled}
       >
-        <SelectTrigger id={field.name} aria-invalid={isInvalid}>
+        <SelectTrigger
+          id={field.name}
+          aria-invalid={isInvalid}
+          disabled={disabled}
+        >
           <SelectValue placeholder={placeholder} />
         </SelectTrigger>
         <SelectContent>

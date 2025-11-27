@@ -11,6 +11,8 @@ import type { UseNavigateResult } from '@tanstack/react-router';
 import { toast } from 'sonner';
 import { Collections } from '../types';
 import { FieldGroup, FieldSet } from '@/components/ui/field';
+import { Alert, AlertDescription } from '@/components/ui/alert';
+import { AlertCircle } from 'lucide-react';
 
 export const MaintenanceRequestForm = () =>
   withForm({
@@ -20,8 +22,21 @@ export const MaintenanceRequestForm = () =>
       record: MaintenanceRequestsRecord;
     },
     render: ({ form, action, record }) => {
+      const isFormLocked =
+        record?.status === 'Completed' || record?.status === 'Cancelled';
+
       return (
         <form.AppForm>
+          {isFormLocked && (
+            <Alert variant="destructive" className="mb-4">
+              <AlertCircle className="h-4 w-4" />
+              <AlertDescription>
+                This maintenance request cannot be edited because its status is{' '}
+                {record?.status}. Only the status field can be modified to
+                reopen this request.
+              </AlertDescription>
+            </Alert>
+          )}
           <FieldSet>
             <FieldGroup>
               {action === 'create' && (
@@ -38,6 +53,7 @@ export const MaintenanceRequestForm = () =>
                         renderOption={(item) =>
                           String(item.phoneNumber || item.user || item.id)
                         }
+                        disabled={isFormLocked}
                       />
                     )}
                   </form.AppField>
@@ -55,6 +71,7 @@ export const MaintenanceRequestForm = () =>
                             `${item.unitLetter} - Floor ${item.floorNumber}`,
                           )
                         }
+                        disabled={isFormLocked}
                       />
                     )}
                   </form.AppField>
@@ -70,6 +87,7 @@ export const MaintenanceRequestForm = () =>
                           { label: 'Normal', value: 'Normal' },
                           { label: 'Low', value: 'Low' },
                         ]}
+                        disabled={isFormLocked}
                       />
                     )}
                   </form.AppField>
@@ -104,6 +122,7 @@ export const MaintenanceRequestForm = () =>
                         placeholder="Select Maintenance Worker"
                         tooltip="E.g. 'Juan Martinez'"
                         renderOption={(item) => String(item.name || item.id)}
+                        disabled={isFormLocked}
                       />
                     )}
                   </form.AppField>
@@ -113,10 +132,11 @@ export const MaintenanceRequestForm = () =>
                         label="Description"
                         description="Detailed description of the maintenance problem or repair needed"
                         tooltip="E.g. 'Leaking faucet in kitchen sink'"
+                        disabled={isFormLocked}
                       />
                     )}
                   </form.AppField>
-                  <form.AppField name="submittedDate">
+                  {/* <form.AppField name="submittedDate">
                     {(field) => (
                       <field.DateTimeField
                         disablePastDates
@@ -124,6 +144,7 @@ export const MaintenanceRequestForm = () =>
                         description="The date and time when the request was submitted"
                         placeholder="Select Submission Date"
                         tooltip="E.g. 'April 10, 2024 2:00 PM'"
+                        disabled={isFormLocked}
                       />
                     )}
                   </form.AppField>
@@ -135,9 +156,10 @@ export const MaintenanceRequestForm = () =>
                         description="The date and time when the maintenance was completed"
                         placeholder="Select Completion Date"
                         tooltip="E.g. 'April 12, 2024 10:30 AM'"
+                        disabled={isFormLocked}
                       />
                     )}
-                  </form.AppField>
+                  </form.AppField> */}
                 </>
               )}
             </FieldGroup>

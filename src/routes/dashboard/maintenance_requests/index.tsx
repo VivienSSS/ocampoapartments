@@ -77,6 +77,14 @@ function RouteComponent() {
   const userRole = pb.authStore.record?.role as UsersRoleOptions | undefined;
   const permissions = getPermissions(userRole, 'maintenance_requests');
 
+  // Check if the selected maintenance request has a locked status
+  const selectedRecord = maintenanceRequests.items.find(
+    (item) => item.id === searchQuery.selected?.[0],
+  );
+  const isStatusLocked =
+    selectedRecord?.status === 'Completed' ||
+    selectedRecord?.status === 'Cancelled';
+
   return (
     <article className="space-y-4 grid grid-cols-12">
       {/* Controls Section */}
@@ -85,7 +93,7 @@ function RouteComponent() {
         <div className="flex gap-2.5">
           {permissions.canUpdate && (
             <Button
-              disabled={searchQuery.selected.length > 1}
+              disabled={searchQuery.selected.length > 1 || isStatusLocked}
               onClick={() =>
                 navigate({
                   search: (prev) => ({

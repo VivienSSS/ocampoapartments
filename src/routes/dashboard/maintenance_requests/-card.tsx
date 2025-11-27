@@ -140,15 +140,17 @@ export function MaintenanceRequestCards({ data }: MaintenanceCardsProps) {
                   <CardDescription>{unitAddress}</CardDescription>
                 </div>
                 <CardAction className="col-start-auto row-start-auto flex items-center gap-1">
-                  {currentUser.role !== UsersRoleOptions.Tenant && (
-                    <Checkbox
-                      checked={isSelected}
-                      onCheckedChange={(checked) =>
-                        handleCardSelect(request.id, checked as boolean)
-                      }
-                      aria-label="Select request"
-                    />
-                  )}
+                  {currentUser.role !== UsersRoleOptions.Tenant &&
+                    request.status !== 'Completed' &&
+                    request.status !== 'Cancelled' && (
+                      <Checkbox
+                        checked={isSelected}
+                        onCheckedChange={(checked) =>
+                          handleCardSelect(request.id, checked as boolean)
+                        }
+                        aria-label="Select request"
+                      />
+                    )}
                 </CardAction>
               </div>
             </CardHeader>

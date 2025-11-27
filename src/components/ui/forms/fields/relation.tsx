@@ -24,6 +24,7 @@ export type RelationFieldProps<Records extends RelationItem> = {
   displayFields?: (keyof Records)[];
   filterFields?: (keyof Records)[];
   renderOption?: (item: Records) => React.ReactNode;
+  disabled?: boolean;
 };
 
 const RelationField = <Records extends RelationItem>(
@@ -43,6 +44,7 @@ const RelationField = <Records extends RelationItem>(
     preload = false,
     placeholder = 'Search...',
     filterFields,
+    disabled = false,
   } = props;
 
   const isInvalid = field.state.meta.isTouched && !field.state.meta.isValid;
@@ -96,6 +98,7 @@ const RelationField = <Records extends RelationItem>(
         placeholder={placeholder}
         value={field.state.value ?? ''}
         onChange={field.handleChange}
+        disabled={disabled}
         notFound={
           <div className="py-6 text-center text-sm">No records found</div>
         }

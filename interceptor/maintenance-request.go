@@ -27,6 +27,9 @@ func MaintenanceRequestStatusStateMachine(e *core.RecordRequestEvent) error {
 
 	// Allow any status to transition to Cancelled
 	if newStatus == "Cancelled" {
+
+		// set the completedAt to be today
+
 		return e.Next()
 	}
 
@@ -64,6 +67,9 @@ func SendAcknowledgementMaintenanceRequestEmailToTenant(e *core.RecordEvent) err
 	if request.GetString("status") != "Pending" {
 		return e.Next()
 	}
+
+	// Set submittedAt to now
+	e.Record.Set("submittedAt", time.Now())
 
 	// Get tenant ID from request
 	tenantId := request.GetString("tenant")
@@ -295,6 +301,9 @@ func SendCompletionMessageMaintenanceRequestToTenant(e *core.RecordEvent) error 
 		return e.Next()
 	}
 
+	// Set completedAt to now
+	e.Record.Set("completedAt", time.Now())
+
 	// Get tenant ID from request
 	tenantId := request.GetString("tenant")
 	if tenantId == "" {
@@ -368,6 +377,9 @@ func SendCancelledMessageMaintenanceRequestToTenant(e *core.RecordEvent) error {
 	if request.GetString("status") != "Cancelled" {
 		return e.Next()
 	}
+
+	// Set completedAt to now
+	e.Record.Set("completedAt", time.Now())
 
 	// Get tenant ID from request
 	tenantId := request.GetString("tenant")
