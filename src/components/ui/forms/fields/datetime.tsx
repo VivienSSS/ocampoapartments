@@ -27,6 +27,7 @@ export type DateTimeFieldProps = {
   placeholder?: string;
   required?: boolean;
   disablePastDates?: boolean;
+  disabled?: boolean;
 };
 
 const DateTimeField = (props: DateTimeFieldProps) => {
@@ -36,6 +37,7 @@ const DateTimeField = (props: DateTimeFieldProps) => {
     inputGroupClassName,
     showCalendarIcon = true,
     disablePastDates = false,
+    disabled = false,
   } = props;
   const field = useFieldContext<Date>();
   const [open, setOpen] = React.useState(false);
@@ -91,8 +93,11 @@ const DateTimeField = (props: DateTimeFieldProps) => {
       <FieldLabel>{props.label}</FieldLabel>
       <div className="flex flex-col gap-3">
         {/* Date Picker */}
-        <Popover open={open} onOpenChange={setOpen}>
-          <InputGroup className={inputGroupClassName}>
+        <Popover
+          open={open && !disabled}
+          onOpenChange={disabled ? () => {} : setOpen}
+        >
+          <InputGroup className={inputGroupClassName} data-disabled={disabled}>
             <PopoverTrigger asChild>
               <InputGroupButton
                 variant="outline"
@@ -101,6 +106,7 @@ const DateTimeField = (props: DateTimeFieldProps) => {
                 onBlur={field.handleBlur}
                 aria-invalid={isInvalid}
                 type="button"
+                disabled={disabled}
               >
                 {showCalendarIcon && <CalendarIcon className="mr-2 size-4" />}
                 {dateFormatted}
@@ -140,6 +146,7 @@ const DateTimeField = (props: DateTimeFieldProps) => {
               onBlur={field.handleBlur}
               step={timeStep}
               aria-invalid={isInvalid}
+              disabled={disabled}
             />
             <InputGroupAddon align="inline-end">
               <span className="text-xs text-muted-foreground">

@@ -1,5 +1,5 @@
 import { Button } from '@/components/ui/button';
-import { Menu } from 'lucide-react';
+import { Menu, Moon, Sun } from 'lucide-react';
 import type { ReactNode } from 'react';
 import { useState } from 'react';
 import { Dialog, DialogContent, DialogTrigger } from '../ui/dialog';
@@ -7,6 +7,7 @@ import { LoginForm } from '../login-form';
 import PrivacyPolicyDialog from '@/routes/(landing)/-privacy-policy';
 import TOCDialog from '@/routes/(landing)/-toc';
 import FaqDialog from '@/routes/(landing)/-faq';
+import { useTheme } from '@/components/theme-provider';
 
 interface LandingLayoutProps {
   children: ReactNode;
@@ -14,6 +15,11 @@ interface LandingLayoutProps {
 
 export function LandingLayout({ children }: LandingLayoutProps) {
   const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
+  const { theme, setTheme } = useTheme();
+
+  const toggleTheme = () => {
+    setTheme(theme === 'dark' ? 'light' : 'dark');
+  };
 
   return (
     <div className="relative flex min-h-screen w-full flex-col bg-background font-sans text-foreground">
@@ -53,6 +59,19 @@ export function LandingLayout({ children }: LandingLayoutProps) {
           >
             About Us
           </a>
+          <button
+            type="button"
+            onClick={toggleTheme}
+            className="rounded-lg p-2 transition-colors hover:bg-accent"
+            aria-label="Toggle theme"
+            title={`Switch to ${theme === 'dark' ? 'light' : 'dark'} mode`}
+          >
+            {theme === 'dark' ? (
+              <Sun className="h-5 w-5" />
+            ) : (
+              <Moon className="h-5 w-5" />
+            )}
+          </button>
           <Dialog>
             <DialogTrigger>
               <Button className="font-bold">Login</Button>
@@ -63,15 +82,30 @@ export function LandingLayout({ children }: LandingLayoutProps) {
           </Dialog>
         </nav>
 
-        {/* Mobile Menu Button */}
-        <button
-          type="button"
-          className="rounded-lg p-2 hover:bg-accent md:hidden"
-          onClick={() => setMobileMenuOpen(!mobileMenuOpen)}
-          aria-label="Toggle mobile menu"
-        >
-          <Menu className="h-6 w-6" />
-        </button>
+        {/* Mobile Menu Button and Theme Toggle */}
+        <div className="flex items-center gap-2 md:hidden">
+          <button
+            type="button"
+            onClick={toggleTheme}
+            className="rounded-lg p-2 transition-colors hover:bg-accent"
+            aria-label="Toggle theme"
+            title={`Switch to ${theme === 'dark' ? 'light' : 'dark'} mode`}
+          >
+            {theme === 'dark' ? (
+              <Sun className="h-5 w-5" />
+            ) : (
+              <Moon className="h-5 w-5" />
+            )}
+          </button>
+          <button
+            type="button"
+            className="rounded-lg p-2 hover:bg-accent md:hidden"
+            onClick={() => setMobileMenuOpen(!mobileMenuOpen)}
+            aria-label="Toggle mobile menu"
+          >
+            <Menu className="h-6 w-6" />
+          </button>
+        </div>
       </header>
 
       {/* Main Content */}
