@@ -18,21 +18,6 @@ export const ScheduleForm = () =>
             <FieldGroup>
               {action === 'create' && (
                 <>
-                  <form.AppField name="tenant">
-                    {(field) => (
-                      <field.RelationField
-                        label="Tenant"
-                        description="The tenant for whom this appointment is scheduled"
-                        relationshipName="tenant"
-                        collection={Collections.Tenants}
-                        placeholder="Select Tenant"
-                        tooltip="E.g. 'John Doe'"
-                        renderOption={(item) =>
-                          String(item.phoneNumber || item.user || item.id)
-                        }
-                      />
-                    )}
-                  </form.AppField>
                   <form.AppField name="reason">
                     {(field) => (
                       <field.SelectField
@@ -70,24 +55,28 @@ export const ScheduleForm = () =>
                   </form.AppField>
                 </>
               )}
-              <form.AppField name="isApproved">
-                {(field) => (
-                  <field.BoolField
-                    label="Is Approved"
-                    description="Whether the appointment has been approved"
-                    tooltip="Check if approved"
-                  />
-                )}
-              </form.AppField>
-              <form.AppField name="isCancelled">
-                {(field) => (
-                  <field.BoolField
-                    label="Is Cancelled"
-                    description="Whether the appointment has been cancelled"
-                    tooltip="Check if cancelled"
-                  />
-                )}
-              </form.AppField>
+              {action === 'update' && (
+                <>
+                  <form.AppField name="isApproved">
+                    {(field) => (
+                      <field.BoolField
+                        label="Is Approved"
+                        description="Whether the appointment has been approved"
+                        tooltip="Check if approved"
+                      />
+                    )}
+                  </form.AppField>
+                  <form.AppField name="isCancelled">
+                    {(field) => (
+                      <field.BoolField
+                        label="Is Cancelled"
+                        description="Whether the appointment has been cancelled"
+                        tooltip="Check if cancelled"
+                      />
+                    )}
+                  </form.AppField>
+                </>
+              )}
             </FieldGroup>
           </FieldSet>
         </form.AppForm>
@@ -103,9 +92,10 @@ export const CreateScheduleFormOption = formOptions({
   },
   onSubmit: async ({ value, meta, formApi }) => {
     try {
-      const response = await meta.pocketbase
-        .collection('schedules')
-        .create(value);
+      const response = await meta.pocketbase.collection('schedules').create({
+        ...value,
+        tenant: meta.pocketbase.authStore.record?.id,
+      });
 
       toast.success('Schedule created successfully', {
         description: `A schedule with ID ${response.id} has been created.`,

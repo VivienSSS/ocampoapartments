@@ -111,7 +111,7 @@ const PERMISSIONS_MAP: Record<
     otp: { canCreate: false, canUpdate: false, canDelete: false },
     forms: { canCreate: false, canUpdate: false, canDelete: false },
     emails: { canCreate: false, canUpdate: false, canDelete: false },
-    schedules: { canCreate: false, canUpdate: false, canDelete: false },
+    schedules: { canCreate: true, canUpdate: false, canDelete: false },
   },
   Applicant: {
     _mfas: { canCreate: false, canUpdate: false, canDelete: false },
