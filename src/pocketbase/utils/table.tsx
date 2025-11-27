@@ -23,6 +23,17 @@ import {
 } from '@/components/ui/item';
 import { pb } from '..';
 
+const toTitleCase = (str: string): string => {
+  return str
+    .replace(/([A-Z])/g, ' $1')
+    .replace(/^./, (char) => char.toUpperCase())
+    .replace(/\s+/g, ' ')
+    .trim()
+    .split(' ')
+    .map((word) => word.charAt(0).toUpperCase() + word.slice(1).toLowerCase())
+    .join(' ');
+};
+
 export const schemaToColumnDef = (collection: string) => {
   const table = schema.find((col) => col.name === collection);
 
@@ -59,7 +70,7 @@ export const schemaToColumnDef = (collection: string) => {
           header: () => (
             <div className="flex items-center gap-2.5">
               <ToggleRight size={14} />
-              {field.name}
+              {toTitleCase(field.name)}
             </div>
           ),
           accessorKey: field.name,
@@ -71,7 +82,7 @@ export const schemaToColumnDef = (collection: string) => {
       case 'date':
       case 'autodate':
         columns.push({
-          header: field.name,
+          header: toTitleCase(field.name),
           accessorKey: field.name,
           cell: (info) => {
             if (field.required === false && !info.getValue()) {
@@ -84,7 +95,7 @@ export const schemaToColumnDef = (collection: string) => {
         break;
       case 'file':
         columns.push({
-          header: field.name,
+          header: toTitleCase(field.name),
           accessorKey: field.name,
           cell: (info) => {
             const fileValue = info.getValue() as string | undefined;
@@ -112,7 +123,7 @@ export const schemaToColumnDef = (collection: string) => {
         // @ts-ignore
         if (field.maxSelect > 1) {
           columns.push({
-            header: field.name,
+            header: toTitleCase(field.name),
             accessorKey: field.name,
             cell: (info) => {
               const { pocketbase } = useRouteContext({
@@ -249,7 +260,7 @@ export const schemaToColumnDef = (collection: string) => {
         }
 
         columns.push({
-          header: field.name,
+          header: toTitleCase(field.name),
           accessorKey: field.name,
           cell: (info) => {
             const { pocketbase } = useRouteContext({
@@ -357,7 +368,7 @@ export const schemaToColumnDef = (collection: string) => {
         break;
       default:
         columns.push({
-          header: field.name,
+          header: toTitleCase(field.name),
           accessorKey: field.name,
           cell: (info) => info.getValue(),
         });
