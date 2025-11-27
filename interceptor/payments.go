@@ -73,20 +73,23 @@ func SendPaymentAcknowledgementInvoiceToEmail(e *core.RecordEvent) error {
 	emailRecord := core.NewRecord(emailCollection)
 	emailRecord.Set("to", tenantEmail)
 	emailRecord.Set("subject", "Payment Received - Under Verification")
-	emailRecord.Set("message", fmt.Sprintf(`
-We have received your payment.
-
-Payment Details:
-Invoice Number: %s
-Amount Paid: %.2f
-Payment Method: %s
-Payment Date: %s
-Transaction ID: %s
-
-%s
-
-Your payment is being verified. You will receive another notification once it has been confirmed.
-If you have any questions, please contact the management office.
+	emailRecord.Set("message", fmt.Sprintf(`<html><body style="font-family: Arial, sans-serif; line-height: 1.6; color: #333;">
+<h2>Payment Received</h2>
+<p>We have received your payment.</p>
+<div style="background-color: #f5f5f5; padding: 15px; border-left: 4px solid #17a2b8;">
+  <h4>Payment Details:</h4>
+  <p><strong>Invoice Number:</strong> %s</p>
+  <p><strong>Amount Paid:</strong> %.2f</p>
+  <p><strong>Payment Method:</strong> %s</p>
+  <p><strong>Payment Date:</strong> %s</p>
+  <p><strong>Transaction ID:</strong> %s</p>
+</div>
+<div style="background-color: #f9f9f9; padding: 15px; margin: 15px 0;">
+  %s
+</div>
+<p style="background-color: #fff3cd; padding: 10px; border-left: 4px solid #ffc107;"><strong>Your payment is being verified. You will receive another notification once it has been confirmed.</strong></p>
+<p>If you have any questions, please contact the management office.</p>
+</body></html>
 	`, bill.GetString("invoiceNumber"), payment.Get("amountPaid"), payment.GetString("paymentMethod"), payment.GetString("paymentDate"), payment.GetString("transactionId"), billItemsBreakdown))
 
 	e.App.Save(emailRecord)
@@ -169,20 +172,23 @@ func SendPaymentVerifiedInvoiceToEmail(e *core.RecordEvent) error {
 	emailRecord := core.NewRecord(emailCollection)
 	emailRecord.Set("to", tenantEmail)
 	emailRecord.Set("subject", "Payment Confirmed")
-	emailRecord.Set("message", fmt.Sprintf(`
-Your payment has been verified and confirmed.
-
-Payment Confirmation Details:
-Invoice Number: %s
-Amount Paid: %.2f
-Payment Method: %s
-Payment Date: %s
-Status: Confirmed
-
-%s
-
-Thank you for your payment. Your bill has been marked as paid.
-If you have any questions, please contact the management office.
+	emailRecord.Set("message", fmt.Sprintf(`<html><body style="font-family: Arial, sans-serif; line-height: 1.6; color: #333;">
+<h2 style="color: #5cb85c;">✓ Payment Confirmed</h2>
+<p>Your payment has been verified and confirmed.</p>
+<div style="background-color: #d4edda; padding: 15px; border-left: 4px solid #5cb85c; margin: 15px 0;">
+  <h4>Payment Confirmation Details:</h4>
+  <p><strong>Invoice Number:</strong> %s</p>
+  <p><strong>Amount Paid:</strong> %.2f</p>
+  <p><strong>Payment Method:</strong> %s</p>
+  <p><strong>Payment Date:</strong> %s</p>
+  <p><strong>Status:</strong> <span style="background-color: #5cb85c; color: white; padding: 3px 8px; border-radius: 3px;">Confirmed</span></p>
+</div>
+<div style="background-color: #f9f9f9; padding: 15px; margin: 15px 0;">
+  %s
+</div>
+<p><strong>Thank you for your payment. Your bill has been marked as paid.</strong></p>
+<p>If you have any questions, please contact the management office.</p>
+</body></html>
 	`, bill.GetString("invoiceNumber"), payment.Get("amountPaid"), payment.GetString("paymentMethod"), payment.GetString("paymentDate"), billItemsBreakdown))
 
 	e.App.Save(emailRecord)
