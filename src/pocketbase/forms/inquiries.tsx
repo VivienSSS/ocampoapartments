@@ -84,15 +84,6 @@ export const InquiryForm = () =>
                   />
                 )}
               </form.AppField>
-              <form.AppField name="hasSent">
-                {(field) => (
-                  <field.BoolField
-                    label="Has Sent"
-                    description="Whether a response has been sent to the inquirer"
-                    tooltip="Check if response sent"
-                  />
-                )}
-              </form.AppField>
               <form.AppField name="status">
                 {(field) => (
                   <field.SelectField

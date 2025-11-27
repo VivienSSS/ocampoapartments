@@ -92,7 +92,7 @@ export const MaintenanceRequestForm = () =>
               </form.AppField>
               <form.AppField name="description">
                 {(field) => (
-                  <field.RichEditorField
+                  <field.TextareaField
                     label="Description"
                     description="Detailed description of the maintenance problem or repair needed"
                     tooltip="E.g. 'Leaking faucet in kitchen sink'"

@@ -65,15 +65,6 @@ export const TenancyForm = () =>
                   />
                 )}
               </form.AppField>
-              <form.AppField name="hasSent">
-                {(field) => (
-                  <field.BoolField
-                    label="Has Sent"
-                    description="Whether the lease contract has been sent to the tenant"
-                    tooltip="Check if sent"
-                  />
-                )}
-              </form.AppField>
               <form.AppField name="contractDocument">
                 {(field) => (
                   <field.FileField

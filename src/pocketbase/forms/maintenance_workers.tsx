@@ -26,7 +26,7 @@ export const MaintenanceWorkerForm = () =>
               </form.AppField>
               <form.AppField name="contactDetails">
                 {(field) => (
-                  <field.RichEditorField
+                  <field.TextareaField
                     label="Contact Details"
                     description="Phone number, email, and other contact information for the worker"
                     tooltip="E.g. '+63 9123456789, juan@email.com'"

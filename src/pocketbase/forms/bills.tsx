@@ -1,15 +1,22 @@
 import { withForm } from '@/components/ui/forms';
-import type { Create, TypedPocketBase, Update } from '../types';
+import {
+  BillsStatusOptions,
+  type Create,
+  type TypedPocketBase,
+  type Update,
+} from '../types';
 import { formOptions } from '@tanstack/react-form';
 import { ClientResponseError } from 'pocketbase';
 import type { UseNavigateResult } from '@tanstack/react-router';
 import { toast } from 'sonner';
 import { Collections } from '../types';
-import { FieldGroup, FieldSet } from '@/components/ui/field';
+import { FieldGroup, FieldSeparator, FieldSet } from '@/components/ui/field';
+import { BillItemFieldGroup } from './bill_items';
+import { Button } from '@/components/ui/button';
 
 export const BillForm = () =>
   withForm({
-    defaultValues: {} as Update<'bills'>,
+    defaultValues: {} as Update<'bills'> & { items: Update<'bill_items'>[] },
     render: ({ form }) => {
       return (
         <form.AppForm>
@@ -41,6 +48,7 @@ export const BillForm = () =>
               <form.AppField name="dueDate">
                 {(field) => (
                   <field.DateTimeField
+                    disablePastDates
                     label="Due Date"
                     description="The deadline for payment of this bill"
                     placeholder="Select Due Date"
@@ -48,7 +56,10 @@ export const BillForm = () =>
                   />
                 )}
               </form.AppField>
-              <form.AppField name="status">
+              <form.AppField
+                name="status"
+                defaultValue={BillsStatusOptions.Draft}
+              >
                 {(field) => (
                   <field.SelectField
                     label="Status"
@@ -56,33 +67,38 @@ export const BillForm = () =>
                     placeholder="Select Status"
                     tooltip="E.g. 'Paid' or 'Overdue'"
                     options={[
-                      { label: 'Paid', value: 'Paid' },
-                      { label: 'Due', value: 'Due' },
-                      { label: 'Overdue', value: 'Overdue' },
+                      { label: 'Draft', value: BillsStatusOptions.Draft },
+                      { label: 'Paid', value: BillsStatusOptions.Paid },
+                      { label: 'Due', value: BillsStatusOptions.Due },
                     ]}
                   />
                 )}
               </form.AppField>
-              <form.AppField name="hasSent">
+              <FieldSeparator />
+              <form.AppField name="items" mode="array">
                 {(field) => (
-                  <field.BoolField
-                    label="Has Sent"
-                    description="Whether the bill has been sent to the tenant"
-                    tooltip="Check if sent"
-                  />
-                )}
-              </form.AppField>
-              <form.AppField name="items">
-                {(field) => (
-                  <field.RelationField
-                    label="Items"
-                    description="Line items and charges included in this bill"
-                    relationshipName="items"
-                    collection={Collections.BillItems}
-                    placeholder="Select Items"
-                    tooltip="E.g. 'Rent, Water, Electricity'"
-                    renderOption={(item) => String(item.chargeType || item.id)}
-                  />
+                  <>
+                    {field.state.value?.map((item, index) => (
+                      <BillItemFieldGroup
+                        key={item}
+                        form={form}
+                        fields={`items[${index}]`}
+                        onRemove={() => {
+                          field.removeValue(index);
+                        }}
+                        index={index}
+                      />
+                    ))}
+                    <Button
+                      type="button"
+                      className="mb-4"
+                      onClick={() => {
+                        field.pushValue(undefined as any);
+                      }}
+                    >
+                      Add Item
+                    </Button>
+                  </>
                 )}
               </form.AppField>
             </FieldGroup>
@@ -93,17 +109,40 @@ export const BillForm = () =>
   });
 
 export const CreateBillFormOption = formOptions({
-  defaultValues: {} as Create<'bills'>,
+  defaultValues: {
+    status: BillsStatusOptions.Draft,
+  } as Omit<Create<'bills'>, 'items'> & {
+    items?: Create<'bill_items'>[];
+  },
   onSubmitMeta: {} as {
     pocketbase: TypedPocketBase;
     navigate: UseNavigateResult<'/dashboard/$collection'>;
   },
   onSubmit: async ({ value, meta, formApi }) => {
+    let billId: string | null = null;
+
     try {
-      const response = await meta.pocketbase.collection('bills').create(value);
+      const { items, ...billData } = value;
+
+      const batch = meta.pocketbase.createBatch();
+
+      for (const item of items || []) {
+        batch.collection(Collections.BillItems).create({
+          ...item,
+        });
+      }
+
+      const result = await batch.send();
+
+      const billResponse = await meta.pocketbase.collection('bills').create({
+        ...billData,
+        items: items ? result.map((res) => res.body.id) : [],
+      });
+
+      billId = billResponse.id;
 
       toast.success('Bill created successfully', {
-        description: `A bill with ID ${response.id} has been created.`,
+        description: `A bill with ID ${billResponse.id} has been created.`,
       });
 
       formApi.reset();
@@ -113,6 +152,11 @@ export const CreateBillFormOption = formOptions({
       });
     } catch (error) {
       if (error instanceof ClientResponseError) {
+        // rollback
+        if (billId) {
+          await meta.pocketbase.collection('bills').delete(billId);
+        }
+
         if (error.status === 400) {
           toast.error('Validation error: Please check your input fields.');
           formApi.setErrorMap({ onSubmit: { fields: error.data.data } });
