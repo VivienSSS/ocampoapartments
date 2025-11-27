@@ -4,7 +4,7 @@ import { formOptions } from '@tanstack/react-form';
 import { ClientResponseError } from 'pocketbase';
 import type { UseNavigateResult } from '@tanstack/react-router';
 import { toast } from 'sonner';
-import { FieldGroup, FieldLegend, FieldSet } from '@/components/ui/field';
+import { FieldGroup, FieldSet } from '@/components/ui/field';
 
 export const AnnouncementForm = () =>
   withForm({

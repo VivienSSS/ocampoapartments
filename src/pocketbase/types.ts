@@ -302,6 +302,11 @@ export type OtpRecord = {
 export enum PaymentsPaymentMethodOptions {
 	"GCash" = "GCash",
 }
+
+export enum PaymentsPaymentTypeOptions {
+	"Refund" = "Refund",
+	"Transaction" = "Transaction",
+}
 export type PaymentsRecord = {
 	amountPaid?: number
 	bill: RecordIdString
@@ -310,6 +315,7 @@ export type PaymentsRecord = {
 	isVerified?: boolean
 	paymentDate: IsoDateString
 	paymentMethod: PaymentsPaymentMethodOptions
+	paymentType?: PaymentsPaymentTypeOptions
 	screenshot: FileNameString
 	tenant: RecordIdString
 	transactionId: string
