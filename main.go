@@ -172,8 +172,8 @@ func main() {
 		return se.Next()
 	})
 
-	// Register cron job to create bills every 30 seconds
-	err := app.Cron().Add("monthly-bills-cron", "*/30 * * * * *", func() {
+	// Register cron job to create bills every minute
+	err := app.Cron().Add("monthly-bills-cron", "*/1 * * * *", func() {
 		if err := interceptor.CreateMonthlyBillsCron(app); err != nil {
 			fmt.Printf("Error in monthly bills cron: %v\n", err)
 		}
