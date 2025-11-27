@@ -4,6 +4,9 @@ import type { ReactNode } from 'react';
 import { useState } from 'react';
 import { Dialog, DialogContent, DialogTrigger } from '../ui/dialog';
 import { LoginForm } from '../login-form';
+import PrivacyPolicyDialog from '@/routes/(landing)/-privacy-policy';
+import TOCDialog from '@/routes/(landing)/-toc';
+import FaqDialog from '@/routes/(landing)/-faq';
 
 interface LandingLayoutProps {
   children: ReactNode;
@@ -45,22 +48,10 @@ export function LandingLayout({ children }: LandingLayoutProps) {
             Home
           </a>
           <a
-            href="/properties"
-            className="text-sm font-medium leading-normal transition-colors hover:text-primary"
-          >
-            Properties
-          </a>
-          <a
             href="/#about"
             className="text-sm font-medium leading-normal transition-colors hover:text-primary"
           >
             About Us
-          </a>
-          <a
-            href="/#contact"
-            className="text-sm font-medium leading-normal transition-colors hover:text-primary"
-          >
-            Contact
           </a>
           <Dialog>
             <DialogTrigger>
@@ -117,59 +108,41 @@ export function LandingLayout({ children }: LandingLayoutProps) {
               </p>
             </div>
             <div>
-              <h4 className="font-semibold">Quick Links</h4>
-              <ul className="mt-4 space-y-2 text-sm">
-                <li>
-                  <a href="/" className="transition-colors hover:text-primary">
-                    Home
-                  </a>
-                </li>
-                <li>
-                  <a
-                    href="/properties"
-                    className="transition-colors hover:text-primary"
-                  >
-                    Properties
-                  </a>
-                </li>
-                <li>
-                  <a
-                    href="/#about"
-                    className="transition-colors hover:text-primary"
-                  >
-                    About Us
-                  </a>
-                </li>
-                <li>
-                  <a
-                    href="/#contact"
-                    className="transition-colors hover:text-primary"
-                  >
-                    Contact
-                  </a>
-                </li>
-              </ul>
-            </div>
-            <div>
               <h4 className="font-semibold">Contact Us</h4>
               <ul className="mt-4 space-y-2 text-sm">
                 <li className="flex items-center gap-2">
                   <span>📍</span>
-                  <span>123 Property Ave, Quezon City</span>
+                  <span>
+                    406 Marine Road Veterans Village Brgy. Holy Spirit, Quezon
+                    City Metro Manila, Philippines
+                  </span>
                 </li>
                 <li className="flex items-center gap-2">
                   <span>📞</span>
-                  <span>(02) 8123-4567</span>
+                  <span>(+63) 9176564268</span>
                 </li>
                 <li className="flex items-center gap-2">
                   <span>✉️</span>
-                  <span>inquire@ocampoapts.com</span>
+                  <span>arlene.ocampo@gmail.com</span>
                 </li>
               </ul>
             </div>
           </div>
-          <div className="mt-8 border-t pt-8 text-center text-sm">
+          <div className="mt-8 border-t pt-8 text-center text-sm flex justify-between items-center">
             <p>© 2024 Ocampo Apartments. All rights reserved.</p>
+            <div>
+              <ul className="flex gap-2.5 items-center">
+                <li>
+                  <PrivacyPolicyDialog />
+                </li>
+                <li>
+                  <TOCDialog />
+                </li>
+                <li>
+                  <FaqDialog />
+                </li>
+              </ul>
+            </div>
           </div>
         </div>
       </footer>

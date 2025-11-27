@@ -20,6 +20,7 @@ import { pb } from '@/pocketbase';
 import { listMaintenanceRequestsQuery } from '@/pocketbase/queries/maintenanceRequests';
 import { maintenanceRequestSchema } from '@/pocketbase/schemas/maintenanceRequests';
 import { UsersRoleOptions } from '@/pocketbase/types';
+import { getPermissions } from '@/lib/permissions';
 import { MaintenanceRequestCards } from './-card';
 import MaintenanceRequestForm from './-form';
 import z from 'zod';
@@ -73,8 +74,8 @@ function RouteComponent() {
   const navigate = Route.useNavigate();
   const searchQuery = Route.useSearch();
   const maintenanceRequests = Route.useLoaderData();
-  const userRole = pb.authStore.record?.role;
-  const isTenant = userRole === UsersRoleOptions.Tenant;
+  const userRole = pb.authStore.record?.role as UsersRoleOptions | undefined;
+  const permissions = getPermissions(userRole, 'maintenance_requests');
 
   return (
     <article className="space-y-4 grid grid-cols-12">
@@ -82,7 +83,7 @@ function RouteComponent() {
       <section className="col-span-full flex items-center justify-between py-2.5">
         <h1 className="text-2xl font-bold">Maintenance Requests</h1>
         <div className="flex gap-2.5">
-          {!isTenant && (
+          {permissions.canUpdate && (
             <Button
               disabled={searchQuery.selected.length > 1}
               onClick={() =>
@@ -97,7 +98,7 @@ function RouteComponent() {
               <Edit /> Edit
             </Button>
           )}
-          {!isTenant && (
+          {permissions.canDelete && (
             <Button
               variant="destructive"
               disabled={!(searchQuery.id ?? searchQuery.selected?.length > 0)}
@@ -196,7 +197,7 @@ function RouteComponent() {
       <section className="col-span-full">
         <MaintenanceRequestCards data={maintenanceRequests.items} />
       </section>
-      {pb.authStore.record?.role !== UsersRoleOptions['Building Admin'] && (
+      {permissions.canCreate && (
         <div className="col-span-full flex justify-end py-2.5">
           <div className="flex gap-2">
             <Button
