@@ -147,12 +147,6 @@ function RouteComponent() {
               our well-maintained properties and our professional, approachable
               management team.
             </p>
-            <a
-              href="/#contact"
-              className="font-bold text-primary underline underline-offset-4 transition-colors hover:opacity-80"
-            >
-              Learn More
-            </a>
           </div>
         </div>
       </section>

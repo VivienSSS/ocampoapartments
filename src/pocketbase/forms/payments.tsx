@@ -6,6 +6,16 @@ import type { UseNavigateResult } from '@tanstack/react-router';
 import { toast } from 'sonner';
 import { Collections } from '../types';
 import { FieldGroup, FieldSet } from '@/components/ui/field';
+import { Item, ItemMedia } from '@/components/ui/item';
+import {
+  Dialog,
+  DialogContent,
+  DialogDescription,
+  DialogHeader,
+  DialogTitle,
+  DialogTrigger,
+} from '@/components/ui/dialog';
+import { Button } from '@/components/ui/button';
 
 export const PaymentForm = () =>
   withForm({
@@ -48,6 +58,31 @@ export const PaymentForm = () =>
                       />
                     )}
                   </form.AppField>
+                  <Dialog>
+                    <DialogTrigger asChild>
+                      <Button>Show QR</Button>
+                    </DialogTrigger>
+                    <DialogContent
+                      className="max-h-3/4 overflow-y-auto"
+                      showCloseButton={false}
+                    >
+                      <DialogHeader>
+                        <DialogTitle>Payment QR Code</DialogTitle>
+                        <DialogDescription>
+                          Scan this QR code to make a payment via GCash.
+                        </DialogDescription>
+                      </DialogHeader>
+                      <Item className="w-full">
+                        <ItemMedia variant="image" className="w-full h-auto">
+                          <img
+                            src="/image.png"
+                            className="w-full h-auto object-cover"
+                            alt=""
+                          />
+                        </ItemMedia>
+                      </Item>
+                    </DialogContent>
+                  </Dialog>
                   <form.AppField name="paymentMethod">
                     {(field) => (
                       <field.SelectField
@@ -72,6 +107,7 @@ export const PaymentForm = () =>
                   <form.AppField name="paymentDate">
                     {(field) => (
                       <field.DateTimeField
+                        disablePastDates
                         label="Payment Date"
                         description="The date and time when the payment was received"
                         placeholder="Select Payment Date"
@@ -95,7 +131,6 @@ export const PaymentForm = () =>
                         label="Screenshot"
                         description="Upload a screenshot or proof of the payment transaction"
                         placeholder="Upload Payment Screenshot"
-                        tooltip="E.g. 'gcash_receipt.jpg'"
                       />
                     )}
                   </form.AppField>

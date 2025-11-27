@@ -111,6 +111,7 @@ export const InquiryForm = () =>
               <form.AppField name="verifiedAt">
                 {(field) => (
                   <field.DateTimeField
+                    disablePastDates
                     label="Verified At"
                     description="The date and time when the email was verified"
                     placeholder="Select Verification Date"

@@ -1,17 +1,19 @@
 import { createFileRoute, redirect } from '@tanstack/react-router';
 import { pb } from '@/pocketbase';
 import {
-  highPriorityUnresolvedRequestsStatCardKpiViewQuery,
   maintenanceRequestOverviewStatCardKpiViewQuery,
   maintenanceRequestStatusStatCardKpiViewQuery,
 } from '@/pocketbase/queries/maintenanceRequests';
+import type {
+  MaintenanceRequestOverviewStatCardKpiViewResponse,
+  MaintenanceRequestStatusStatCardKpiViewResponse,
+} from '@/pocketbase/types';
 import { UsersRoleOptions } from '@/pocketbase/types';
 import { MaintenanceStatsSection } from './-stats-section';
 
 interface BldgAdminOverviewData {
-  statusStats: any;
-  overviewStats: any;
-  highPriorityStats: any;
+  statusStats: MaintenanceRequestStatusStatCardKpiViewResponse[];
+  overviewStats: MaintenanceRequestOverviewStatCardKpiViewResponse[];
 }
 
 export const Route = createFileRoute('/dashboard/bldg-admin-overview/')({
@@ -24,23 +26,20 @@ export const Route = createFileRoute('/dashboard/bldg-admin-overview/')({
     return { context };
   },
   loader: async ({ context }) => {
-    const [statusStats, overviewStats, highPriorityStats] = await Promise.all([
+    const [statusStats, overviewStats] = await Promise.all([
       context.queryClient.fetchQuery(
         maintenanceRequestStatusStatCardKpiViewQuery(),
       ),
       context.queryClient.fetchQuery(
         maintenanceRequestOverviewStatCardKpiViewQuery(),
       ),
-      context.queryClient.fetchQuery(
-        highPriorityUnresolvedRequestsStatCardKpiViewQuery(),
-      ),
     ]);
-    return { statusStats, overviewStats, highPriorityStats };
+    return { statusStats, overviewStats };
   },
 });
 
 function RouteComponent() {
-  const { statusStats, overviewStats, highPriorityStats } =
+  const { statusStats, overviewStats } =
     Route.useLoaderData() as BldgAdminOverviewData;
 
   return (
@@ -59,7 +58,6 @@ function RouteComponent() {
       <MaintenanceStatsSection
         statusStats={statusStats}
         overviewStats={overviewStats}
-        highPriorityStats={highPriorityStats}
       />
     </div>
   );

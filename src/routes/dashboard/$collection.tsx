@@ -10,12 +10,20 @@ import { DataTable } from '@/components/ui/data-table';
 import PocketbaseForms from '@/pocketbase/forms';
 import { schemaToColumnDef } from '@/pocketbase/utils/table';
 import { createFileRoute } from '@tanstack/react-router';
-import type { ColumnDef } from '@tanstack/react-table';
 import { zodValidator } from '@tanstack/zod-adapter';
-import type { RecordListOptions } from 'pocketbase';
 import z from 'zod';
 import { ButtonGroup } from '@/components/ui/button-group';
-import { ArrowLeftIcon, ArrowRightIcon, Edit, Plus, Trash } from 'lucide-react';
+import {
+  ArrowLeftIcon,
+  ArrowRightIcon,
+  Edit,
+  Plus,
+  ShieldX,
+  Trash,
+  X,
+} from 'lucide-react';
+import { getPermissions } from '@/lib/permissions';
+import type { UsersRoleOptions } from '@/pocketbase/types';
 
 export const Route = createFileRoute('/dashboard/$collection')({
   component: RouteComponent,
@@ -46,6 +54,7 @@ export const Route = createFileRoute('/dashboard/$collection')({
       .collection(params.collection)
       .getList(search.page, search.perPage, {
         ...search.options,
+        requestKey: null,
       });
 
     const { columns, table } = schemaToColumnDef(params.collection);
@@ -62,6 +71,15 @@ function RouteComponent() {
   const navigate = Route.useNavigate();
   const searchQuery = Route.useSearch();
   const { columns, data, table } = Route.useLoaderData();
+  const params = Route.useParams();
+  const { pocketbase } = Route.useRouteContext();
+
+  // Get permissions based on user role
+  const userRole = pocketbase.authStore.record?.role as string | undefined;
+  const permissions = getPermissions(
+    userRole as UsersRoleOptions,
+    params.collection,
+  );
 
   return (
     <article className="grid grid-cols-full gap-5">
@@ -152,18 +170,47 @@ function RouteComponent() {
       <DataTable data={data.items} columns={columns} navigate={navigate} />
       <section className="flex justify-end gap-2.5">
         <Button
-          disabled={!searchQuery.selected || searchQuery.selected.length === 0}
+          disabled={
+            !searchQuery.selected ||
+            searchQuery.selected.length === 0 ||
+            !permissions.canDelete
+          }
           variant={'destructive'}
           size={'sm'}
-          onClick={() => {
+          onClick={async () => {
+            if (
+              userRole === 'Administrator' &&
+              params.collection === 'tenants'
+            ) {
+              const batch = pocketbase.createBatch();
+
+              searchQuery.selected?.forEach((id) => {
+                batch.collection('tenants').update(id, { isActive: false });
+              });
+
+              await batch.send();
+
+              window.location.reload();
+
+              return;
+            }
+
             navigate({ search: (prev) => ({ ...prev, action: 'delete' }) });
           }}
         >
-          <Trash />
-          Delete
+          {userRole === 'Administrator' && params.collection === 'tenants' ? (
+            <ShieldX />
+          ) : (
+            <Trash />
+          )}
+          {userRole === 'Administrator' && params.collection === 'tenants'
+            ? 'Deactivate'
+            : 'Delete'}
         </Button>
         <Button
-          disabled={searchQuery.selected?.length !== 1}
+          disabled={
+            searchQuery.selected?.length !== 1 || !permissions.canUpdate
+          }
           size={'sm'}
           onClick={() => {
             navigate({ search: (prev) => ({ ...prev, action: 'update' }) });
@@ -173,6 +220,7 @@ function RouteComponent() {
           Edit
         </Button>
         <Button
+          disabled={!permissions.canCreate}
           size={'sm'}
           onClick={() => {
             navigate({ search: (prev) => ({ ...prev, action: 'create' }) });

@@ -7,10 +7,16 @@ import { toast } from 'sonner';
 import { Collections } from '../types';
 import { FieldGroup, FieldSet } from '@/components/ui/field';
 
+export enum LeaseContract {
+  HalfYear = 'half_year',
+  OneYear = 'one_year',
+}
+
 export const TenancyForm = () =>
   withForm({
-    defaultValues: {} as Update<'tenancies'>,
-    render: ({ form }) => {
+    defaultValues: {} as Update<'tenancies'> & { leaseContract: LeaseContract },
+    props: {} as { action: 'create' | 'update' },
+    render: ({ form, action }) => {
       return (
         <form.AppForm>
           <FieldSet>
@@ -45,26 +51,46 @@ export const TenancyForm = () =>
                   />
                 )}
               </form.AppField>
-              <form.AppField name="leaseStartDate">
+              <form.AppField name="leaseContract">
                 {(field) => (
-                  <field.DateTimeField
-                    label="Lease Start Date"
-                    description="The date when the lease agreement begins"
-                    placeholder="Select Start Date"
-                    tooltip="E.g. 'May 1, 2024'"
+                  <field.SelectField
+                    label="Lease Contract"
+                    description="The duration of the lease agreement"
+                    placeholder="Select Lease Contract"
+                    tooltip="E.g. '1 Year'"
+                    options={[
+                      { label: '6 Months', value: LeaseContract.HalfYear },
+                      { label: '1 Year', value: LeaseContract.OneYear },
+                    ]}
                   />
                 )}
               </form.AppField>
-              <form.AppField name="leaseEndDate">
-                {(field) => (
-                  <field.DateTimeField
-                    label="Lease End Date"
-                    description="The date when the lease agreement expires"
-                    placeholder="Select End Date"
-                    tooltip="E.g. 'April 30, 2025'"
-                  />
-                )}
-              </form.AppField>
+              {action === 'update' && (
+                <>
+                  <form.AppField name="leaseStartDate">
+                    {(field) => (
+                      <field.DateTimeField
+                        disablePastDates
+                        label="Lease Start Date"
+                        description="The date when the lease agreement begins"
+                        placeholder="Select Start Date"
+                        tooltip="E.g. 'May 1, 2024'"
+                      />
+                    )}
+                  </form.AppField>
+                  <form.AppField name="leaseEndDate">
+                    {(field) => (
+                      <field.DateTimeField
+                        disablePastDates
+                        label="Lease End Date"
+                        description="The date when the lease agreement expires"
+                        placeholder="Select End Date"
+                        tooltip="E.g. 'April 30, 2025'"
+                      />
+                    )}
+                  </form.AppField>
+                </>
+              )}
               <form.AppField name="contractDocument">
                 {(field) => (
                   <field.FileField
@@ -83,13 +109,25 @@ export const TenancyForm = () =>
   });
 
 export const CreateTenancyFormOption = formOptions({
-  defaultValues: {} as Create<'tenancies'>,
+  defaultValues: {} as Create<'tenancies'> & { leaseContract: LeaseContract },
   onSubmitMeta: {} as {
     pocketbase: TypedPocketBase;
     navigate: UseNavigateResult<'/dashboard/$collection'>;
   },
   onSubmit: async ({ value, meta, formApi }) => {
     try {
+      const leaseStart = new Date();
+      const leaseEnd = new Date(leaseStart);
+
+      if (value.leaseContract === LeaseContract.HalfYear) {
+        leaseEnd.setMonth(leaseEnd.getMonth() + 6);
+      } else if (value.leaseContract === LeaseContract.OneYear) {
+        leaseEnd.setFullYear(leaseEnd.getFullYear() + 1);
+      }
+
+      value.leaseStartDate = leaseStart.toISOString();
+      value.leaseEndDate = leaseEnd.toISOString();
+
       const response = await meta.pocketbase
         .collection('tenancies')
         .create(value);

@@ -21,6 +21,7 @@ import {
   ItemSeparator,
   ItemTitle,
 } from '@/components/ui/item';
+import { pb } from '..';
 
 export const schemaToColumnDef = (collection: string) => {
   const table = schema.find((col) => col.name === collection);
@@ -78,6 +79,31 @@ export const schemaToColumnDef = (collection: string) => {
             }
             const date = new Date(info.getValue() as Date);
             return format(date, 'PPP');
+          },
+        });
+        break;
+      case 'file':
+        columns.push({
+          header: field.name,
+          accessorKey: field.name,
+          cell: (info) => {
+            const fileValue = info.getValue() as string | undefined;
+            if (!fileValue) {
+              return 'N/A';
+            }
+            console.log(fileValue);
+            const fileUrl = pb.files.getURL(info.row.original, fileValue);
+            const fileName = fileValue;
+            return (
+              <a
+                href={fileUrl}
+                target="_blank"
+                rel="noopener noreferrer"
+                className="text-primary underline underline-offset-2 hover:text-primary/80"
+              >
+                {fileName}
+              </a>
+            );
           },
         });
         break;
@@ -148,6 +174,72 @@ export const schemaToColumnDef = (collection: string) => {
                   >
                     <DialogTitle>{field.name} Information</DialogTitle>
                     <ItemSeparator />
+                    <ItemGroup className="gap-2.5">
+                      {data.map((record, index) => (
+                        <Item
+                          size={'sm'}
+                          variant={'muted'}
+                          key={record.id || index}
+                        >
+                          <ItemContent className="flex flex-col gap-2">
+                            {relatedTable?.fields
+                              .filter((row) => !row.hidden)
+                              .map((row) => {
+                                switch (row.type) {
+                                  case 'bool':
+                                    return (
+                                      <div
+                                        className="flex flex-row justify-between"
+                                        key={row.name}
+                                      >
+                                        <ItemTitle>{row.name}</ItemTitle>
+                                        <ItemDescription>
+                                          <Badge>
+                                            {(record[row.name] as boolean)
+                                              ? 'Yes'
+                                              : 'No'}
+                                          </Badge>
+                                        </ItemDescription>
+                                      </div>
+                                    );
+                                  case 'date':
+                                  case 'autodate':
+                                    return (
+                                      <div
+                                        className="flex flex-row justify-between"
+                                        key={row.name}
+                                      >
+                                        <ItemTitle>{row.name}</ItemTitle>
+                                        <ItemDescription>
+                                          {row.required === false &&
+                                          !record[row.name]
+                                            ? 'N/A'
+                                            : format(
+                                                new Date(record[row.name]),
+                                                'PPP',
+                                              )}
+                                        </ItemDescription>
+                                      </div>
+                                    );
+                                  default:
+                                    return (
+                                      <div
+                                        className="flex flex-row justify-between"
+                                        key={row.name}
+                                      >
+                                        <ItemTitle>{row.name}</ItemTitle>
+                                        <ItemDescription>
+                                          {record[row.name]?.toString() ||
+                                            'N/A'}
+                                        </ItemDescription>
+                                      </div>
+                                    );
+                                }
+                              })}
+                          </ItemContent>
+                        </Item>
+                      ))}
+                    </ItemGroup>
                   </DialogContent>
                 </Dialog>
               );
