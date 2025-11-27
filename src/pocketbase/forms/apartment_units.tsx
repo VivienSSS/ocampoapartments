@@ -18,9 +18,12 @@ export const ApartmentUnitForm = () =>
               <form.AppField name="property">
                 {(field) => (
                   <field.RelationField
+                    label="Property"
+                    description="The property building where this unit is located"
                     relationshipName="property"
                     collection={Collections.Properties}
                     placeholder="Select Property"
+                    tooltip="E.g. 'Quezon City Branch'"
                     renderOption={(item) =>
                       String(item.branch || item.address || item.id)
                     }
@@ -31,8 +34,9 @@ export const ApartmentUnitForm = () =>
                 {(field) => (
                   <field.TextField
                     label="Unit Letter"
+                    description="The letter designation for this apartment unit"
                     placeholder="e.g. A, B, C"
-                    tooltip="Unit identifier letter"
+                    tooltip="E.g. 'A' or 'B'"
                   />
                 )}
               </form.AppField>
@@ -40,8 +44,9 @@ export const ApartmentUnitForm = () =>
                 {(field) => (
                   <field.NumberField
                     label="Price"
+                    description="Monthly rental price for the unit"
                     placeholder="Enter Monthly Rent"
-                    tooltip="Monthly rent price"
+                    tooltip="E.g. '5000'"
                   />
                 )}
               </form.AppField>
@@ -49,8 +54,9 @@ export const ApartmentUnitForm = () =>
                 {(field) => (
                   <field.NumberField
                     label="Capacity"
+                    description="Maximum number of people allowed to occupy this unit"
                     placeholder="Number of Occupants"
-                    tooltip="Maximum number of occupants"
+                    tooltip="E.g. '4'"
                   />
                 )}
               </form.AppField>
@@ -58,8 +64,9 @@ export const ApartmentUnitForm = () =>
                 {(field) => (
                   <field.NumberField
                     label="Floor Number"
+                    description="The floor level where this unit is located"
                     placeholder="Enter Floor Number"
-                    tooltip="Which floor the unit is on"
+                    tooltip="E.g. '1' or '3'"
                   />
                 )}
               </form.AppField>
@@ -67,24 +74,39 @@ export const ApartmentUnitForm = () =>
                 {(field) => (
                   <field.BoolField
                     label="Is Available"
-                    tooltip="Whether this unit is available for rent"
+                    description="Marks whether this unit is currently available for rent"
+                    tooltip="Check if available"
                   />
                 )}
               </form.AppField>
               <form.AppField name="image">
-                {(field) => <field.FileField placeholder="Upload Unit Image" />}
+                {(field) => (
+                  <field.FileField
+                    label="Unit Image"
+                    description="Upload a main image for the apartment unit"
+                    placeholder="Upload Unit Image"
+                    tooltip="E.g. 'living_room.jpg'"
+                  />
+                )}
               </form.AppField>
               <form.AppField name="carouselImage">
                 {(field) => (
-                  <field.FileField placeholder="Upload Carousel Image" />
+                  <field.FileField
+                    multiple
+                    label="Carousel Images"
+                    description="Upload multiple images for the unit carousel"
+                    placeholder="Upload Carousel Image"
+                    tooltip="E.g. 'bedroom1.jpg, kitchen.jpg'"
+                  />
                 )}
               </form.AppField>
               <form.AppField name="roomSize">
                 {(field) => (
                   <field.NumberField
                     label="Room Size"
+                    description="The total area of the unit in square meters"
                     placeholder="Enter Room Size (sqm)"
-                    tooltip="Room size in square meters"
+                    tooltip="E.g. '50' for 50 sqm"
                   />
                 )}
               </form.AppField>

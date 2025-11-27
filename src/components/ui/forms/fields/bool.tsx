@@ -21,7 +21,7 @@ const BoolField = (props: BoolFieldProps) => {
   const Component = variant === 'switch' ? Switch : Checkbox;
 
   return (
-    <Field data-invalid={isInvalid}>
+    <Field data-invalid={isInvalid} orientation={'horizontal'}>
       <TooltipFieldLabel
         tooltip={props.tooltip}
         tooltipSide={props.tooltipSide}

@@ -18,8 +18,9 @@ export const MaintenanceWorkerForm = () =>
                 {(field) => (
                   <field.TextField
                     label="Name"
+                    description="Full name of the maintenance worker"
                     placeholder="Enter Worker Name"
-                    tooltip="Full name of the maintenance worker"
+                    tooltip="E.g. 'Juan Martinez'"
                   />
                 )}
               </form.AppField>
@@ -27,7 +28,8 @@ export const MaintenanceWorkerForm = () =>
                 {(field) => (
                   <field.RichEditorField
                     label="Contact Details"
-                    tooltip="Phone, email, or other contact information"
+                    description="Phone number, email, and other contact information for the worker"
+                    tooltip="E.g. '+63 9123456789, juan@email.com'"
                   />
                 )}
               </form.AppField>
@@ -35,7 +37,8 @@ export const MaintenanceWorkerForm = () =>
                 {(field) => (
                   <field.BoolField
                     label="Is Available"
-                    tooltip="Whether worker is currently available for assignments"
+                    description="Whether the worker is available for new maintenance assignments"
+                    tooltip="Check if available"
                   />
                 )}
               </form.AppField>

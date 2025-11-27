@@ -18,9 +18,12 @@ export const TenancyForm = () =>
               <form.AppField name="tenant">
                 {(field) => (
                   <field.RelationField
+                    label="Tenant"
+                    description="The tenant entering into this lease agreement"
                     relationshipName="tenant"
                     collection={Collections.Tenants}
                     placeholder="Select Tenant"
+                    tooltip="E.g. 'John Doe'"
                     renderOption={(item) =>
                       String(item.phoneNumber || item.user || item.id)
                     }
@@ -30,9 +33,12 @@ export const TenancyForm = () =>
               <form.AppField name="unit">
                 {(field) => (
                   <field.RelationField
+                    label="Unit"
+                    description="The apartment unit being leased"
                     relationshipName="unit"
                     collection={Collections.ApartmentUnits}
                     placeholder="Select Unit"
+                    tooltip="E.g. 'Unit A - Floor 1'"
                     renderOption={(item) =>
                       String(`${item.unitLetter} - Floor ${item.floorNumber}`)
                     }
@@ -43,8 +49,9 @@ export const TenancyForm = () =>
                 {(field) => (
                   <field.DateTimeField
                     label="Lease Start Date"
+                    description="The date when the lease agreement begins"
                     placeholder="Select Start Date"
-                    tooltip="When the lease begins"
+                    tooltip="E.g. 'May 1, 2024'"
                   />
                 )}
               </form.AppField>
@@ -52,8 +59,9 @@ export const TenancyForm = () =>
                 {(field) => (
                   <field.DateTimeField
                     label="Lease End Date"
+                    description="The date when the lease agreement expires"
                     placeholder="Select End Date"
-                    tooltip="When the lease ends"
+                    tooltip="E.g. 'April 30, 2025'"
                   />
                 )}
               </form.AppField>
@@ -61,13 +69,19 @@ export const TenancyForm = () =>
                 {(field) => (
                   <field.BoolField
                     label="Has Sent"
-                    tooltip="Whether lease document has been sent"
+                    description="Whether the lease contract has been sent to the tenant"
+                    tooltip="Check if sent"
                   />
                 )}
               </form.AppField>
               <form.AppField name="contractDocument">
                 {(field) => (
-                  <field.FileField placeholder="Upload Lease Contract" />
+                  <field.FileField
+                    label="Contract Document"
+                    description="Upload the signed lease agreement or contract document"
+                    placeholder="Upload Lease Contract"
+                    tooltip="E.g. 'lease_agreement.pdf'"
+                  />
                 )}
               </form.AppField>
             </FieldGroup>

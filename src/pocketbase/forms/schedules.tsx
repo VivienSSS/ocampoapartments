@@ -18,9 +18,12 @@ export const ScheduleForm = () =>
               <form.AppField name="tenant">
                 {(field) => (
                   <field.RelationField
+                    label="Tenant"
+                    description="The tenant for whom this appointment is scheduled"
                     relationshipName="tenant"
                     collection={Collections.Tenants}
                     placeholder="Select Tenant"
+                    tooltip="E.g. 'John Doe'"
                     renderOption={(item) =>
                       String(item.phoneNumber || item.user || item.id)
                     }
@@ -31,8 +34,9 @@ export const ScheduleForm = () =>
                 {(field) => (
                   <field.SelectField
                     label="Reason"
+                    description="The purpose or reason for scheduling this appointment"
                     placeholder="Select Reason"
-                    tooltip="Reason for the scheduled appointment"
+                    tooltip="E.g. 'Visit' or 'Meeting'"
                     options={[
                       { label: 'Visit', value: 'visit' },
                       { label: 'Meeting', value: 'meeting' },
@@ -44,8 +48,9 @@ export const ScheduleForm = () =>
                 {(field) => (
                   <field.TextField
                     label="Message"
+                    description="Additional notes or details about the scheduled appointment"
                     placeholder="Enter Message"
-                    tooltip="Additional details about the appointment"
+                    tooltip="E.g. 'Property inspection scheduled'"
                   />
                 )}
               </form.AppField>
@@ -53,8 +58,9 @@ export const ScheduleForm = () =>
                 {(field) => (
                   <field.DateTimeField
                     label="Date"
+                    description="The scheduled date and time of the appointment"
                     placeholder="Select Date and Time"
-                    tooltip="When the appointment is scheduled"
+                    tooltip="E.g. 'April 20, 2024 2:00 PM'"
                   />
                 )}
               </form.AppField>
@@ -62,7 +68,8 @@ export const ScheduleForm = () =>
                 {(field) => (
                   <field.BoolField
                     label="Is Approved"
-                    tooltip="Whether the appointment has been approved"
+                    description="Whether the appointment has been approved"
+                    tooltip="Check if approved"
                   />
                 )}
               </form.AppField>
@@ -70,7 +77,8 @@ export const ScheduleForm = () =>
                 {(field) => (
                   <field.BoolField
                     label="Is Cancelled"
-                    tooltip="Whether the appointment has been cancelled"
+                    description="Whether the appointment has been cancelled"
+                    tooltip="Check if cancelled"
                   />
                 )}
               </form.AppField>

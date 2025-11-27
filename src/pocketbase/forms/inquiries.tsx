@@ -18,8 +18,9 @@ export const InquiryForm = () =>
                 {(field) => (
                   <field.TextField
                     label="First Name"
+                    description="The inquirer's first name"
                     placeholder="Enter First Name"
-                    tooltip="Inquirer's first name"
+                    tooltip="E.g. 'John'"
                   />
                 )}
               </form.AppField>
@@ -27,8 +28,9 @@ export const InquiryForm = () =>
                 {(field) => (
                   <field.TextField
                     label="Last Name"
+                    description="The inquirer's last name"
                     placeholder="Enter Last Name"
-                    tooltip="Inquirer's last name"
+                    tooltip="E.g. 'Doe'"
                   />
                 )}
               </form.AppField>
@@ -36,8 +38,9 @@ export const InquiryForm = () =>
                 {(field) => (
                   <field.NumberField
                     label="Age"
+                    description="The inquirer's age in years"
                     placeholder="Enter Age"
-                    tooltip="Inquirer's age"
+                    tooltip="E.g. '25'"
                   />
                 )}
               </form.AppField>
@@ -45,8 +48,9 @@ export const InquiryForm = () =>
                 {(field) => (
                   <field.EmailField
                     label="Email"
+                    description="The inquirer's email address for contact"
                     placeholder="Enter Email Address"
-                    tooltip="Contact email address"
+                    tooltip="E.g. 'john@example.com'"
                   />
                 )}
               </form.AppField>
@@ -54,16 +58,19 @@ export const InquiryForm = () =>
                 {(field) => (
                   <field.TextField
                     label="Phone"
+                    description="The inquirer's phone number for contact"
                     placeholder="Enter Phone Number"
-                    tooltip="Contact phone number"
+                    tooltip="E.g. '+63 9123456789'"
                   />
                 )}
               </form.AppField>
               <form.AppField name="message">
                 {(field) => (
-                  <field.RichEditorField
+                  <field.TextareaField
+                    placeholder="Enter Inquiry Message"
+                    description="Detailed message and questions from the inquirer"
                     label="Message"
-                    tooltip="Details about the inquiry"
+                    tooltip="E.g. 'I am interested in a 2-bedroom unit'"
                   />
                 )}
               </form.AppField>
@@ -71,8 +78,9 @@ export const InquiryForm = () =>
                 {(field) => (
                   <field.NumberField
                     label="Number of Occupants"
+                    description="How many people will live in the unit"
                     placeholder="Enter Number"
-                    tooltip="How many people will occupy the unit"
+                    tooltip="E.g. '3'"
                   />
                 )}
               </form.AppField>
@@ -80,7 +88,8 @@ export const InquiryForm = () =>
                 {(field) => (
                   <field.BoolField
                     label="Has Sent"
-                    tooltip="Whether response has been sent"
+                    description="Whether a response has been sent to the inquirer"
+                    tooltip="Check if response sent"
                   />
                 )}
               </form.AppField>
@@ -88,8 +97,9 @@ export const InquiryForm = () =>
                 {(field) => (
                   <field.SelectField
                     label="Status"
+                    description="Current status of the inquiry"
                     placeholder="Select Status"
-                    tooltip="Status of the inquiry"
+                    tooltip="E.g. 'Pending' or 'Approved'"
                     options={[
                       { label: 'Pending', value: 'pending' },
                       { label: 'Approved', value: 'approved' },
@@ -102,7 +112,8 @@ export const InquiryForm = () =>
                 {(field) => (
                   <field.BoolField
                     label="Email Verified"
-                    tooltip="Whether email has been verified"
+                    description="Whether the inquirer's email address has been verified"
+                    tooltip="Check if verified"
                   />
                 )}
               </form.AppField>
@@ -110,8 +121,9 @@ export const InquiryForm = () =>
                 {(field) => (
                   <field.DateTimeField
                     label="Verified At"
+                    description="The date and time when the email was verified"
                     placeholder="Select Verification Date"
-                    tooltip="When email was verified"
+                    tooltip="E.g. 'April 15, 2024 10:30 AM'"
                   />
                 )}
               </form.AppField>
@@ -119,8 +131,9 @@ export const InquiryForm = () =>
                 {(field) => (
                   <field.TextField
                     label="Rejection Reason"
+                    description="The reason why the inquiry was rejected"
                     placeholder="Enter Reason"
-                    tooltip="If rejected, reason for rejection"
+                    tooltip="E.g. 'No available units matching criteria'"
                   />
                 )}
               </form.AppField>

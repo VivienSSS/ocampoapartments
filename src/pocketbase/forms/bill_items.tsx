@@ -11,8 +11,9 @@ export const BillItemFieldGroup = () =>
             {(field) => (
               <field.SelectField
                 label="Charge Type"
+                description="The category or type of charge being billed"
                 placeholder="Select Charge Type"
-                tooltip="Type of charge (e.g., Rent, Utilities, Maintenance)"
+                tooltip="E.g. 'Rent' or 'Water'"
                 options={[
                   { label: 'Rent', value: 'Rent' },
                   { label: 'Water', value: 'Water' },
@@ -24,8 +25,9 @@ export const BillItemFieldGroup = () =>
             {(field) => (
               <field.NumberField
                 label="Amount"
+                description="The monetary amount for this charge"
                 placeholder="Enter Amount"
-                tooltip="Amount charged for this item"
+                tooltip="E.g. '5000'"
               />
             )}
           </group.AppField>
@@ -33,7 +35,8 @@ export const BillItemFieldGroup = () =>
             {(field) => (
               <field.RichEditorField
                 label="Description"
-                tooltip="Details about this charge"
+                description="Additional details and notes about this charge item"
+                tooltip="E.g. 'April water consumption'"
               />
             )}
           </group.AppField>

@@ -18,8 +18,9 @@ export const PropertyForm = () =>
                 {(field) => (
                   <field.SelectField
                     label="Branch"
+                    description="The property location or branch name"
                     placeholder="Select Branch"
-                    tooltip="Property location/branch"
+                    tooltip="E.g. 'Quezon City' or 'Pampanga'"
                     options={[
                       { label: 'Quezon City', value: 'Quezon City' },
                       { label: 'Pampanga', value: 'Pampanga' },
@@ -31,8 +32,9 @@ export const PropertyForm = () =>
                 {(field) => (
                   <field.TextareaField
                     label="Address"
+                    description="The complete physical address of the property"
                     placeholder="Enter Address"
-                    tooltip="Full property address"
+                    tooltip="E.g. '123 Main Street, Barangay North, Quezon City, Metro Manila'"
                   />
                 )}
               </form.AppField>

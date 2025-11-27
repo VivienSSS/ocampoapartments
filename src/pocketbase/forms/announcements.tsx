@@ -18,6 +18,7 @@ export const AnnouncementForm = () =>
                 {(field) => (
                   <field.TextField
                     label="Title"
+                    description="The title or subject of the announcement"
                     placeholder="Announcement Title"
                     tooltip="E.g. 'New Maintenance Schedule'"
                   />
@@ -27,6 +28,7 @@ export const AnnouncementForm = () =>
                 {(field) => (
                   <field.TextareaField
                     label="Message"
+                    description="The full content and details of the announcement"
                     placeholder="Announcement Message"
                     tooltip="E.g. 'Scheduled maintenance on April 5th from 2 AM to 4 AM'"
                   />

@@ -19,17 +19,21 @@ export const BillForm = () =>
                 {(field) => (
                   <field.TextField
                     label="Invoice Number"
+                    description="Unique identifier for tracking this bill"
                     placeholder="e.g. INV-001"
-                    tooltip="Unique invoice identifier"
+                    tooltip="E.g. 'INV-001' or 'INV-2024-001'"
                   />
                 )}
               </form.AppField>
               <form.AppField name="tenancy">
                 {(field) => (
                   <field.RelationField
+                    label="Tenancy"
+                    description="The tenant or lease this bill is associated with"
                     relationshipName="tenancy"
                     collection={Collections.Tenancies}
                     placeholder="Select Tenancy"
+                    tooltip="E.g. 'John Doe - Unit A'"
                     renderOption={(item) => String(item.id)}
                   />
                 )}
@@ -38,8 +42,9 @@ export const BillForm = () =>
                 {(field) => (
                   <field.DateTimeField
                     label="Due Date"
+                    description="The deadline for payment of this bill"
                     placeholder="Select Due Date"
-                    tooltip="When payment is due"
+                    tooltip="E.g. 'April 30, 2024'"
                   />
                 )}
               </form.AppField>
@@ -47,8 +52,9 @@ export const BillForm = () =>
                 {(field) => (
                   <field.SelectField
                     label="Status"
+                    description="Current payment status of the bill"
                     placeholder="Select Status"
-                    tooltip="Current bill status"
+                    tooltip="E.g. 'Paid' or 'Overdue'"
                     options={[
                       { label: 'Paid', value: 'Paid' },
                       { label: 'Due', value: 'Due' },
@@ -61,16 +67,20 @@ export const BillForm = () =>
                 {(field) => (
                   <field.BoolField
                     label="Has Sent"
-                    tooltip="Whether bill has been sent to tenant"
+                    description="Whether the bill has been sent to the tenant"
+                    tooltip="Check if sent"
                   />
                 )}
               </form.AppField>
               <form.AppField name="items">
                 {(field) => (
                   <field.RelationField
+                    label="Items"
+                    description="Line items and charges included in this bill"
                     relationshipName="items"
                     collection={Collections.BillItems}
                     placeholder="Select Items"
+                    tooltip="E.g. 'Rent, Water, Electricity'"
                     renderOption={(item) => String(item.chargeType || item.id)}
                   />
                 )}

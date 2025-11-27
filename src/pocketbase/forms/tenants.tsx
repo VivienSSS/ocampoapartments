@@ -18,9 +18,12 @@ export const TenantForm = () =>
               <form.AppField name="user">
                 {(field) => (
                   <field.RelationField
+                    label="User"
+                    description="The user account associated with this tenant"
                     relationshipName="user"
                     collection={Collections.Users}
                     placeholder="Select User"
+                    tooltip="E.g. 'John Doe' or 'johndoe@email.com'"
                     renderOption={(item) =>
                       String(item.name || item.email || item.id)
                     }
@@ -31,8 +34,9 @@ export const TenantForm = () =>
                 {(field) => (
                   <field.NumberField
                     label="Phone Number"
+                    description="The tenant's primary contact phone number"
                     placeholder="Enter Phone Number"
-                    tooltip="Contact phone number"
+                    tooltip="E.g. '639123456789'"
                   />
                 )}
               </form.AppField>
@@ -40,8 +44,9 @@ export const TenantForm = () =>
                 {(field) => (
                   <field.TextField
                     label="Facebook Name"
+                    description="The tenant's Facebook account name for alternative contact"
                     placeholder="Enter Facebook Name"
-                    tooltip="Facebook account name for contact"
+                    tooltip="E.g. 'john.doe.123' or 'John Doe'"
                   />
                 )}
               </form.AppField>
