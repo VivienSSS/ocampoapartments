@@ -81,7 +81,10 @@ import {
   UpdateTenantFormOption,
 } from './tenants';
 
-const FormOptions = (collection: string, operation: 'create' | 'update') => {
+export const FormOptions = (
+  collection: string,
+  operation: 'create' | 'update',
+) => {
   const allOptions = {
     announcements: {
       create: CreateAnnouncementFormOption,

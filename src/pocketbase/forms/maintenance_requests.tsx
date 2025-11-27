@@ -10,56 +10,63 @@ import { FieldGroup, FieldSet } from '@/components/ui/field';
 export const MaintenanceRequestForm = () =>
   withForm({
     defaultValues: {} as Update<'maintenance_requests'>,
-    render: ({ form }) => {
+    props: {} as { action?: 'create' | 'update' },
+    render: ({ form, action }) => {
       return (
         <form.AppForm>
           <FieldSet>
             <FieldGroup>
-              <form.AppField name="tenant">
-                {(field) => (
-                  <field.RelationField
-                    label="Tenant"
-                    description="The tenant who submitted the maintenance request"
-                    relationshipName="tenant"
-                    collection={Collections.Tenants}
-                    placeholder="Select Tenant"
-                    tooltip="E.g. 'John Doe'"
-                    renderOption={(item) =>
-                      String(item.phoneNumber || item.user || item.id)
-                    }
-                  />
-                )}
-              </form.AppField>
-              <form.AppField name="unit">
-                {(field) => (
-                  <field.RelationField
-                    label="Unit"
-                    description="The apartment unit where maintenance is needed"
-                    relationshipName="unit"
-                    collection={Collections.ApartmentUnits}
-                    placeholder="Select Unit"
-                    tooltip="E.g. 'Unit A - Floor 1'"
-                    renderOption={(item) =>
-                      String(`${item.unitLetter} - Floor ${item.floorNumber}`)
-                    }
-                  />
-                )}
-              </form.AppField>
-              <form.AppField name="urgency">
-                {(field) => (
-                  <field.SelectField
-                    label="Urgency"
-                    description="How urgent this maintenance request is"
-                    placeholder="Select Urgency Level"
-                    tooltip="E.g. 'Urgent' or 'Normal'"
-                    options={[
-                      { label: 'Urgent', value: 'Urgent' },
-                      { label: 'Normal', value: 'Normal' },
-                      { label: 'Low', value: 'Low' },
-                    ]}
-                  />
-                )}
-              </form.AppField>
+              {action === 'create' && (
+                <>
+                  <form.AppField name="tenant">
+                    {(field) => (
+                      <field.RelationField
+                        label="Tenant"
+                        description="The tenant who submitted the maintenance request"
+                        relationshipName="tenant"
+                        collection={Collections.Tenants}
+                        placeholder="Select Tenant"
+                        tooltip="E.g. 'John Doe'"
+                        renderOption={(item) =>
+                          String(item.phoneNumber || item.user || item.id)
+                        }
+                      />
+                    )}
+                  </form.AppField>
+                  <form.AppField name="unit">
+                    {(field) => (
+                      <field.RelationField
+                        label="Unit"
+                        description="The apartment unit where maintenance is needed"
+                        relationshipName="unit"
+                        collection={Collections.ApartmentUnits}
+                        placeholder="Select Unit"
+                        tooltip="E.g. 'Unit A - Floor 1'"
+                        renderOption={(item) =>
+                          String(
+                            `${item.unitLetter} - Floor ${item.floorNumber}`,
+                          )
+                        }
+                      />
+                    )}
+                  </form.AppField>
+                  <form.AppField name="urgency">
+                    {(field) => (
+                      <field.SelectField
+                        label="Urgency"
+                        description="How urgent this maintenance request is"
+                        placeholder="Select Urgency Level"
+                        tooltip="E.g. 'Urgent' or 'Normal'"
+                        options={[
+                          { label: 'Urgent', value: 'Urgent' },
+                          { label: 'Normal', value: 'Normal' },
+                          { label: 'Low', value: 'Low' },
+                        ]}
+                      />
+                    )}
+                  </form.AppField>
+                </>
+              )}
               <form.AppField name="status">
                 {(field) => (
                   <field.SelectField
@@ -77,48 +84,54 @@ export const MaintenanceRequestForm = () =>
                   />
                 )}
               </form.AppField>
-              <form.AppField name="worker">
-                {(field) => (
-                  <field.RelationField
-                    label="Worker"
-                    description="The maintenance worker assigned to handle this request"
-                    relationshipName="worker"
-                    collection={Collections.MaintenanceWorkers}
-                    placeholder="Select Maintenance Worker"
-                    tooltip="E.g. 'Juan Martinez'"
-                    renderOption={(item) => String(item.name || item.id)}
-                  />
-                )}
-              </form.AppField>
-              <form.AppField name="description">
-                {(field) => (
-                  <field.TextareaField
-                    label="Description"
-                    description="Detailed description of the maintenance problem or repair needed"
-                    tooltip="E.g. 'Leaking faucet in kitchen sink'"
-                  />
-                )}
-              </form.AppField>
-              <form.AppField name="submittedDate">
-                {(field) => (
-                  <field.DateTimeField
-                    label="Submitted Date"
-                    description="The date and time when the request was submitted"
-                    placeholder="Select Submission Date"
-                    tooltip="E.g. 'April 10, 2024 2:00 PM'"
-                  />
-                )}
-              </form.AppField>
-              <form.AppField name="completedDate">
-                {(field) => (
-                  <field.DateTimeField
-                    label="Completed Date"
-                    description="The date and time when the maintenance was completed"
-                    placeholder="Select Completion Date"
-                    tooltip="E.g. 'April 12, 2024 10:30 AM'"
-                  />
-                )}
-              </form.AppField>
+              {action === 'create' && (
+                <>
+                  <form.AppField name="worker">
+                    {(field) => (
+                      <field.RelationField
+                        label="Worker"
+                        description="The maintenance worker assigned to handle this request"
+                        relationshipName="worker"
+                        collection={Collections.MaintenanceWorkers}
+                        placeholder="Select Maintenance Worker"
+                        tooltip="E.g. 'Juan Martinez'"
+                        renderOption={(item) => String(item.name || item.id)}
+                      />
+                    )}
+                  </form.AppField>
+                  <form.AppField name="description">
+                    {(field) => (
+                      <field.TextareaField
+                        label="Description"
+                        description="Detailed description of the maintenance problem or repair needed"
+                        tooltip="E.g. 'Leaking faucet in kitchen sink'"
+                      />
+                    )}
+                  </form.AppField>
+                  <form.AppField name="submittedDate">
+                    {(field) => (
+                      <field.DateTimeField
+                        disablePastDates
+                        label="Submitted Date"
+                        description="The date and time when the request was submitted"
+                        placeholder="Select Submission Date"
+                        tooltip="E.g. 'April 10, 2024 2:00 PM'"
+                      />
+                    )}
+                  </form.AppField>
+                  <form.AppField name="completedDate">
+                    {(field) => (
+                      <field.DateTimeField
+                        disablePastDates
+                        label="Completed Date"
+                        description="The date and time when the maintenance was completed"
+                        placeholder="Select Completion Date"
+                        tooltip="E.g. 'April 12, 2024 10:30 AM'"
+                      />
+                    )}
+                  </form.AppField>
+                </>
+              )}
             </FieldGroup>
           </FieldSet>
         </form.AppForm>
