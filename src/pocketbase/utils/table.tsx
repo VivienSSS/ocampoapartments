@@ -2,7 +2,14 @@ import type { ColumnDef } from '@tanstack/react-table';
 import schema from '../../../public/schema.json';
 import { format } from 'date-fns';
 import { Badge } from '@/components/ui/badge';
-import { ExternalLink, ToggleRight } from 'lucide-react';
+import {
+  ExternalLink,
+  ToggleRight,
+  Calendar,
+  FileText,
+  Link as LinkIcon,
+  Type,
+} from 'lucide-react';
 import { Checkbox } from '@/components/ui/checkbox';
 import { useQuery, useSuspenseQuery } from '@tanstack/react-query';
 import { ViewQueryOption } from '../query';
@@ -82,7 +89,12 @@ export const schemaToColumnDef = (collection: string) => {
       case 'date':
       case 'autodate':
         columns.push({
-          header: toTitleCase(field.name),
+          header: () => (
+            <div className="flex items-center gap-2.5">
+              <Calendar size={14} />
+              {toTitleCase(field.name)}
+            </div>
+          ),
           accessorKey: field.name,
           cell: (info) => {
             if (field.required === false && !info.getValue()) {
@@ -95,7 +107,12 @@ export const schemaToColumnDef = (collection: string) => {
         break;
       case 'file':
         columns.push({
-          header: toTitleCase(field.name),
+          header: () => (
+            <div className="flex items-center gap-2.5">
+              <FileText size={14} />
+              {toTitleCase(field.name)}
+            </div>
+          ),
           accessorKey: field.name,
           cell: (info) => {
             const fileValue = info.getValue() as string | undefined;
@@ -123,7 +140,12 @@ export const schemaToColumnDef = (collection: string) => {
         // @ts-ignore
         if (field.maxSelect > 1) {
           columns.push({
-            header: toTitleCase(field.name),
+            header: () => (
+              <div className="flex items-center gap-2.5">
+                <LinkIcon size={14} />
+                {toTitleCase(field.name)}
+              </div>
+            ),
             accessorKey: field.name,
             cell: (info) => {
               const { pocketbase } = useRouteContext({
@@ -260,7 +282,12 @@ export const schemaToColumnDef = (collection: string) => {
         }
 
         columns.push({
-          header: toTitleCase(field.name),
+          header: () => (
+            <div className="flex items-center gap-2.5">
+              <LinkIcon size={14} />
+              {toTitleCase(field.name)}
+            </div>
+          ),
           accessorKey: field.name,
           cell: (info) => {
             const { pocketbase } = useRouteContext({
@@ -368,7 +395,12 @@ export const schemaToColumnDef = (collection: string) => {
         break;
       default:
         columns.push({
-          header: toTitleCase(field.name),
+          header: () => (
+            <div className="flex items-center gap-2.5">
+              <Type size={14} />
+              {toTitleCase(field.name)}
+            </div>
+          ),
           accessorKey: field.name,
           cell: (info) => info.getValue(),
         });
