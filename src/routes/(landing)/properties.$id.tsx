@@ -10,7 +10,7 @@ import {
 } from '@/pocketbase/types';
 import { useMutation } from '@tanstack/react-query';
 import { CreateRecordMutationOption } from '@/pocketbase/mutation';
-import { Item, ItemMedia } from '@/components/ui/item';
+import { Item, ItemHeader, ItemMedia, ItemTitle } from '@/components/ui/item';
 
 export const Route = createFileRoute('/(landing)/properties/$id')({
   component: RouteComponent,
@@ -215,8 +215,15 @@ function RouteComponent() {
 
             {/* Floorplan */}
             <Item>
+              <ItemHeader>
+                <ItemTitle>Floor Plan</ItemTitle>
+              </ItemHeader>
               <ItemMedia>
-                <img src="/floorplan.png" alt="floorPlan" />
+                <img
+                  src="/floorplan.png"
+                  alt="floorPlan"
+                  className="rounded-md"
+                />
               </ItemMedia>
             </Item>
           </div>
