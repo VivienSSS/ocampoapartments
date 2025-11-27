@@ -85,7 +85,7 @@ export const InquiryForm = () =>
                 tooltip="Status of the inquiry"
                 options={[
                   { label: 'Pending', value: 'pending' },
-                  { label: 'Accepted', value: 'accepted' },
+                  { label: 'Approved', value: 'approved' },
                   { label: 'Rejected', value: 'rejected' },
                 ]}
               />

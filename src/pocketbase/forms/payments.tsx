@@ -35,11 +35,7 @@ export const PaymentForm = () =>
                 label="Payment Method"
                 placeholder="Select Payment Method"
                 tooltip="How the payment was made"
-                options={[
-                  { label: 'Cash', value: 'cash' },
-                  { label: 'Bank Transfer', value: 'bank_transfer' },
-                  { label: 'Check', value: 'check' },
-                ]}
+                options={[{ label: 'GCash', value: 'GCash' }]}
               />
             )}
           </form.AppField>

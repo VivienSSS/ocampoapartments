@@ -26,9 +26,8 @@ export const ScheduleForm = () =>
                 placeholder="Select Reason"
                 tooltip="Reason for the scheduled appointment"
                 options={[
-                  { label: 'Maintenance', value: 'maintenance' },
+                  { label: 'Visit', value: 'visit' },
                   { label: 'Meeting', value: 'meeting' },
-                  { label: 'Inspection', value: 'inspection' },
                 ]}
               />
             )}

@@ -38,9 +38,9 @@ export const MaintenanceRequestForm = () =>
                 placeholder="Select Urgency Level"
                 tooltip="How urgent is this maintenance request"
                 options={[
-                  { label: 'Low', value: 'low' },
-                  { label: 'Medium', value: 'medium' },
-                  { label: 'High', value: 'high' },
+                  { label: 'Urgent', value: 'Urgent' },
+                  { label: 'Normal', value: 'Normal' },
+                  { label: 'Low', value: 'Low' },
                 ]}
               />
             )}
@@ -52,9 +52,11 @@ export const MaintenanceRequestForm = () =>
                 placeholder="Select Status"
                 tooltip="Current status of the maintenance request"
                 options={[
-                  { label: 'Pending', value: 'pending' },
-                  { label: 'In Progress', value: 'in_progress' },
-                  { label: 'Completed', value: 'completed' },
+                  { label: 'Pending', value: 'Pending' },
+                  { label: 'Worker Assigned', value: 'Worker Assigned' },
+                  { label: 'In Progress', value: 'In Progress' },
+                  { label: 'Completed', value: 'Completed' },
+                  { label: 'Cancelled', value: 'Cancelled' },
                 ]}
               />
             )}

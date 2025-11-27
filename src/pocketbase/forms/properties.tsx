@@ -14,9 +14,8 @@ export const PropertyForm = () =>
                 placeholder="Select Branch"
                 tooltip="Property location/branch"
                 options={[
-                  { label: 'Main', value: 'main' },
-                  { label: 'Branch A', value: 'branch_a' },
-                  { label: 'Branch B', value: 'branch_b' },
+                  { label: 'Quezon City', value: 'Quezon City' },
+                  { label: 'Pampanga', value: 'Pampanga' },
                 ]}
               />
             )}

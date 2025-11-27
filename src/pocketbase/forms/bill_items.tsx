@@ -14,9 +14,8 @@ export const BillItemFieldGroup = () =>
                 placeholder="Select Charge Type"
                 tooltip="Type of charge (e.g., Rent, Utilities, Maintenance)"
                 options={[
-                  { label: 'Rent', value: 'rent' },
-                  { label: 'Utilities', value: 'utilities' },
-                  { label: 'Maintenance', value: 'maintenance' },
+                  { label: 'Rent', value: 'Rent' },
+                  { label: 'Water', value: 'Water' },
                 ]}
               />
             )}

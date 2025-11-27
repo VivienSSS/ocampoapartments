@@ -42,9 +42,9 @@ export const BillForm = () =>
                 placeholder="Select Status"
                 tooltip="Current bill status"
                 options={[
-                  { label: 'Pending', value: 'pending' },
-                  { label: 'Paid', value: 'paid' },
-                  { label: 'Overdue', value: 'overdue' },
+                  { label: 'Paid', value: 'Paid' },
+                  { label: 'Due', value: 'Due' },
+                  { label: 'Overdue', value: 'Overdue' },
                 ]}
               />
             )}
