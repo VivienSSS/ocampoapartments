@@ -32,24 +32,34 @@ const CheckboxGroupField = (props: CheckboxGroupFieldProps) => {
   };
 
   return (
-    <div className="space-y-2">
-      {props.options.map((option) => (
-        <div key={option.value} className="flex items-center gap-2">
-          <Checkbox
-            id={`${field.name}-${option.value}`}
-            checked={(field.state.value ?? []).includes(option.value)}
-            onCheckedChange={() => handleToggle(option.value)}
-            aria-invalid={isInvalid}
-          />
-          <label
-            htmlFor={`${field.name}-${option.value}`}
-            className="cursor-pointer text-sm"
-          >
-            {option.label}
-          </label>
-        </div>
-      ))}
-    </div>
+    <Field data-invalid={isInvalid}>
+      <TooltipFieldLabel
+        tooltip={props.tooltip}
+        tooltipSide={props.tooltipSide}
+      >
+        {props.label}
+      </TooltipFieldLabel>
+      <div className="space-y-2">
+        {props.options.map((option) => (
+          <div key={option.value} className="flex items-center gap-2">
+            <Checkbox
+              id={`${field.name}-${option.value}`}
+              checked={(field.state.value ?? []).includes(option.value)}
+              onCheckedChange={() => handleToggle(option.value)}
+              aria-invalid={isInvalid}
+            />
+            <label
+              htmlFor={`${field.name}-${option.value}`}
+              className="cursor-pointer text-sm"
+            >
+              {option.label}
+            </label>
+          </div>
+        ))}
+      </div>
+      <FieldDescription>{props.description}</FieldDescription>
+      <FieldError errors={field.state.meta.errorMap.onSubmit} />
+    </Field>
   );
 };
 

@@ -93,7 +93,7 @@ const TextareaField = (props: TextareaFieldProps) => {
         )}
       </InputGroup>
       <FieldDescription>{description}</FieldDescription>
-      {isInvalid && <FieldError errors={field.state.meta.errors} />}
+      <FieldError errors={field.state.meta.errorMap.onSubmit} />
     </Field>
   );
 };

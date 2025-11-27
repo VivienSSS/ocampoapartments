@@ -1,13 +1,11 @@
 import type React from 'react';
 import { useCallback } from 'react';
-import type {
-  BaseSystemFields,
-  Collections,
-  TypedPocketBase,
-} from '@/pocketbase/types';
+import type { Collections } from '@/pocketbase/types';
 import { AsyncSelect } from '../../async-select';
+import { Field, FieldDescription, FieldError } from '../../field';
 import { useFieldContext } from '..';
 import { usePocketbase } from '@/pocketbase/context';
+import { TooltipFieldLabel } from '../utils/tooltip-field-label';
 
 export interface RelationItem {
   id: string;
@@ -15,6 +13,10 @@ export interface RelationItem {
 }
 
 export type RelationFieldProps<Records extends RelationItem> = {
+  label?: React.ReactNode;
+  description?: React.ReactNode;
+  tooltip?: React.ReactNode;
+  tooltipSide?: 'top' | 'right' | 'bottom' | 'left';
   relationshipName: string;
   collection: Collections;
   preload?: boolean;
@@ -31,6 +33,10 @@ const RelationField = <Records extends RelationItem>(
 
   const field = useFieldContext<string>();
   const {
+    label,
+    description,
+    tooltip,
+    tooltipSide,
     collection: collectionName,
     relationshipName,
     displayFields = ['name'],
@@ -38,6 +44,8 @@ const RelationField = <Records extends RelationItem>(
     placeholder = 'Search...',
     filterFields,
   } = props;
+
+  const isInvalid = field.state.meta.isTouched && !field.state.meta.isValid;
 
   // Fetcher function to query related records
   const fetcher = useCallback(
@@ -70,23 +78,30 @@ const RelationField = <Records extends RelationItem>(
     displayFields.map((field) => String(item[field])).join(', ');
 
   return (
-    <AsyncSelect<Records>
-      fetcher={fetcher}
-      preload={preload}
-      renderOption={
-        props.renderOption ? props.renderOption : renderDisplayValue
-      }
-      getOptionValue={(item) => item.id}
-      getDisplayValue={renderDisplayValue}
-      label={relationshipName}
-      placeholder={placeholder}
-      value={field.state.value ?? ''}
-      onChange={field.handleChange}
-      notFound={
-        <div className="py-6 text-center text-sm">No records found</div>
-      }
-      clearable={true}
-    />
+    <Field data-invalid={isInvalid}>
+      <TooltipFieldLabel tooltip={tooltip} tooltipSide={tooltipSide}>
+        {label}
+      </TooltipFieldLabel>
+      <AsyncSelect<Records>
+        fetcher={fetcher}
+        preload={preload}
+        renderOption={
+          props.renderOption ? props.renderOption : renderDisplayValue
+        }
+        getOptionValue={(item) => item.id}
+        getDisplayValue={renderDisplayValue}
+        label={relationshipName}
+        placeholder={placeholder}
+        value={field.state.value ?? ''}
+        onChange={field.handleChange}
+        notFound={
+          <div className="py-6 text-center text-sm">No records found</div>
+        }
+        clearable={true}
+      />
+      <FieldDescription>{description}</FieldDescription>
+      <FieldError errors={field.state.meta.errorMap.onSubmit} />
+    </Field>
   );
 };
 

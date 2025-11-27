@@ -8,7 +8,6 @@ import {
   SelectValue,
 } from '../../select';
 import { useFieldContext } from '..';
-import { TooltipFieldLabel } from '../utils/tooltip-field-label';
 
 type SelectOption = { label: string; value: string };
 
@@ -29,18 +28,26 @@ const SelectField = (props: SelectFieldProps) => {
   const isInvalid = field.state.meta.isTouched && !field.state.meta.isValid;
 
   return (
-    <Select value={field.state.value ?? ''} onValueChange={field.handleChange}>
-      <SelectTrigger id={field.name} aria-invalid={isInvalid}>
-        <SelectValue placeholder={placeholder} />
-      </SelectTrigger>
-      <SelectContent>
-        {props.options.map((option) => (
-          <SelectItem key={option.value} value={option.value}>
-            {option.label}
-          </SelectItem>
-        ))}
-      </SelectContent>
-    </Select>
+    <Field data-invalid={isInvalid}>
+      <FieldLabel>{props.label}</FieldLabel>
+      <Select
+        value={field.state.value ?? ''}
+        onValueChange={field.handleChange}
+      >
+        <SelectTrigger id={field.name} aria-invalid={isInvalid}>
+          <SelectValue placeholder={placeholder} />
+        </SelectTrigger>
+        <SelectContent>
+          {props.options.map((option) => (
+            <SelectItem key={option.value} value={option.value}>
+              {option.label}
+            </SelectItem>
+          ))}
+        </SelectContent>
+      </Select>
+      <FieldDescription>{props.description}</FieldDescription>
+      <FieldError errors={field.state.meta.errors} />
+    </Field>
   );
 };
 

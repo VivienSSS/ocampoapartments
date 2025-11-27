@@ -1,6 +1,6 @@
 import type React from 'react';
 import { Checkbox } from '../../checkbox';
-import { Field, FieldDescription, FieldError, FieldLabel } from '../../field';
+import { Field, FieldDescription, FieldError } from '../../field';
 import { Switch } from '../../switch';
 import { useFieldContext } from '..';
 import { TooltipFieldLabel } from '../utils/tooltip-field-label';
@@ -21,13 +21,23 @@ const BoolField = (props: BoolFieldProps) => {
   const Component = variant === 'switch' ? Switch : Checkbox;
 
   return (
-    <Component
-      id={field.name}
-      checked={field.state.value ?? false}
-      onCheckedChange={(checked) => field.handleChange(checked === true)}
-      onBlur={field.handleBlur}
-      aria-invalid={isInvalid}
-    />
+    <Field data-invalid={isInvalid}>
+      <TooltipFieldLabel
+        tooltip={props.tooltip}
+        tooltipSide={props.tooltipSide}
+      >
+        {props.label}
+      </TooltipFieldLabel>
+      <Component
+        id={field.name}
+        checked={field.state.value ?? false}
+        onCheckedChange={(checked) => field.handleChange(checked === true)}
+        onBlur={field.handleBlur}
+        aria-invalid={isInvalid}
+      />
+      <FieldDescription>{props.description}</FieldDescription>
+      <FieldError errors={field.state.meta.errorMap.onSubmit} />
+    </Field>
   );
 };
 

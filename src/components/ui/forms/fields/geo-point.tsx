@@ -61,7 +61,7 @@ const GeoPointField = (props: GeoPointFieldProps) => {
         />
       </div>
       <FieldDescription>{props.description}</FieldDescription>
-      {isInvalid && <FieldError errors={field.state.meta.errors} />}
+      <FieldError errors={field.state.meta.errorMap.onSubmit} />
     </Field>
   );
 };

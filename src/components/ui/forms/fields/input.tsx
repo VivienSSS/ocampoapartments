@@ -2,7 +2,7 @@
 
 import React from 'react';
 import { X } from 'lucide-react';
-import { FieldDescription } from '../../field';
+import { Field, FieldDescription, FieldError } from '../../field';
 import {
   InputGroup,
   InputGroupAddon,
@@ -144,7 +144,7 @@ const InputField = (props: InputFieldProps) => {
   const isTextarea = variant === 'textarea';
 
   return (
-    <>
+    <Field data-invalid={isInvalid}>
       {label && (
         <TooltipFieldLabel
           htmlFor={field.name}
@@ -303,7 +303,8 @@ const InputField = (props: InputFieldProps) => {
       )}
 
       {description && <FieldDescription>{description}</FieldDescription>}
-    </>
+      <FieldError errors={field.state.meta.errorMap.onSubmit} />
+    </Field>
   );
 };
 

@@ -123,7 +123,7 @@ const URLField = (props: URLFieldProps) => {
         )}
       </InputGroup>
       <FieldDescription>{description}</FieldDescription>
-      {isInvalid && <FieldError errors={field.state.meta.errors} />}
+      <FieldError errors={field.state.meta.errorMap.onSubmit} />
     </Field>
   );
 };
