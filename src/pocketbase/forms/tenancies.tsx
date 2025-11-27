@@ -48,6 +48,7 @@ export const TenancyForm = () =>
               <form.AppField name="leaseStartDate">
                 {(field) => (
                   <field.DateTimeField
+                    disablePastDates
                     label="Lease Start Date"
                     description="The date when the lease agreement begins"
                     placeholder="Select Start Date"
@@ -58,6 +59,7 @@ export const TenancyForm = () =>
               <form.AppField name="leaseEndDate">
                 {(field) => (
                   <field.DateTimeField
+                    disablePastDates
                     label="Lease End Date"
                     description="The date when the lease agreement expires"
                     placeholder="Select End Date"

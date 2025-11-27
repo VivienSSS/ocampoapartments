@@ -1,5 +1,6 @@
 import {
   AudioWaveform,
+  Bookmark,
   BookUser,
   Command,
   Hammer,
@@ -88,6 +89,11 @@ const showNav = () => {
           url: '/dashboard/maintenance_requests',
           icon: Hammer,
         },
+        {
+          title: 'Schedules',
+          url: '/dashboard/schedules',
+          icon: Bookmark,
+        },
       ];
     case UsersRoleOptions['Building Admin']:
       return [
@@ -143,6 +149,11 @@ const showNav = () => {
           title: 'Your Information',
           url: '/dashboard/tenants',
           icon: BookUser,
+        },
+        {
+          title: 'Schedules',
+          url: '/dashboard/schedules',
+          icon: Bookmark,
         },
       ];
     default:

@@ -72,6 +72,7 @@ export const PaymentForm = () =>
                   <form.AppField name="paymentDate">
                     {(field) => (
                       <field.DateTimeField
+                        disablePastDates
                         label="Payment Date"
                         description="The date and time when the payment was received"
                         placeholder="Select Payment Date"

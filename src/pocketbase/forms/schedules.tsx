@@ -57,6 +57,7 @@ export const ScheduleForm = () =>
               <form.AppField name="date">
                 {(field) => (
                   <field.DateTimeField
+                    disablePastDates
                     label="Date"
                     description="The scheduled date and time of the appointment"
                     placeholder="Select Date and Time"
