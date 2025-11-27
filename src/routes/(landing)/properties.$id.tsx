@@ -74,6 +74,8 @@ function RouteComponent() {
         label: `${apartment.roomSize || 'N/A'} sq. ft.`,
         icon: '📐',
       },
+      { id: 'closet', label: '1 Closet', icon: '🚪' },
+      { id: 'bedframe', label: 'Bed Frame', icon: '🛏️' },
     ],
   };
 
