@@ -10,61 +10,66 @@ import { FieldGroup, FieldSet } from '@/components/ui/field';
 export const ScheduleForm = () =>
   withForm({
     defaultValues: {} as Update<'schedules'>,
-    render: ({ form }) => {
+    props: {} as { action: 'create' | 'update' },
+    render: ({ form, action }) => {
       return (
         <form.AppForm>
           <FieldSet>
             <FieldGroup>
-              <form.AppField name="tenant">
-                {(field) => (
-                  <field.RelationField
-                    label="Tenant"
-                    description="The tenant for whom this appointment is scheduled"
-                    relationshipName="tenant"
-                    collection={Collections.Tenants}
-                    placeholder="Select Tenant"
-                    tooltip="E.g. 'John Doe'"
-                    renderOption={(item) =>
-                      String(item.phoneNumber || item.user || item.id)
-                    }
-                  />
-                )}
-              </form.AppField>
-              <form.AppField name="reason">
-                {(field) => (
-                  <field.SelectField
-                    label="Reason"
-                    description="The purpose or reason for scheduling this appointment"
-                    placeholder="Select Reason"
-                    tooltip="E.g. 'Visit' or 'Meeting'"
-                    options={[
-                      { label: 'Visit', value: 'visit' },
-                      { label: 'Meeting', value: 'meeting' },
-                    ]}
-                  />
-                )}
-              </form.AppField>
-              <form.AppField name="message">
-                {(field) => (
-                  <field.TextField
-                    label="Message"
-                    description="Additional notes or details about the scheduled appointment"
-                    placeholder="Enter Message"
-                    tooltip="E.g. 'Property inspection scheduled'"
-                  />
-                )}
-              </form.AppField>
-              <form.AppField name="date">
-                {(field) => (
-                  <field.DateTimeField
-                    disablePastDates
-                    label="Date"
-                    description="The scheduled date and time of the appointment"
-                    placeholder="Select Date and Time"
-                    tooltip="E.g. 'April 20, 2024 2:00 PM'"
-                  />
-                )}
-              </form.AppField>
+              {action === 'create' && (
+                <>
+                  <form.AppField name="tenant">
+                    {(field) => (
+                      <field.RelationField
+                        label="Tenant"
+                        description="The tenant for whom this appointment is scheduled"
+                        relationshipName="tenant"
+                        collection={Collections.Tenants}
+                        placeholder="Select Tenant"
+                        tooltip="E.g. 'John Doe'"
+                        renderOption={(item) =>
+                          String(item.phoneNumber || item.user || item.id)
+                        }
+                      />
+                    )}
+                  </form.AppField>
+                  <form.AppField name="reason">
+                    {(field) => (
+                      <field.SelectField
+                        label="Reason"
+                        description="The purpose or reason for scheduling this appointment"
+                        placeholder="Select Reason"
+                        tooltip="E.g. 'Visit' or 'Meeting'"
+                        options={[
+                          { label: 'Visit', value: 'visit' },
+                          { label: 'Meeting', value: 'meeting' },
+                        ]}
+                      />
+                    )}
+                  </form.AppField>
+                  <form.AppField name="message">
+                    {(field) => (
+                      <field.TextField
+                        label="Message"
+                        description="Additional notes or details about the scheduled appointment"
+                        placeholder="Enter Message"
+                        tooltip="E.g. 'Property inspection scheduled'"
+                      />
+                    )}
+                  </form.AppField>
+                  <form.AppField name="date">
+                    {(field) => (
+                      <field.DateTimeField
+                        disablePastDates
+                        label="Date"
+                        description="The scheduled date and time of the appointment"
+                        placeholder="Select Date and Time"
+                        tooltip="E.g. 'April 20, 2024 2:00 PM'"
+                      />
+                    )}
+                  </form.AppField>
+                </>
+              )}
               <form.AppField name="isApproved">
                 {(field) => (
                   <field.BoolField
