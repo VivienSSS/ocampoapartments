@@ -15,6 +15,7 @@ export enum Collections {
 	ApartmentUnits = "apartment_units",
 	BillItems = "bill_items",
 	Bills = "bills",
+	Emails = "emails",
 	Forms = "forms",
 	Inquiries = "inquiries",
 	MaintenanceRequests = "maintenance_requests",
@@ -22,6 +23,7 @@ export enum Collections {
 	Otp = "otp",
 	Payments = "payments",
 	Properties = "properties",
+	Schedules = "schedules",
 	Tenancies = "tenancies",
 	Tenants = "tenants",
 	Users = "users",
@@ -117,7 +119,7 @@ export type AnnouncementsRecord = {
 
 export type ApartmentUnitsRecord = {
 	capacity: number
-	carousel_image?: FileNameString[]
+	carouselImage?: FileNameString[]
 	created: IsoAutoDateString
 	floorNumber: number
 	id: string
@@ -125,7 +127,7 @@ export type ApartmentUnitsRecord = {
 	isAvailable?: boolean
 	price: number
 	property: RecordIdString
-	room_size?: number
+	roomSize?: number
 	unitLetter: string
 	updated: IsoAutoDateString
 }
@@ -147,15 +149,27 @@ export enum BillsStatusOptions {
 	"Paid" = "Paid",
 	"Due" = "Due",
 	"Overdue" = "Overdue",
+	"Draft" = "Draft",
 }
 export type BillsRecord = {
 	created: IsoAutoDateString
 	dueDate: IsoDateString
 	hasSent?: boolean
 	id: string
+	invoiceNumber?: string
 	items?: RecordIdString[]
 	status: BillsStatusOptions
 	tenancy: RecordIdString
+	updated: IsoAutoDateString
+}
+
+export type EmailsRecord = {
+	created: IsoAutoDateString
+	hasSent?: boolean
+	id: string
+	message: string
+	subject?: string
+	to: string
 	updated: IsoAutoDateString
 }
 
@@ -182,6 +196,12 @@ export enum FormsTypeOptions {
 	"email" = "email",
 	"select" = "select",
 	"textarea" = "textarea",
+	"url" = "url",
+	"bool" = "bool",
+	"number" = "number",
+	"relation" = "relation",
+	"file" = "file",
+	"date" = "date",
 }
 
 export enum FormsOrientationOptions {
@@ -208,7 +228,6 @@ export type FormsRecord<Tconfig = unknown> = {
 
 export enum InquiriesStatusOptions {
 	"pending" = "pending",
-	"verified" = "verified",
 	"approved" = "approved",
 	"rejected" = "rejected",
 }
@@ -241,12 +260,12 @@ export enum MaintenanceRequestsStatusOptions {
 	"Worker Assigned" = "Worker Assigned",
 	"In Progress" = "In Progress",
 	"Completed" = "Completed",
+	"Cancelled" = "Cancelled",
 }
 export type MaintenanceRequestsRecord = {
 	completedDate?: IsoDateString
 	created: IsoAutoDateString
 	description: HTMLString
-	hasSent?: boolean
 	id: string
 	status?: MaintenanceRequestsStatusOptions
 	submittedDate?: IsoDateString
@@ -286,8 +305,8 @@ export type PaymentsRecord = {
 	amountPaid?: number
 	bill: RecordIdString
 	created: IsoAutoDateString
-	hasSent?: boolean
 	id: string
+	isVerified?: boolean
 	paymentDate: IsoDateString
 	paymentMethod: PaymentsPaymentMethodOptions
 	screenshot: FileNameString
@@ -308,7 +327,24 @@ export type PropertiesRecord = {
 	updated: IsoAutoDateString
 }
 
+export enum SchedulesReasonOptions {
+	"visit" = "visit",
+	"meeting" = "meeting",
+}
+export type SchedulesRecord = {
+	created: IsoAutoDateString
+	date: IsoDateString
+	id: string
+	isApproved?: boolean
+	isCancelled?: boolean
+	message: string
+	reason: SchedulesReasonOptions
+	tenant: RecordIdString
+	updated: IsoAutoDateString
+}
+
 export type TenanciesRecord = {
+	contractDocument?: FileNameString
 	created: IsoAutoDateString
 	hasSent?: boolean
 	id: string
@@ -339,6 +375,7 @@ export type UsersRecord = {
 	email: string
 	emailVisibility?: boolean
 	firstName: string
+	firstTimeUser?: boolean
 	id: string
 	isAccepted?: boolean
 	isActive?: boolean
@@ -363,6 +400,7 @@ export type AnnouncementsResponse<Texpand = unknown> = Required<AnnouncementsRec
 export type ApartmentUnitsResponse<Texpand = unknown> = Required<ApartmentUnitsRecord> & BaseSystemFields<Texpand>
 export type BillItemsResponse<Texpand = unknown> = Required<BillItemsRecord> & BaseSystemFields<Texpand>
 export type BillsResponse<Texpand = unknown> = Required<BillsRecord> & BaseSystemFields<Texpand>
+export type EmailsResponse<Texpand = unknown> = Required<EmailsRecord> & BaseSystemFields<Texpand>
 export type FormsResponse<Tconfig = unknown, Texpand = unknown> = Required<FormsRecord<Tconfig>> & BaseSystemFields<Texpand>
 export type InquiriesResponse<Texpand = unknown> = Required<InquiriesRecord> & BaseSystemFields<Texpand>
 export type MaintenanceRequestsResponse<Texpand = unknown> = Required<MaintenanceRequestsRecord> & BaseSystemFields<Texpand>
@@ -370,6 +408,7 @@ export type MaintenanceWorkersResponse<Texpand = unknown> = Required<Maintenance
 export type OtpResponse<Texpand = unknown> = Required<OtpRecord> & BaseSystemFields<Texpand>
 export type PaymentsResponse<Texpand = unknown> = Required<PaymentsRecord> & BaseSystemFields<Texpand>
 export type PropertiesResponse<Texpand = unknown> = Required<PropertiesRecord> & BaseSystemFields<Texpand>
+export type SchedulesResponse<Texpand = unknown> = Required<SchedulesRecord> & BaseSystemFields<Texpand>
 export type TenanciesResponse<Texpand = unknown> = Required<TenanciesRecord> & BaseSystemFields<Texpand>
 export type TenantsResponse<Texpand = unknown> = Required<TenantsRecord> & BaseSystemFields<Texpand>
 export type UsersResponse<Texpand = unknown> = Required<UsersRecord> & AuthSystemFields<Texpand>
@@ -386,6 +425,7 @@ export type CollectionRecords = {
 	apartment_units: ApartmentUnitsRecord
 	bill_items: BillItemsRecord
 	bills: BillsRecord
+	emails: EmailsRecord
 	forms: FormsRecord
 	inquiries: InquiriesRecord
 	maintenance_requests: MaintenanceRequestsRecord
@@ -393,6 +433,7 @@ export type CollectionRecords = {
 	otp: OtpRecord
 	payments: PaymentsRecord
 	properties: PropertiesRecord
+	schedules: SchedulesRecord
 	tenancies: TenanciesRecord
 	tenants: TenantsRecord
 	users: UsersRecord
@@ -408,6 +449,7 @@ export type CollectionResponses = {
 	apartment_units: ApartmentUnitsResponse
 	bill_items: BillItemsResponse
 	bills: BillsResponse
+	emails: EmailsResponse
 	forms: FormsResponse
 	inquiries: InquiriesResponse
 	maintenance_requests: MaintenanceRequestsResponse
@@ -415,6 +457,7 @@ export type CollectionResponses = {
 	otp: OtpResponse
 	payments: PaymentsResponse
 	properties: PropertiesResponse
+	schedules: SchedulesResponse
 	tenancies: TenanciesResponse
 	tenants: TenantsResponse
 	users: UsersResponse

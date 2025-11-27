@@ -12,12 +12,14 @@ import { Route as rootRouteImport } from './routes/__root'
 import { Route as VerifyOtpRouteImport } from './routes/verify-otp'
 import { Route as RegisterRouteImport } from './routes/register'
 import { Route as DashboardRouteRouteImport } from './routes/dashboard/route'
-import { Route as IndexRouteImport } from './routes/index'
+import { Route as landingRouteRouteImport } from './routes/(landing)/route'
 import { Route as DashboardIndexRouteImport } from './routes/dashboard/index'
+import { Route as landingIndexRouteImport } from './routes/(landing)/index'
 import { Route as DashboardCollectionRouteImport } from './routes/dashboard/$collection'
 import { Route as DashboardTenantOverviewIndexRouteImport } from './routes/dashboard/tenant-overview/index'
 import { Route as DashboardBldgAdminOverviewIndexRouteImport } from './routes/dashboard/bldg-admin-overview/index'
 import { Route as DashboardBillsIndexRouteImport } from './routes/dashboard/bills/index'
+import { Route as landingPropertiesIdRouteImport } from './routes/(landing)/properties.$id'
 
 const VerifyOtpRoute = VerifyOtpRouteImport.update({
   id: '/verify-otp',
@@ -34,15 +36,19 @@ const DashboardRouteRoute = DashboardRouteRouteImport.update({
   path: '/dashboard',
   getParentRoute: () => rootRouteImport,
 } as any)
-const IndexRoute = IndexRouteImport.update({
-  id: '/',
-  path: '/',
+const landingRouteRoute = landingRouteRouteImport.update({
+  id: '/(landing)',
   getParentRoute: () => rootRouteImport,
 } as any)
 const DashboardIndexRoute = DashboardIndexRouteImport.update({
   id: '/',
   path: '/',
   getParentRoute: () => DashboardRouteRoute,
+} as any)
+const landingIndexRoute = landingIndexRouteImport.update({
+  id: '/',
+  path: '/',
+  getParentRoute: () => landingRouteRoute,
 } as any)
 const DashboardCollectionRoute = DashboardCollectionRouteImport.update({
   id: '/$collection',
@@ -66,36 +72,45 @@ const DashboardBillsIndexRoute = DashboardBillsIndexRouteImport.update({
   path: '/bills/',
   getParentRoute: () => DashboardRouteRoute,
 } as any)
+const landingPropertiesIdRoute = landingPropertiesIdRouteImport.update({
+  id: '/properties/$id',
+  path: '/properties/$id',
+  getParentRoute: () => landingRouteRoute,
+} as any)
 
 export interface FileRoutesByFullPath {
-  '/': typeof IndexRoute
+  '/': typeof landingIndexRoute
   '/dashboard': typeof DashboardRouteRouteWithChildren
   '/register': typeof RegisterRoute
   '/verify-otp': typeof VerifyOtpRoute
   '/dashboard/$collection': typeof DashboardCollectionRoute
   '/dashboard/': typeof DashboardIndexRoute
+  '/properties/$id': typeof landingPropertiesIdRoute
   '/dashboard/bills': typeof DashboardBillsIndexRoute
   '/dashboard/bldg-admin-overview': typeof DashboardBldgAdminOverviewIndexRoute
   '/dashboard/tenant-overview': typeof DashboardTenantOverviewIndexRoute
 }
 export interface FileRoutesByTo {
-  '/': typeof IndexRoute
   '/register': typeof RegisterRoute
   '/verify-otp': typeof VerifyOtpRoute
   '/dashboard/$collection': typeof DashboardCollectionRoute
+  '/': typeof landingIndexRoute
   '/dashboard': typeof DashboardIndexRoute
+  '/properties/$id': typeof landingPropertiesIdRoute
   '/dashboard/bills': typeof DashboardBillsIndexRoute
   '/dashboard/bldg-admin-overview': typeof DashboardBldgAdminOverviewIndexRoute
   '/dashboard/tenant-overview': typeof DashboardTenantOverviewIndexRoute
 }
 export interface FileRoutesById {
   __root__: typeof rootRouteImport
-  '/': typeof IndexRoute
+  '/(landing)': typeof landingRouteRouteWithChildren
   '/dashboard': typeof DashboardRouteRouteWithChildren
   '/register': typeof RegisterRoute
   '/verify-otp': typeof VerifyOtpRoute
   '/dashboard/$collection': typeof DashboardCollectionRoute
+  '/(landing)/': typeof landingIndexRoute
   '/dashboard/': typeof DashboardIndexRoute
+  '/(landing)/properties/$id': typeof landingPropertiesIdRoute
   '/dashboard/bills/': typeof DashboardBillsIndexRoute
   '/dashboard/bldg-admin-overview/': typeof DashboardBldgAdminOverviewIndexRoute
   '/dashboard/tenant-overview/': typeof DashboardTenantOverviewIndexRoute
@@ -109,34 +124,38 @@ export interface FileRouteTypes {
     | '/verify-otp'
     | '/dashboard/$collection'
     | '/dashboard/'
+    | '/properties/$id'
     | '/dashboard/bills'
     | '/dashboard/bldg-admin-overview'
     | '/dashboard/tenant-overview'
   fileRoutesByTo: FileRoutesByTo
   to:
-    | '/'
     | '/register'
     | '/verify-otp'
     | '/dashboard/$collection'
+    | '/'
     | '/dashboard'
+    | '/properties/$id'
     | '/dashboard/bills'
     | '/dashboard/bldg-admin-overview'
     | '/dashboard/tenant-overview'
   id:
     | '__root__'
-    | '/'
+    | '/(landing)'
     | '/dashboard'
     | '/register'
     | '/verify-otp'
     | '/dashboard/$collection'
+    | '/(landing)/'
     | '/dashboard/'
+    | '/(landing)/properties/$id'
     | '/dashboard/bills/'
     | '/dashboard/bldg-admin-overview/'
     | '/dashboard/tenant-overview/'
   fileRoutesById: FileRoutesById
 }
 export interface RootRouteChildren {
-  IndexRoute: typeof IndexRoute
+  landingRouteRoute: typeof landingRouteRouteWithChildren
   DashboardRouteRoute: typeof DashboardRouteRouteWithChildren
   RegisterRoute: typeof RegisterRoute
   VerifyOtpRoute: typeof VerifyOtpRoute
@@ -165,11 +184,11 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof DashboardRouteRouteImport
       parentRoute: typeof rootRouteImport
     }
-    '/': {
-      id: '/'
+    '/(landing)': {
+      id: '/(landing)'
       path: '/'
       fullPath: '/'
-      preLoaderRoute: typeof IndexRouteImport
+      preLoaderRoute: typeof landingRouteRouteImport
       parentRoute: typeof rootRouteImport
     }
     '/dashboard/': {
@@ -178,6 +197,13 @@ declare module '@tanstack/react-router' {
       fullPath: '/dashboard/'
       preLoaderRoute: typeof DashboardIndexRouteImport
       parentRoute: typeof DashboardRouteRoute
+    }
+    '/(landing)/': {
+      id: '/(landing)/'
+      path: '/'
+      fullPath: '/'
+      preLoaderRoute: typeof landingIndexRouteImport
+      parentRoute: typeof landingRouteRoute
     }
     '/dashboard/$collection': {
       id: '/dashboard/$collection'
@@ -207,8 +233,29 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof DashboardBillsIndexRouteImport
       parentRoute: typeof DashboardRouteRoute
     }
+    '/(landing)/properties/$id': {
+      id: '/(landing)/properties/$id'
+      path: '/properties/$id'
+      fullPath: '/properties/$id'
+      preLoaderRoute: typeof landingPropertiesIdRouteImport
+      parentRoute: typeof landingRouteRoute
+    }
   }
 }
+
+interface landingRouteRouteChildren {
+  landingIndexRoute: typeof landingIndexRoute
+  landingPropertiesIdRoute: typeof landingPropertiesIdRoute
+}
+
+const landingRouteRouteChildren: landingRouteRouteChildren = {
+  landingIndexRoute: landingIndexRoute,
+  landingPropertiesIdRoute: landingPropertiesIdRoute,
+}
+
+const landingRouteRouteWithChildren = landingRouteRoute._addFileChildren(
+  landingRouteRouteChildren,
+)
 
 interface DashboardRouteRouteChildren {
   DashboardCollectionRoute: typeof DashboardCollectionRoute
@@ -231,7 +278,7 @@ const DashboardRouteRouteWithChildren = DashboardRouteRoute._addFileChildren(
 )
 
 const rootRouteChildren: RootRouteChildren = {
-  IndexRoute: IndexRoute,
+  landingRouteRoute: landingRouteRouteWithChildren,
   DashboardRouteRoute: DashboardRouteRouteWithChildren,
   RegisterRoute: RegisterRoute,
   VerifyOtpRoute: VerifyOtpRoute,
