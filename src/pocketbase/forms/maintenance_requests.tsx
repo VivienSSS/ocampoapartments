@@ -1,5 +1,10 @@
 import { withForm } from '@/components/ui/forms';
-import type { Create, TypedPocketBase, Update } from '../types';
+import type {
+  Create,
+  MaintenanceRequestsRecord,
+  TypedPocketBase,
+  Update,
+} from '../types';
 import { formOptions } from '@tanstack/react-form';
 import { ClientResponseError } from 'pocketbase';
 import type { UseNavigateResult } from '@tanstack/react-router';
@@ -10,8 +15,11 @@ import { FieldGroup, FieldSet } from '@/components/ui/field';
 export const MaintenanceRequestForm = () =>
   withForm({
     defaultValues: {} as Update<'maintenance_requests'>,
-    props: {} as { action?: 'create' | 'update' },
-    render: ({ form, action }) => {
+    props: {} as {
+      action?: 'create' | 'update';
+      record: MaintenanceRequestsRecord;
+    },
+    render: ({ form, action, record }) => {
       return (
         <form.AppForm>
           <FieldSet>

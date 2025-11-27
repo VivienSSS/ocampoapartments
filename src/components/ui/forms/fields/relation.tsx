@@ -89,7 +89,9 @@ const RelationField = <Records extends RelationItem>(
           props.renderOption ? props.renderOption : renderDisplayValue
         }
         getOptionValue={(item) => item.id}
-        getDisplayValue={renderDisplayValue}
+        getDisplayValue={
+          props.renderOption ? props.renderOption : renderDisplayValue
+        }
         label={relationshipName}
         placeholder={placeholder}
         value={field.state.value ?? ''}

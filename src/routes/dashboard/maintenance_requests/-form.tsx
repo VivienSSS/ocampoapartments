@@ -115,6 +115,7 @@ const MaintenanceRequestForm = () => {
         >
           <form.AppForm>
             <Component
+              record={record}
               form={form as any}
               action={searchQuery.action === 'create' ? 'create' : 'update'}
             />
