@@ -78,12 +78,7 @@ export const PaymentForm = () =>
                         tooltip="E.g. 'John Doe'"
                         recordListOption={{ expand: 'user' }}
                         renderOption={(item) =>
-                          String(
-                            item.expand?.user?.email ||
-                              item.phoneNumber ||
-                              item.user ||
-                              item.id,
-                          )
+                          `${item.expand.user.firstName} ${item.expand.user.lastName}`
                         }
                       />
                     )}
