@@ -54,6 +54,7 @@ func SendPaymentAcknowledgementInvoiceToEmail(e *core.RecordEvent) error {
 	// Create email record for payment acknowledgement
 	emailRecord := core.NewRecord(emailCollection)
 	emailRecord.Set("to", tenantEmail)
+	emailRecord.Set("subject", "Payment Received - Under Verification")
 	emailRecord.Set("message", fmt.Sprintf(`
 We have received your payment.
 
@@ -129,6 +130,7 @@ func SendPaymentVerifiedInvoiceToEmail(e *core.RecordEvent) error {
 	// Create email record for payment verification
 	emailRecord := core.NewRecord(emailCollection)
 	emailRecord.Set("to", tenantEmail)
+	emailRecord.Set("subject", "Payment Confirmed")
 	emailRecord.Set("message", fmt.Sprintf(`
 Your payment has been verified and confirmed.
 

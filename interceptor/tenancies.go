@@ -57,6 +57,7 @@ func SendRecurringBillInvoiceToTenant(e *core.RecordEvent) error {
 	// Create email record for recurring bill
 	emailRecord := core.NewRecord(emailCollection)
 	emailRecord.Set("to", tenantEmail)
+	emailRecord.Set("subject", "Monthly Bill Invoice Available")
 	emailRecord.Set("message", fmt.Sprintf(`
 Your monthly bill invoice is now available.
 
@@ -117,6 +118,7 @@ func NotifyTenantBeforeBillInvoiceDueDate(e *core.RecordEvent) error {
 	// Create email record for bill due date reminder
 	emailRecord := core.NewRecord(emailCollection)
 	emailRecord.Set("to", tenantEmail)
+	emailRecord.Set("subject", "Bill Due Date Reminder")
 	emailRecord.Set("message", fmt.Sprintf(`
 BILL DUE DATE REMINDER
 
@@ -183,6 +185,7 @@ func SendNearLeaseContractTerminationToTenant(e *core.RecordEvent) error {
 	// Create email record for lease termination notice
 	emailRecord := core.NewRecord(emailCollection)
 	emailRecord.Set("to", tenantEmail)
+	emailRecord.Set("subject", "Lease Contract Termination Notice")
 	emailRecord.Set("message", fmt.Sprintf(`
 LEASE CONTRACT TERMINATION NOTICE
 
@@ -249,6 +252,7 @@ func SendEvictionNoticeToTenant(e *core.RecordEvent) error {
 	// Create email record for eviction notice
 	emailRecord := core.NewRecord(emailCollection)
 	emailRecord.Set("to", tenantEmail)
+	emailRecord.Set("subject", "Formal Eviction Notice")
 	emailRecord.Set("message", fmt.Sprintf(`
 FORMAL EVICTION NOTICE
 

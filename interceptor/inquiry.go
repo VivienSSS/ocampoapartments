@@ -40,42 +40,40 @@ func generatePassword() string {
 
 func SendInquiryAcknoledgementToApplicantEmail(e *core.RecordEvent) error {
 
-	if (e.Record.GetString("status") != "pending") {
+	if e.Record.GetString("status") != "pending" {
 		return e.Next()
 	}
 
 	emailCollection, err := e.App.FindCollectionByNameOrId("emails")
-
 	if err != nil {
 		return err
 	}
 
 	emailRecord := core.NewRecord(emailCollection)
+	emailRecord.Set("to", e.Record.GetString("email"))
+	emailRecord.Set("subject", "Inquiry Acknowledgement")
+	emailRecord.Set("message", "Your inquiry has been acknowledged. We will return back to you shortly")
 
-	emailRecord.Set("to",e.Record.GetString("email"))
-	emailRecord.Set("message","Your inquiry has been acknowledge. we will return back to you shortly")
-
-	e.App.Save(emailRecord)
+	if err := e.App.Save(emailRecord); err != nil {
+		return err
+	}
 
 	return e.Next()
 }
 
 func SendApproveInquiryToApplicantEmail(e *core.RecordEvent) error {
 
-	if (e.Record.GetString("status") != "approved") {
+	if e.Record.GetString("status") != "approved" {
 		return e.Next()
 	}
 
 	emailCollection, err := e.App.FindCollectionByNameOrId("emails")
-
 	if err != nil {
 		return err
 	}
 
-	// create a new account for the tenant
 	// Get users collection
 	usersCollection, err := e.App.FindCollectionByNameOrId("_pb_users_auth_")
-	
 	if err != nil {
 		return err
 	}
@@ -92,64 +90,89 @@ func SendApproveInquiryToApplicantEmail(e *core.RecordEvent) error {
 	userRecord.Set("role", "Tenant")
 	userRecord.Set("firstTimeUser", true)
 
-	// save
-	e.App.Save(userRecord)
+	// Save user record
+	if err := e.App.Save(userRecord); err != nil {
+		return err
+	}
 
+	// Get tenants collection
+	tenantsCollection, err := e.App.FindCollectionByNameOrId("tenants")
+	if err != nil {
+		return err
+	}
+
+	// Create tenant record
+	tenantRecord := core.NewRecord(tenantsCollection)
+	tenantRecord.Set("user", userRecord.Id)
+
+	// Save tenant record
+	if err := e.App.Save(tenantRecord); err != nil {
+		return err
+	}
+
+	// Create email record for approval
 	emailRecord := core.NewRecord(emailCollection)
+	emailRecord.Set("to", e.Record.GetString("email"))
+	emailRecord.Set("subject", "Application Approved - Account Created")
+	emailRecord.Set("message", fmt.Sprintf(`Your application has been approved. Here are your credentials:
 
-	emailRecord.Set("to",e.Record.GetString("email"))
-	emailRecord.Set("message",fmt.Sprintf(`
-		Your application has been approved. here are your credentials
+Email: %s
+Password: %s
 
-		email: %s
-		password: %s
-	`,
-	e.Record.GetString("email"),
-	password,
-	))
+Please log in with these credentials and change your password immediately for security.
+Welcome!
+	`, e.Record.GetString("email"), password))
 
-	e.App.Save(emailRecord)
+	if err := e.App.Save(emailRecord); err != nil {
+		return err
+	}
 
 	return e.Next()
 }
 
 func SendRejectionLetterToApplicantEmail(e *core.RecordEvent) error {
-	
-	if (e.Record.GetString("status") != "rejected") {
+
+	if e.Record.GetString("status") != "rejected" {
 		return e.Next()
 	}
 
 	emailCollection, err := e.App.FindCollectionByNameOrId("emails")
-
 	if err != nil {
 		return err
 	}
 
 	emailRecord := core.NewRecord(emailCollection)
+	emailRecord.Set("to", e.Record.GetString("email"))
+	emailRecord.Set("subject", "Application Rejected")
+	emailRecord.Set("message", fmt.Sprintf(`We are sorry to inform you that your application has been rejected.
 
-	emailRecord.Set("to",e.Record.Get("email"))
-	emailRecord.Set("message",fmt.Sprintf(`
-		We are sorry to inform your that your application has been rejected:
+Reason: %s
 
-		Reason: %s
+We hope to see you again next time. If you have any questions, please contact our management office.
+	`, e.Record.GetString("rejectionReason")))
 
-		We hope to see you again next time
-	`,e.Record.GetString("rejectionReason")))
+	if err := e.App.Save(emailRecord); err != nil {
+		return err
+	}
 
-	e.App.Save(emailRecord)
-	
 	return e.Next()
 }
 
-func SetFirstTimeUserToFalseInUserOnceUserChangeItsPassword(e *core.RecordEvent) error {
+func SetFirstTimeUserToFalseInUserOnceUserChangeItsPassword(e *core.RecordRequestEvent) error {
 
-	if (!e.Record.GetBool("firstTimeUser")) {
+	if !e.Record.GetBool("firstTimeUser") {
 		return e.Next()
 	}
 
-	e.Record.Set("isActive", true)
-	e.Record.Set("isAccepted", true)
-	e.Record.Set("firstTimeUser",false)
+	// Get password from request/form data
+	newPassword := e.Request.FormValue("password")
+
+	// If password field was provided and is not empty, user is changing password
+	if newPassword != "" {
+		e.Record.Set("isActive", true)
+		e.Record.Set("isAccepted", true)
+		e.Record.Set("firstTimeUser", false)
+	}
 
 	return e.Next()
 }

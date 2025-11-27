@@ -5,7 +5,12 @@ import (
 )
 
 func AddAuthorToAnnouncements(e *core.RecordRequestEvent) error {
-	e.Record.Set("author",e.Auth.Id)
+
+	if e.HasSuperuserAuth() {
+		return e.Next()
+	}
+
+	e.Record.Set("author", e.Auth.Id)
 	return e.Next()
 }
 
@@ -19,19 +24,19 @@ func SendAnnouncementsToEmails(e *core.RecordEvent) error {
 	}
 
 	// get all of the tenants in the system
-	userRecords, err := e.App.FindRecordsByFilter("users", "role = 'Tenant'","",99,0)
+	userRecords, err := e.App.FindRecordsByFilter("users", "role = 'Tenant'", "", 99, 0)
 
 	if err != nil {
 		return err
 	}
 
-
 	// interate over the tenants and send them the announcements
-	for _,record := range userRecords {
-	
+	for _, record := range userRecords {
+
 		newEmailRecord := core.NewRecord(emailCollection)
-		newEmailRecord.Set("to",record.Get("email"))
-		newEmailRecord.Set("message",e.Record.Get("message"))
+		newEmailRecord.Set("to", record.Get("email"))
+		newEmailRecord.Set("subject", "New Announcement")
+		newEmailRecord.Set("message", e.Record.Get("message"))
 
 		e.App.Save(newEmailRecord)
 	}

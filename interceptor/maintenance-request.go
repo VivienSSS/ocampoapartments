@@ -110,6 +110,7 @@ func SendAcknowledgementMaintenanceRequestEmailToTenant(e *core.RecordEvent) err
 	// Create email record for acknowledgement
 	emailRecord := core.NewRecord(emailCollection)
 	emailRecord.Set("to", tenantEmail)
+	emailRecord.Set("subject", "Maintenance Request Received")
 	emailRecord.Set("message", fmt.Sprintf(`
 We have received your maintenance request.
 
@@ -191,6 +192,7 @@ func SendWorkerAssignedMaintenanceRequestEmailToTenant(e *core.RecordEvent) erro
 	// Create email record for worker assignment
 	emailRecord := core.NewRecord(emailCollection)
 	emailRecord.Set("to", tenantEmail)
+	emailRecord.Set("subject", "Worker Assigned to Your Maintenance Request")
 	emailRecord.Set("message", fmt.Sprintf(`
 A worker has been assigned to your maintenance request.
 
@@ -261,6 +263,7 @@ func SendInProgressEmailMaintenanceRequestToTenant(e *core.RecordEvent) error {
 	// Create email record for in-progress update
 	emailRecord := core.NewRecord(emailCollection)
 	emailRecord.Set("to", tenantEmail)
+	emailRecord.Set("subject", "Maintenance Work In Progress")
 	emailRecord.Set("message", fmt.Sprintf(`
 Your maintenance request is currently in progress.
 
@@ -331,6 +334,7 @@ func SendCompletionMessageMaintenanceRequestToTenant(e *core.RecordEvent) error 
 	// Create email record for completion
 	emailRecord := core.NewRecord(emailCollection)
 	emailRecord.Set("to", tenantEmail)
+	emailRecord.Set("subject", "Maintenance Work Completed")
 	emailRecord.Set("message", fmt.Sprintf(`
 Your maintenance request has been completed.
 
@@ -402,6 +406,7 @@ func SendCancelledMessageMaintenanceRequestToTenant(e *core.RecordEvent) error {
 	// Create email record for cancellation
 	emailRecord := core.NewRecord(emailCollection)
 	emailRecord.Set("to", tenantEmail)
+	emailRecord.Set("subject", "Maintenance Request Cancelled")
 	emailRecord.Set("message", fmt.Sprintf(`
 Your maintenance request has been cancelled.
 

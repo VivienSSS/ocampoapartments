@@ -36,6 +36,7 @@ func NotifyNewSchedules(e *core.RecordEvent) error {
 	// Create email record for new schedule notification
 	emailRecord := core.NewRecord(emailCollection)
 	emailRecord.Set("to", tenantEmail)
+	emailRecord.Set("subject", "New Schedule Created - Pending Approval")
 	emailRecord.Set("message", fmt.Sprintf(`
 A new schedule has been created for you.
 
@@ -88,6 +89,7 @@ func NotifyOutdatedSchedules(e *core.RecordEvent) error {
 	// Create email record for cancelled schedule notification
 	emailRecord := core.NewRecord(emailCollection)
 	emailRecord.Set("to", tenantEmail)
+	emailRecord.Set("subject", "Schedule Cancelled")
 	emailRecord.Set("message", fmt.Sprintf(`
 Your scheduled appointment has been cancelled.
 
@@ -139,6 +141,7 @@ func NotifyApprovedSchedules(e *core.RecordEvent) error {
 	// Create email record for approved schedule notification
 	emailRecord := core.NewRecord(emailCollection)
 	emailRecord.Set("to", tenantEmail)
+	emailRecord.Set("subject", "Schedule Approved")
 	emailRecord.Set("message", fmt.Sprintf(`
 Your scheduled appointment has been approved.
 

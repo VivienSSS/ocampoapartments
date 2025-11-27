@@ -172,6 +172,16 @@ func main() {
 		return se.Next()
 	})
 
+	// Register cron job to create bills every 30 seconds
+	err := app.Cron().Add("monthly-bills-cron", "*/30 * * * * *", func() {
+		if err := interceptor.CreateMonthlyBillsCron(app); err != nil {
+			fmt.Printf("Error in monthly bills cron: %v\n", err)
+		}
+	})
+	if err != nil {
+		log.Printf("Failed to register cron job: %v", err)
+	}
+
 	// interceptors
 	app.OnRecordCreateRequest("announcements").BindFunc(interceptor.AddAuthorToAnnouncements)
 	app.OnRecordCreateRequest("bills").BindFunc(interceptor.GenerateInvoiceNumber)
@@ -179,6 +189,40 @@ func main() {
 	// events
 	app.OnRecordAfterCreateSuccess("announcements").BindFunc(interceptor.SendAnnouncementsToEmails)
 	app.OnRecordAfterCreateSuccess("bills").BindFunc(interceptor.SendBillInvoiceToTenants)
+	app.OnRecordUpdateRequest("bills").BindFunc(interceptor.BillsStateMachine)
+	app.OnRecordAfterUpdateSuccess("bills").BindFunc(interceptor.SendOverdueNoticeToTenant)
+
+	// inquiry events
+	app.OnRecordAfterCreateSuccess("inquiries").BindFunc(interceptor.SendInquiryAcknoledgementToApplicantEmail)
+	app.OnRecordAfterUpdateSuccess("inquiries").BindFunc(interceptor.SendApproveInquiryToApplicantEmail)
+	app.OnRecordAfterUpdateSuccess("inquiries").BindFunc(interceptor.SendRejectionLetterToApplicantEmail)
+
+	// users events
+	app.OnRecordUpdateRequest("_pb_users_auth_").BindFunc(interceptor.SetFirstTimeUserToFalseInUserOnceUserChangeItsPassword)
+
+	// payments events
+	app.OnRecordAfterCreateSuccess("payments").BindFunc(interceptor.SendPaymentAcknowledgementInvoiceToEmail)
+	app.OnRecordAfterUpdateSuccess("payments").BindFunc(interceptor.SendPaymentVerifiedInvoiceToEmail)
+
+	// schedules events
+	app.OnRecordAfterCreateSuccess("schedules").BindFunc(interceptor.NotifyNewSchedules)
+	app.OnRecordAfterUpdateSuccess("schedules").BindFunc(interceptor.NotifyApprovedSchedules)
+	app.OnRecordAfterUpdateSuccess("schedules").BindFunc(interceptor.NotifyOutdatedSchedules)
+
+	// tenancies events
+	app.OnRecordAfterCreateSuccess("tenancies").BindFunc(interceptor.CreateBillsAndItemsForTenancy)
+	app.OnRecordAfterCreateSuccess("tenancies").BindFunc(interceptor.SendRecurringBillInvoiceToTenant)
+	app.OnRecordAfterUpdateSuccess("tenancies").BindFunc(interceptor.NotifyTenantBeforeBillInvoiceDueDate)
+	app.OnRecordAfterUpdateSuccess("tenancies").BindFunc(interceptor.SendNearLeaseContractTerminationToTenant)
+	app.OnRecordAfterUpdateSuccess("tenancies").BindFunc(interceptor.SendEvictionNoticeToTenant)
+
+	// maintenance requests events
+	app.OnRecordUpdateRequest("maintenance_requests").BindFunc(interceptor.MaintenanceRequestStatusStateMachine)
+	app.OnRecordAfterCreateSuccess("maintenance_requests").BindFunc(interceptor.SendAcknowledgementMaintenanceRequestEmailToTenant)
+	app.OnRecordAfterUpdateSuccess("maintenance_requests").BindFunc(interceptor.SendWorkerAssignedMaintenanceRequestEmailToTenant)
+	app.OnRecordAfterUpdateSuccess("maintenance_requests").BindFunc(interceptor.SendInProgressEmailMaintenanceRequestToTenant)
+	app.OnRecordAfterUpdateSuccess("maintenance_requests").BindFunc(interceptor.SendCompletionMessageMaintenanceRequestToTenant)
+	app.OnRecordAfterUpdateSuccess("maintenance_requests").BindFunc(interceptor.SendCancelledMessageMaintenanceRequestToTenant)
 
 	if err := app.Start(); err != nil {
 		log.Fatal(err)
