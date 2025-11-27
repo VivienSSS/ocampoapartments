@@ -1,5 +1,13 @@
 import { withForm } from '@/components/ui/forms';
-import type { Create, TypedPocketBase, Update } from '../types';
+import type {
+  BillsResponse,
+  CollectionResponses,
+  Create,
+  TenanciesResponse,
+  TenantsResponse,
+  TypedPocketBase,
+  Update,
+} from '../types';
 import { formOptions } from '@tanstack/react-form';
 import { ClientResponseError } from 'pocketbase';
 import type { UseNavigateResult } from '@tanstack/react-router';
@@ -30,30 +38,47 @@ export const PaymentForm = () =>
                 <>
                   <form.AppField name="bill">
                     {(field) => (
-                      <field.RelationField
+                      <field.RelationField<
+                        BillsResponse<{
+                          tenancy: TenanciesResponse<{
+                            tenant: string;
+                            unit: string;
+                          }>;
+                        }>
+                      >
                         label="Bill"
                         description="The bill that this payment is for"
                         relationshipName="bill"
                         collection={Collections.Bills}
                         placeholder="Select Bill"
                         tooltip="E.g. 'INV-001'"
+                        recordListOption={{ expand: 'tenancy' }}
                         renderOption={(item) =>
-                          String(item.invoiceNumber || item.id)
+                          String(
+                            item.invoiceNumber ||
+                              `Tenancy: ${item.expand?.tenancy?.tenant || 'N/A'} - Unit: ${item.expand?.tenancy?.unit || 'N/A'}` ||
+                              item.id,
+                          )
                         }
                       />
                     )}
                   </form.AppField>
                   <form.AppField name="tenant">
                     {(field) => (
-                      <field.RelationField
+                      <field.RelationField<
+                        TenantsResponse<{
+                          user: CollectionResponses['users'];
+                        }>
+                      >
                         label="Tenant"
                         description="The tenant who made this payment"
                         relationshipName="tenant"
                         collection={Collections.Tenants}
                         placeholder="Select Tenant"
                         tooltip="E.g. 'John Doe'"
+                        recordListOption={{ expand: 'user' }}
                         renderOption={(item) =>
-                          String(item.phoneNumber || item.user || item.id)
+                          `${item.expand.user.firstName} ${item.expand.user.lastName}`
                         }
                       />
                     )}

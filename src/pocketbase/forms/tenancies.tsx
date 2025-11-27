@@ -1,5 +1,12 @@
 import { withForm } from '@/components/ui/forms';
-import type { Create, TypedPocketBase, Update } from '../types';
+import type {
+  ApartmentUnitsResponse,
+  CollectionResponses,
+  Create,
+  TenantsResponse,
+  TypedPocketBase,
+  Update,
+} from '../types';
 import { formOptions } from '@tanstack/react-form';
 import { ClientResponseError } from 'pocketbase';
 import type { UseNavigateResult } from '@tanstack/react-router';
@@ -23,30 +30,42 @@ export const TenancyForm = () =>
             <FieldGroup>
               <form.AppField name="tenant">
                 {(field) => (
-                  <field.RelationField
+                  <field.RelationField<
+                    TenantsResponse<{
+                      user: CollectionResponses['users'];
+                    }>
+                  >
                     label="Tenant"
                     description="The tenant entering into this lease agreement"
                     relationshipName="tenant"
                     collection={Collections.Tenants}
                     placeholder="Select Tenant"
                     tooltip="E.g. 'John Doe'"
+                    recordListOption={{ expand: 'user' }}
                     renderOption={(item) =>
-                      String(item.phoneNumber || item.user || item.id)
+                      `${item.expand.user.firstName} ${item.expand.user.lastName}`
                     }
                   />
                 )}
               </form.AppField>
               <form.AppField name="unit">
                 {(field) => (
-                  <field.RelationField
+                  <field.RelationField<
+                    ApartmentUnitsResponse<{
+                      property: CollectionResponses['properties'];
+                    }>
+                  >
                     label="Unit"
                     description="The apartment unit being leased"
                     relationshipName="unit"
                     collection={Collections.ApartmentUnits}
                     placeholder="Select Unit"
                     tooltip="E.g. 'Unit A - Floor 1'"
+                    recordListOption={{ expand: 'property' }}
                     renderOption={(item) =>
-                      String(`${item.unitLetter} - Floor ${item.floorNumber}`)
+                      String(
+                        `${item.unitLetter} (${item.expand?.property?.branch || item.expand?.property?.address || 'Property'}) - Floor ${item.floorNumber}`,
+                      )
                     }
                   />
                 )}

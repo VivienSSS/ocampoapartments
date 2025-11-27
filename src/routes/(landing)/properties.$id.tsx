@@ -1,6 +1,6 @@
 import { createFileRoute } from '@tanstack/react-router';
 import { Button } from '@/components/ui/button';
-import { Card } from '@/components/ui/card';
+import { Card, CardContent } from '@/components/ui/card';
 import { Badge } from '@/components/ui/badge';
 import { useAppForm } from '@/components/ui/forms';
 import {
@@ -10,6 +10,7 @@ import {
 } from '@/pocketbase/types';
 import { useMutation } from '@tanstack/react-query';
 import { CreateRecordMutationOption } from '@/pocketbase/mutation';
+import { Item, ItemHeader, ItemMedia, ItemTitle } from '@/components/ui/item';
 
 export const Route = createFileRoute('/(landing)/properties/$id')({
   component: RouteComponent,
@@ -211,6 +212,20 @@ function RouteComponent() {
                 </div>
               </div>
             </Card>
+
+            {/* Floorplan */}
+            <Item>
+              <ItemHeader>
+                <ItemTitle>Floor Plan</ItemTitle>
+              </ItemHeader>
+              <ItemMedia>
+                <img
+                  src="/floorplan.png"
+                  alt="floorPlan"
+                  className="rounded-md"
+                />
+              </ItemMedia>
+            </Item>
           </div>
 
           {/* Right Column - Inquiry Form */}

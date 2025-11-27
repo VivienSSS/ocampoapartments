@@ -6,6 +6,7 @@ import { Field, FieldDescription, FieldError } from '../../field';
 import { useFieldContext } from '..';
 import { usePocketbase } from '@/pocketbase/context';
 import { TooltipFieldLabel } from '../utils/tooltip-field-label';
+import type { RecordListOptions } from 'pocketbase';
 
 export interface RelationItem {
   id: string;
@@ -24,6 +25,7 @@ export type RelationFieldProps<Records extends RelationItem> = {
   displayFields?: (keyof Records)[];
   filterFields?: (keyof Records)[];
   renderOption?: (item: Records) => React.ReactNode;
+  recordListOption?: RecordListOptions;
   disabled?: boolean;
 };
 
@@ -45,6 +47,7 @@ const RelationField = <Records extends RelationItem>(
     placeholder = 'Search...',
     filterFields,
     disabled = false,
+    recordListOption,
   } = props;
 
   const isInvalid = field.state.meta.isTouched && !field.state.meta.isValid;
@@ -65,6 +68,7 @@ const RelationField = <Records extends RelationItem>(
           .collection(collectionName)
           .getList(1, 50, {
             filter,
+            ...recordListOption,
           });
 
         return records.items as unknown as Records[];
@@ -73,7 +77,7 @@ const RelationField = <Records extends RelationItem>(
         return [];
       }
     },
-    [pocketbase, collectionName, filterFields],
+    [pocketbase, collectionName, filterFields, recordListOption],
   );
 
   const renderDisplayValue = (item: Records) =>
