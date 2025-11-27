@@ -1,0 +1,252 @@
+<!DOCTYPE html>
+<html class="light" lang="en">
+
+<head>
+  <meta charset="utf-8" />
+  <meta content="width=device-width, initial-scale=1.0" name="viewport" />
+  <title>Ocampo Apartments - Find Your Perfect Home</title>
+  <script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
+  <link href="https://fonts.googleapis.com/css2?family=Manrope:wght@400;500;600;700;800&amp;display=swap"
+    rel="stylesheet" />
+  <link
+    href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap"
+    rel="stylesheet" />
+  <script>
+    tailwind.config = {
+      darkMode: "class",
+      theme: {
+        extend: {
+          colors: {
+            "primary": "#137fec",
+            "background-light": "#f6f7f8",
+            "background-dark": "#101922",
+          },
+          fontFamily: {
+            "display": ["Manrope", "sans-serif"]
+          },
+          borderRadius: { "DEFAULT": "0.25rem", "lg": "0.5rem", "xl": "0.75rem", "full": "9999px" },
+        },
+      },
+    }
+  </script>
+  <style>
+    .material-symbols-outlined {
+      font-variation-settings:
+        'FILL' 0,
+        'wght' 400,
+        'GRAD' 0,
+        'opsz' 24
+    }
+  </style>
+</head>
+
+<body class="bg-background-light dark:bg-background-dark font-display text-gray-800 dark:text-gray-200">
+  <div class="relative flex h-auto min-h-screen w-full flex-col group/design-root overflow-x-hidden">
+    <div class="layout-container flex h-full grow flex-col">
+      <div class="flex flex-1 justify-center">
+        <div class="layout-content-container flex flex-col w-full max-w-6xl flex-1">
+          <header
+            class="flex items-center justify-between whitespace-nowrap border-b border-solid border-slate-200 dark:border-slate-800 px-6 sm:px-10 py-4 w-full">
+            <div class="flex items-center gap-4 text-slate-900 dark:text-slate-50">
+              <div class="size-6 text-primary">
+                <svg fill="none" viewBox="0 0 48 48" xmlns="http://www.w3.org/2000/svg">
+                  <path
+                    d="M24 45.8096C19.6865 45.8096 15.4698 44.5305 11.8832 42.134C8.29667 39.7376 5.50128 36.3314 3.85056 32.3462C2.19985 28.361 1.76794 23.9758 2.60947 19.7452C3.451 15.5145 5.52816 11.6284 8.57829 8.5783C11.6284 5.52817 15.5145 3.45101 19.7452 2.60948C23.9758 1.76795 28.361 2.19986 32.3462 3.85057C36.3314 5.50129 39.7376 8.29668 42.134 11.8833C44.5305 15.4698 45.8096 19.6865 45.8096 24L24 24L24 45.8096Z"
+                    fill="currentColor"></path>
+                </svg>
+              </div>
+              <h2 class="text-slate-900 dark:text-slate-50 text-xl font-bold leading-tight tracking-[-0.015em]">Ocampo
+                Apartments</h2>
+            </div>
+            <nav class="hidden md:flex items-center gap-8">
+              <a class="text-slate-700 dark:text-slate-300 text-sm font-medium leading-normal hover:text-primary dark:hover:text-primary transition-colors"
+                href="#">Home</a>
+              <a class="text-slate-700 dark:text-slate-300 text-sm font-medium leading-normal hover:text-primary dark:hover:text-primary transition-colors"
+                href="#">Properties</a>
+              <a class="text-slate-700 dark:text-slate-300 text-sm font-medium leading-normal hover:text-primary dark:hover:text-primary transition-colors"
+                href="#">About Us</a>
+              <a class="text-slate-700 dark:text-slate-300 text-sm font-medium leading-normal hover:text-primary dark:hover:text-primary transition-colors"
+                href="#">Contact</a>
+              <button
+                class="flex min-w-[84px] max-w-[480px] cursor-pointer items-center justify-center overflow-hidden rounded-lg h-10 px-4 bg-primary text-slate-50 text-sm font-bold leading-normal tracking-[0.015em] hover:bg-primary/90 transition-colors">
+                <span class="truncate">Inquire Now</span>
+              </button>
+            </nav>
+            <button class="md:hidden p-2 rounded-lg hover:bg-slate-200 dark:hover:bg-slate-800">
+              <span class="material-symbols-outlined text-slate-800 dark:text-slate-200">menu</span>
+            </button>
+          </header>
+          <main class="flex-grow">
+            <section class="py-10 px-4 sm:px-6">
+              <div
+                class="flex min-h-[520px] flex-col gap-6 bg-cover bg-center bg-no-repeat rounded-xl items-center justify-center p-6 text-center"
+                data-alt="A modern apartment building exterior at dusk"
+                style='background-image: linear-gradient(rgba(0, 0, 0, 0.2) 0%, rgba(0, 0, 0, 0.5) 100%), url("https://lh3.googleusercontent.com/aida-public/AB6AXuDD8A5NhStddOAZHN3WQbQ2LBeJoGnNhzhrSHh6NmH2vmofygdK-BLSUNCG8lYXXmwJ3RDp7Ed0bfTFAK9mFd4XcC2qJ2FBxWZVCIP0reSMFN65u3wH6fZEr-c03juF6qc2bfNN0LiLGybEGJhIVA_LPBsDf1TF-d3DYhl1sHwGOIJnqchSVy8yLFS4-rbnEGDw6gzN8KcmHuL9Vqj7mpWEw9Zaxn88gTTpHRHA1Pt6osKE2vJm41nQkXAQsIjv7FFSnB50CEdLBwk");'>
+                <div class="flex flex-col gap-4 max-w-2xl">
+                  <h1 class="text-white text-4xl sm:text-5xl font-black leading-tight tracking-[-0.033em]">
+                    Find Your Perfect Home
+                  </h1>
+                  <h2 class="text-slate-200 text-base sm:text-lg font-normal leading-normal">
+                    Quality living spaces in prime locations, designed for your comfort and convenience.
+                  </h2>
+                </div>
+                <button
+                  class="flex min-w-[84px] max-w-[480px] cursor-pointer items-center justify-center overflow-hidden rounded-lg h-12 px-6 bg-primary text-slate-50 text-base font-bold leading-normal tracking-[0.015em] hover:bg-primary/90 transition-colors">
+                  <span class="truncate">View Available Units</span>
+                </button>
+              </div>
+            </section>
+            <section class="py-12 px-4 sm:px-6">
+              <h2
+                class="text-slate-900 dark:text-slate-50 text-2xl sm:text-3xl font-bold leading-tight tracking-[-0.015em] px-4 pb-4 text-center">
+                Discover Our Properties</h2>
+              <div class="flex justify-center px-4 py-3">
+                <div
+                  class="flex w-full max-w-md h-12 flex-1 items-center justify-center rounded-lg bg-slate-200 dark:bg-slate-800 p-1.5">
+                  <label
+                    class="flex cursor-pointer h-full grow items-center justify-center overflow-hidden rounded-md px-2 has-[:checked]:bg-white dark:has-[:checked]:bg-slate-900 has-[:checked]:shadow-sm has-[:checked]:text-slate-900 dark:has-[:checked]:text-slate-50 text-slate-600 dark:text-slate-400 text-sm font-medium leading-normal transition-all">
+                    <span class="truncate">All</span>
+                    <input checked="" class="invisible w-0" name="location-filter" type="radio" value="All" />
+                  </label>
+                  <label
+                    class="flex cursor-pointer h-full grow items-center justify-center overflow-hidden rounded-md px-2 has-[:checked]:bg-white dark:has-[:checked]:bg-slate-900 has-[:checked]:shadow-sm has-[:checked]:text-slate-900 dark:has-[:checked]:text-slate-50 text-slate-600 dark:text-slate-400 text-sm font-medium leading-normal transition-all">
+                    <span class="truncate">Quezon City</span>
+                    <input class="invisible w-0" name="location-filter" type="radio" value="Quezon City" />
+                  </label>
+                  <label
+                    class="flex cursor-pointer h-full grow items-center justify-center overflow-hidden rounded-md px-2 has-[:checked]:bg-white dark:has-[:checked]:bg-slate-900 has-[:checked]:shadow-sm has-[:checked]:text-slate-900 dark:has-[:checked]:text-slate-50 text-slate-600 dark:text-slate-400 text-sm font-medium leading-normal transition-all">
+                    <span class="truncate">Pampanga</span>
+                    <input class="invisible w-0" name="location-filter" type="radio" value="Pampanga" />
+                  </label>
+                </div>
+              </div>
+              <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6 pt-6">
+                <div class="flex flex-col gap-3 group">
+                  <div class="w-full bg-center bg-no-repeat aspect-[4/3] bg-cover rounded-lg overflow-hidden">
+                    <div
+                      class="w-full h-full bg-cover bg-center group-hover:scale-105 transition-transform duration-300"
+                      data-alt="Modern living room with a large window and city view"
+                      style='background-image: url("https://lh3.googleusercontent.com/aida-public/AB6AXuAEcfW9NKwbZ09XQmGHZpPWBXwUU1onV1LeBe4O4wmJ0vQdReir1uDgWZ3Pe__tNYM49KidOUjNy4bpUEHfdB82TbNndHrU7hif6gJL7JZrJIc3-jJ02k4l_lrcpxJfXq_Yx0ZZ_5b_mERg5kSiWBovnO7PuS4nSZvegt8x5sBeMDRyiSxodetsZxeUnUTEZnq17YzOB-_ZszuNYLz3WsNFnhMvH5jPEj6KWR5vBUJ9N-iv0qsR86-6TJfDSiUDlb3P7l4xKNk_Dq4");'>
+                    </div>
+                  </div>
+                  <div class="p-2">
+                    <p class="text-slate-900 dark:text-slate-50 text-lg font-semibold leading-normal">The Victoria -
+                      Quezon City</p>
+                    <p class="text-slate-600 dark:text-slate-400 text-sm font-normal leading-normal">2 Bedrooms • Starts
+                      at ₱25,000/mo</p>
+                    <p class="text-green-600 dark:text-green-400 text-sm font-medium leading-normal">Available</p>
+                  </div>
+                </div>
+                <div class="flex flex-col gap-3 group">
+                  <div class="w-full bg-center bg-no-repeat aspect-[4/3] bg-cover rounded-lg overflow-hidden">
+                    <div
+                      class="w-full h-full bg-cover bg-center group-hover:scale-105 transition-transform duration-300"
+                      data-alt="Cozy one bedroom apartment with minimalist decor"
+                      style='background-image: url("https://lh3.googleusercontent.com/aida-public/AB6AXuBDHZ-oEFpFqP_LLe3e9uar1kXFIEFSH114jdU26ILcMf4RMcSU-P9_uzxHE8rZI2vBnNw86qCTYTpZ4jqon4tAg_WIR6kcELcv4QcmB8JWw5AK0LxwzL8l_3uNAQ634s-t4byB56nfmYiKTMo33VwvxFz6kh9y27OrsU8dCB5dD0jUvznNyctqmoaYHHkrogkplyOynkGtFbLtWr4oHSSxwbDEI9vvYtQZuRVlqAdJMe378TJuYKn019FzVW5YNrtANej2zwm2mEw");'>
+                    </div>
+                  </div>
+                  <div class="p-2">
+                    <p class="text-slate-900 dark:text-slate-50 text-lg font-semibold leading-normal">Pampanga
+                      Residences</p>
+                    <p class="text-slate-600 dark:text-slate-400 text-sm font-normal leading-normal">1 Bedroom • Starts
+                      at ₱15,000/mo</p>
+                    <p class="text-amber-600 dark:text-amber-400 text-sm font-medium leading-normal">Limited Units</p>
+                  </div>
+                </div>
+                <div class="flex flex-col gap-3 group">
+                  <div class="w-full bg-center bg-no-repeat aspect-[4/3] bg-cover rounded-lg overflow-hidden">
+                    <div
+                      class="w-full h-full bg-cover bg-center group-hover:scale-105 transition-transform duration-300"
+                      data-alt="Studio apartment with a compact kitchen and living area"
+                      style='background-image: url("https://lh3.googleusercontent.com/aida-public/AB6AXuD4pIL6qQT1jetCFKQWjCQ2piAxN9Caa49vIuthKLthGP4DHoVkoPhVA2Jnlz_PAlQimZoHrW3FBKmPqNGO7bRdPL3Y7QlG0dvSLNJWxlFi2-yzXdR8fLbPfsgnLrJC9FYOoJcVl-RPtzBSMX31EFolnvda9nqBXAjDGsXFfWugj8NTfVtsThBsHXQWFidvf_Z1kNs1Rp485GNDs1A_1em6Z2xHm-30apifNuWd5a5qOnTl9xR5NU7QgKdPXxSs7qEMaYMt_xY_kUc");'>
+                    </div>
+                  </div>
+                  <div class="p-2">
+                    <p class="text-slate-900 dark:text-slate-50 text-lg font-semibold leading-normal">Cityscape Tower -
+                      Quezon City</p>
+                    <p class="text-slate-600 dark:text-slate-400 text-sm font-normal leading-normal">Studio Unit •
+                      Starts at ₱18,000/mo</p>
+                    <p class="text-green-600 dark:text-green-400 text-sm font-medium leading-normal">Available</p>
+                  </div>
+                </div>
+              </div>
+            </section>
+            <section class="py-12 px-4 sm:px-6 bg-white dark:bg-slate-900/50">
+              <div class="grid grid-cols-1 md:grid-cols-2 gap-8 md:gap-12 items-center">
+                <div class="w-full aspect-[4/3] rounded-lg bg-cover bg-center"
+                  data-alt="A modern apartment building lobby with elegant seating"
+                  style='background-image: url("https://lh3.googleusercontent.com/aida-public/AB6AXuCPfiuFqutuHpHRtPdZxrhazDwx9FQngc3nO2woYXjmhMEa247lUVbBHOCAUcbUlEIzEFLPLD5GPgvnuX0_mi6Hv_N5k7gB9yde6-j68zxJYkTTAxC9w9_d4tqkgAzIoLi4Aecr0IueHJDaHRC8Nhi0DBNoqu-eeHYQJH6DYXBh-HtsvNzflqqQkci9nw2cjkG7zhLf0OUvMvtH-Cv_rkqkqAvGHSVV12jS4-p7y7BwXz1lav8a7PXzBu5RosHysufrLNcHOU_WQWc");'>
+                </div>
+                <div class="flex flex-col gap-4">
+                  <h2
+                    class="text-slate-900 dark:text-slate-50 text-2xl sm:text-3xl font-bold leading-tight tracking-[-0.015em]">
+                    About Ocampo Apartments</h2>
+                  <p class="text-slate-600 dark:text-slate-400 leading-relaxed">
+                    For over a decade, Ocampo Apartments has been dedicated to providing exceptional living experiences.
+                    Our mission is to offer high-quality, comfortable, and secure homes in prime locations. We believe
+                    in building communities and ensuring our residents feel valued and supported. Our commitment to
+                    excellence is reflected in our well-maintained properties and our professional, approachable
+                    management team.
+                  </p>
+                  <a class="text-primary font-bold hover:underline" href="#">Learn More</a>
+                </div>
+              </div>
+            </section>
+          </main>
+          <footer class="bg-slate-100 dark:bg-slate-900 text-slate-600 dark:text-slate-400">
+            <div class="mx-auto max-w-6xl px-6 py-12">
+              <div class="grid grid-cols-1 md:grid-cols-4 gap-8">
+                <div class="md:col-span-2">
+                  <div class="flex items-center gap-3">
+                    <div class="size-5 text-primary">
+                      <svg fill="none" viewBox="0 0 48 48" xmlns="http://www.w3.org/2000/svg">
+                        <path
+                          d="M24 45.8096C19.6865 45.8096 15.4698 44.5305 11.8832 42.134C8.29667 39.7376 5.50128 36.3314 3.85056 32.3462C2.19985 28.361 1.76794 23.9758 2.60947 19.7452C3.451 15.5145 5.52816 11.6284 8.57829 8.5783C11.6284 5.52817 15.5145 3.45101 19.7452 2.60948C23.9758 1.76795 28.361 2.19986 32.3462 3.85057C36.3314 5.50129 39.7376 8.29668 42.134 11.8833C44.5305 15.4698 45.8096 19.6865 45.8096 24L24 24L24 45.8096Z"
+                          fill="currentColor"></path>
+                      </svg>
+                    </div>
+                    <h3 class="text-lg font-bold text-slate-800 dark:text-slate-200">Ocampo Apartments</h3>
+                  </div>
+                  <p class="mt-4 text-sm">Your partner in finding the perfect place to call home. Quality living made
+                    accessible.</p>
+                </div>
+                <div>
+                  <h4 class="font-semibold text-slate-800 dark:text-slate-200">Quick Links</h4>
+                  <ul class="mt-4 space-y-2 text-sm">
+                    <li><a class="hover:text-primary transition-colors" href="#">Home</a></li>
+                    <li><a class="hover:text-primary transition-colors" href="#">Properties</a></li>
+                    <li><a class="hover:text-primary transition-colors" href="#">About Us</a></li>
+                    <li><a class="hover:text-primary transition-colors" href="#">Contact</a></li>
+                  </ul>
+                </div>
+                <div>
+                  <h4 class="font-semibold text-slate-800 dark:text-slate-200">Contact Us</h4>
+                  <ul class="mt-4 space-y-2 text-sm">
+                    <li class="flex items-center gap-2">
+                      <span class="material-symbols-outlined text-base">location_on</span>
+                      <span>123 Property Ave, Quezon City</span>
+                    </li>
+                    <li class="flex items-center gap-2">
+                      <span class="material-symbols-outlined text-base">call</span>
+                      <span>(02) 8123-4567</span>
+                    </li>
+                    <li class="flex items-center gap-2">
+                      <span class="material-symbols-outlined text-base">mail</span>
+                      <span>inquire@ocampoapts.com</span>
+                    </li>
+                  </ul>
+                </div>
+              </div>
+              <div
+                class="mt-8 border-t border-slate-200 dark:border-slate-800 pt-8 flex flex-col sm:flex-row justify-center items-center text-sm">
+                <p>© 2024 Ocampo Apartments. All rights reserved.</p>
+              </div>
+            </div>
+          </footer>
+        </div>
+      </div>
+    </div>
+  </div>
+</body>
+
+</html>

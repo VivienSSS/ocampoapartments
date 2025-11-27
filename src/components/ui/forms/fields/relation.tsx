@@ -11,6 +11,7 @@ import { useFieldContext } from '..';
 import { TooltipFieldLabel } from '../utils/tooltip-field-label';
 import type { RecordListOptions } from 'pocketbase';
 import { useRouteContext } from '@tanstack/react-router';
+import { usePocketbase } from '@/pocketbase/context';
 
 export interface RelationItem {
   id: string;
@@ -29,7 +30,7 @@ export type RelationFieldProps<Records extends RelationItem> = {
 const RelationField = <Records extends RelationItem>(
   props: RelationFieldProps<Records>,
 ) => {
-  const { pocketbase } = useRouteContext({ from: '/dashboard/$collection' });
+  const pocketbase = usePocketbase();
 
   const field = useFieldContext<string>();
   const {

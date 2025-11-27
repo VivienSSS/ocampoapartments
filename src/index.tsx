@@ -7,6 +7,7 @@ import { routeTree } from './routeTree.gen';
 import './styles/globals.css';
 import { pb } from '@/pocketbase';
 import { QueryClient, QueryClientProvider } from '@tanstack/react-query';
+import { PocketbaseContext } from './pocketbase/context';
 
 const queryClient = new QueryClient();
 
@@ -29,12 +30,14 @@ if (rootEl) {
   const root = ReactDOM.createRoot(rootEl);
   root.render(
     <React.StrictMode>
-      <ThemeProvider defaultTheme="light" storageKey="apartment-system">
-        <QueryClientProvider client={queryClient}>
-          <RouterProvider router={router} />
-          <Toaster />
-        </QueryClientProvider>
-      </ThemeProvider>
+      <PocketbaseContext.Provider value={pb}>
+        <ThemeProvider defaultTheme="light" storageKey="apartment-system">
+          <QueryClientProvider client={queryClient}>
+            <RouterProvider router={router} />
+            <Toaster />
+          </QueryClientProvider>
+        </ThemeProvider>
+      </PocketbaseContext.Provider>
     </React.StrictMode>,
   );
 }
