@@ -111,17 +111,19 @@ func SendAcknowledgementMaintenanceRequestEmailToTenant(e *core.RecordEvent) err
 	emailRecord := core.NewRecord(emailCollection)
 	emailRecord.Set("to", tenantEmail)
 	emailRecord.Set("subject", "Maintenance Request Received")
-	emailRecord.Set("message", fmt.Sprintf(`
-We have received your maintenance request.
-
-Request Details:
-Unit: %s
-Urgency: %s
-Description: %s
-Submitted Date: %s
-Status: Pending
-
-Our team is reviewing your request and will assign a worker shortly. You will receive an update once a worker has been assigned.
+	emailRecord.Set("message", fmt.Sprintf(`<html><body style="font-family: Arial, sans-serif; line-height: 1.6; color: #333;">
+<h2>Maintenance Request Received</h2>
+<p>We have received your maintenance request.</p>
+<div style="background-color: #f5f5f5; padding: 15px; border-left: 4px solid #17a2b8;">
+  <h4>Request Details:</h4>
+  <p><strong>Unit:</strong> %s</p>
+  <p><strong>Urgency:</strong> %s</p>
+  <p><strong>Description:</strong> %s</p>
+  <p><strong>Submitted Date:</strong> %s</p>
+  <p><strong>Status:</strong> <span style="background-color: #ffc107; padding: 3px 8px; border-radius: 3px;">Pending</span></p>
+</div>
+<p>Our team is reviewing your request and will assign a worker shortly. You will receive an update once a worker has been assigned.</p>
+</body></html>
 	`, unit.GetString("unitLetter"), request.GetString("urgency"), request.GetString("description"), request.GetString("submittedDate")))
 
 	e.App.Save(emailRecord)
@@ -193,16 +195,18 @@ func SendWorkerAssignedMaintenanceRequestEmailToTenant(e *core.RecordEvent) erro
 	emailRecord := core.NewRecord(emailCollection)
 	emailRecord.Set("to", tenantEmail)
 	emailRecord.Set("subject", "Worker Assigned to Your Maintenance Request")
-	emailRecord.Set("message", fmt.Sprintf(`
-A worker has been assigned to your maintenance request.
-
-Request Details:
-Unit: %s
-Urgency: %s
-Status: Worker Assigned
-Assigned Worker: %s
-
-The worker will contact you shortly to schedule the maintenance visit. Please keep your unit accessible during business hours.
+	emailRecord.Set("message", fmt.Sprintf(`<html><body style="font-family: Arial, sans-serif; line-height: 1.6; color: #333;">
+<h2 style="color: #5cb85c;">Worker Assigned</h2>
+<p>A worker has been assigned to your maintenance request.</p>
+<div style="background-color: #d4edda; padding: 15px; border-left: 4px solid #5cb85c; margin: 15px 0;">
+  <h4>Request Details:</h4>
+  <p><strong>Unit:</strong> %s</p>
+  <p><strong>Urgency:</strong> %s</p>
+  <p><strong>Status:</strong> <span style="background-color: #5cb85c; color: white; padding: 3px 8px; border-radius: 3px;">Worker Assigned</span></p>
+  <p><strong>Assigned Worker:</strong> %s</p>
+</div>
+<p>The worker will contact you shortly to schedule the maintenance visit. Please keep your unit accessible during business hours.</p>
+</body></html>
 	`, unit.GetString("unitLetter"), request.GetString("urgency"), workerName))
 
 	e.App.Save(emailRecord)
@@ -264,16 +268,18 @@ func SendInProgressEmailMaintenanceRequestToTenant(e *core.RecordEvent) error {
 	emailRecord := core.NewRecord(emailCollection)
 	emailRecord.Set("to", tenantEmail)
 	emailRecord.Set("subject", "Maintenance Work In Progress")
-	emailRecord.Set("message", fmt.Sprintf(`
-Your maintenance request is currently in progress.
-
-Request Details:
-Unit: %s
-Urgency: %s
-Status: In Progress
-
-The worker is actively working on your maintenance issue. The work should be completed shortly.
-Thank you for your patience.
+	emailRecord.Set("message", fmt.Sprintf(`<html><body style="font-family: Arial, sans-serif; line-height: 1.6; color: #333;">
+<h2 style="color: #17a2b8;">⚙ Maintenance Work In Progress</h2>
+<p>Your maintenance request is currently in progress.</p>
+<div style="background-color: #d1ecf1; padding: 15px; border-left: 4px solid #17a2b8; margin: 15px 0;">
+  <h4>Request Details:</h4>
+  <p><strong>Unit:</strong> %s</p>
+  <p><strong>Urgency:</strong> %s</p>
+  <p><strong>Status:</strong> <span style="background-color: #17a2b8; color: white; padding: 3px 8px; border-radius: 3px;">In Progress</span></p>
+</div>
+<p>The worker is actively working on your maintenance issue. The work should be completed shortly.</p>
+<p><strong>Thank you for your patience.</strong></p>
+</body></html>
 	`, unit.GetString("unitLetter"), request.GetString("urgency")))
 
 	e.App.Save(emailRecord)
@@ -335,17 +341,19 @@ func SendCompletionMessageMaintenanceRequestToTenant(e *core.RecordEvent) error 
 	emailRecord := core.NewRecord(emailCollection)
 	emailRecord.Set("to", tenantEmail)
 	emailRecord.Set("subject", "Maintenance Work Completed")
-	emailRecord.Set("message", fmt.Sprintf(`
-Your maintenance request has been completed.
-
-Request Details:
-Unit: %s
-Urgency: %s
-Status: Completed
-Completed Date: %s
-
-The maintenance work on your unit has been finished. If you have any concerns or issues with the completed work, please contact the management office.
-We appreciate your cooperation.
+	emailRecord.Set("message", fmt.Sprintf(`<html><body style="font-family: Arial, sans-serif; line-height: 1.6; color: #333;">
+<h2 style="color: #5cb85c;">✓ Maintenance Work Completed</h2>
+<p>Your maintenance request has been completed.</p>
+<div style="background-color: #d4edda; padding: 15px; border-left: 4px solid #5cb85c; margin: 15px 0;">
+  <h4>Request Details:</h4>
+  <p><strong>Unit:</strong> %s</p>
+  <p><strong>Urgency:</strong> %s</p>
+  <p><strong>Status:</strong> <span style="background-color: #5cb85c; color: white; padding: 3px 8px; border-radius: 3px;">Completed</span></p>
+  <p><strong>Completed Date:</strong> %s</p>
+</div>
+<p>The maintenance work on your unit has been finished. If you have any concerns or issues with the completed work, please contact the management office.</p>
+<p><strong>We appreciate your cooperation.</strong></p>
+</body></html>
 	`, unit.GetString("unitLetter"), request.GetString("urgency"), time.Now().Format("2006-01-02")))
 
 	e.App.Save(emailRecord)
@@ -407,16 +415,18 @@ func SendCancelledMessageMaintenanceRequestToTenant(e *core.RecordEvent) error {
 	emailRecord := core.NewRecord(emailCollection)
 	emailRecord.Set("to", tenantEmail)
 	emailRecord.Set("subject", "Maintenance Request Cancelled")
-	emailRecord.Set("message", fmt.Sprintf(`
-Your maintenance request has been cancelled.
-
-Request Details:
-Unit: %s
-Urgency: %s
-Status: Cancelled
-
-Your maintenance request has been cancelled. If you still require maintenance assistance, please submit a new request.
-If you have any questions, please contact the management office.
+	emailRecord.Set("message", fmt.Sprintf(`<html><body style="font-family: Arial, sans-serif; line-height: 1.6; color: #333;">
+<h2 style="color: #d9534f;">Maintenance Request Cancelled</h2>
+<p>Your maintenance request has been cancelled.</p>
+<div style="background-color: #f8d7da; padding: 15px; border-left: 4px solid #d9534f; margin: 15px 0;">
+  <h4>Request Details:</h4>
+  <p><strong>Unit:</strong> %s</p>
+  <p><strong>Urgency:</strong> %s</p>
+  <p><strong>Status:</strong> <span style="background-color: #d9534f; color: white; padding: 3px 8px; border-radius: 3px;">Cancelled</span></p>
+</div>
+<p>Your maintenance request has been cancelled. If you still require maintenance assistance, please submit a new request.</p>
+<p>If you have any questions, please contact the management office.</p>
+</body></html>
 	`, unit.GetString("unitLetter"), request.GetString("urgency")))
 
 	e.App.Save(emailRecord)

@@ -52,7 +52,15 @@ func SendInquiryAcknoledgementToApplicantEmail(e *core.RecordEvent) error {
 	emailRecord := core.NewRecord(emailCollection)
 	emailRecord.Set("to", e.Record.GetString("email"))
 	emailRecord.Set("subject", "Inquiry Acknowledgement")
-	emailRecord.Set("message", "Your inquiry has been acknowledged. We will return back to you shortly")
+	emailRecord.Set("message", `<html><body style="font-family: Arial, sans-serif; line-height: 1.6; color: #333;">
+<h2>Inquiry Acknowledged</h2>
+<p>Thank you for submitting your inquiry.</p>
+<div style="background-color: #d4edda; padding: 15px; border-left: 4px solid #5cb85c; margin: 15px 0;">
+  <p><strong>Your inquiry has been acknowledged and received.</strong></p>
+  <p>We will review your inquiry and return back to you shortly.</p>
+</div>
+<p>If you have any urgent matters, please contact the management office directly.</p>
+</body></html>`)
 
 	if err := e.App.Save(emailRecord); err != nil {
 		return err
@@ -114,13 +122,17 @@ func SendApproveInquiryToApplicantEmail(e *core.RecordEvent) error {
 	emailRecord := core.NewRecord(emailCollection)
 	emailRecord.Set("to", e.Record.GetString("email"))
 	emailRecord.Set("subject", "Application Approved - Account Created")
-	emailRecord.Set("message", fmt.Sprintf(`Your application has been approved. Here are your credentials:
-
-Email: %s
-Password: %s
-
-Please log in with these credentials and change your password immediately for security.
-Welcome!
+	emailRecord.Set("message", fmt.Sprintf(`<html><body style="font-family: Arial, sans-serif; line-height: 1.6; color: #333;">
+<h2 style="color: #5cb85c;">✓ Application Approved</h2>
+<p>Congratulations! Your application has been approved.</p>
+<div style="background-color: #d4edda; padding: 15px; border-left: 4px solid #5cb85c; margin: 15px 0;">
+  <h4>Your Account Credentials:</h4>
+  <p><strong>Email:</strong> %s</p>
+  <p><strong>Password:</strong> <code style="background-color: #f5f5f5; padding: 5px 8px; border-radius: 3px; font-family: monospace;">%s</code></p>
+</div>
+<p style="background-color: #fff3cd; padding: 10px; border-left: 4px solid #ffc107;"><strong>⚠ Important:</strong> Please log in with these credentials and change your password immediately for security purposes.</p>
+<p>Welcome to our community!</p>
+</body></html>
 	`, e.Record.GetString("email"), password))
 
 	if err := e.App.Save(emailRecord); err != nil {
@@ -144,11 +156,15 @@ func SendRejectionLetterToApplicantEmail(e *core.RecordEvent) error {
 	emailRecord := core.NewRecord(emailCollection)
 	emailRecord.Set("to", e.Record.GetString("email"))
 	emailRecord.Set("subject", "Application Rejected")
-	emailRecord.Set("message", fmt.Sprintf(`We are sorry to inform you that your application has been rejected.
-
-Reason: %s
-
-We hope to see you again next time. If you have any questions, please contact our management office.
+	emailRecord.Set("message", fmt.Sprintf(`<html><body style="font-family: Arial, sans-serif; line-height: 1.6; color: #333;">
+<h2 style="color: #d9534f;">Application Rejected</h2>
+<p>We are sorry to inform you that your application has been rejected.</p>
+<div style="background-color: #f8d7da; padding: 15px; border-left: 4px solid #d9534f; margin: 15px 0;">
+  <p><strong>Rejection Reason:</strong></p>
+  <p>%s</p>
+</div>
+<p>We hope to see you again next time. If you have any questions or would like to appeal this decision, please contact our management office.</p>
+</body></html>
 	`, e.Record.GetString("rejectionReason")))
 
 	if err := e.App.Save(emailRecord); err != nil {

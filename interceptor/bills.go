@@ -131,17 +131,20 @@ func SendBillInvoiceToTenants(e *core.RecordEvent) error {
 	emailRecord := core.NewRecord(emailCollection)
 	emailRecord.Set("to", tenantEmail)
 	emailRecord.Set("subject", "Bill Invoice Generated")
-	emailRecord.Set("message", fmt.Sprintf(`
-Your bill invoice has been generated.
-
-Invoice Number: %s
-Status: %s
-Amount: %.2f
-
-%s
-
-Please review your invoice and arrange payment accordingly.
-If you have any questions, please contact the management office.
+	emailRecord.Set("message", fmt.Sprintf(`<html><body style="font-family: Arial, sans-serif; line-height: 1.6; color: #333;">
+<h2>Your Bill Invoice</h2>
+<p>Your bill invoice has been generated.</p>
+<div style="background-color: #f5f5f5; padding: 15px; border-left: 4px solid #007bff;">
+  <p><strong>Invoice Number:</strong> %s</p>
+  <p><strong>Status:</strong> %s</p>
+  <p><strong>Amount:</strong> %.2f</p>
+</div>
+<div style="background-color: #f9f9f9; padding: 15px; margin: 15px 0;">
+  %s
+</div>
+<p>Please review your invoice and arrange payment accordingly.</p>
+<p>If you have any questions, please contact the management office.</p>
+</body></html>
 	`, bill.GetString("invoiceNumber"), bill.GetString("status"), totalAmount, billItemsBreakdown))
 
 	e.App.Save(emailRecord)
@@ -235,19 +238,20 @@ func SendOverdueNoticeToTenant(e *core.RecordEvent) error {
 	emailRecord := core.NewRecord(emailCollection)
 	emailRecord.Set("to", tenantEmail)
 	emailRecord.Set("subject", "Payment Overdue Notice")
-	emailRecord.Set("message", fmt.Sprintf(`
-OVERDUE PAYMENT NOTICE
-
-Your bill payment is now overdue.
-
-Invoice Number: %s
-Amount Due: %.2f
-Due Date: %s
-
-%s
-
-Please remit payment immediately to avoid penalties or further action.
-Contact the management office if you have payment concerns.
+	emailRecord.Set("message", fmt.Sprintf(`<html><body style="font-family: Arial, sans-serif; line-height: 1.6; color: #333;">
+<h2 style="color: #d9534f;">⚠ Overdue Payment Notice</h2>
+<p>Your bill payment is now overdue.</p>
+<div style="background-color: #fff3cd; padding: 15px; border-left: 4px solid #ffc107; margin: 15px 0;">
+  <p><strong>Invoice Number:</strong> %s</p>
+  <p><strong>Amount Due:</strong> %.2f</p>
+  <p><strong>Due Date:</strong> %s</p>
+</div>
+<div style="background-color: #f9f9f9; padding: 15px; margin: 15px 0;">
+  %s
+</div>
+<p style="color: #d9534f;"><strong>Please remit payment immediately to avoid penalties or further action.</strong></p>
+<p>Contact the management office if you have payment concerns.</p>
+</body></html>
 	`, bill.GetString("invoiceNumber"), totalAmount, bill.GetString("dueDate"), billItemsBreakdown))
 
 	e.App.Save(emailRecord)
