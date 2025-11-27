@@ -171,6 +171,46 @@ function RouteComponent() {
                 </div>
               </div>
             </Card>
+
+            {/* Lease Terms & Rental Contract Card */}
+            <Card className="border p-6 bg-muted/50">
+              <div className="flex flex-col gap-4">
+                <h2 className="scroll-m-20 text-2xl font-bold tracking-tight">
+                  Lease Terms & Rental Contract
+                </h2>
+
+                <div className="space-y-4 text-sm">
+                  <p className="leading-7 text-muted-foreground">
+                    The landlord requires one (1) month advance rent payment,
+                    two (2) months deposit, and ₱2,000 refundable deposit for
+                    the water and electricity. If a potential tenant decides to
+                    cancel their move-in at the last minute, all payments made,
+                    including any deposits or fees, will not be refunded.
+                  </p>
+
+                  <ul className="space-y-2 ml-4">
+                    <li className="flex gap-3">
+                      <span className="font-bold min-w-fit">Utilities:</span>
+                      <span className="text-muted-foreground">
+                        Electricity and water included in rent.
+                      </span>
+                    </li>
+                    <li className="flex gap-3">
+                      <span className="font-bold min-w-fit">Pets:</span>
+                      <span className="text-muted-foreground">
+                        Small pets allowed with no additional deposit.
+                      </span>
+                    </li>
+                    <li className="flex gap-3">
+                      <span className="font-bold min-w-fit">Parking:</span>
+                      <span className="text-muted-foreground">
+                        (1) motorcycle only, additional is ₱500/month.
+                      </span>
+                    </li>
+                  </ul>
+                </div>
+              </div>
+            </Card>
           </div>
 
           {/* Right Column - Inquiry Form */}
