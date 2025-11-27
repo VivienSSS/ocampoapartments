@@ -42,7 +42,15 @@ const DateTimeField = (props: DateTimeFieldProps) => {
 
   const isInvalid = field.state.meta.isTouched && !field.state.meta.isValid;
 
-  const dateValue = field.state.value;
+  // Convert string to Date object if necessary
+  const convertToDate = (value: unknown): Date | undefined => {
+    if (!value) return undefined;
+    if (value instanceof Date) return value;
+    if (typeof value === 'string') return new Date(value);
+    return undefined;
+  };
+
+  const dateValue = convertToDate(field.state.value);
   const dateFormatted = dateValue
     ? format(dateValue, showTime ? 'PPP HH:mm' : 'PPP')
     : 'Pick a date';
