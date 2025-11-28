@@ -49,7 +49,7 @@ const PERMISSIONS_MAP: Record<
       canDelete: false,
     },
     announcements: { canCreate: true, canUpdate: true, canDelete: true },
-    inquiries: { canCreate: false, canUpdate: false, canDelete: false },
+    inquiries: { canCreate: false, canUpdate: true, canDelete: false },
     otp: { canCreate: false, canUpdate: false, canDelete: false },
     forms: { canCreate: false, canUpdate: false, canDelete: false },
     emails: { canCreate: false, canUpdate: false, canDelete: false },
