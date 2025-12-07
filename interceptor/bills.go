@@ -107,13 +107,13 @@ func SendBillInvoiceToTenants(e *core.RecordEvent) error {
 		for _, itemId := range billItems {
 			item, err := e.App.FindRecordById("bill_items", itemId)
 			if err == nil {
-				chargeType := item.GetString("chargeType")
+				description := item.GetString("description")
 				amount := item.Get("amount")
 				if amount != nil {
 					// Convert to float64
 					if floatVal, ok := amount.(float64); ok {
 						totalAmount += floatVal
-						billItemsBreakdown += fmt.Sprintf("- %s: %.2f\n", chargeType, floatVal)
+						billItemsBreakdown += fmt.Sprintf("- %s: %.2f\n", description, floatVal)
 					}
 				}
 			}
@@ -214,13 +214,13 @@ func SendOverdueNoticeToTenant(e *core.RecordEvent) error {
 		for _, itemId := range billItems {
 			item, err := e.App.FindRecordById("bill_items", itemId)
 			if err == nil {
-				chargeType := item.GetString("chargeType")
+				description := item.GetString("description")
 				amount := item.Get("amount")
 				if amount != nil {
 					// Convert to float64
 					if floatVal, ok := amount.(float64); ok {
 						totalAmount += floatVal
-						billItemsBreakdown += fmt.Sprintf("- %s: %.2f\n", chargeType, floatVal)
+						billItemsBreakdown += fmt.Sprintf("- %s: %.2f\n", description, floatVal)
 					}
 				}
 			}
@@ -385,7 +385,7 @@ func CreateBillsAndItemsForTenancy(e *core.RecordEvent) error {
 	// Find the apartment unit to get the rental price
 	unit, err := e.App.FindRecordById("apartment_units", unitId)
 	if err != nil {
-		return err
+		return e.Next()
 	}
 
 	price := unit.Get("price")
@@ -393,13 +393,13 @@ func CreateBillsAndItemsForTenancy(e *core.RecordEvent) error {
 	// Get bills collection
 	billsCollection, err := e.App.FindCollectionByNameOrId("bills")
 	if err != nil {
-		return err
+		return e.Next()
 	}
 
 	// Get bill_items collection
 	billItemsCollection, err := e.App.FindCollectionByNameOrId("bill_items")
 	if err != nil {
-		return err
+		return e.Next()
 	}
 
 	// Get lease start date from tenancy
@@ -412,7 +412,7 @@ func CreateBillsAndItemsForTenancy(e *core.RecordEvent) error {
 	// Format: 2025-12-04 12:00:00.000Z
 	parsedDate, err := time.Parse("2006-01-02 15:04:05.000Z", leaseStartDate)
 	if err != nil {
-		return err
+		return e.Next()
 	}
 
 	// Set due date to the first day of the next month
@@ -426,7 +426,7 @@ func CreateBillsAndItemsForTenancy(e *core.RecordEvent) error {
 	billItem.Set("description", fmt.Sprintf("Monthly rent for unit %s", unit.GetString("unitLetter")))
 
 	if err := e.App.Save(billItem); err != nil {
-		return err
+		return e.Next()
 	}
 
 	// Create a bill record
@@ -437,7 +437,7 @@ func CreateBillsAndItemsForTenancy(e *core.RecordEvent) error {
 	bill.Set("items", []string{billItem.Id})
 
 	if err := e.App.Save(bill); err != nil {
-		return err
+		return e.Next()
 	}
 
 	return e.Next()

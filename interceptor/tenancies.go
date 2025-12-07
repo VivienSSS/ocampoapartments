@@ -273,3 +273,82 @@ func SendEvictionNoticeToTenant(e *core.RecordEvent) error {
 
 	return e.Next()
 }
+
+func SendBillingBreakdownToNewTenancies(e *core.RecordEvent) error {
+	// Create a new bill with deposit and advance payment items when a new tenancy is created
+	// This adds 2 months deposit (rent × 2) and 1 month advance payment (rent × 1) to a separate bill
+
+	tenancy := e.Record
+
+	// Get the unit ID from tenancy
+	unitId := tenancy.GetString("unit")
+	if unitId == "" {
+		return e.Next()
+	}
+
+	// Find the apartment unit to get the rental price
+	unit, err := e.App.FindRecordById("apartment_units", unitId)
+	if err != nil {
+		return e.Next()
+	}
+
+	price := unit.Get("price")
+	if price == nil {
+		return e.Next()
+	}
+
+	// Convert price to float64 for calculations
+	var rentPrice float64
+	if floatVal, ok := price.(float64); ok {
+		rentPrice = floatVal
+	} else {
+		return e.Next()
+	}
+
+	// Get bill_items collection
+	billItemsCollection, err := e.App.FindCollectionByNameOrId("bill_items")
+	if err != nil {
+		return e.Next()
+	}
+
+	// Get bills collection
+	billsCollection, err := e.App.FindCollectionByNameOrId("bills")
+	if err != nil {
+		return e.Next()
+	}
+
+	unitLetter := unit.GetString("unitLetter")
+
+	// Create bill item for 2 months deposit
+	depositItem := core.NewRecord(billItemsCollection)
+	depositItem.Set("chargeType", "Deposit")
+	depositItem.Set("amount", rentPrice*2)
+	depositItem.Set("description", fmt.Sprintf("2 months deposit for unit %s", unitLetter))
+
+	if err := e.App.Save(depositItem); err != nil {
+		return e.Next()
+	}
+
+	// Create bill item for 1 month advance payment
+	advanceItem := core.NewRecord(billItemsCollection)
+	advanceItem.Set("chargeType", "Advance Payment")
+	advanceItem.Set("amount", rentPrice)
+	advanceItem.Set("description", fmt.Sprintf("1 month advance payment for unit %s", unitLetter))
+
+	if err := e.App.Save(advanceItem); err != nil {
+		return e.Next()
+	}
+
+	// Create a new bill record with deposit and advance payment items
+	bill := core.NewRecord(billsCollection)
+	bill.Set("tenancy", tenancy.Id)
+	bill.Set("dueDate", time.Now().Format("2006-01-02"))
+	bill.Set("status", "Due")
+	bill.Set("items", []string{depositItem.Id, advanceItem.Id})
+
+	if err := e.App.Save(bill); err != nil {
+		return e.Next()
+	}
+
+	return e.Next()
+}

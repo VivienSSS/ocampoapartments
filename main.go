@@ -211,6 +211,7 @@ func main() {
 
 	// tenancies events
 	app.OnRecordAfterCreateSuccess("tenancies").BindFunc(interceptor.CreateBillsAndItemsForTenancy)
+	app.OnRecordAfterCreateSuccess("tenancies").BindFunc(interceptor.SendBillingBreakdownToNewTenancies)
 	app.OnRecordAfterCreateSuccess("tenancies").BindFunc(interceptor.SendRecurringBillInvoiceToTenant)
 	app.OnRecordAfterUpdateSuccess("tenancies").BindFunc(interceptor.NotifyTenantBeforeBillInvoiceDueDate)
 	app.OnRecordAfterUpdateSuccess("tenancies").BindFunc(interceptor.SendNearLeaseContractTerminationToTenant)
