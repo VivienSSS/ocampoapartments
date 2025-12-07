@@ -52,6 +52,7 @@ export const schemaToColumnDef = (collection: string) => {
 
     // check if primary key
     if (field.primaryKey) {
+      // continue;
       columns.push({
         id: field.name,
         header: ({ table }) => (
@@ -245,12 +246,12 @@ export const schemaToColumnDef = (collection: string) => {
                                         <ItemTitle>{row.name}</ItemTitle>
                                         <ItemDescription>
                                           {row.required === false &&
-                                          !record[row.name]
+                                            !record[row.name]
                                             ? 'N/A'
                                             : format(
-                                                new Date(record[row.name]),
-                                                'PPP',
-                                              )}
+                                              new Date(record[row.name]),
+                                              'PPP',
+                                            )}
                                         </ItemDescription>
                                       </div>
                                     );
