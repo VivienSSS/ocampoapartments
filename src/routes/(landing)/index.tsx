@@ -139,7 +139,7 @@ function RouteComponent() {
               About Ocampo Apartments
             </h2>
             <p className="leading-7 text-muted-foreground [&:not(:first-child)]:mt-6">
-              For over a decade, Ocampo Apartments has been dedicated to
+              Ocampo Apartments has been dedicated to
               providing exceptional living experiences. Our mission is to offer
               high-quality, comfortable, and secure homes in prime locations. We
               believe in building communities and ensuring our residents feel
