@@ -141,7 +141,7 @@ const showNav = () => {
           icon: Hammer,
         },
         {
-          title: 'Payment History',
+          title: 'Send Payments',
           url: '/dashboard/payments',
           icon: HandCoins,
         },
